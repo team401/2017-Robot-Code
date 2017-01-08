@@ -1,0 +1,40 @@
+buildscript {
+  repositories {
+	mavenCentral()
+	maven {
+		name = "GradleRIO"
+		url = "http://dev.imjac.in/maven"
+	}
+  }
+  dependencies {
+    classpath group: 'jaci.openrio.gradle', name: 'GradleRIO', version: '+'			//Change this line if you wish to Update GradleRIO
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'GradleRIO'
+
+gradlerio.robotClass = "org.team401.robot.Robot"
+gradlerio.team = "401"
+gradlerio.rioIP = "10.4.1.1"
+
+def robotManifest = {
+  attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+  attributes 'Robot-Class': gradlerio.robotClass
+}
+
+jar {
+  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  manifest robotManifest
+}
+
+task genJavadoc(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives genJavadoc
+}
