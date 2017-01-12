@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output/>
+    <orderEntry type="inheritedJdk"/>
+    <content url="file://$MODULE_DIR$/">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false"/>
+      <excludeFolder url="file://$MODULE_DIR$/.gradle"/>
+      <excludeFolder url="file://$MODULE_DIR$/build"/>
+    </content>
+    <orderEntry type="sourceFolder" forTests="false"/>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/athena/2017.1.1/ad72688c2145e332d4f9f55a0a7cf0299b82998d/athena-2017.1.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/athena/2017.1.1/b9c601dd747d233f99054dd2abd7e8198f446a69/athena-2017.1.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/181e1bee717055d1ac9478e3ec3c17c69e205b16/NetworkTables-3.1.5-arm.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/d8df37407c87ef2cd634206297248958266b2fcf/NetworkTables-3.1.5-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/59920129152692ac5d17e03385032e78fdf59df2/NetworkTables-3.1.5-desktop.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/d8df37407c87ef2cd634206297248958266b2fcf/NetworkTables-3.1.5-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/org.opencv/opencv-java/3.1.0/2a534baab7f01c049ba9768adb645f9b0128f987/opencv-java-3.1.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/org.opencv/opencv-java/3.1.0/30ac314db3d3a30fae0e3dc2e1740466708f1c0/opencv-java-3.1.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.cscore.java/cscore/1.0.0/7c32eacf121c87abee8d0eeb77619aad8f8fc4c3/cscore-1.0.0-arm.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/edu.wpi.cscore.java/cscore/1.0.0/b7b0900b4fee6b36efcfa89f982154ae5b681320/cscore-1.0.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Users/Zach Kozar/.gradle/caches/modules-2/files-2.1/thirdparty.frc.ctre/Toolsuite-Java/4.4.1.8/4b42c2e4f0c5f4a525b7c868e614cb2ba1b49a43/Toolsuite-Java-4.4.1.8.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+  </component>
+  <component name="ModuleRootManager"/>
+</module>

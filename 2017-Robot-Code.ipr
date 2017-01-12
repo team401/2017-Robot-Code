@@ -6,10 +6,12 @@
       <entry name=".+\.(gif|png|jpeg|jpg)" />
     </resourceExtensions>
     <wildcardResourcePatterns>
+      <entry name="!?*.class" />
+      <entry name="!?*.scala" />
       <entry name="!?*.java" />
       <entry name="!?*.groovy" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="2017-Robot-Code_main" target="1.8" />
       <module name="2017-Robot-Code_test" target="1.8" />
     </bytecodeTargetLevel>
@@ -78,10 +80,18 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="" vcs="Git" />
   </component>
   <component name="libraryTable">
+    <library name="Gradle: edu.wpi.cscore.java:cscore:arm:1.0.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.cscore.java/cscore/1.0.0/7c32eacf121c87abee8d0eeb77619aad8f8fc4c3/cscore-1.0.0-arm.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.cscore.java/cscore/1.0.0/b7b0900b4fee6b36efcfa89f982154ae5b681320/cscore-1.0.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:arm:3.1.5">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/181e1bee717055d1ac9478e3ec3c17c69e205b16/NetworkTables-3.1.5-arm.jar!/" />
@@ -100,14 +110,30 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilib.networktables.java/NetworkTables/3.1.5/d8df37407c87ef2cd634206297248958266b2fcf/NetworkTables-3.1.5-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: edu.wpi.first.wpilibj:wpilibJavaFinal:2016.5.1">
+    <library name="Gradle: edu.wpi.first.wpilibj:athena:2017.1.1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/wpilibJavaFinal/2016.5.1/340606a96e9914b9bcecec43406cbc8f58e1a14f/wpilibJavaFinal-2016.5.1.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/athena/2017.1.1/ad72688c2145e332d4f9f55a0a7cf0299b82998d/athena-2017.1.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/wpilibJavaFinal/2016.5.1/ef3f2579369a73fb9ebcbd163a5bf601356d74b2/wpilibJavaFinal-2016.5.1-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/edu.wpi.first.wpilibj/athena/2017.1.1/b9c601dd747d233f99054dd2abd7e8198f446a69/athena-2017.1.1-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="Gradle: org.opencv:opencv-java:3.1.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opencv/opencv-java/3.1.0/2a534baab7f01c049ba9768adb645f9b0128f987/opencv-java-3.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opencv/opencv-java/3.1.0/30ac314db3d3a30fae0e3dc2e1740466708f1c0/opencv-java-3.1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.8">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/thirdparty.frc.ctre/Toolsuite-Java/4.4.1.8/4b42c2e4f0c5f4a525b7c868e614cb2ba1b49a43/Toolsuite-Java-4.4.1.8.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
   </component>
   <component name="masterDetails">

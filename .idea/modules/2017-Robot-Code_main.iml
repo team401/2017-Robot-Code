@@ -9,8 +9,83 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:desktop:3.1.5" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/navx_frc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibj:athena:2017.1.1" level="project" />
     <orderEntry type="library" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:arm:3.1.5" level="project" />
-    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibj:wpilibJavaFinal:2016.5.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilib.networktables.java:NetworkTables:desktop:3.1.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.opencv:opencv-java:3.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.cscore.java:cscore:arm:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.8" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-tools-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/TalonSRXLibJava.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
