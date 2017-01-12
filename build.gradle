@@ -6,7 +6,7 @@ plugins {
 }
 
 frc {
-    team = "4001"
+    team = "401"
     robotClass = "org.team401.robot.Robot"
 
     deployTimeout = 5
