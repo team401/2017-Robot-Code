@@ -1,6 +1,7 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 import org.strongback.Strongback;
@@ -18,6 +19,7 @@ public class Robot extends IterativeRobot {
     private final double collectSpeed = 0.5;
 
     CANTalon _talon;
+
     @Override
     public void robotInit() {
         Strongback.configure()
@@ -64,7 +66,12 @@ public class Robot extends IterativeRobot {
             _talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
             _talon.set(12.0 * joysticky.getPitch().read());
         }else if(!joysticky.getTrigger().isTriggered()){
-          _talon.disable();
+          _talon.enable();
+          _talon.changeControlMode(CANTalon.TalonControlMode.MotionProfile);
+
+
+
+
         }
         //sets the F Gain
         _talon.getSpeed();
