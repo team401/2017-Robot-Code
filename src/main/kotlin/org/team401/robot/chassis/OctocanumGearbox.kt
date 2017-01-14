@@ -3,7 +3,7 @@ package org.team401.robot.chassis
 import com.ctre.CANTalon
 import org.strongback.components.Solenoid
 
-class ChassisGearbox(val cimMotor: CANTalon, val littleMotor: CANTalon, val shifter: Solenoid) {
+class OctocanumGearbox(val cimMotor: CANTalon, val littleMotor: CANTalon, val shifter: Solenoid) {
 
     var driveMode: DriveMode
 
