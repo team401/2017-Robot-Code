@@ -56,11 +56,9 @@ public class FalconPathPlanner
 	public double[][] heading;
 
 	double numFinalPoints;
-
 	double pathAlpha;
 	double pathBeta;
 	double pathTolerance;
-
 	double velocityAlpha;
 	double velocityBeta;
 	double velocityTolerance;
