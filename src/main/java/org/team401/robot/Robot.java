@@ -84,6 +84,8 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
         Strongback.disable();
         collection.setSpeed(0);
+        _talon.set(0);
+        _talon.disable();
     }
 
     @Override
