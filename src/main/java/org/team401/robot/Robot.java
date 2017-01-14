@@ -3,6 +3,7 @@ package org.team401.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import org.strongback.Strongback;
 import org.strongback.components.Motor;
+import org.strongback.components.TalonSRX;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
@@ -11,6 +12,8 @@ public class Robot extends IterativeRobot {
 
     private TankDrive allDrive;
     private FlightStick joysticky;
+    private Motor collection;// This is for the collection method proposed by the Ethan Manipulators
+    private final double collectSpeed = 0.5;
 
     @Override
     public void robotInit() {
@@ -23,6 +26,8 @@ public class Robot extends IterativeRobot {
 
         allDrive = new TankDrive(leftDrive, rightDrive);
 
+        collection = Hardware.Motors.talon(2);
+
         joysticky = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
     }
 
@@ -33,7 +38,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousPeriodic() {
-
+        collection.setSpeed(collectSpeed);
     }
 
     @Override
@@ -44,11 +49,13 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read());
+        collection.setSpeed(collectSpeed);
     }
 
     @Override
     public void disabledInit() {
         Strongback.disable();
+        collection.setSpeed(0);
     }
 
     @Override
