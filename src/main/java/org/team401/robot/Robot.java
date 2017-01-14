@@ -1,6 +1,8 @@
 package org.team401.robot;
 
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
+
 import org.strongback.Strongback;
 import org.strongback.components.Motor;
 import org.strongback.components.TalonSRX;
@@ -15,6 +17,7 @@ public class Robot extends IterativeRobot {
     private Motor collection;// This is for the collection method proposed by the Ethan Manipulators
     private final double collectSpeed = 0.5;
 
+    CANTalon _talon;
     @Override
     public void robotInit() {
         Strongback.configure()
@@ -29,6 +32,8 @@ public class Robot extends IterativeRobot {
         collection = Hardware.Motors.talon(2);
 
         joysticky = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+
+        _talon = new CANTalon(9);
     }
 
     @Override
@@ -50,6 +55,13 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read());
         collection.setSpeed(collectSpeed);
+
+        if(joysticky.getTrigger().isTriggered()){
+            _talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
+            _talon.set(12.0 * joysticky.getPitch().read());
+        }else if(!joysticky.getTrigger().isTriggered()){
+         //   _talon.disable();
+        }
     }
 
     @Override
