@@ -53,15 +53,24 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
+        //drive
         allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read());
         collection.setSpeed(collectSpeed);
 
+        //if the trigger is pressed the motor can spin If released it stops
+        //uses voltage as the controller
         if(joysticky.getTrigger().isTriggered()){
+            _talon.enable();
             _talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
             _talon.set(12.0 * joysticky.getPitch().read());
         }else if(!joysticky.getTrigger().isTriggered()){
-         //   _talon.disable();
+          _talon.disable();
         }
+        //sets the F Gain
+        _talon.getSpeed();
+        double throttle = joysticky.getPitch().read()/1;
+        double FGain = ((throttle/1023) * _talon.getSpeed());
+        _talon.setF(FGain);
     }
 
     @Override
@@ -72,4 +81,6 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledPeriodic() {}
+
+
 }
