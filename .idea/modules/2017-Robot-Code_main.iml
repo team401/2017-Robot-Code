@@ -5,6 +5,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -30,6 +31,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../libs/strongback-tools-sources.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -40,15 +50,6 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -78,5 +79,7 @@
     <orderEntry type="library" name="Gradle: org.opencv:opencv-java:3.1.0" level="project" />
     <orderEntry type="library" name="Gradle: edu.wpi.cscore.java:cscore:arm:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.8" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
   </component>
 </module>

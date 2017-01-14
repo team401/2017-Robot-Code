@@ -5,6 +5,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/kotlin" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -79,6 +80,8 @@
     <orderEntry type="library" name="Gradle: org.opencv:opencv-java:3.1.0" level="project" />
     <orderEntry type="library" name="Gradle: edu.wpi.cscore.java:cscore:arm:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.8" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="2017-Robot-Code_main" />
 </module>

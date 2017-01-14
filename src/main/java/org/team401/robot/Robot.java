@@ -19,7 +19,7 @@ public class Robot extends IterativeRobot {
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
         Motor leftDrive = Hardware.Motors.talon(0);
-        Motor rightDrive = Hardware.Motors.talon(1);
+        Motor rightDrive = Hardware.Motors.talon(1).invert();
 
         allDrive = new TankDrive(leftDrive, rightDrive);
 
@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
-        allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read());
+        allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read()*-1);
     }
 
     @Override
