@@ -53,8 +53,6 @@ public class FalconPathPlanner
 	//accumulated heading
 	public double[][] heading;
 
-	double totalTime;
-	double totalDistance;
 	double numFinalPoints;
 
 	double pathAlpha;
