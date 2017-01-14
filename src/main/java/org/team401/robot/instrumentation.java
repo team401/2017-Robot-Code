@@ -24,13 +24,14 @@
  */
 package org.team401.robot;
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class instrumentation {
 
 	static double timeout = 0;
 	static int count = 0;
 
-	private static final String []_table = {" Dis "," En  ","Hold "};
+	private static final String []_table = {"Disabled","Enabled","Hold"};
 	
 	public static void OnUnderrun() {
 		System.out.format("%s\n", "UNDERRUN");
@@ -46,49 +47,21 @@ public class instrumentation {
 			return "Inval";
 		return _table[sv.value];
 	}
-	/** round to six decimal places */
-	static private double round(double toround)
-	{
-		long whole = (long)(toround * 1000000.0 + 0.5);
-		return ((double)whole) * 0.000001;
-	}
 	public static void process(CANTalon.MotionProfileStatus status1) {
 		double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 
 		if((now-timeout) > 0.2){
 			timeout = now;
-			/* fire a loop every 200ms */
-
-			if(--count <= 0){
-				count = 8;
-				/* every 8 loops, print our columns */
-				
-				System.out.format("%-9s\t", "topCnt");
-				System.out.format("%-9s\t", "btmCnt");
-				System.out.format("%-9s\t", "set val");
-				System.out.format("%-9s\t", "HasUnder");
-				System.out.format("%-9s\t", "IsUnder");
-				System.out.format("%-9s\t", "IsValid");
-				System.out.format("%-9s\t", "IsLast");
-				System.out.format("%-9s\t", "VelOnly");
-				System.out.format("%-9s\t", "Pos");
-				System.out.format("%-9s\t", "Vel");
-
-				System.out.format("\n");
-			}
-			/* every loop, print our values */
-			System.out.format("%-9s\t", status1.topBufferCnt);
-			System.out.format("%-9s\t", status1.btmBufferCnt);
-			System.out.format("%-9s\t", StrOutputEnable(status1.outputEnable));
-			System.out.format("%-9s\t", (status1.hasUnderrun ? "1" : ""));
-			System.out.format("%-9s\t", (status1.isUnderrun ? "1" : ""));
-			System.out.format("%-9s\t", (status1.activePointValid ? "1" : ""));
-			System.out.format("%-9s\t", (status1.activePoint.isLastPoint ? "1" : ""));
-			System.out.format("%-9s\t", (status1.activePoint.velocityOnly ? "1" : ""));
-			System.out.format("%-9s\t", round(status1.activePoint.position));
-			System.out.format("%-9s\t", round(status1.activePoint.velocity));
-
-			System.out.format("\n");
+			SmartDashboard.putNumber("Top Buffer Count", status1.topBufferCnt);
+			SmartDashboard.putNumber("Bottom Buffer Count", status1.btmBufferCnt);
+			SmartDashboard.putString("Output", StrOutputEnable(status1.outputEnable));
+			SmartDashboard.putBoolean("Has Underrun", status1.hasUnderrun);
+			SmartDashboard.putBoolean("Is Underrun", status1.isUnderrun);
+			SmartDashboard.putBoolean("Is Valid", status1.activePointValid);
+			SmartDashboard.putBoolean("Is Last Point", status1.activePoint.isLastPoint);
+			SmartDashboard.putBoolean("Velocity Only?", status1.activePoint.velocityOnly);
+			SmartDashboard.putNumber("Position", status1.activePoint.position);
+			SmartDashboard.putNumber("Velocity", status1.activePoint.velocity);
 		}
 	}
 }
