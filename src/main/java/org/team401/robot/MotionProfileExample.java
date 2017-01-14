@@ -96,7 +96,7 @@ public class MotionProfileExample {
 	
 
 	/**
-	 * Constructor
+	 * C'tor
 	 * 
 	 * @param talon
 	 *            reference to Talon object to fetch motion profile status from.
