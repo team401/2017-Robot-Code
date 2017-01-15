@@ -1,37 +1,18 @@
 package org.team401.robot.chassis
 
 import com.ctre.CANTalon
-import org.strongback.components.Solenoid
 
-class OctocanumGearbox(val cimMotor: CANTalon, val littleMotor: CANTalon, val shifter: Solenoid) {
+class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
 
-    var driveMode: DriveMode
 
     init {
         cimMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
 
-        littleMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
-
-        shifter.retract()
-        driveMode = DriveMode.DIRECT
+        proMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
     }
 
-    fun shift() {
-        if (driveMode == DriveMode.DIRECT)
-            shift(DriveMode.MECHANUM)
-        else
-            shift(DriveMode.DIRECT)
-    }
-
-    fun shift(driveMode: DriveMode) {
-        if (driveMode == DriveMode.DIRECT)
-            shifter.retract()
-        else
-            shifter.extend()
-    }
-
-    enum class DriveMode {
-        DIRECT,
-        MECHANUM
+    fun setSpeed(throttle: Double) {
+        cimMotor.setpoint = throttle
+        proMotor.setpoint = -throttle
     }
 }

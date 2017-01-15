@@ -2,10 +2,10 @@ package org.team401.robot.components
 
 import com.ctre.CANTalon
 
-class Turret(var enabled: Boolean, val feedController: CANTalon, val shooterController: CANTalon, val hoodController: CANTalon) {
+class Turret(var enabled: Boolean, val rotationController: CANTalon, val shooterController: CANTalon, val hoodController: CANTalon) {
 
     init {
-        feedController.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
+        rotationController.setControlMode(CANTalon.TalonControlMode.Position.value)
 
         shooterController.setControlMode(CANTalon.TalonControlMode.Speed.value)
 
