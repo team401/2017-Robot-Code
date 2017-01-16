@@ -1,5 +1,7 @@
 package org.team401.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class FalconPathPlanner
 {
 
 	//Path Variables
-	public double[][] origPath;
+	private double[][] origPath;
 	public double[][] nodeOnlyPath;
 	public double[][] smoothPath;
 	public double[][] leftPath;
@@ -53,14 +55,10 @@ public class FalconPathPlanner
 	//accumulated heading
 	public double[][] heading;
 
-	double totalTime;
-	double totalDistance;
 	double numFinalPoints;
-
 	double pathAlpha;
 	double pathBeta;
 	double pathTolerance;
-
 	double velocityAlpha;
 	double velocityBeta;
 	double velocityTolerance;
@@ -88,7 +86,7 @@ public class FalconPathPlanner
 	 */
 	public FalconPathPlanner(double[][] path)
 	{
-		this.origPath = doubleArrayCopy(path);
+		origPath = doubleArrayCopy(path);
 
 		//default values DO NOT MODIFY;
 		pathAlpha = 0.7;
@@ -102,10 +100,11 @@ public class FalconPathPlanner
 
 	public static void print(double[] path)
 	{
-		System.out.println("X: \t Y:");
-
-		for(double u: path)
-			System.out.println(u);
+		boolean x = true;
+		for(double u: path) {
+				SmartDashboard.putNumber(x?"X":"Y", u);
+			x = !x;
+		}
 	}
 
 
@@ -499,8 +498,8 @@ public class FalconPathPlanner
 	public void leftRight(double[][] smoothPath, double robotTrackWidth)
 	{
 
-		double[][] leftPath = new double[smoothPath.length][2];
-		double[][] rightPath = new double[smoothPath.length][2];
+		double[][] left = new double[smoothPath.length][2];
+		double[][] right = new double[smoothPath.length][2];
 
 		double[][] gradient = new double[smoothPath.length][2];
 
@@ -512,11 +511,11 @@ public class FalconPathPlanner
 
 		for (int i=0; i<gradient.length; i++)
 		{
-			leftPath[i][0] = (robotTrackWidth/2 * Math.cos(gradient[i][1] + Math.PI/2)) + smoothPath[i][0];
-			leftPath[i][1] = (robotTrackWidth/2 * Math.sin(gradient[i][1] + Math.PI/2)) + smoothPath[i][1];
+			left[i][0] = (robotTrackWidth/2 * Math.cos(gradient[i][1] + Math.PI/2)) + smoothPath[i][0];
+			left[i][1] = (robotTrackWidth/2 * Math.sin(gradient[i][1] + Math.PI/2)) + smoothPath[i][1];
 
-			rightPath[i][0] = robotTrackWidth/2 * Math.cos(gradient[i][1] - Math.PI/2) + smoothPath[i][0];
-			rightPath[i][1] = robotTrackWidth/2 * Math.sin(gradient[i][1] - Math.PI/2) + smoothPath[i][1];
+			right[i][0] = robotTrackWidth/2 * Math.cos(gradient[i][1] - Math.PI/2) + smoothPath[i][0];
+			right[i][1] = robotTrackWidth/2 * Math.sin(gradient[i][1] - Math.PI/2) + smoothPath[i][1];
 
 			//convert to degrees 0 to 360 where 0 degrees is +X - axis, accumulated to aline with WPI sensor
 			double deg = Math.toDegrees(gradient[i][1]);
@@ -536,9 +535,9 @@ public class FalconPathPlanner
 
 		}
 
-		this.heading = gradient;
-		this.leftPath = leftPath;
-		this.rightPath = rightPath;
+		heading = gradient;
+		leftPath = left;
+		rightPath = right;
 	}
 	
 	/**
