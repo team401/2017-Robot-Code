@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class instrumentation {
 
 	static double timeout = 0;
-	static int count = 0;
 
 	private static final String []_table = {"Disabled","Enabled","Hold"};
 	

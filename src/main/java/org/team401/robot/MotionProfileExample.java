@@ -207,7 +207,7 @@ public class MotionProfileExample {
 					 * timeout. Really this is so that you can unplug your talon in
 					 * the middle of an MP and react to it.
 					 */
-					if (_status.isUnderrun == false) {
+					if (!_status.isUnderrun) {
 						_loopTimeout = kNumLoopsTimeout;
 					}
 					/*
@@ -259,7 +259,7 @@ public class MotionProfileExample {
 		_talon.clearMotionProfileTrajectories();
 
 		/* This is fast since it's just into our TOP buffer */
-		for (int i = 0; i < totalCnt; ++i) {
+		for (int i = 0; i < totalCnt; i++) {
 			/* for each point, fill our structure and pass it to API */
 			point.position = profile[i][0];
 			point.velocity = profile[i][1];
