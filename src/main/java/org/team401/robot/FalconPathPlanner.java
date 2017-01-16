@@ -355,14 +355,21 @@ public class FalconPathPlanner
 		//and end with 0 velocity, and travel the same final distance as the original
 		//un-smoothed velocity profile
 		double increase = 0.0;
+		int j = 0;
 		while (Math.abs(difference[difference.length-1]) > tolerance)
 		{
-			increase = difference[difference.length-1]/1/50;
+			if(j >= 200){
+				System.out.println("Infinite Loop in FalconPathPlanner.java(359)");
+				return fixVel;
+			}
+			increase = difference[difference.length-1]/50;
 
 			for(int i=1;i<fixVel.length-1; i++)
 				fixVel[i][1] = fixVel[i][1] - increase;
 
 			difference = errorSum(origVelocity,fixVel);
+
+			j++;
 		}
 
 		//fixVel =  smoother(fixVel, 0.001, 0.001, 0.0000001);
