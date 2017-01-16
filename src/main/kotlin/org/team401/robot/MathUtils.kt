@@ -50,4 +50,17 @@ object MathUtils {
         out[1] = x * sinA + y * cosA
         return out
     }
+
+    /**
+     * Map a value from one range to another.
+     *
+     * @param x value to be mapped
+     * @param min minimum value of x
+     * @param max maximum value of x
+     * @param newMin new minimum value of x
+     * @param newMax new maximum of x
+     */
+    fun toRange(x: Double, min: Double, max: Double, newMin: Double, newMax: Double): Double {
+        return (newMax - newMin) * (x - min) / (max - min) + newMin
+    }
 }
