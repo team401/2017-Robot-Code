@@ -71,7 +71,7 @@ public class Robot extends IterativeRobot {
 
 	public void robotInit(){
 		falcon = new FalconPathPlanner(waypoints);
-		falcon.calculate(60, 50, 14.5);
+		falcon.calculate(60, 0.02, 14.5);
 
 		leftMotor = new CANTalon(2);
 		leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
