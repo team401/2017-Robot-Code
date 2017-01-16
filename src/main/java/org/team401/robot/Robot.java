@@ -31,11 +31,24 @@ import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 import org.strongback.Strongback;
+import org.strongback.components.Motor;
+import org.strongback.components.TalonSRX;
 import org.strongback.components.ui.FlightStick;
+import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
 
 
 public class Robot extends IterativeRobot {
+
+
+
+
+
+	CANTalon leftMotor;
+	CANTalon rightMotor;
+
+	TankDrive drive;
+
 
 	/** The Talon we want to motion profile. */
 	CANTalon _talon = new CANTalon(9);
@@ -49,20 +62,79 @@ public class Robot extends IterativeRobot {
 
 	FlightStick _joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
 
+	FalconPathPlanner falcon;
+	double[][] waypoints = new double[][]{
+			{1, 1},
+			{2, 2},
+			{3, 3}
+	};
+
 	public void robotInit(){
-		_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-		_talon.reverseSensor(false); /* keep sensor and motor in phase */
+		falcon = new FalconPathPlanner(waypoints);
+		falcon.calculate(60, 50, 14.5);
+
+		leftMotor = new CANTalon(2);
+		leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
+
+		rightMotor = new CANTalon(6);
+		rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
+
+		CANTalon[] followers = new CANTalon[]{
+				new CANTalon(0),//middle left
+				new CANTalon(1),//Rear left
+				//new CANTalon(2),//Front left
+				//new CANTalon(3),//Left Shooter
+				//new CANTalon(4),//Dart
+				new CANTalon(5),//Rear right
+				//new CANTalon(6),//front right
+				new CANTalon(7),//middle right
+				//new CANTalon(8),//right shooter
+
+
+		};
+
+		for(CANTalon u:followers)
+			u.changeControlMode(TalonControlMode.Follower);
+		followers[0].set(2);
+		followers[1].set(2);
+		followers[2].set(6);
+		followers[3].set(6);
+		followers[0].reverseOutput(true);
+		followers[3].reverseOutput(true);
+
+		drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
+				Hardware.Motors.talonSRX(rightMotor));
+
+
+
+		//_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		//_talon.reverseSensor(false); /* keep sensor and motor in phase */
 	}
+	private int i;
+	public void autonomousInit(){
+		i = 0;
+	}
+	public void autonomousPeriodic(){
+
+		i++;
+		drive.arcade(falcon.getYVector(falcon.smoothCenterVelocity)[i], falcon.getXVector(falcon.smoothCenterVelocity)[i]);
+
+	}
+
 	/**  function is called periodically during operator control */
     public void teleopPeriodic() {
-
+double driveSpeed = _joy.getPitch().read();
+double turnSpeed = _joy.getRoll().read();
 
 		/* get the left joystick axis on Logitech Gampead */
 		double leftYjoystick = -1 * _joy.getPitch().read(); /* multiple by -1 so joystick forward is positive */
 
 		/* call this periodically, and catch the output.  Only apply it if user wants to run MP. */
 		_example.control();
-		
+
+
 		if (!_joy.getThumb().isTriggered()) { /* Check button 5 (top left shoulder on the logitech gamead). */
 			/*
 			 * If it's not being pressed, just do a simple drive.  This
@@ -70,8 +142,8 @@ public class Robot extends IterativeRobot {
 			 * The point is we want the switch in and out of MP Control mode.*/
 
 			/* button5 is off so straight drive */
-			_talon.changeControlMode(TalonControlMode.Voltage);
-			_talon.set(12.0 * leftYjoystick);
+
+			drive.arcade(driveSpeed, turnSpeed);
 
 			_example.reset();
 		} else {
@@ -79,17 +151,22 @@ public class Robot extends IterativeRobot {
 			 * When we transition from no-press to press,
 			 * pass a "true" once to MotionProfileControl.
 			 */
-			_talon.changeControlMode(TalonControlMode.MotionProfile);
-			
+			//_talon.changeControlMode(TalonControlMode.MotionProfile);
+			leftMotor.changeControlMode(TalonControlMode.MotionProfile);
+			rightMotor.changeControlMode(TalonControlMode.MotionProfile);
+
+
 			CANTalon.SetValueMotionProfile setOutput = _example.getSetValue();
-					
-			_talon.set(setOutput.value);
+
+			//_talon.set(setOutput.value);
+			leftMotor.set(setOutput.value);
+			rightMotor.set(setOutput.value);
 
 			/* if btn is pressed and was not pressed last time,
 			 * In other words we just detected the on-press event.
 			 * This will signal the robot to start a MP */
 			if( (_joy.getTrigger().isTriggered()) && (_btnLast == false) ) {
-				/* user just tapped button 6 */
+				/* user just tapped the trigger  */
 				_example.startMotionProfile();
 			}
 		}
@@ -103,8 +180,10 @@ public class Robot extends IterativeRobot {
 		 * into a known state when robot is disabled.  That way when you
 		 * enable the robot doesn't just continue doing what it was doing before.
 		 * BUT if that's what the application/testing requires than modify this accordingly */
-		_talon.changeControlMode(TalonControlMode.PercentVbus);
-		_talon.set( 0 );
+		//_talon.changeControlMode(TalonControlMode.PercentVbus);
+		//_talon.set(0);
+		leftMotor.set(0);
+		rightMotor.set(0);
 		/* clear our buffer and put everything into a known state */
 		_example.reset();
 	}
