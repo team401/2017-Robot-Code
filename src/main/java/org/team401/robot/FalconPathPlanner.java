@@ -685,14 +685,17 @@ public class FalconPathPlanner
 	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
 	 */
 	public double[][] talonSRXProfile(boolean left, double ratio){
-		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,
+		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
 			result = new double[source.length][3];
-		double dist = 0;
+		double dist = 0;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
+
+		result[0] = new double[]{0, source[0][1], 0};
+
 		for(int i = 1; i < source.length; i++){
 			result[i] = new double[]{dist, source[i][1]*ratio, source[i][0]-source[i-1][0]};
 			dist+=source[i][1]*ratio/60000/(source[i][0]-source[i-1][0]);//Distance is increased by velocity * ratio to RPM /60000 ms per minute / ms passed
 		}
-		result[0] = new double[]{0, source[0][1], 0};
+
 		return result;
 	}
 }	
