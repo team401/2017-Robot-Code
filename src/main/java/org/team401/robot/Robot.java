@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
     CANTalon _talon = new CANTalon(9);
 
     /** some example logic on how one can manage an MP */
-    MotionProfileExample _example = new MotionProfileExample(_talon);
+    MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
 
     /** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
      * but for this simple example, lets just do quick compares to prev-btn-states */
@@ -103,17 +103,24 @@ public class Robot extends IterativeRobot {
         drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
                 Hardware.Motors.talonSRX(rightMotor));
 
+        leftMP = new MotionProfileExample(leftMotor);
+        rightMP = new MotionProfileExample(rightMotor);
 
         //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         //_talon.reverseSensor(false); /* keep sensor and motor in phase */
     }
 
-    public void autonomousInit() {}
+    public void autonomousInit() {
+        leftMotor.changeControlMode(TalonControlMode.MotionProfile);
+        rightMotor.changeControlMode(TalonControlMode.MotionProfile);
+    }
 
     public void autonomousPeriodic() {
 
-
-
+        leftMP.control();
+        rightMP.control();
+        leftMotor.set(leftMP.getSetValue().value);
+        rightMotor.set(leftMP.getSetValue().value);
     }
 
     /**  function is called periodically during operator control */
@@ -125,7 +132,7 @@ public class Robot extends IterativeRobot {
         double leftYjoystick = -1 * _joy.getPitch().read(); /* multiple by -1 so joystick forward is positive */
 
 		/* call this periodically, and catch the output.  Only apply it if user wants to run MP. */
-        _example.control();
+        //_example.control();
 
 
         if (!_joy.getThumb().isTriggered()) { /* Check button 5 (top left shoulder on the logitech gamead). */
@@ -138,7 +145,7 @@ public class Robot extends IterativeRobot {
 
             drive.arcade(driveSpeed, turnSpeed);
 
-            _example.reset();
+            //_example.reset();
         } else {
 			/* Button5 is held down so switch to motion profile control mode => This is done in MotionProfileControl.
 			 * When we transition from no-press to press,
@@ -149,7 +156,7 @@ public class Robot extends IterativeRobot {
             rightMotor.changeControlMode(TalonControlMode.MotionProfile);
 
 
-            CANTalon.SetValueMotionProfile setOutput = _example.getSetValue();
+            CANTalon.SetValueMotionProfile setOutput = null;//_example.getSetValue();
 
             //_talon.set(setOutput.value);
             leftMotor.set(setOutput.value);
@@ -160,7 +167,7 @@ public class Robot extends IterativeRobot {
 			 * This will signal the robot to start a MP */
             if ((_joy.getTrigger().isTriggered()) && (_btnLast == false)) {
 				/* user just tapped the trigger  */
-                _example.startMotionProfile();
+                //_example.startMotionProfile();
             }
         }
 
@@ -179,6 +186,6 @@ public class Robot extends IterativeRobot {
         leftMotor.set(0);
         rightMotor.set(0);
 		/* clear our buffer and put everything into a known state */
-        _example.reset();
+        //_example.reset();
     }
 }
