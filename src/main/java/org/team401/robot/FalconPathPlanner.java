@@ -686,20 +686,19 @@ public class FalconPathPlanner
 	 */
 	public double[][] talonSRXProfile(boolean left, double ratio){
 		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
-			result = new double[source.length][3];
-		double dist = 0;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
+			result = new double[source.length][3],
+			wheel = left ? leftPath : rightPath;
+		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
 
 		result[0] = new double[]{0, source[0][1], 0};
 
 		for(int i = 1; i < source.length; i++){
 			result[i] = new double[]{dist, source[i][1]*ratio, source[i][0]-source[i-1][0]};
-			dist+=source[i][1]*ratio/60000/(source[i][0]-source[i-1][0]);//Distance is increased by velocity * ratio to RPM /60000 ms per minute / ms passed
+			x = wheel[i][0]-wheel[i-1][0];//Get dX and dY
+			y = wheel[i][1]-wheel[i-1][1];
+			dist+=Math.sqrt(Math.abs(x*x+y*y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
 		}
 
 		return result;
 	}
-}	
-
-
-
-
+}

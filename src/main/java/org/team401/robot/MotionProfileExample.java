@@ -92,7 +92,7 @@ public class MotionProfileExample {
 	class PeriodicRunnable implements java.lang.Runnable {
 	    public void run() {  _talon.processMotionProfileBuffer();    }
 	}
-	Notifier _notifer = new Notifier(new PeriodicRunnable());
+	private Notifier _notifier = new Notifier(new PeriodicRunnable());
 	
 
 	/**
@@ -108,7 +108,7 @@ public class MotionProfileExample {
 		 * notifer to half that
 		 */
 		_talon.changeMotionControlFramePeriod(5);
-		_notifer.startPeriodic(0.005);
+		_notifier.startPeriodic(0.005);
 	}
 
 	/**
@@ -236,7 +236,9 @@ public class MotionProfileExample {
 		/* since this example only has one talon, just update that one */
 		startFilling(GeneratedMotionProfile.Points, GeneratedMotionProfile.kNumPoints);
 	}
-
+	private void startFilling(double[][] profile){
+		startFilling(profile, profile.length);
+	}
 	private void startFilling(double[][] profile, int totalCnt) {
 
 		/* create an empty point */
@@ -268,13 +270,8 @@ public class MotionProfileExample {
 			point.velocityOnly = false; /* set true to not do any position
 										 * servo, just velocity feedforward
 										 */
-			point.zeroPos = false;
-			if (i == 0)
-				point.zeroPos = true; /* set this to true on the first point */
-
-			point.isLastPoint = false;
-			if ((i + 1) == totalCnt)
-				point.isLastPoint = true; /* set this to true on the last point  */
+			point.zeroPos = i == 0; /* set this to true on the first point */
+			point.isLastPoint = (i + 1) == totalCnt;/* set this to true on the last point  */
 
 			_talon.pushMotionProfileTrajectory(point);
 		}
