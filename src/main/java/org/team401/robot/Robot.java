@@ -30,9 +30,11 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
+/*import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;*/
+
 import org.strongback.Strongback;
-import org.strongback.components.Motor;
-import org.strongback.components.TalonSRX;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
@@ -59,17 +61,14 @@ public class Robot extends IterativeRobot {
 
     FlightStick _joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
 
-    FalconPathPlanner falcon;
-    double[][] waypoints = new double[][]{
-            {1, 1},
-            {2, 2},
-            {3, 3}
-    };
+    //Scanner scan;
 
     public void robotInit() {
-        falcon = new FalconPathPlanner(waypoints);
-        falcon.calculate(60, 0.02, 14.5);
-
+        /*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
+            switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
+        }catch(FileNotFoundException e){
+            System.out.println("ERROR: profile0.txt not found!");
+        }*/
         leftMotor = new CANTalon(2);
         leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
@@ -109,16 +108,11 @@ public class Robot extends IterativeRobot {
         //_talon.reverseSensor(false); /* keep sensor and motor in phase */
     }
 
-    private int i;
-
-    public void autonomousInit() {
-        i = 0;
-    }
+    public void autonomousInit() {}
 
     public void autonomousPeriodic() {
 
-        i++;
-        drive.arcade(falcon.getYVector(falcon.smoothCenterVelocity)[i], falcon.getXVector(falcon.smoothCenterVelocity)[i]);
+
 
     }
 

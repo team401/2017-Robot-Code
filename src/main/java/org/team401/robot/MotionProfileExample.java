@@ -145,9 +145,7 @@ public class MotionProfileExample {
 		 * track time, this is rudimentary but that's okay, we just want to make
 		 * sure things never get stuck.
 		 */
-		if (_loopTimeout < 0) {
-			/* do nothing, timeout is disabled */
-		} else {
+		if (!(_loopTimeout < 0)) {
 			/* our timeout is nonzero */
 			if (_loopTimeout == 0) {
 				/*
