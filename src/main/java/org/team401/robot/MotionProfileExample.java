@@ -141,6 +141,7 @@ public class MotionProfileExample {
 		/* Get the motion profile status every loop */
 		_talon.getMotionProfileStatus(_status);
 
+
 		/*
 		 * track time, this is rudimentary but that's okay, we just want to make
 		 * sure things never get stuck.
@@ -270,9 +271,9 @@ public class MotionProfileExample {
 										 */
 			point.zeroPos = i == 0; /* set this to true on the first point */
 			point.isLastPoint = (i + 1) == totalCnt;/* set this to true on the last point  */
-
 			_talon.pushMotionProfileTrajectory(point);
 		}
+		System.out.println("Done streaming!");
 	}
 
 	/**

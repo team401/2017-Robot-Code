@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import java.io.FileNotFoundException;
 import java.util.Scanner;*/
 
-import org.strongback.Strongback;
+//import org.strongback.Strongback;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
 
 
     /** The Talon we want to motion profile. */
-    CANTalon _talon = new CANTalon(9);
+    //CANTalon _talon = new CANTalon(9);
 
     /** some example logic on how one can manage an MP */
     MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
@@ -63,6 +63,7 @@ public class Robot extends IterativeRobot {
 
     //Scanner scan;
 
+    @Override
     public void robotInit() {
         /*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
             switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
@@ -87,10 +88,7 @@ public class Robot extends IterativeRobot {
                 //new CANTalon(6),//front right
                 new CANTalon(7),//middle right
                 //new CANTalon(8),//right shooter
-
-
         };
-
         for (CANTalon u : followers)
             u.changeControlMode(TalonControlMode.Follower);
         followers[0].set(2);
@@ -108,22 +106,36 @@ public class Robot extends IterativeRobot {
 
         //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         //_talon.reverseSensor(false); /* keep sensor and motor in phase */
+
     }
 
+    /*@Override
     public void autonomousInit() {
         leftMotor.changeControlMode(TalonControlMode.MotionProfile);
         rightMotor.changeControlMode(TalonControlMode.MotionProfile);
+        leftMP.startMotionProfile();
+        rightMP.startMotionProfile();
     }
 
+    @Override
     public void autonomousPeriodic() {
 
         leftMP.control();
         rightMP.control();
-        leftMotor.set(leftMP.getSetValue().value);
-        rightMotor.set(leftMP.getSetValue().value);
+    }*/
+    @Override
+    public void autonomousPeriodic(){
+        System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
+    }
+
+    @Override
+    public void teleopInit(){
+        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
     }
 
     /**  function is called periodically during operator control */
+    @Override
     public void teleopPeriodic() {
         double driveSpeed = _joy.getPitch().read();
         double turnSpeed = _joy.getRoll().read();
@@ -176,6 +188,7 @@ public class Robot extends IterativeRobot {
     }
 
     /**  function is called periodically during disable */
+    @Override
     public void disabledPeriodic() {
 		/* it's generally a good idea to put motor controllers back
 		 * into a known state when robot is disabled.  That way when you
