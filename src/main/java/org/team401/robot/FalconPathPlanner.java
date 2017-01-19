@@ -45,12 +45,22 @@ public class FalconPathPlanner
 	//Orig Velocity
 	public double[][] origCenterVelocity;
 	public double[][] origRightVelocity;
+	public double[][] origFrontRightVelocity;
+	public double[][] origFrontLeftVelocity;
+	public double[][] origRearRightVelocity;
+	public double[][] origRearLeftVelocity;
 	public double[][] origLeftVelocity;
+	public double[][] origDirection;
 
 	//smooth velocity
 	public double[][] smoothCenterVelocity;
 	public double[][] smoothRightVelocity;
 	public double[][] smoothLeftVelocity;
+	public double[][] smoothDirection;
+	public double[][] smoothFrontRightVelocity;
+	public double[][] smoothFrontLeftVelocity;
+	public double[][] smoothRearRightVelocity;
+	public double[][] smoothRearLeftVelocity;
 
 	//accumulated heading
 	public double[][] heading;
@@ -162,7 +172,7 @@ public class FalconPathPlanner
 		double morePoints[][];
 
 		//create extended 2 Dimensional array to hold additional points
-		morePoints = new double[orig.length + ((numToInject)*(orig.length-1))][2];
+		morePoints = new double[orig.length + ((numToInject)*(orig.length-1))][orig[0].length];
 
 		int index=0;
 
@@ -172,6 +182,8 @@ public class FalconPathPlanner
 			//copy first
 			morePoints[index][0] = orig[i][0];
 			morePoints[index][1] = orig[i][1];
+			if(morePoints[index].length == 3)
+				morePoints[index][2] = orig[i][2];
 			index++;
 
 			for(int j=1; j<numToInject+1; j++)
@@ -182,13 +194,19 @@ public class FalconPathPlanner
 				//calculate intermediate y points  between j and j+1 original points
 				morePoints[index][1] = j*((orig[i+1][1]-orig[i][1])/(numToInject+1))+orig[i][1];
 
+				//calculate intermediate direction between j and j+1 original points if in mecanum
+				if(morePoints[index].length == 3)
+					morePoints[index][2] = j*((orig[i+1][2]-orig[i][2])/(numToInject+1))+orig[i][2];
+
 				index++;
 			}
 		}
 
 		//copy last
-		morePoints[index][0] =orig[orig.length-1][0];
-		morePoints[index][1] =orig[orig.length-1][1];
+		morePoints[index][0] = orig[orig.length-1][0];
+		morePoints[index][1] = orig[orig.length-1][1];
+		if(morePoints[index].length == 3)
+			morePoints[index][2] = orig[orig.length-1][2];
 		index++;
 
 		return morePoints;
@@ -255,20 +273,23 @@ public class FalconPathPlanner
 			double vector2 = Math.atan2((path[i+1][1]-path[i][1]),path[i+1][0]-path[i][0]);
 
 			//determine if both vectors have a change in direction
-			if(Math.abs(vector2-vector1)>=0.01)
-				li.add(path[i]);					
+			//method doesn't do anything if in mecanum mode
+			if(Math.abs(vector2-vector1)>=0.01||path[i].length == 3)
+				li.add(path[i]);
 		}
 
 		//save last
 		li.add(path[path.length-1]);
 
 		//re-write nodes into new 2D Array
-		double[][] temp = new double[li.size()][2];
+		double[][] temp = new double[li.size()][path[0].length];
 
 		for (int i = 0; i < li.size(); i++)
 		{
 			temp[i][0] = li.get(i)[0];
 			temp[i][1] = li.get(i)[1];
+			if(temp[i].length == 3)
+				temp[i][2] = li.get(i)[2];
 		}	
 
 		return temp;
@@ -699,6 +720,15 @@ public class FalconPathPlanner
 			dist+=Math.sqrt(Math.abs(x*x+y*y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
 		}
 
+		return result;
+	}
+
+	/**
+	 *
+	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
+	 */
+	public double[][][] mecanumProfile(){
+		double[][][] result = new double[4][1000][3];
 		return result;
 	}
 }

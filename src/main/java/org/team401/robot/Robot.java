@@ -70,33 +70,13 @@ public class Robot extends IterativeRobot {
         }catch(FileNotFoundException e){
             System.out.println("ERROR: profile0.txt not found!");
         }*/
-        leftMotor = new CANTalon(2);
+        leftMotor = new CANTalon(0);
         leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-        rightMotor = new CANTalon(6);
+        rightMotor = new CANTalon(1);
         rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
-
-        CANTalon[] followers = new CANTalon[]{
-                new CANTalon(0),//middle left
-                new CANTalon(1),//Rear left
-                //new CANTalon(2),//Front left
-                //new CANTalon(3),//Left Shooter
-                //new CANTalon(4),//Dart
-                new CANTalon(5),//Rear right
-                //new CANTalon(6),//front right
-                new CANTalon(7),//middle right
-                //new CANTalon(8),//right shooter
-        };
-        for (CANTalon u : followers)
-            u.changeControlMode(TalonControlMode.Follower);
-        followers[0].set(2);
-        followers[1].set(2);
-        followers[2].set(6);
-        followers[3].set(6);
-        followers[0].reverseOutput(true);
-        followers[3].reverseOutput(true);
 
         drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
                 Hardware.Motors.talonSRX(rightMotor));
