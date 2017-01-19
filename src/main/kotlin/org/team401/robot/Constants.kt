@@ -34,4 +34,12 @@ object Constants {
     // can device ids for the ball agitator
     const val HOPPER_AGITATOR       = 18
 
+    // joystick ids
+    const val DRIVE_JOYSTICK_LEFT   = 0
+    const val DRIVE_JOYSTICK_RIGHT  = 1
+    const val MASHER_JOYSTICK       = 2
+
+    // joystick button mapping
+    const val BUTTON_SHIFT          = 2
+
 }
