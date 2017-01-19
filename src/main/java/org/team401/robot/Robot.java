@@ -1,17 +1,21 @@
 package org.team401.robot;
 
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import org.strongback.Strongback;
 import org.strongback.components.Motor;
 import org.strongback.components.Relay;
+import org.strongback.components.Solenoid;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
+import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.chassis.OctocanumGearbox;
 
 public class Robot extends IterativeRobot {
 
-    private TankDrive allDrive;
-    private FlightStick joysticky;
+    private OctocanumDrive drive;
+    private FlightStick driveJoy0, driveJoy1, mashJoy;
     private Relay relay;
 
     @Override
@@ -20,16 +24,22 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
-        Motor leftDrive = Hardware.Motors.talon(0);
-        Motor rightDrive = Hardware.Motors.talon(1).invert();
+        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT)),
+                frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT)),
+                rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT)),
+                rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
 
-        allDrive = new TankDrive(leftDrive, rightDrive);
+        Solenoid shift = Hardware.Solenoids.doubleSolenoid(Constants.SHIFTER_EXTEND, Constants.SHIFTER_RETRACT, Solenoid.Direction.EXTENDING);
+
+        drive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, shift);
 
         relay = Hardware.Solenoids.relay(0);
 
-        joysticky = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+        driveJoy0 = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+        driveJoy1 = Hardware.HumanInterfaceDevices.logitechAttack3D(1);
+        mashJoy = Hardware.HumanInterfaceDevices.logitechAttack3D(2);
 
-        Strongback.switchReactor().onTriggered(joysticky.getButton(0),
+        Strongback.switchReactor().onTriggered(mashJoy.getButton(0),
                 () -> {
                     if (relay.isOff())
                         relay.on();
@@ -56,7 +66,13 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
-        allDrive.arcade(joysticky.getPitch().read(), joysticky.getRoll().read()*-1);
+        if(driveJoy0.getThumb().isTriggered()||driveJoy1.getThumb().isTriggered())
+            drive.shift();
+        if(drive.getDriveMode() == OctocanumDrive.DriveMode.TRACTION)
+            drive.drive(driveJoy0.getPitch().read(), 0, driveJoy1.getPitch().read(), 0);
+        else {
+            //TODO add mecanum drive code
+        }
     }
 
     @Override

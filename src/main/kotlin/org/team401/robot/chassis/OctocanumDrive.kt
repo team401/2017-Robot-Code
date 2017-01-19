@@ -20,7 +20,7 @@ import java.util.*
 class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: OctocanumGearbox,
                      rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox, val shifter: Solenoid) {
     /**
-     * Unmutable list of gearboxes, will always have a size of 4
+     * Immutable list of gearboxes, will always have a size of 4
      */
     val gearboxes: List<OctocanumGearbox> = ArrayList()
 

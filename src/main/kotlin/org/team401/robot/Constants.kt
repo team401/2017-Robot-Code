@@ -1,11 +1,13 @@
 package org.team401.robot
 
 object Constants {
-    // gearbox index values for the chassis, same for their solenoids
+    // gearbox index values for the chassis and shifter
     const val GEARBOX_FRONT_LEFT    = 0
     const val GEARBOX_FRONT_RIGHT   = 1
     const val GEARBOX_REAR_LEFT     = 2
     const val GEARBOX_REAR_RIGHT    = 3
+    const val SHIFTER_EXTEND        = 0
+    const val SHIFTER_RETRACT       = 1
 
     // can device ids
     const val PDP                   = 0
