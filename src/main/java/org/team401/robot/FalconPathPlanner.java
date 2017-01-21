@@ -729,7 +729,7 @@ public class FalconPathPlanner
 	 *
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
-	public double[][][] mecanumProfile(double[] dir, int updatePeriod){
+	public double[][][] mecanumProfile(double[][] dir){
 		double[][][] result = new double[4][(int)numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath);
 		for(int h = 0; h < 4; h++){
@@ -739,7 +739,7 @@ public class FalconPathPlanner
 				double[] res = new double[3];
 				dist+=smoothCenterVelocity[i-1][0]*smoothCenterVelocity[i-1][1]/60;
 				res[0] = dist;
-				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i])[h];
+				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[0][i])[h];
 				res[2] =smoothCenterVelocity[i][0]*1000.0;
 				result[h][i] = res;
 			}
