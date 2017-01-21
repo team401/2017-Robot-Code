@@ -1,7 +1,11 @@
 package org.team401.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.strongback.util.Values;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -138,9 +142,7 @@ public class FalconPathPlanner
 	 * @param arr
 	 * @return
 	 */
-	public static double[][] doubleArrayCopy(double[][] arr)
-	{
-
+	public static double[][] doubleArrayCopy(double[][] arr){
 		//size first dimension of array
 		double[][] temp = new double[arr.length][arr[0].length];
 
@@ -464,8 +466,8 @@ public class FalconPathPlanner
 
 		if (totalPoints < 100)
 		{
-			double pointsFirst = 0;
-			double pointsTotal = 0;
+			double pointsFirst;
+			double pointsTotal;
 
 
 			for (int i=4; i<=6; i++)
@@ -727,8 +729,80 @@ public class FalconPathPlanner
 	 *
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
-	public double[][][] mecanumProfile(){
-		double[][][] result = new double[4][1000][3];
+	public double[][][] mecanumProfile(double[] dir, int updatePeriod){
+		double[][][] result = new double[4][(int)numFinalPoints][3];
+		double[][] path = doubleArrayCopy(smoothPath);
+		for(int h = 0; h < 4; h++){
+			double dist = 0.0;
+
+			for(int i = 1; i < numFinalPoints; i++) {
+				double[] res = new double[3];
+				dist+=smoothCenterVelocity[i-1][0]*smoothCenterVelocity[i-1][1]/60;
+				res[0] = dist;
+				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i])[h];
+				res[2] =smoothCenterVelocity[i][0]*1000.0;
+				result[h][i] = res;
+			}
+		}
 		return result;
+	}
+
+	/**
+	 *  Modified from the same location as normalize and scale methods
+	 *
+	 *
+	 * @return
+	 */
+	public double[] polarMecanum(double mag, double dir, double rot){
+
+		// Normalized for full power along the Cartesian axes.
+		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
+
+		// The rollers are at 45 degree angles.
+		double dirInRad = (dir + 45.0) * Math.PI / 180.0;
+		double cosD = Math.cos(dirInRad);
+		double sinD = Math.sin(dirInRad);
+
+		double wheelSpeeds[] = new double[]{
+			(sinD * mag + rot),//LEFT FRONT
+			(cosD * mag - rot),//RIGHT FRONT
+			(cosD * mag + rot),//LEFT REAR
+			(sinD * mag - rot)//RIGHT REAR
+		};
+
+		normalize(wheelSpeeds);
+		scale(wheelSpeeds, 1.0);
+		return wheelSpeeds;
+	}
+	//These 2 methods were stolen from https://github.com/strongback/strongback-java/blob/master/strongback/src/org/strongback/drive/MecanumDrive.java
+	private static void normalize(double wheelSpeeds[]) {
+		double maxMagnitude = Math.abs(wheelSpeeds[0]);
+		for (int i = 1; i < 4; i++) {
+			double temp = Math.abs(wheelSpeeds[i]);
+			if (maxMagnitude < temp) maxMagnitude = temp;
+		}
+		if (maxMagnitude > 1.0) {
+			for (int i = 0; i < 4; i++) {
+				wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
+			}
+		}
+	}
+	private static void scale(double wheelSpeeds[], double scaleFactor) {
+		for (int i = 1; i < 4; i++)
+			wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor;
+	}
+	public static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException{
+		PrintWriter pw = new PrintWriter(new File(fileName+".csv"));
+		StringBuilder sb = new StringBuilder();
+		for(double[] u:arr){
+			for(double v:u){
+				sb.append(v);
+				sb.append(',');
+			}
+			sb.deleteCharAt(sb.length()-1);
+			sb.append('\n');
+		}
+		pw.write(sb.toString());
+		pw.close();
 	}
 }

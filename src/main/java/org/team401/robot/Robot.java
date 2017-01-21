@@ -35,7 +35,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;*/
 
 //import org.strongback.Strongback;
+import org.strongback.components.Motor;
 import org.strongback.components.ui.FlightStick;
+import org.strongback.drive.MecanumDrive;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
 
@@ -104,7 +106,17 @@ public class Robot extends IterativeRobot {
         rightMP.control();
     }*/
     @Override
+    public void autonomousInit(){
+        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
+    }
+
+    @Override
     public void autonomousPeriodic(){
+        if(_joy.getTrigger().isTriggered()) {
+            leftMotor.set(100);
+            rightMotor.set(100);
+        }
         System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
     }
 
