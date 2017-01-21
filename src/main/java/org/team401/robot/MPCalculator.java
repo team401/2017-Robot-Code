@@ -1,5 +1,6 @@
 package org.team401.robot;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,7 +11,9 @@ import java.lang.Math;
  * Created by Brian Jameson on 1/16/2017.
  */
 public class MPCalculator {
+    private static double[][] path;
     public static void main(String[] args){
+        Scanner scan = new Scanner(System.in);
         //numbers are in feet
         double[][] path = new double[][]{
                 {20, 0},
@@ -94,16 +97,17 @@ public class MPCalculator {
 
 
         while(fig1.isFocusable()){
-
+            if(scan.hasNext())
+                takeInput(scan.nextLine());
         }
 
     }
 
     public static void write(String filename, double[][] arr) throws IOException{
         BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-        for(int i = 0; i < arr.length; i++){
-            for(int j = 0; j < arr[i].length; j++) {
-                output.write("" + arr[i][j] + ",");
+        for(double[] u:arr){
+            for(int j = 0; j < u.length; j++) {
+                output.write("" + u[j] + ",");
             }
         }
         output.flush();

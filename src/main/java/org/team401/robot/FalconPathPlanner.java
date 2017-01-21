@@ -1,7 +1,11 @@
 package org.team401.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.strongback.util.Values;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,12 +49,22 @@ public class FalconPathPlanner
 	//Orig Velocity
 	public double[][] origCenterVelocity;
 	public double[][] origRightVelocity;
+	public double[][] origFrontRightVelocity;
+	public double[][] origFrontLeftVelocity;
+	public double[][] origRearRightVelocity;
+	public double[][] origRearLeftVelocity;
 	public double[][] origLeftVelocity;
+	public double[][] origDirection;
 
 	//smooth velocity
 	public double[][] smoothCenterVelocity;
 	public double[][] smoothRightVelocity;
 	public double[][] smoothLeftVelocity;
+	public double[][] smoothDirection;
+	public double[][] smoothFrontRightVelocity;
+	public double[][] smoothFrontLeftVelocity;
+	public double[][] smoothRearRightVelocity;
+	public double[][] smoothRearLeftVelocity;
 
 	//accumulated heading
 	public double[][] heading;
@@ -128,9 +142,7 @@ public class FalconPathPlanner
 	 * @param arr
 	 * @return
 	 */
-	public static double[][] doubleArrayCopy(double[][] arr)
-	{
-
+	public static double[][] doubleArrayCopy(double[][] arr){
 		//size first dimension of array
 		double[][] temp = new double[arr.length][arr[0].length];
 
@@ -162,7 +174,7 @@ public class FalconPathPlanner
 		double morePoints[][];
 
 		//create extended 2 Dimensional array to hold additional points
-		morePoints = new double[orig.length + ((numToInject)*(orig.length-1))][2];
+		morePoints = new double[orig.length + ((numToInject)*(orig.length-1))][orig[0].length];
 
 		int index=0;
 
@@ -172,6 +184,8 @@ public class FalconPathPlanner
 			//copy first
 			morePoints[index][0] = orig[i][0];
 			morePoints[index][1] = orig[i][1];
+			if(morePoints[index].length == 3)
+				morePoints[index][2] = orig[i][2];
 			index++;
 
 			for(int j=1; j<numToInject+1; j++)
@@ -182,13 +196,19 @@ public class FalconPathPlanner
 				//calculate intermediate y points  between j and j+1 original points
 				morePoints[index][1] = j*((orig[i+1][1]-orig[i][1])/(numToInject+1))+orig[i][1];
 
+				//calculate intermediate direction between j and j+1 original points if in mecanum
+				if(morePoints[index].length == 3)
+					morePoints[index][2] = j*((orig[i+1][2]-orig[i][2])/(numToInject+1))+orig[i][2];
+
 				index++;
 			}
 		}
 
 		//copy last
-		morePoints[index][0] =orig[orig.length-1][0];
-		morePoints[index][1] =orig[orig.length-1][1];
+		morePoints[index][0] = orig[orig.length-1][0];
+		morePoints[index][1] = orig[orig.length-1][1];
+		if(morePoints[index].length == 3)
+			morePoints[index][2] = orig[orig.length-1][2];
 		index++;
 
 		return morePoints;
@@ -255,20 +275,23 @@ public class FalconPathPlanner
 			double vector2 = Math.atan2((path[i+1][1]-path[i][1]),path[i+1][0]-path[i][0]);
 
 			//determine if both vectors have a change in direction
-			if(Math.abs(vector2-vector1)>=0.01)
-				li.add(path[i]);					
+			//method doesn't do anything if in mecanum mode
+			if(Math.abs(vector2-vector1)>=0.01||path[i].length == 3)
+				li.add(path[i]);
 		}
 
 		//save last
 		li.add(path[path.length-1]);
 
 		//re-write nodes into new 2D Array
-		double[][] temp = new double[li.size()][2];
+		double[][] temp = new double[li.size()][path[0].length];
 
 		for (int i = 0; i < li.size(); i++)
 		{
 			temp[i][0] = li.get(i)[0];
 			temp[i][1] = li.get(i)[1];
+			if(temp[i].length == 3)
+				temp[i][2] = li.get(i)[2];
 		}	
 
 		return temp;
@@ -443,8 +466,8 @@ public class FalconPathPlanner
 
 		if (totalPoints < 100)
 		{
-			double pointsFirst = 0;
-			double pointsTotal = 0;
+			double pointsFirst;
+			double pointsTotal;
 
 
 			for (int i=4; i<=6; i++)
@@ -686,20 +709,100 @@ public class FalconPathPlanner
 	 */
 	public double[][] talonSRXProfile(boolean left, double ratio){
 		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
-			result = new double[source.length][3];
-		double dist = 0;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
+			result = new double[source.length][3],
+			wheel = left ? leftPath : rightPath;
+		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
 
 		result[0] = new double[]{0, source[0][1], 0};
 
 		for(int i = 1; i < source.length; i++){
 			result[i] = new double[]{dist, source[i][1]*ratio, source[i][0]-source[i-1][0]};
-			dist+=source[i][1]*ratio/60000/(source[i][0]-source[i-1][0]);//Distance is increased by velocity * ratio to RPM /60000 ms per minute / ms passed
+			x = wheel[i][0]-wheel[i-1][0];//Get dX and dY
+			y = wheel[i][1]-wheel[i-1][1];
+			dist+=Math.sqrt(Math.abs(x*x+y*y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
 		}
 
 		return result;
 	}
-}	
 
+	/**
+	 *
+	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
+	 */
+	public double[][][] mecanumProfile(double[] dir, int updatePeriod){
+		double[][][] result = new double[4][(int)numFinalPoints][3];
+		double[][] path = doubleArrayCopy(smoothPath);
+		for(int h = 0; h < 4; h++){
+			double dist = 0.0;
 
+			for(int i = 1; i < numFinalPoints; i++) {
+				double[] res = new double[3];
+				dist+=smoothCenterVelocity[i-1][0]*smoothCenterVelocity[i-1][1]/60;
+				res[0] = dist;
+				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i])[h];
+				res[2] =smoothCenterVelocity[i][0]*1000.0;
+				result[h][i] = res;
+			}
+		}
+		return result;
+	}
 
+	/**
+	 *  Modified from the same location as normalize and scale methods
+	 *
+	 *
+	 * @return
+	 */
+	public double[] polarMecanum(double mag, double dir, double rot){
 
+		// Normalized for full power along the Cartesian axes.
+		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
+
+		// The rollers are at 45 degree angles.
+		double dirInRad = (dir + 45.0) * Math.PI / 180.0;
+		double cosD = Math.cos(dirInRad);
+		double sinD = Math.sin(dirInRad);
+
+		double wheelSpeeds[] = new double[]{
+			(sinD * mag + rot),//LEFT FRONT
+			(cosD * mag - rot),//RIGHT FRONT
+			(cosD * mag + rot),//LEFT REAR
+			(sinD * mag - rot)//RIGHT REAR
+		};
+
+		normalize(wheelSpeeds);
+		scale(wheelSpeeds, 1.0);
+		return wheelSpeeds;
+	}
+	//These 2 methods were stolen from https://github.com/strongback/strongback-java/blob/master/strongback/src/org/strongback/drive/MecanumDrive.java
+	private static void normalize(double wheelSpeeds[]) {
+		double maxMagnitude = Math.abs(wheelSpeeds[0]);
+		for (int i = 1; i < 4; i++) {
+			double temp = Math.abs(wheelSpeeds[i]);
+			if (maxMagnitude < temp) maxMagnitude = temp;
+		}
+		if (maxMagnitude > 1.0) {
+			for (int i = 0; i < 4; i++) {
+				wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
+			}
+		}
+	}
+	private static void scale(double wheelSpeeds[], double scaleFactor) {
+		for (int i = 1; i < 4; i++)
+			wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor;
+	}
+	public static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException{
+		PrintWriter pw = new PrintWriter(new File(fileName+".csv"));
+		StringBuilder sb = new StringBuilder();
+		for(double[] u:arr){
+			for(double v:u){
+				sb.append(v);
+				sb.append(',');
+			}
+			sb.deleteCharAt(sb.length()-1);
+			sb.append('\n');
+		}
+		pw.write(sb.toString());
+		pw.close();
+	}
+}
