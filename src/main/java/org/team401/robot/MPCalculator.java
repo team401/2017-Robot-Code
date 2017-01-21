@@ -59,6 +59,18 @@ public class MPCalculator {
                 {11.831875, 54 - 9.325},
 
         };
+        double[][] baseline = new double[][]{
+                {0, 7.775},
+                {27, 7.775}
+
+        };
+        double[][] neutralZone = new double[][]{
+                {0, 15.1681225},
+                {27, 15.1681225},
+                {27, 54 - 15.1681225},
+                {0, 54 - 15.1681225},
+                {0, 15.1681225}
+        };
 
 
 
@@ -81,7 +93,7 @@ public class MPCalculator {
         FalconLinePlot fig2 = new FalconLinePlot(path2);
         fig2.xGridOn();
         fig2.yGridOn();
-        fig2.setTitle("2017 Field Map");
+        fig2.setTitle("2017 Field Map Note: Size may be distorted slightly");
         fig2.setXLabel("Width of the Field (feet)");
         fig2.setYLabel("Length of the Field (feet)");
         //filed size: x: 54 ft y: 27 ft
@@ -91,6 +103,8 @@ public class MPCalculator {
 
         fig2.addData(airship, Color.black);
         fig2.addData(airship2, Color.black);
+        fig2.addData(baseline, Color.blue);
+        fig2.addData(neutralZone, Color.green);
 
 
 

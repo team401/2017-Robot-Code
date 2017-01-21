@@ -170,8 +170,10 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
         JFrame g = new JFrame("Figure " + count);
         g.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g.add(this);
-        g.setSize(720,1440);
-        g.setLocationByPlatform(true);
+
+        g.setSize(720,1000);
+        g.setLocation(0,0);
+        //g.setLocationByPlatform(true);
         g.setVisible(true);
 
         menu(g, this);
