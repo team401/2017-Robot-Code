@@ -13,7 +13,6 @@ import java.lang.Math;
 public class MPCalculator {
     private static double[][] path;
     public static void main(String[] args){
-        Scanner scan = new Scanner(System.in);
         //numbers are in feet
         double[][] path = new double[][]{
                 {20, 0},
@@ -98,8 +97,7 @@ public class MPCalculator {
 
 
         while(fig1.isFocusable()){
-            if(scan.hasNext())
-                takeInput(scan.nextLine());
+
         }
 
     }
