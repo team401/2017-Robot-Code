@@ -37,23 +37,24 @@ public class MPCalculator {
         double airshipSpace = 23.518;
         double side = 1.5 * Math.sqrt(3);
         double [][] airship = new double [][]{
-                {12, 10},
-                {(12 - side), 11.5},
-                {(12 - side), 14.5},
-                {12, 16},
-                {12 + side, 14.5},
-                {12 + side, 11.5},
-                {12, 10}
+                {11.831875, 9.325},
+                {15.1681225, 9.325},
+                {16.83625, 12.26625},
+                {15.1681225, 15.2075},
+                {11.831875, 15.2075},
+                {10.16375, 12.26625},
+                {11.831875, 9.325},
+
 
         };
         double [][] airship2 = new double [][]{
-                {12 + airshipSpace, 10},
-                {(12 - side) + airshipSpace, 11.5},
-                {(12 - side) + airshipSpace, 14.5},
-                {12 + airshipSpace, 16},
-                {12 + side + airshipSpace, 14.5},
-                {12 + side + airshipSpace, 11.5},
-                {12 + airshipSpace, 10}
+                {54 - 11.831875, 9.325},
+                {54 - 15.1681225, 9.325},
+                {54 - 16.83625, 12.26625},
+                {54 - 15.1681225, 15.2075},
+                {54 - 11.831875, 15.2075},
+                {54 - 10.16375, 12.26625},
+                {54 - 11.831875, 9.325},
 
         };
 
@@ -82,8 +83,8 @@ public class MPCalculator {
         fig2.setXLabel("Width of the Field (feet)");
         fig2.setYLabel("Length of the Field (feet)");
         //filed size: x: 54 ft y: 27 ft
-        fig2.setXTic(0, 54 , 1);
-        fig2.setYTic(0, 27, 1);
+        fig2.setXTic(0, 27 , 1);
+        fig2.setYTic(0, 54, 1);
 
 
         fig2.addData(airship, Color.black);
