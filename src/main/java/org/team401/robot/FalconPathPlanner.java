@@ -654,7 +654,11 @@ public class FalconPathPlanner
 	 * @param timeStep - the frequency at which the robot controller is running on the robot. 
 	 * @param robotTrackWidth - distance between left and right side wheels of a skid steer chassis. Known as the track width.
 	 */
-	public void calculate(double totalTime, double timeStep, double robotTrackWidth)
+	public void calculate(double totalTime, double timeStep, double robotTrackWidth){
+		calculate(totalTime, timeStep, robotTrackWidth, false);
+	}
+
+	public void calculate(double totalTime, double timeStep, double robotTrackWidth, boolean invert)
 	{
 		/**
 		 * pseudo code
@@ -714,6 +718,13 @@ public class FalconPathPlanner
 		smoothCenterVelocity = velocityFix(smoothCenterVelocity, origCenterVelocity, 0.0000001);
 		smoothLeftVelocity = velocityFix(smoothLeftVelocity, origLeftVelocity, 0.0000001);
 		smoothRightVelocity = velocityFix(smoothRightVelocity, origRightVelocity, 0.0000001);
+
+		//invert if needed
+		if(invert){
+			smoothCenterVelocity = invertVelocity(smoothCenterVelocity);
+			smoothLeftVelocity = invertVelocity(smoothLeftVelocity);
+			smoothRightVelocity = invertVelocity(smoothRightVelocity);
+		}
 	}
 
 	public double[][] invertVelocity(double[][] vel){
@@ -733,8 +744,6 @@ public class FalconPathPlanner
 		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
 			result = new double[source.length][3],
 			wheel = left ? leftPath : rightPath;
-		if(reverse)
-			source = invertVelocity(source);
 
 		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
 
