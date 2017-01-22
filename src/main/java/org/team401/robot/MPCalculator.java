@@ -11,17 +11,26 @@ import java.lang.Math;
  * Created by Brian Jameson on 1/16/2017.
  */
 public class MPCalculator {
-    private static double[][] path;
     public static void main(String[] args){
         //numbers are in feet
 
         double[][] path = new double[][]{
                 {13,1},
-                {13,9},
-                {13,6},
-                {18,9},
-                {19,12},
-                {20,36}
+                {13,5},
+
+        };
+        double[][] path2 = new double[][]{
+                {13,5},
+                {13,2},
+        };
+        double[][] path3 = new double[][]{
+                {13,2},
+                {12,3},
+                {11, 4},
+                {10, 5},
+                {9, 7},
+                {5, 10},
+                {1, 15}
         };
         //draws the airships:
 
@@ -66,6 +75,16 @@ public class MPCalculator {
         FalconPathPlanner falcon = new FalconPathPlanner(path);
         //in feet
         falcon.calculate(15, 0.02, 2.16666);
+
+        FalconPathPlanner falcon2 = new FalconPathPlanner(path2);
+
+        falcon2.calculate(15, 0.02, 2.16666);
+
+        FalconPathPlanner falcon3 = new FalconPathPlanner(path3);
+
+        falcon3.calculate(15, 0.02, 2.16666);
+
+        falcon2.print(path3);
         //in mecanum
         /*
         //{at what waypoint index, the direction it should be facing}
@@ -75,15 +94,21 @@ public class MPCalculator {
         falcon.mecanumProfile(dir);
 */
 
-        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
+        FalconLinePlot fig1 = new FalconLinePlot(falcon2.smoothCenterVelocity, null, Color.blue);
         fig1.xGridOn();
         fig1.yGridOn();
         fig1.setTitle("Veloccities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
         fig1.setXLabel("Time (seconds)");
         fig1.setYLabel("Velocity (ft/sec)");
 
-        fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
-        fig1.addData(falcon.smoothRightVelocity, Color.cyan);
+        //fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
+        //fig1.addData(falcon.smoothRightVelocity, Color.cyan);
+
+        fig1.addData(falcon2.smoothLeftVelocity, Color.yellow);
+        fig1.addData(falcon2.smoothRightVelocity, Color.green);
+
+        fig1.addData(falcon3.smoothLeftVelocity, Color.black);
+        fig1.addData(falcon3.smoothRightVelocity, Color.red);
 
         //Field map
         FalconLinePlot fig2 = new FalconLinePlot(path);
@@ -100,6 +125,13 @@ public class MPCalculator {
         fig2.addData(falcon.leftPath, Color.magenta);
         fig2.addData(falcon.rightPath, Color.magenta);
 
+        fig2.addData(falcon2.smoothPath, Color.red, Color.blue);
+        fig2.addData(falcon2.leftPath, Color.magenta);
+        fig2.addData(falcon2.rightPath, Color.magenta);
+
+        fig2.addData(falcon3.smoothPath, Color.red, Color.blue);
+        fig2.addData(falcon3.leftPath, Color.magenta);
+        fig2.addData(falcon3.rightPath, Color.magenta);
 
         fig2.addData(airship, Color.black);
         fig2.addData(airship2, Color.black);
