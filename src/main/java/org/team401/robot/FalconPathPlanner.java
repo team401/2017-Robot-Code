@@ -40,6 +40,7 @@ public class FalconPathPlanner
 {
 
 	//Path Variables
+	public final boolean mecanum;
 	private double[][] origPath;
 	public double[][] nodeOnlyPath;
 	public double[][] smoothPath;
@@ -98,9 +99,26 @@ public class FalconPathPlanner
 		The units of these coordinates are position units assumed by the user (i.e inch, foot, meters) 
 	 * @param path
 	 */
-	public FalconPathPlanner(double[][] path)
+	public FalconPathPlanner(double[][] path){
+		this(path, false);
+	}
+
+	/**
+	 * Waypoint array if using Mecanum drive.  -1 for direction if unchanged.:
+	 *
+	 * double[][] pathWithDirection =  new double[][]{
+	 * 		{1, 1, -1},
+	 * 		{5, 1, }
+	 *
+	 * };
+	 *
+	 * @param path Points to move to relative to robot start
+	 * @param mecanum Is the robot in mecanum drive mode?
+	 */
+	public FalconPathPlanner(double[][] path, boolean mecanum)
 	{
 		origPath = doubleArrayCopy(path);
+		this.mecanum = mecanum;
 
 		//default values DO NOT MODIFY;
 		pathAlpha = 0.7;
@@ -184,7 +202,7 @@ public class FalconPathPlanner
 			//copy first
 			morePoints[index][0] = orig[i][0];
 			morePoints[index][1] = orig[i][1];
-			if(morePoints[index].length == 3)
+			if(mecanum)
 				morePoints[index][2] = orig[i][2];
 			index++;
 
@@ -332,8 +350,6 @@ public class FalconPathPlanner
 			//calculate velocity
 			velocity[i][1] = Math.sqrt(Math.pow(dxdt[i],2) + Math.pow(dydt[i],2));
 		}
-
-
 		return velocity;
 
 	}
@@ -700,6 +716,12 @@ public class FalconPathPlanner
 		smoothRightVelocity = velocityFix(smoothRightVelocity, origRightVelocity, 0.0000001);
 	}
 
+	public double[][] invertVelocity(double[][] vel){
+		double[][]result = doubleArrayCopy(vel);
+		for(int i = 0; i<result.length; i++)
+			result[i][1] = result[i][1]*-1;
+		return result;
+	}
 
 	/**
 	 * Gives the data stored here in a usable format for the example Talon SRX motion profile project.
@@ -707,10 +729,13 @@ public class FalconPathPlanner
 	 * @param ratio Double used to transform feet/second into RPM
 	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
 	 */
-	public double[][] talonSRXProfile(boolean left, double ratio){
+	public double[][] talonSRXProfile(boolean left, double ratio, boolean reverse){
 		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
 			result = new double[source.length][3],
 			wheel = left ? leftPath : rightPath;
+		if(reverse)
+			source = invertVelocity(source);
+
 		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
 
 		result[0] = new double[]{0, source[0][1], 0};
@@ -729,9 +754,10 @@ public class FalconPathPlanner
 	 *
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
-	public double[][][] mecanumProfile(double[] dir, int updatePeriod){
+	public double[][][] mecanumProfile(double[][] dir, int updatePeriod){
 		double[][][] result = new double[4][(int)numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath);
+
 		for(int h = 0; h < 4; h++){
 			double dist = 0.0;
 
@@ -739,7 +765,7 @@ public class FalconPathPlanner
 				double[] res = new double[3];
 				dist+=smoothCenterVelocity[i-1][0]*smoothCenterVelocity[i-1][1]/60;
 				res[0] = dist;
-				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i])[h];
+				res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i][0])[h];
 				res[2] =smoothCenterVelocity[i][0]*1000.0;
 				result[h][i] = res;
 			}
