@@ -15,12 +15,13 @@ public class MPCalculator {
     public static void main(String[] args){
         //numbers are in feet
 
-        double[][] path2 = new double[][]{
-                {1,1},
-                {1,2},
-                {1,3},
-                {1,4},
-                {1,5},
+        double[][] path = new double[][]{
+                {13,1},
+                {13,9},
+                {13,6},
+                {18,9},
+                {19,12},
+                {20,36}
         };
         //draws the airships:
 
@@ -61,14 +62,31 @@ public class MPCalculator {
 
 
 
-
-        FalconPathPlanner falcon = new FalconPathPlanner(path2);
+        //calculates our path
+        FalconPathPlanner falcon = new FalconPathPlanner(path);
         //in feet
-        falcon.calculate(20, 0.02, 2.16666);
+        falcon.calculate(15, 0.02, 2.16666);
+        //in mecanum
+        /*
+        //{at what waypoint index, the direction it should be facing}
+        double[][] dir = new double[][]{
+                {2, 10}
+        };
+        falcon.mecanumProfile(dir);
+*/
 
+        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
+        fig1.xGridOn();
+        fig1.yGridOn();
+        fig1.setTitle("Veloccities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
+        fig1.setXLabel("Time (seconds)");
+        fig1.setYLabel("Velocity (ft/sec)");
+
+        fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
+        fig1.addData(falcon.smoothRightVelocity, Color.cyan);
 
         //Field map
-        FalconLinePlot fig2 = new FalconLinePlot(path2);
+        FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
         fig2.yGridOn();
         fig2.setTitle("2017 Field Map Note: Size may be distorted slightly");
@@ -105,5 +123,22 @@ public class MPCalculator {
         }
         output.flush();
         output.close();
+    }
+
+    /**
+     * Gives you the velocity of the robots center at a given time.
+     * @param path the centerpath of the robot
+     * @param time the time you want to know the velocity at in seconds
+     * @return returns the velocity of the center at the time requested
+     */
+    public static double InstantVelocity(FalconPathPlanner path, double time){
+double result = 0;
+
+for(int i = 0;i<path.smoothCenterVelocity.length;i++){
+    if(time == path.smoothCenterVelocity[i][0]){
+        result = path.smoothCenterVelocity[i][1];
+    }
+}
+return result;
     }
 }
