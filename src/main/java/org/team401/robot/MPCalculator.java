@@ -1,40 +1,34 @@
 package org.team401.robot;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.Math;
 
-/**
- * Created by Brian Jameson on 1/16/2017.
- */
 public class MPCalculator {
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException{
+
         //numbers are in feet
-
         double[][] path = new double[][]{
-                {13,1},
-                {13,5},
-
+                {13, 1},
+                {13, 5},
         };
         double[][] path2 = new double[][]{
-                {13,5},
-                {13,2},
+                {13, 5},
+                {13, 2},
         };
         double[][] path3 = new double[][]{
-                {13,2},
-                {12,3},
+                {13, 2},
+                {12, 3},
                 {11, 4},
                 {10, 5},
                 {9, 7},
                 {5, 10},
                 {1, 15}
         };
-        //draws the airships:
-
-        double [][] airship = new double [][]{
+        //draws the near airship:
+        double[][] airship = new double[][]{
                 {11.831875, 9.325},
                 {15.1681225, 9.325},
                 {16.83625, 12.26625},
@@ -42,23 +36,10 @@ public class MPCalculator {
                 {11.831875, 15.2075},
                 {10.16375, 12.26625},
                 {11.831875, 9.325},
-
-
-        };
-        double [][] airship2 = new double [][]{
-                {11.831875, 54 - 9.325},
-                {15.1681225, 54 - 9.325},
-                {16.83625, 54 - 12.26625},
-                {15.1681225, 54 - 15.2075},
-                {11.831875, 54 - 15.2075},
-                {10.16375, 54 - 12.26625},
-                {11.831875, 54 - 9.325},
-
         };
         double[][] baseline = new double[][]{
                 {0, 7.775},
                 {27, 7.775}
-
         };
         double[][] neutralZone = new double[][]{
                 {0, 15.1681225},
@@ -67,9 +48,6 @@ public class MPCalculator {
                 {0, 54 - 15.1681225},
                 {0, 15.1681225}
         };
-
-
-
 
         //calculates our path
         FalconPathPlanner falcon = new FalconPathPlanner(path);
@@ -84,7 +62,6 @@ public class MPCalculator {
 
         falcon3.calculate(15, 0.02, 2.16666);
 
-        falcon2.print(path3);
         //in mecanum
         /*
         //{at what waypoint index, the direction it should be facing}
@@ -114,12 +91,12 @@ public class MPCalculator {
         FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
         fig2.yGridOn();
-        fig2.setTitle("2017 Field Map Note: Size may be distorted slightly");
+        fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");
         fig2.setXLabel("Width of the Field (feet)");
         fig2.setYLabel("Length of the Field (feet)");
         //filed size: x: 54 ft y: 27 ft
-        fig2.setXTic(0, 27 , 1);
-        fig2.setYTic(0, 54, 1);
+        fig2.setXTic(0, 27, 1);
+        fig2.setYTic(0, 39, 1);
 
         fig2.addData(falcon.smoothPath, Color.red, Color.blue);
         fig2.addData(falcon.leftPath, Color.magenta);
@@ -134,22 +111,21 @@ public class MPCalculator {
         fig2.addData(falcon3.rightPath, Color.magenta);
 
         fig2.addData(airship, Color.black);
-        fig2.addData(airship2, Color.black);
         fig2.addData(baseline, Color.blue);
         fig2.addData(neutralZone, Color.green);
 
-
-
-
-
-
-
+        //Exports raw speed controller instructions as 6 .csv spreadsheets.
+        if(false) {
+            falcon.exportCSV();
+            falcon2.exportCSV();
+            falcon3.exportCSV();
+        }
     }
 
-    public static void write(String filename, double[][] arr) throws IOException{
+    public static void write(String filename, double[][] arr) throws IOException {
         BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-        for(double[] u:arr){
-            for(int j = 0; j < u.length; j++) {
+        for (double[] u : arr) {
+            for (int j = 0; j < u.length; j++) {
                 output.write("" + u[j] + ",");
             }
         }
@@ -159,18 +135,19 @@ public class MPCalculator {
 
     /**
      * Gives you the velocity of the robots center at a given time.
+     *
      * @param path the centerpath of the robot
      * @param time the time you want to know the velocity at in seconds
      * @return returns the velocity of the center at the time requested
      */
-    public static double InstantVelocity(FalconPathPlanner path, double time){
-double result = 0;
+    public static double InstantVelocity(FalconPathPlanner path, double time) {
+        double result = 0;
 
-for(int i = 0;i<path.smoothCenterVelocity.length;i++){
-    if(time == path.smoothCenterVelocity[i][0]){
-        result = path.smoothCenterVelocity[i][1];
-    }
-}
-return result;
+        for (int i = 0; i < path.smoothCenterVelocity.length; i++) {
+            if (time == path.smoothCenterVelocity[i][0]) {
+                result = path.smoothCenterVelocity[i][1];
+            }
+        }
+        return result;
     }
 }
