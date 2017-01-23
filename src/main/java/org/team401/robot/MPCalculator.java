@@ -115,22 +115,11 @@ public class MPCalculator {
         fig2.addData(neutralZone, Color.green);
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
-        if(false) {
+        if(true) {
             falcon.exportCSV("0");
             falcon2.exportCSV("1");
             falcon3.exportCSV("2");
         }
-    }
-
-    public static void write(String filename, double[][] arr) throws IOException {
-        BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-        for (double[] u : arr) {
-            for (int j = 0; j < u.length; j++) {
-                output.write("" + u[j] + ",");
-            }
-        }
-        output.flush();
-        output.close();
     }
 
     /**
@@ -141,13 +130,10 @@ public class MPCalculator {
      * @return returns the velocity of the center at the time requested
      */
     public static double InstantVelocity(FalconPathPlanner path, double time) {
-        double result = 0;
-
         for (int i = 0; i < path.smoothCenterVelocity.length; i++) {
-            if (time == path.smoothCenterVelocity[i][0]) {
-                result = path.smoothCenterVelocity[i][1];
-            }
+            if (time >= path.smoothCenterVelocity[i][0])
+                return path.smoothCenterVelocity[i][1];
         }
-        return result;
+        return 0.0;
     }
 }

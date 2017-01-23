@@ -97,7 +97,12 @@ public class FalconPathPlanner {
      * <p>
      * double[][] pathWithDirection =  new double[][]{
      * {1, 1, -1},
-     * {5, 1, }
+     * {5, 1, 30},
+     * {9, 12, -1},
+     * {12, 9, -1},
+     * {15, 6, 270},
+     * {15, 4, 180}
+     * };
      * <p>
      * };
      *
@@ -177,7 +182,7 @@ public class FalconPathPlanner {
                 morePoints[index][1] = j * ((orig[i + 1][1] - orig[i][1]) / (numToInject + 1)) + orig[i][1];
 
                 //calculate intermediate direction between j and j+1 original points if in mecanum
-                if (morePoints[index].length == 3)
+                if (mecanum)
                     morePoints[index][2] = j * ((orig[i + 1][2] - orig[i][2]) / (numToInject + 1)) + orig[i][2];
 
                 index++;
@@ -187,9 +192,8 @@ public class FalconPathPlanner {
         //copy last
         morePoints[index][0] = orig[orig.length - 1][0];
         morePoints[index][1] = orig[orig.length - 1][1];
-        if (morePoints[index].length == 3)
+        if (mecanum)
             morePoints[index][2] = orig[orig.length - 1][2];
-        index++;
 
         return morePoints;
     }
@@ -223,9 +227,7 @@ public class FalconPathPlanner {
                     change += Math.abs(aux - newPath[i][j]);
                 }
         }
-
         return newPath;
-
     }
 
     /**
@@ -237,8 +239,10 @@ public class FalconPathPlanner {
      * @param path
      * @return
      */
-    public static double[][] nodeOnlyWayPoints(double[][] path) {
-
+    public double[][] nodeOnlyWayPoints(double[][] path) {
+        if (mecanum) {
+            return path;
+        }
         List<double[]> li = new LinkedList<double[]>();
 
         //save first value
@@ -251,8 +255,8 @@ public class FalconPathPlanner {
             double vector2 = Math.atan2((path[i + 1][1] - path[i][1]), path[i + 1][0] - path[i][0]);
 
             //determine if both vectors have a change in direction
-            //method doesn't do anything if in mecanum mode
-            if (Math.abs(vector2 - vector1) >= 0.01 || path[i].length == 3)
+
+            if (Math.abs(vector2 - vector1) >= 0.01)
                 li.add(path[i]);
         }
 
@@ -265,8 +269,6 @@ public class FalconPathPlanner {
         for (int i = 0; i < li.size(); i++) {
             temp[i][0] = li.get(i)[0];
             temp[i][1] = li.get(i)[1];
-            if (temp[i].length == 3)
-                temp[i][2] = li.get(i)[2];
         }
 
         return temp;
@@ -429,7 +431,7 @@ public class FalconPathPlanner {
 
         numFinalPoints = 0;
 
-        int[] ret = null;
+        int[] ret;
 
         double totalPoints = maxTimeToComplete / timeStep;
 
@@ -453,7 +455,6 @@ public class FalconPathPlanner {
 
             ret = new int[]{first, second, third};
         } else {
-
             double pointsFirst = 0;
             double pointsSecond = 0;
             double pointsTotal = 0;
@@ -475,8 +476,6 @@ public class FalconPathPlanner {
 
             ret = new int[]{first, second, third};
         }
-
-
         return ret;
     }
 
@@ -696,9 +695,10 @@ public class FalconPathPlanner {
     /**
      * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
      */
-    public double[][][] mecanumProfile(){
+    public double[][][] mecanumProfile() {
         return null;//Fix this later
     }
+
     public double[][][] mecanumProfile(double[][] dir) {
         double[][][] result = new double[4][(int) numFinalPoints][3];
         double[][] path = doubleArrayCopy(smoothPath);
@@ -777,25 +777,26 @@ public class FalconPathPlanner {
             sb.append('\n');
         }
         pw.write(sb.toString());
-        System.out.println(sb.toString());
         pw.close();
     }
-    public void exportCSV(){
+
+    public void exportCSV() throws FileNotFoundException {
         exportCSV("", "");
     }
-    public void exportCSV(String fileSuffix){
+
+    public void exportCSV(String fileSuffix) throws FileNotFoundException {
         exportCSV("", fileSuffix);
     }
-    public void exportCSV(String filePrefix, String fileSuffix) throws FileNotFoundException{//Method only works with traction drive for now
-        if(mecanum) {
+
+    public void exportCSV(String filePrefix, String fileSuffix) throws FileNotFoundException {//Method only works with traction drive for now
+        if (!mecanum) {
             exportCSV(filePrefix + "Left" + fileSuffix, talonSRXProfile(true, 1, false));
             exportCSV(filePrefix + "Right" + fileSuffix, talonSRXProfile(false, 1, false));
-        }
-        else{
-            exportCSV(filePrefix+"FrontLeft"+fileSuffix, mecanumProfile()[0]);//Makes errors right now
-            exportCSV(filePrefix+"FrontRight"+fileSuffix, mecanumProfile()[1]);
-            exportCSV(filePrefix+"RearLeft"+fileSuffix, mecanumProfile()[2]);
-            exportCSV(filePrefix+"RearRight"+fileSuffix, mecanumProfile()[3]);
+        } else {
+            exportCSV(filePrefix + "FrontLeft" + fileSuffix, mecanumProfile()[0]);//Makes errors right now
+            exportCSV(filePrefix + "FrontRight" + fileSuffix, mecanumProfile()[1]);
+            exportCSV(filePrefix + "RearLeft" + fileSuffix, mecanumProfile()[2]);
+            exportCSV(filePrefix + "RearRight" + fileSuffix, mecanumProfile()[3]);
         }
     }
 }
