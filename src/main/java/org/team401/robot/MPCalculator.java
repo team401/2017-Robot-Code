@@ -10,6 +10,7 @@ public class MPCalculator {
     public static void main(String[] args) throws FileNotFoundException{
 
         //numbers are in feet
+
         double[][] path = new double[][]{
                 {13, 1},
                 {13, 5},
@@ -56,7 +57,7 @@ public class MPCalculator {
 
         FalconPathPlanner falcon2 = new FalconPathPlanner(path2);
 
-        falcon2.calculate(15, 0.02, 2.16666);
+        falcon2.calculate(15, 0.02, 2.16666, true);
 
         FalconPathPlanner falcon3 = new FalconPathPlanner(path3);
 
@@ -78,14 +79,18 @@ public class MPCalculator {
         fig1.setXLabel("Time (seconds)");
         fig1.setYLabel("Velocity (ft/sec)");
 
-        //fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
-        //fig1.addData(falcon.smoothRightVelocity, Color.cyan);
+        fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
+        fig1.addData(falcon.smoothRightVelocity, Color.cyan);
+        fig1.addData(falcon.smoothCenterVelocity, Color.blue);
 
         fig1.addData(falcon2.smoothLeftVelocity, Color.yellow);
         fig1.addData(falcon2.smoothRightVelocity, Color.green);
+        fig1.addData(falcon2.smoothCenterVelocity, Color.blue);
+
 
         fig1.addData(falcon3.smoothLeftVelocity, Color.black);
         fig1.addData(falcon3.smoothRightVelocity, Color.red);
+        fig1.addData(falcon3.smoothCenterVelocity, Color.blue);
 
         //Field map
         FalconLinePlot fig2 = new FalconLinePlot(path);
