@@ -696,6 +696,9 @@ public class FalconPathPlanner {
     /**
      * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
      */
+    public double[][][] mecanumProfile(){
+        return null;//Fix this later
+    }
     public double[][][] mecanumProfile(double[][] dir) {
         double[][][] result = new double[4][(int) numFinalPoints][3];
         double[][] path = doubleArrayCopy(smoothPath);
@@ -777,8 +780,22 @@ public class FalconPathPlanner {
         System.out.println(sb.toString());
         pw.close();
     }
-    public void exportCSV() throws FileNotFoundException{//Method only works with traction drive for now
-        exportCSV("Left1", talonSRXProfile(true, 1, false));
-        exportCSV("Right1", talonSRXProfile(false, 1, false));
+    public void exportCSV(){
+        exportCSV("", "");
+    }
+    public void exportCSV(String fileSuffix){
+        exportCSV("", fileSuffix);
+    }
+    public void exportCSV(String filePrefix, String fileSuffix) throws FileNotFoundException{//Method only works with traction drive for now
+        if(mecanum) {
+            exportCSV(filePrefix + "Left" + fileSuffix, talonSRXProfile(true, 1, false));
+            exportCSV(filePrefix + "Right" + fileSuffix, talonSRXProfile(false, 1, false));
+        }
+        else{
+            exportCSV(filePrefix+"FrontLeft"+fileSuffix, mecanumProfile()[0]);//Makes errors right now
+            exportCSV(filePrefix+"FrontRight"+fileSuffix, mecanumProfile()[1]);
+            exportCSV(filePrefix+"RearLeft"+fileSuffix, mecanumProfile()[2]);
+            exportCSV(filePrefix+"RearRight"+fileSuffix, mecanumProfile()[3]);
+        }
     }
 }

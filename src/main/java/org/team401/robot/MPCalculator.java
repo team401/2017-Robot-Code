@@ -116,9 +116,9 @@ public class MPCalculator {
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
         if(false) {
-            falcon.exportCSV();
-            falcon2.exportCSV();
-            falcon3.exportCSV();
+            falcon.exportCSV("0");
+            falcon2.exportCSV("1");
+            falcon3.exportCSV("2");
         }
     }
 
