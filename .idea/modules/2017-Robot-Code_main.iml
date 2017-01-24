@@ -31,15 +31,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -50,6 +41,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../libs/strongback-tools-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

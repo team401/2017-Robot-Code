@@ -8,24 +8,24 @@ package org.team401.robot;
 public class AutoPaths {
 
 
-//points for final waypoints
+    //points for final waypoints
 //if the points vary depending on the size of our robot
-public static final double[] CenterGearPeg = new double[]{
+    public static final double[] CenterGearPeg = new double[]{
             13.5, 8
     };
-public static final double[] LeftGearPeg = new double[]{
+    public static final double[] LeftGearPeg = new double[]{
             11, 14
     };
-public static final double[] RightGearPeg = new double[]{
+    public static final double[] RightGearPeg = new double[]{
             16, 8
     };
-public static final double[] StartingMid = new double[]{
+    public static final double[] StartingMid = new double[]{
             13.5, 2
     };
-public static final double[] StartingLeft = new double[]{
+    public static final double[] StartingLeft = new double[]{
             5, 2
     };
-public static final double[] StartingRight = new double[]{
+    public static final double[] StartingRight = new double[]{
             22, 2
     };
 
@@ -71,8 +71,8 @@ Waypoint Paths:
      * @param direction which way you want the line
      * @return the new point
      */
-
-    public static double[] Perpendicular(double x1, double x2, double y1, double y2, double pointx, double pointy, int direction){
+/*//I commented out this method because I don't like it.  -Brian
+    public static double[] perpendicular(double x1, double x2, double y1, double y2, double pointx, double pointy, int direction){
     double slope = (y2 - y1)/(x2 - x1);
 
     double PerpendicularSlope = ((x2 - x1)/(y2 - y1)) * -1;
@@ -93,5 +93,33 @@ Waypoint Paths:
                 pointx, pointy
         };
         return newPoint;
+    }
+*/
+
+    /**
+     * Returns the coordinates of C, where C is the vertex of a triangle and A and B are known points with angles of 45 degrees.
+     * Slightly modified from http://math.stackexchange.com/questions/1842614/find-third-coordinate-for-a-right-triangle-with-45degree-angles
+     *
+     * @param coords The coordinates of the points.  Should be in the order [x1, y1, x2, y2].
+     * @param factor Scales the result to the correct length
+     * @return
+     */
+    public static double[] perpendicular(double[] coords, double factor) {
+        return new double[]{
+                (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
+                (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
+        };
+    }
+
+    public static double[] perpendicular(double x1, double y1, double x2, double y2, double factor) {
+        return perpendicular(new double[]{x1, y1, x2, y2}, factor);
+    }
+
+    public static double[] perpendicular(double[] coords) {
+        return perpendicular(coords, 1.0);
+    }
+
+    public static double[] perpendicular(double x1, double y1, double x2, double y2) {
+        return perpendicular(new double[]{x1, y1, x2, y2});
     }
 }
