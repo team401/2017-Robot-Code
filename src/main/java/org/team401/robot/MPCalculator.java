@@ -11,23 +11,7 @@ public class MPCalculator {
 
         //numbers are in feet
 
-        double[][] path = new double[][]{
-                {13, 1},
-                {13, 5},
-        };
-        double[][] path2 = new double[][]{
-                {13, 5},
-                {13, 2},
-        };
-        double[][] path3 = new double[][]{
-                {13, 2},
-                {12, 3},
-                {11, 4},
-                {10, 5},
-                {9, 7},
-                {5, 10},
-                {1, 15}
-        };
+
         //draws the near airship:
         double[][] airship = new double[][]{
                 {11.831875, 9.325},
@@ -51,17 +35,14 @@ public class MPCalculator {
         };
 
         //calculates our path
-        FalconPathPlanner falcon = new FalconPathPlanner(path);
+        //******************************
+        //IF YOU CHANGE ANY OF THE VALUES MAKE SURE TO CHANGE THEM IN FIG2 AS WELL!!!!
+        //******************************
+        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.StartMidToRLift);
         //in feet
         falcon.calculate(15, 0.02, 2.16666);
 
-        FalconPathPlanner falcon2 = new FalconPathPlanner(path2);
 
-        falcon2.calculate(15, 0.02, 2.16666, true);
-
-        FalconPathPlanner falcon3 = new FalconPathPlanner(path3);
-
-        falcon3.calculate(15, 0.02, 2.16666);
 
         //in mecanum
         /*
@@ -72,7 +53,7 @@ public class MPCalculator {
         falcon.mecanumProfile(dir);
 */
 
-        FalconLinePlot fig1 = new FalconLinePlot(falcon2.smoothCenterVelocity, null, Color.blue);
+        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
         fig1.xGridOn();
         fig1.yGridOn();
         fig1.setTitle("Veloccities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
@@ -83,17 +64,10 @@ public class MPCalculator {
         fig1.addData(falcon.smoothRightVelocity, Color.cyan);
         fig1.addData(falcon.smoothCenterVelocity, Color.blue);
 
-        fig1.addData(falcon2.smoothLeftVelocity, Color.yellow);
-        fig1.addData(falcon2.smoothRightVelocity, Color.green);
-        fig1.addData(falcon2.smoothCenterVelocity, Color.blue);
 
-
-        fig1.addData(falcon3.smoothLeftVelocity, Color.black);
-        fig1.addData(falcon3.smoothRightVelocity, Color.red);
-        fig1.addData(falcon3.smoothCenterVelocity, Color.blue);
 
         //Field map
-        FalconLinePlot fig2 = new FalconLinePlot(path);
+        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.StartMidToRLift);
         fig2.xGridOn();
         fig2.yGridOn();
         fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");
@@ -107,13 +81,7 @@ public class MPCalculator {
         fig2.addData(falcon.leftPath, Color.magenta);
         fig2.addData(falcon.rightPath, Color.magenta);
 
-        fig2.addData(falcon2.smoothPath, Color.red, Color.blue);
-        fig2.addData(falcon2.leftPath, Color.magenta);
-        fig2.addData(falcon2.rightPath, Color.magenta);
 
-        fig2.addData(falcon3.smoothPath, Color.red, Color.blue);
-        fig2.addData(falcon3.leftPath, Color.magenta);
-        fig2.addData(falcon3.rightPath, Color.magenta);
 
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);
@@ -122,8 +90,7 @@ public class MPCalculator {
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
         if(false) {
             falcon.exportCSV();
-            falcon2.exportCSV();
-            falcon3.exportCSV();
+
         }
     }
 
