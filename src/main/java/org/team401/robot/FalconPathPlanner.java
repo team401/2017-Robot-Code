@@ -694,21 +694,19 @@ public class FalconPathPlanner {
     /**
      * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
      */
-    public double[][][] mecanumProfile(double[][] dir) {
+    public double[][][] mecanumProfile() {
         double[][][] result = new double[4][(int) numFinalPoints][3];
         double[][] path = doubleArrayCopy(smoothPath);
 
         for (int h = 0; h < 4; h++) {
             double dist = 0.0;
-
+            result[h][0] = new double[3];
             for (int i = 1; i < numFinalPoints; i++) {
-                double[] res = new double[3];
                 dist += smoothCenterVelocity[i - 1][0] * smoothCenterVelocity[i - 1][1] / 60;
-                res[0] = dist;
-                res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[i][0])[h];
-                res[1] = polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), dir[0][i])[h];
-                res[2] = smoothCenterVelocity[i][0] * 1000.0;
-                result[h][i] = res;
+                result[h][i] = new double[]{dist,
+                    polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), path[i][2])[h],
+                    smoothCenterVelocity[i][0] * 1000.0
+                };
             }
         }
         return result;
@@ -775,8 +773,22 @@ public class FalconPathPlanner {
         System.out.println(sb.toString());
         pw.close();
     }
-    public void exportCSV() throws FileNotFoundException{//Method only works with traction drive for now
-        exportCSV("Left1", talonSRXProfile(true, 1, false));
-        exportCSV("Right1", talonSRXProfile(false, 1, false));
+    public void exportCSV() throws FileNotFoundException{
+        exportCSV("", "");
+    }
+    public void exportCSV(String suffix) throws FileNotFoundException{
+        exportCSV("", suffix);
+    }
+    public void exportCSV(String prefix, String suffix) throws FileNotFoundException{//Method only works with traction drive for now
+        if(mecanum) {
+            double[][][] temp = mecanumProfile();
+            exportCSV("FrontLeft", temp[0]);
+            exportCSV("FrontRight", temp[1]);
+            exportCSV("RearLeft", temp[2]);
+            exportCSV("RearRight", temp[3]);
+        }else {
+            exportCSV("Left1", talonSRXProfile(true, 1, false));
+            exportCSV("Right1", talonSRXProfile(false, 1, false));
+        }
     }
 }
