@@ -44,8 +44,9 @@ Waypoint Paths:
     };
     //goes from the middle starting position to the right gear lift
     public static final double[][] START_MID_TO_R_LIFT = new double[][]{
-            STARTING_RIGHT
-            //RightGearPeg,
+            {11,14},
+            perpendicular(new double[]{10, 12, 12, 15}),
+
     };
     //goes from the Middle starting position to the left gear lift
     public static final double[][] START_MID_TO_L_LIFT = new double[][]{
@@ -110,10 +111,20 @@ Waypoint Paths:
      * @return
      */
     public static double[] perpendicular(double[] coords, double factor) {
-        return new double[]{
-                (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
-                (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
-        };
+
+        if(coords[0] < coords[2]){
+            return new double[]{
+                    (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
+                    (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
+            };
+        }else{
+            return new double[]{
+                    (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
+                    (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor
+            };
+
+        }
+
     }
 
     public static double[] perpendicular(double x1, double y1, double x2, double y2, double factor) {
