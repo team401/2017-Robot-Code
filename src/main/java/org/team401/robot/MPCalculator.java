@@ -38,20 +38,13 @@ public class MPCalculator {
         //******************************
         //IF YOU CHANGE ANY OF THE VALUES MAKE SURE TO CHANGE THEM IN FIG2 AS WELL!!!!
         //******************************
-        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.StartMidToRLift);
+        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.START_MID_TO_R_LIFT);
         //in feet
         falcon.calculate(15, 0.02, 2.16666);
 
-
-
-        //in mecanum
-        /*
-        //{at what waypoint index, the direction it should be facing}
-        double[][] dir = new double[][]{
-                {2, 10}
-        };
-        falcon.mecanumProfile(dir);
-*/
+        //test mecanum mode
+        FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
+        mecaFalcon.calculate(15, 0.02, 2.16666);
 
         FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
         fig1.xGridOn();
@@ -67,7 +60,7 @@ public class MPCalculator {
 
 
         //Field map
-        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.StartMidToRLift);
+        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.START_MID_TO_R_LIFT);
         fig2.xGridOn();
         fig2.yGridOn();
         fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");
@@ -94,17 +87,6 @@ public class MPCalculator {
         }
     }
 
-    public static void write(String filename, double[][] arr) throws IOException {
-        BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-        for (double[] u : arr) {
-            for (int j = 0; j < u.length; j++) {
-                output.write("" + u[j] + ",");
-            }
-        }
-        output.flush();
-        output.close();
-    }
-
     /**
      * Gives you the velocity of the robots center at a given time.
      *
@@ -115,11 +97,9 @@ public class MPCalculator {
     public static double InstantVelocity(FalconPathPlanner path, double time) {
         double result = 0;
 
-        for (int i = 0; i < path.smoothCenterVelocity.length; i++) {
-            if (time == path.smoothCenterVelocity[i][0]) {
-                result = path.smoothCenterVelocity[i][1];
-            }
-        }
+        for (int i = 0; i < path.smoothCenterVelocity.length; i++)
+            if (time >= path.smoothCenterVelocity[i][0])
+                return path.smoothCenterVelocity[i][1];
         return result;
     }
 }

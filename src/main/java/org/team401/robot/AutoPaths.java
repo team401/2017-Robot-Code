@@ -10,22 +10,22 @@ public class AutoPaths {
 
     //points for final waypoints
 //if the points vary depending on the size of our robot
-    public static final double[] CenterGearPeg = new double[]{
+    public static final double[] CENTER_GEAR_PEG = new double[]{
             13.5, 8
     };
-    public static final double[] LeftGearPeg = new double[]{
+    public static final double[] LEFT_GEAR_PEG = new double[]{
             11, 14
     };
-    public static final double[] RightGearPeg = new double[]{
+    public static final double[] RIGHT_GEAR_PEG = new double[]{
             16, 8
     };
-    public static final double[] StartingMid = new double[]{
+    public static final double[] STARTING_MID = new double[]{
             13.5, 2
     };
-    public static final double[] StartingLeft = new double[]{
+    public static final double[] STARTING_LEFT = new double[]{
             5, 2
     };
-    public static final double[] StartingRight = new double[]{
+    public static final double[] STARTING_RIGHT = new double[]{
             22, 2
     };
 
@@ -38,24 +38,29 @@ Waypoint Paths:
 
 
     //goes from the middle starting position to the center gear lift
-    public static final double[][] StartMidToLift = new double[][]{
-            StartingMid,
-            CenterGearPeg,
+    public static final double[][] START_MID_TO_LIFT = new double[][]{
+            STARTING_MID,
+            CENTER_GEAR_PEG,
     };
     //goes from the middle starting position to the right gear lift
-    public static final double[][] StartMidToRLift = new double[][]{
-            StartingRight
+    public static final double[][] START_MID_TO_R_LIFT = new double[][]{
+            STARTING_RIGHT
             //RightGearPeg,
     };
     //goes from the Middle starting position to the left gear lift
-    public static final double[][] StartMidToLLift = new double[][]{
-            StartingMid,
+    public static final double[][] START_MID_TO_L_LIFT = new double[][]{
+            STARTING_MID,
             {10, 4},
             {7, 8},
             {7, 12},
             {7, 14},
             {9, 16},
-            LeftGearPeg,
+            LEFT_GEAR_PEG,
+    };
+    //test mecanum path
+    public static final double[][] TEST_MECANUM = new double[][]{
+            {13.5, 2, -1},
+            {13.5, 8, 180}
     };
 
     /**

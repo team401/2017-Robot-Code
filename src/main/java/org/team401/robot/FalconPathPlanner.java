@@ -1,6 +1,5 @@
 package org.team401.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.util.Values;
 
 import java.io.File;
@@ -14,19 +13,19 @@ import java.util.List;
  * This Class provides many useful algorithms for Robot Path Planning. It uses optimization techniques and knowledge
  * of Robot Motion in order to calculate smooth path trajectories, if given only discrete waypoints. The Benefit of these optimization
  * algorithms are very efficient path planning that can be used to Navigate in Real-time.
- * <p>
+ *
  * This Class uses a method of Gradient Decent, and other optimization techniques to produce smooth Velocity profiles
  * for both left and right wheels of a differential drive robot.
- * <p>
+ *
  * This Class does not attempt to calculate quintic or cubic splines for best fitting a curve. It is for this reason, the algorithm can be ran
  * on embedded devices with very quick computation times.
- * <p>
+ *
  * The output of this function are independent velocity profiles for the left and right wheels of a differential drive chassis. The velocity
  * profiles start and end with 0 velocity and maintain smooth transitions throughout the path.
- * <p>
+ *
  * This algorithm is a port from a similar algorithm running on a Robot used for my PhD thesis. I have not fully optimized
  * these functions, so there is room for some improvement.
- * <p>
+ *
  * Initial tests on the 2015 FRC NI RoboRio, the complete algorithm finishes in under 15ms using the Java System Timer for paths with less than 50 nodes.
  *
  * @author Kevin Harrilal
@@ -53,7 +52,6 @@ public class FalconPathPlanner {
     public double[][] smoothCenterVelocity;
     public double[][] smoothRightVelocity;
     public double[][] smoothLeftVelocity;
-    public double[][] smoothDirection;
 
     //accumulated heading
     public double[][] heading;
@@ -70,9 +68,9 @@ public class FalconPathPlanner {
     /**
      * Constructor, takes a Path of Way Points defined as a double array of column vectors representing the global
      * cartesian points of the path in {x,y} coordinates. The waypoint are traveled from one point to the next in sequence.
-     * <p>
+     *
      * For example: here is a properly formated waypoint array
-     * <p>
+     *
      * double[][] waypointPath = new double[][]{
      * {1, 1},
      * {5, 1},
@@ -81,9 +79,9 @@ public class FalconPathPlanner {
      * {15,6},
      * {15, 4}
      * };
-     * <p>
+     *
      * This path goes from {1,1} -> {5,1} -> {9,12} -> {12, 9} -> {15,6} -> {15,4}
-     * <p>
+     *
      * The units of these coordinates are position units assumed by the user (i.e inch, foot, meters)
      *
      * @param path
@@ -93,12 +91,12 @@ public class FalconPathPlanner {
     }
 
     /**
-     * Waypoint array if using Mecanum drive.  -1 for direction if unchanged.:
-     * <p>
+     * Waypoint array if using Mecanum drive.  -1 for direction if unchanged.
+     *
      * double[][] pathWithDirection =  new double[][]{
      * {1, 1, -1},
-     * {5, 1, }
-     * <p>
+     * {5, 1, 330},
+     * {9, 12, 180}...
      * };
      *
      * @param path    Points to move to relative to robot start
@@ -177,7 +175,7 @@ public class FalconPathPlanner {
                 morePoints[index][1] = j * ((orig[i + 1][1] - orig[i][1]) / (numToInject + 1)) + orig[i][1];
 
                 //calculate intermediate direction between j and j+1 original points if in mecanum
-                if (morePoints[index].length == 3)
+                if (mecanum)
                     morePoints[index][2] = j * ((orig[i + 1][2] - orig[i][2]) / (numToInject + 1)) + orig[i][2];
 
                 index++;
@@ -187,7 +185,7 @@ public class FalconPathPlanner {
         //copy last
         morePoints[index][0] = orig[orig.length - 1][0];
         morePoints[index][1] = orig[orig.length - 1][1];
-        if (morePoints[index].length == 3)
+        if (mecanum)
             morePoints[index][2] = orig[orig.length - 1][2];
         index++;
 
@@ -237,7 +235,7 @@ public class FalconPathPlanner {
      * @param path
      * @return
      */
-    public static double[][] nodeOnlyWayPoints(double[][] path) {
+    public double[][] nodeOnlyWayPoints(double[][] path) {
 
         List<double[]> li = new LinkedList<double[]>();
 
@@ -252,7 +250,7 @@ public class FalconPathPlanner {
 
             //determine if both vectors have a change in direction
             //method doesn't do anything if in mecanum mode
-            if (Math.abs(vector2 - vector1) >= 0.01 || path[i].length == 3)
+            if (Math.abs(vector2 - vector1) >= 0.01 || mecanum)
                 li.add(path[i]);
         }
 
@@ -265,7 +263,7 @@ public class FalconPathPlanner {
         for (int i = 0; i < li.size(); i++) {
             temp[i][0] = li.get(i)[0];
             temp[i][1] = li.get(i)[1];
-            if (temp[i].length == 3)
+            if (mecanum)
                 temp[i][2] = li.get(i)[2];
         }
 
