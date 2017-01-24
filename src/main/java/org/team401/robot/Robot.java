@@ -40,6 +40,10 @@ import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.MecanumDrive;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
+import org.team401.robot.chassis.Hopper;
+import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.chassis.OctocanumGearbox;
+import org.team401.robot.commands.ToggleDriveMode;
 
 
 public class Robot extends IterativeRobot {

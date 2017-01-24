@@ -1,10 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="2017-Robot-Code:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="1">
+        <option name="compilerInfo">
+          <KotlinCompilerInfo>
+            <option name="compilerSettings">
+              <CompilerSettings>
+                <option name="additionalArguments" value="-version" />
+                <option name="copyJsLibraryFiles" value="true" />
+                <option name="outputDirectoryForJsLibraryFiles" value="lib" />
+              </CompilerSettings>
+            </option>
+            <option name="k2jsCompilerArguments">
+              <K2JSCompilerArguments>
+                <option name="outputFile" />
+                <option name="noStdlib" value="false" />
+                <option name="libraryFiles" />
+                <option name="sourceMap" value="false" />
+                <option name="metaInfo" value="false" />
+                <option name="kjsm" value="false" />
+                <option name="target" />
+                <option name="moduleKind" />
+                <option name="main" />
+                <option name="outputPrefix" />
+                <option name="outputPostfix" />
+                <option name="languageVersion" />
+                <option name="apiVersion" />
+                <option name="suppressWarnings" value="false" />
+                <option name="verbose" value="false" />
+                <option name="version" value="false" />
+                <option name="help" value="false" />
+                <option name="extraHelp" value="false" />
+                <option name="noInline" value="false" />
+                <option name="repeat" />
+                <option name="pluginClasspaths" />
+                <option name="pluginOptions" />
+                <option name="freeArgs">
+                  <list />
+                </option>
+                <option name="unknownExtraFlags">
+                  <list />
+                </option>
+              </K2JSCompilerArguments>
+            </option>
+            <option name="_commonCompilerArguments">
+              <DummyImpl>
+                <option name="languageVersion" />
+                <option name="apiVersion" />
+                <option name="suppressWarnings" value="false" />
+                <option name="verbose" value="false" />
+                <option name="version" value="false" />
+                <option name="help" value="false" />
+                <option name="extraHelp" value="false" />
+                <option name="noInline" value="false" />
+                <option name="repeat" />
+                <option name="pluginClasspaths">
+                  <array />
+                </option>
+                <option name="pluginOptions">
+                  <array />
+                </option>
+                <option name="freeArgs">
+                  <list />
+                </option>
+                <option name="unknownExtraFlags">
+                  <list />
+                </option>
+              </DummyImpl>
+            </option>
+          </KotlinCompilerInfo>
+        </option>
+        <option name="versionInfo">
+          <KotlinVersionInfo>
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
+            <option name="targetPlatformName" value="JVM 1.6" />
+          </KotlinVersionInfo>
+        </option>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../../build/classes/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -30,25 +112,37 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+<<<<<<< HEAD
           <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
+=======
           <root url="jar://$MODULE_DIR$/../../libs/strongback-tools-sources.jar!/" />
+>>>>>>> master
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+<<<<<<< HEAD
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
+=======
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing-sources.jar!/" />
+>>>>>>> master
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+<<<<<<< HEAD
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-tools-sources.jar!/" />
+=======
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-testing.jar!/" />
+>>>>>>> master
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -69,7 +163,9 @@
           <root url="jar://$MODULE_DIR$/../../libs/strongback.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../libs/strongback-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibj:athena:2017.2.1" level="project" />
@@ -78,5 +174,7 @@
     <orderEntry type="library" name="Gradle: org.opencv:opencv-java:3.1.0" level="project" />
     <orderEntry type="library" name="Gradle: edu.wpi.cscore.java:cscore:arm:1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.8" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
   </component>
 </module>
