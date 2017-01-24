@@ -30,17 +30,21 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.strongback.components.Solenoid;
 import org.strongback.components.ui.FlightStick;
-import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
+import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.chassis.OctocanumGearbox;
 
 
 public class Robot extends IterativeRobot {
 
 
-    CANTalon frontLeft, frontRight, rearLeft, rearRight;
+    CANTalon frontLeft0, frontLeft1, frontRight0, frontRight1, rearLeft0, rearLeft1, rearRight0, rearRight1;
 
     OctocanumDrive drive;
+
 
     /** some example logic on how one can manage an MP */
     MotionProfileExample frontLeftMP, frontRightMP, rearLeftMP, rearRightMP;
@@ -55,31 +59,45 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
-        frontLeft = new CANTalon(0);
-        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        frontLeft.reverseSensor(false); /* keep sensor and motor in phase */
+        frontLeft0 = new CANTalon(0);
+        frontLeft0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        frontLeft0.reverseSensor(false); /* keep sensor and motor in phase */
+        frontLeft1 = new CANTalon(1);
+        frontLeft1.changeControlMode(TalonControlMode.Follower);
+        frontLeft1.set(frontLeft0.getDeviceID());
 
-        frontRight = new CANTalon(1);
-        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        frontRight.reverseSensor(false); /* keep sensor and motor in phase */
+        frontRight0 = new CANTalon(2);
+        frontRight0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        frontRight0.reverseSensor(false); /* keep sensor and motor in phase */
+        frontRight1 = new CANTalon(3);
+        frontRight1.changeControlMode(TalonControlMode.Follower);
+        frontRight1.set(frontRight0.getDeviceID());
 
-        rearLeft = new CANTalon(2);
-        rearLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rearLeft.reverseSensor(false); /* keep sensor and motor in phase */
+        rearLeft0 = new CANTalon(4);
+        rearLeft0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        rearLeft0.reverseSensor(false); /* keep sensor and motor in phase */
+        rearLeft1 = new CANTalon(5);
+        rearLeft1.changeControlMode(TalonControlMode.Follower);
+        rearLeft1.set(rearLeft0.getDeviceID());
 
-        rearRight = new CANTalon(3);
-        rearRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rearRight.reverseSensor(false); /* keep sensor and motor in phase */
+        rearRight0 = new CANTalon(6);
+        rearRight0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        rearRight0.reverseSensor(false); /* keep sensor and motor in phase */
+        rearRight1 = new CANTalon(7);
+        rearRight1.changeControlMode(TalonControlMode.Follower);
+        rearRight1.set(rearRight0.getDeviceID());
 
-        drive = new OctocanumDrive();
-
-        //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        //_talon.reverseSensor(false); /* keep sensor and motor in phase */
+        drive = new OctocanumDrive(
+                new OctocanumGearbox(frontLeft0, frontLeft1),
+                new OctocanumGearbox(frontRight0, frontRight1),
+                new OctocanumGearbox(rearLeft0, rearLeft1),
+                new OctocanumGearbox(rearRight0, rearRight1),
+                Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.EXTENDING));
 
     }
 
     /*@Override
-    public void autonomousInit() {
+    public void autonomousInit() {//For when we actually motion profile
         leftMotor.changeControlMode(TalonControlMode.MotionProfile);
         rightMotor.changeControlMode(TalonControlMode.MotionProfile);
         leftMP.startMotionProfile();
@@ -93,29 +111,12 @@ public class Robot extends IterativeRobot {
         rightMP.control();
     }*/
     @Override
-    public void autonomousInit(){
-        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
-        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
+    public void autonomousInit(){//For now, just calculate the F-gain.
+
     }
 
     @Override
-    public void autonomousPeriodic(){
-        if(_joy.getTrigger().isTriggered()) {
-            leftMotor.set(100);
-            rightMotor.set(100);
-        }
-        System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
-    }
-
-    @Override
-    public void teleopInit(){
-        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
-        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
-    }
-
-    /**  function is called periodically during operator control */
-    @Override
-    public void teleopPeriodic() {
+    public void autonomousPeriodic() {
         double driveSpeed = _joy.getPitch().read();
         double turnSpeed = _joy.getRoll().read();
 
@@ -163,21 +164,24 @@ public class Robot extends IterativeRobot {
         }
 
         _btnLast = _joy.getTrigger().isTriggered();
-
     }
 
-    /**  function is called periodically during disable */
+    /**  function is called periodically during operator control */
+    @Override
+    public void teleopPeriodic() {
+        double speed = _joy.getTrigger().isTriggered() ? 1.0 : 0.0;
+        drive.drive(speed, speed, speed, speed);
+        SmartDashboard.putNumber("FLVEL", frontLeft0.getEncVelocity());
+        SmartDashboard.putNumber("FRVEL", frontRight0.getEncVelocity());
+        SmartDashboard.putNumber("RLVEL", rearLeft0.getEncVelocity());
+        SmartDashboard.putNumber("RRVEL", rearRight0.getEncVelocity());
+        SmartDashboard.putNumber("FLPOS", frontLeft0.getEncPosition());
+        SmartDashboard.putNumber("FRPOS", frontRight0.getEncPosition());
+        SmartDashboard.putNumber("RLPOS", rearLeft0.getEncPosition());
+        SmartDashboard.putNumber("RRPOS", rearRight0.getEncPosition());
+    }
     @Override
     public void disabledPeriodic() {
-		/* it's generally a good idea to put motor controllers back
-		 * into a known state when robot is disabled.  That way when you
-		 * enable the robot doesn't just continue doing what it was doing before.
-		 * BUT if that's what the application/testing requires than modify this accordingly */
-        //_talon.changeControlMode(TalonControlMode.PercentVbus);
-        //_talon.set(0);
-        leftMotor.set(0);
-        rightMotor.set(0);
-		/* clear our buffer and put everything into a known state */
-        //_example.reset();
+		drive.drive(0,0,0,0);
     }
 }
