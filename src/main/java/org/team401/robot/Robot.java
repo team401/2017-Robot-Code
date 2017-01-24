@@ -30,24 +30,32 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.strongback.components.Solenoid;
+/*import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;*/
+
+//import org.strongback.Strongback;
+import org.strongback.components.Motor;
 import org.strongback.components.ui.FlightStick;
+import org.strongback.drive.MecanumDrive;
+import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
-import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.chassis.OctocanumGearbox;
 
 
 public class Robot extends IterativeRobot {
 
 
-    CANTalon frontLeft0, frontLeft1, frontRight0, frontRight1, rearLeft0, rearLeft1, rearRight0, rearRight1;
+    CANTalon leftMotor;
+    CANTalon rightMotor;
 
-    OctocanumDrive drive;
+    TankDrive drive;
 
+
+    /** The Talon we want to motion profile. */
+    //CANTalon _talon = new CANTalon(9);
 
     /** some example logic on how one can manage an MP */
-    MotionProfileExample frontLeftMP, frontRightMP, rearLeftMP, rearRightMP;
+    MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
 
     /** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
      * but for this simple example, lets just do quick compares to prev-btn-states */
@@ -59,45 +67,32 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
-        frontLeft0 = new CANTalon(0);
-        frontLeft0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        frontLeft0.reverseSensor(false); /* keep sensor and motor in phase */
-        frontLeft1 = new CANTalon(1);
-        frontLeft1.changeControlMode(TalonControlMode.Follower);
-        frontLeft1.set(frontLeft0.getDeviceID());
+        /*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
+            switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
+        }catch(FileNotFoundException e){
+            System.out.println("ERROR: profile0.txt not found!");
+        }*/
+        leftMotor = new CANTalon(0);
+        leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-        frontRight0 = new CANTalon(2);
-        frontRight0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        frontRight0.reverseSensor(false); /* keep sensor and motor in phase */
-        frontRight1 = new CANTalon(3);
-        frontRight1.changeControlMode(TalonControlMode.Follower);
-        frontRight1.set(frontRight0.getDeviceID());
+        rightMotor = new CANTalon(1);
+        rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-        rearLeft0 = new CANTalon(4);
-        rearLeft0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rearLeft0.reverseSensor(false); /* keep sensor and motor in phase */
-        rearLeft1 = new CANTalon(5);
-        rearLeft1.changeControlMode(TalonControlMode.Follower);
-        rearLeft1.set(rearLeft0.getDeviceID());
+        drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
+                Hardware.Motors.talonSRX(rightMotor));
 
-        rearRight0 = new CANTalon(6);
-        rearRight0.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rearRight0.reverseSensor(false); /* keep sensor and motor in phase */
-        rearRight1 = new CANTalon(7);
-        rearRight1.changeControlMode(TalonControlMode.Follower);
-        rearRight1.set(rearRight0.getDeviceID());
+        leftMP = new MotionProfileExample(leftMotor);
+        rightMP = new MotionProfileExample(rightMotor);
 
-        drive = new OctocanumDrive(
-                new OctocanumGearbox(frontLeft0, frontLeft1),
-                new OctocanumGearbox(frontRight0, frontRight1),
-                new OctocanumGearbox(rearLeft0, rearLeft1),
-                new OctocanumGearbox(rearRight0, rearRight1),
-                Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.EXTENDING));
+        //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        //_talon.reverseSensor(false); /* keep sensor and motor in phase */
 
     }
 
     /*@Override
-    public void autonomousInit() {//For when we actually motion profile
+    public void autonomousInit() {
         leftMotor.changeControlMode(TalonControlMode.MotionProfile);
         rightMotor.changeControlMode(TalonControlMode.MotionProfile);
         leftMP.startMotionProfile();
@@ -111,12 +106,29 @@ public class Robot extends IterativeRobot {
         rightMP.control();
     }*/
     @Override
-    public void autonomousInit(){//For now, just calculate the F-gain.
-
+    public void autonomousInit(){
+        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
     }
 
     @Override
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic(){
+        if(_joy.getTrigger().isTriggered()) {
+            leftMotor.set(100);
+            rightMotor.set(100);
+        }
+        System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
+    }
+
+    @Override
+    public void teleopInit(){
+        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
+    }
+
+    /**  function is called periodically during operator control */
+    @Override
+    public void teleopPeriodic() {
         double driveSpeed = _joy.getPitch().read();
         double turnSpeed = _joy.getRoll().read();
 
@@ -164,24 +176,21 @@ public class Robot extends IterativeRobot {
         }
 
         _btnLast = _joy.getTrigger().isTriggered();
+
     }
 
-    /**  function is called periodically during operator control */
-    @Override
-    public void teleopPeriodic() {
-        double speed = _joy.getTrigger().isTriggered() ? 1.0 : 0.0;
-        drive.drive(speed, speed, speed, speed);
-        SmartDashboard.putNumber("FLVEL", frontLeft0.getEncVelocity());
-        SmartDashboard.putNumber("FRVEL", frontRight0.getEncVelocity());
-        SmartDashboard.putNumber("RLVEL", rearLeft0.getEncVelocity());
-        SmartDashboard.putNumber("RRVEL", rearRight0.getEncVelocity());
-        SmartDashboard.putNumber("FLPOS", frontLeft0.getEncPosition());
-        SmartDashboard.putNumber("FRPOS", frontRight0.getEncPosition());
-        SmartDashboard.putNumber("RLPOS", rearLeft0.getEncPosition());
-        SmartDashboard.putNumber("RRPOS", rearRight0.getEncPosition());
-    }
+    /**  function is called periodically during disable */
     @Override
     public void disabledPeriodic() {
-		drive.drive(0,0,0,0);
+		/* it's generally a good idea to put motor controllers back
+		 * into a known state when robot is disabled.  That way when you
+		 * enable the robot doesn't just continue doing what it was doing before.
+		 * BUT if that's what the application/testing requires than modify this accordingly */
+        //_talon.changeControlMode(TalonControlMode.PercentVbus);
+        //_talon.set(0);
+        leftMotor.set(0);
+        rightMotor.set(0);
+		/* clear our buffer and put everything into a known state */
+        //_example.reset();
     }
 }
