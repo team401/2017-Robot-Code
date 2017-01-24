@@ -30,14 +30,7 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
-/*import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;*/
-
-//import org.strongback.Strongback;
-import org.strongback.components.Motor;
 import org.strongback.components.ui.FlightStick;
-import org.strongback.drive.MecanumDrive;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
 
@@ -45,17 +38,12 @@ import org.strongback.hardware.Hardware;
 public class Robot extends IterativeRobot {
 
 
-    CANTalon leftMotor;
-    CANTalon rightMotor;
+    CANTalon frontLeft, frontRight, rearLeft, rearRight;
 
-    TankDrive drive;
-
-
-    /** The Talon we want to motion profile. */
-    //CANTalon _talon = new CANTalon(9);
+    OctocanumDrive drive;
 
     /** some example logic on how one can manage an MP */
-    MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
+    MotionProfileExample frontLeftMP, frontRightMP, rearLeftMP, rearRightMP;
 
     /** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
      * but for this simple example, lets just do quick compares to prev-btn-states */
@@ -67,24 +55,23 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
-        /*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
-            switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
-        }catch(FileNotFoundException e){
-            System.out.println("ERROR: profile0.txt not found!");
-        }*/
-        leftMotor = new CANTalon(0);
-        leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
+        frontLeft = new CANTalon(0);
+        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        frontLeft.reverseSensor(false); /* keep sensor and motor in phase */
 
-        rightMotor = new CANTalon(1);
-        rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
+        frontRight = new CANTalon(1);
+        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        frontRight.reverseSensor(false); /* keep sensor and motor in phase */
 
-        drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
-                Hardware.Motors.talonSRX(rightMotor));
+        rearLeft = new CANTalon(2);
+        rearLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        rearLeft.reverseSensor(false); /* keep sensor and motor in phase */
 
-        leftMP = new MotionProfileExample(leftMotor);
-        rightMP = new MotionProfileExample(rightMotor);
+        rearRight = new CANTalon(3);
+        rearRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        rearRight.reverseSensor(false); /* keep sensor and motor in phase */
+
+        drive = new OctocanumDrive();
 
         //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         //_talon.reverseSensor(false); /* keep sensor and motor in phase */
