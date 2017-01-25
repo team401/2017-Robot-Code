@@ -80,19 +80,18 @@ Waypoint Paths:
      * @return Point C
      */
     public static double[] perpendicular(double[] coords, double factor) {
-        //Why would you include these if statements?  If you want to negate the second half of the equation, just negate the factor argument.
-        //if(coords[0] < coords[2]){
+        if(coords[0] < coords[2]){
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
             };
-        /*}else{
+        }else{
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor
             };
 
-        }*/
+        }
 
     }
 
