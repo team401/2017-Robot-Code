@@ -38,7 +38,7 @@ public class MPCalculator {
         //******************************
         //IF YOU CHANGE ANY OF THE VALUES MAKE SURE TO CHANGE THEM IN FIG2 AS WELL!!!!
         //******************************
-        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.START_MID_TO_R_LIFT);
+        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.START_MID_TO_L_LIFT);
         //in feet
         falcon.calculate(15, 0.02, 2.16666);
 
@@ -60,7 +60,7 @@ public class MPCalculator {
 
 
         //Field map
-        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.START_MID_TO_R_LIFT);
+        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.START_MID_TO_L_LIFT);
         fig2.xGridOn();
         fig2.yGridOn();
         fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");

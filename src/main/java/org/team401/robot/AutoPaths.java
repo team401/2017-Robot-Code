@@ -44,8 +44,8 @@ Waypoint Paths:
     };
     //goes from the middle starting position to the right gear lift
     public static final double[][] START_MID_TO_R_LIFT = new double[][]{
-            {11,14},
-            perpendicular(new double[]{10, 12, 12, 15}),
+            STARTING_MID,
+
 
     };
     //goes from the Middle starting position to the left gear lift
@@ -55,7 +55,7 @@ Waypoint Paths:
             {7, 8},
             {7, 12},
             {7, 14},
-            {9, 16},
+            perpendicular_To_Airship(LEFT_GEAR_PEG),
             LEFT_GEAR_PEG,
     };
     //test mecanum path
@@ -64,51 +64,18 @@ Waypoint Paths:
             {13.5, 8, 180}
     };
 
-    /**
-     * This takes a point, the endpoints of the line that point is on and returns a point
-     * perpendicular to that point either going up or down depending on the direction
-     *
-     * @param x1 first endpoint of the line
-     * @param x2 second endpoint of the line
-     * @param y1 first endpoint of the line
-     * @param y2 second endpoint of the line
-     * @param pointx the point you want the line based off x value
-     *
-     * @param direction which way you want the line
-     * @return the new point
-     */
-/*//I commented out this method because I don't like it.  -Brian
-    public static double[] perpendicular(double x1, double x2, double y1, double y2, double pointx, double pointy, int direction){
-    double slope = (y2 - y1)/(x2 - x1);
-
-    double PerpendicularSlope = ((x2 - x1)/(y2 - y1)) * -1;
-
-        switch(direction){
-            case 0:
-                pointx += (x2 - x1) * -1;
-                pointy += (y2 - y1);
-                break;
-            case 1:
-                pointx += (x2 - x1);
-                pointy+= (y2 - y1) * -1;
-                break;
-            default:
-
-        }
-        double[] newPoint = new double[]{
-                pointx, pointy
-        };
-        return newPoint;
-    }
-*/
+   //NOTE: WE MAY WANT TO CHANGE THE FACTOR PART OF THIS. IT WOULD BE EASIER IN THE LONG RUN TO MAKE IT SO THAT
+    //IT EXTENDS THE POINT ONLY AS FAR AS OUR ROBOT IS LONG
 
     /**
      * Returns the coordinates of C, where C is the vertex of a triangle and A and B are known points with angles of 45 degrees.
      * Slightly modified from http://math.stackexchange.com/questions/1842614/find-third-coordinate-for-a-right-triangle-with-45degree-angles
      *
+     * Works no matter what order the points are entered
+     *
      * @param coords The coordinates of the points.  Should be in the order [x1, y1, x2, y2].
      * @param factor Scales the result to the correct length
-     * @return
+     * @return Point C
      */
     public static double[] perpendicular(double[] coords, double factor) {
 
@@ -138,4 +105,21 @@ Waypoint Paths:
     public static double[] perpendicular(double x1, double y1, double x2, double y2) {
         return perpendicular(new double[]{x1, y1, x2, y2});
     }
+
+    public static double[] perpendicular_To_Airship (double[] peg){
+
+        if(peg == LEFT_GEAR_PEG){
+             return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075});
+        }
+        else if(peg == RIGHT_GEAR_PEG){
+            return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075});
+        }
+        else if(peg == CENTER_GEAR_PEG){
+            return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325});
+        }
+        else{
+            return peg;
+        }
+    }
+
 }
