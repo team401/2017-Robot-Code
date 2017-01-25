@@ -12,7 +12,7 @@ public class AutoPaths {
     //points for final waypoints
 //if the points vary depending on the size of our robot
     public static final double[] CENTER_GEAR_PEG = new double[]{
-            13.5, 8
+            13.5, 9.325
     };
     public static final double[] LEFT_GEAR_PEG = new double[]{
             11, 14
@@ -80,7 +80,7 @@ Waypoint Paths:
      * @return Point C
      */
     public static double[] perpendicular(double[] coords, double factor) {
-        if(coords[0] < coords[2]){
+        if(coords[0] < coords[2] && !(coords[1] == coords[3])){
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
@@ -118,10 +118,10 @@ Waypoint Paths:
              return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075});
         }
         else if(peg.equals(RIGHT_GEAR_PEG)){
-            return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075}, -1);
+            return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075});
         }
         else if(peg.equals(CENTER_GEAR_PEG)){
-            return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325}, -1);
+            return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325});
         }
         else{
             return peg;

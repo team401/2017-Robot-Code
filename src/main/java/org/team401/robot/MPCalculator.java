@@ -79,6 +79,7 @@ public class MPCalculator {
         fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.RIGHT_GEAR_PEG), AutoPaths.RIGHT_GEAR_PEG}, Color.cyan);
         fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG), AutoPaths.CENTER_GEAR_PEG}, Color.cyan);
 
+
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);
         fig2.addData(neutralZone, Color.green);
