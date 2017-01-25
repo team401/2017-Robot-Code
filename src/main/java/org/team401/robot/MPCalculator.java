@@ -74,7 +74,10 @@ public class MPCalculator {
         fig2.addData(falcon.leftPath, Color.magenta);
         fig2.addData(falcon.rightPath, Color.magenta);
 
-
+        //Testing the perpendicular methods.
+        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.LEFT_GEAR_PEG), AutoPaths.LEFT_GEAR_PEG}, Color.cyan);
+        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.RIGHT_GEAR_PEG), AutoPaths.RIGHT_GEAR_PEG}, Color.cyan);
+        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG), AutoPaths.CENTER_GEAR_PEG}, Color.cyan);
 
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);

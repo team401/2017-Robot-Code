@@ -17,7 +17,7 @@ public class AutoPaths {
             11, 14
     };
     public static final double[] RIGHT_GEAR_PEG = new double[]{
-            16, 8
+            16, 14
     };
     public static final double[] STARTING_MID = new double[]{
             13.5, 2
@@ -67,6 +67,7 @@ Waypoint Paths:
    //NOTE: WE MAY WANT TO CHANGE THE FACTOR PART OF THIS. IT WOULD BE EASIER IN THE LONG RUN TO MAKE IT SO THAT
     //IT EXTENDS THE POINT ONLY AS FAR AS OUR ROBOT IS LONG
 
+
     /**
      * Returns the coordinates of C, where C is the vertex of a triangle and A and B are known points with angles of 45 degrees.
      * Slightly modified from http://math.stackexchange.com/questions/1842614/find-third-coordinate-for-a-right-triangle-with-45degree-angles
@@ -78,19 +79,19 @@ Waypoint Paths:
      * @return Point C
      */
     public static double[] perpendicular(double[] coords, double factor) {
-
-        if(coords[0] < coords[2]){
+        //Why would you include these if statements?  If you want to negate the second half of the equation, just negate the factor argument.
+        //if(coords[0] < coords[2]){
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
             };
-        }else{
+        /*}else{
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor
             };
 
-        }
+        }*/
 
     }
 
@@ -107,19 +108,18 @@ Waypoint Paths:
     }
 
     public static double[] perpendicular_To_Airship (double[] peg){
-
-        if(peg == LEFT_GEAR_PEG){
+        //Are you sure you wanted to use == instead of .equals?  With .equals, you have the option to input "new double[]{11, 14}" as peg and it would select the left peg option.
+        if(peg.equals(LEFT_GEAR_PEG)){
              return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075});
         }
-        else if(peg == RIGHT_GEAR_PEG){
-            return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075});
+        else if(peg.equals(RIGHT_GEAR_PEG)){
+            return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075}, -1);
         }
-        else if(peg == CENTER_GEAR_PEG){
-            return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325});
+        else if(peg.equals(CENTER_GEAR_PEG)){
+            return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325}, -1);
         }
         else{
             return peg;
         }
     }
-
 }
