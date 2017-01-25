@@ -4,6 +4,7 @@ package org.team401.robot;
 /**
  * Created by EJ on 1/23/2017.
  * This is a list off all the possible paths will may want to take in auto
+ * And some methods that help plot points
  */
 public class AutoPaths {
 
@@ -107,6 +108,11 @@ Waypoint Paths:
         return perpendicular(new double[]{x1, y1, x2, y2});
     }
 
+    /**
+     * Performs the perpendicular functions, but you only have to input the peg you are going to instead of a bunch of coordinates.
+     * @param peg What peg you are approaching
+     * @return the point right before the peg (is perpendicular to the face of the airship)
+     */
     public static double[] perpendicular_To_Airship (double[] peg){
         //Are you sure you wanted to use == instead of .equals?  With .equals, you have the option to input "new double[]{11, 14}" as peg and it would select the left peg option.
         if(peg.equals(LEFT_GEAR_PEG)){
