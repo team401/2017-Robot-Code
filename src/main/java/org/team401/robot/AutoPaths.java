@@ -52,9 +52,6 @@ Waypoint Paths:
             {20, 14},
             perpendicular_To_Airship(RIGHT_GEAR_PEG),
             RIGHT_GEAR_PEG
-
-
-
     };
     //goes from the Middle starting position to the left gear lift
     public static final double[][] START_MID_TO_L_LIFT = new double[][]{
@@ -66,6 +63,49 @@ Waypoint Paths:
             perpendicular_To_Airship(LEFT_GEAR_PEG),
             LEFT_GEAR_PEG,
     };
+    public static final double[][] START_LEFT_TO_LIFT = new double[][]{
+            STARTING_LEFT,
+            perpendicular_To_Airship(CENTER_GEAR_PEG),
+            CENTER_GEAR_PEG
+    };
+    public static final double[][] START_LEFT_TO_R_LIFT = new double[][]{
+            STARTING_LEFT,
+            {7, 5},
+            {19, 5},
+            {20, 7},
+            {19, 14},
+            perpendicular_To_Airship(RIGHT_GEAR_PEG),
+            RIGHT_GEAR_PEG
+    };
+    public static final double[][] START_LEFT_TO_L_LIFT = new double[][]{
+            STARTING_LEFT,
+            {5, 15},
+            {8, 16},
+            perpendicular_To_Airship(LEFT_GEAR_PEG),
+           LEFT_GEAR_PEG
+    };
+    public static final double[][] START_RIGHT_TO_LIFT = new double[][]{
+            STARTING_RIGHT,
+            perpendicular_To_Airship(CENTER_GEAR_PEG),
+            CENTER_GEAR_PEG
+    };
+    public static final double[][] START_RIGHT_TO_R_LIFT = new double[][]{
+            STARTING_RIGHT,
+            {22, 15},
+            {19, 16},
+            perpendicular_To_Airship(RIGHT_GEAR_PEG),
+            RIGHT_GEAR_PEG
+    };
+    public static final double[][] START_RIGHT_TO_L_LIFT = new double[][]{
+            STARTING_RIGHT,
+            {20, 5},
+            {8, 5},
+            {7, 7},
+            {8, 14},
+            perpendicular_To_Airship(LEFT_GEAR_PEG),
+            LEFT_GEAR_PEG
+    };
+
     //test mecanum path
     public static final double[][] TEST_MECANUM = new double[][]{
             {13.5, 2, -1},

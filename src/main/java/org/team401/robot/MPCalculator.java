@@ -38,7 +38,9 @@ public class MPCalculator {
         //******************************
         //Add what paths you want here
         //******************************
-        FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.START_MID_TO_L_LIFT);
+        double[][] path = AutoPaths.START_RIGHT_TO_R_LIFT;
+
+        FalconPathPlanner falcon = new FalconPathPlanner(path);
         falcon.calculate(15, 0.02, 2.16666);
         //in feet
 
@@ -60,7 +62,7 @@ public class MPCalculator {
 
 
         //Field map
-        FalconLinePlot fig2 = new FalconLinePlot(AutoPaths.START_MID_TO_L_LIFT);
+        FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
         fig2.yGridOn();
         fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");
@@ -77,6 +79,7 @@ public class MPCalculator {
 
         //adds the data to our graph
         AddMotionProfile(fig2, falcon);
+
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
         if(false) {
