@@ -34,12 +34,13 @@ public class MPCalculator {
                 {0, 15.1681225}
         };
 
-        //calculates our path
         //******************************
         //Add what paths you want here
         //******************************
+        //what the main path is
         double[][] path = AutoPaths.START_RIGHT_TO_R_LIFT;
 
+        //add the different paths we are using here
         FalconPathPlanner falcon = new FalconPathPlanner(path);
         falcon.calculate(15, 0.02, 2.16666);
         //in feet
@@ -72,7 +73,7 @@ public class MPCalculator {
         fig2.setXTic(0, 27, 1);
         fig2.setYTic(0, 39, 1);
 
-
+        //adds the field elements the field
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);
         fig2.addData(neutralZone, Color.green);
@@ -104,12 +105,24 @@ public class MPCalculator {
                 return path.smoothCenterVelocity[i][1];
         return result;
     }
+
+    /**
+     * Adds the data for the motion profile paths to the figure specified
+     * @param fig what figure to add the data to
+     * @param falcon what path we are adding
+     */
     public static void AddMotionProfile(FalconLinePlot fig, FalconPathPlanner falcon){
 
         fig.addData(falcon.smoothPath, Color.red, Color.blue);
         fig.addData(falcon.leftPath, Color.magenta);
         fig.addData(falcon.rightPath, Color.magenta);
     }
+
+    /**
+     * Plots our velocity graph
+     * @param fig what figure to add the data to
+     * @param falcon what path we are adding
+     */
     public static void AddVelocityProfile(FalconLinePlot fig, FalconPathPlanner falcon){
 
         fig.addData(falcon.smoothCenterVelocity, Color.red, Color.blue);
