@@ -36,16 +36,18 @@ public class MPCalculator {
 
         //calculates our path
         //******************************
-        //IF YOU CHANGE ANY OF THE VALUES MAKE SURE TO CHANGE THEM IN FIG2 AS WELL!!!!
+        //Add what paths you want here
         //******************************
         FalconPathPlanner falcon = new FalconPathPlanner(AutoPaths.START_MID_TO_L_LIFT);
-        //in feet
         falcon.calculate(15, 0.02, 2.16666);
+        //in feet
+
 
         //test mecanum mode
         FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
         mecaFalcon.calculate(15, 0.02, 2.16666);
 
+        //creates the velocity graph
         FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
         fig1.xGridOn();
         fig1.yGridOn();
@@ -53,10 +55,8 @@ public class MPCalculator {
         fig1.setXLabel("Time (seconds)");
         fig1.setYLabel("Velocity (ft/sec)");
 
-        fig1.addData(falcon.smoothLeftVelocity, Color.magenta);
-        fig1.addData(falcon.smoothRightVelocity, Color.cyan);
-        fig1.addData(falcon.smoothCenterVelocity, Color.blue);
-
+        //adds the data to the graph
+        AddVelocityProfile(fig1, falcon);
 
 
         //Field map
@@ -70,25 +70,20 @@ public class MPCalculator {
         fig2.setXTic(0, 27, 1);
         fig2.setYTic(0, 39, 1);
 
-        fig2.addData(falcon.smoothPath, Color.red, Color.blue);
-        fig2.addData(falcon.leftPath, Color.magenta);
-        fig2.addData(falcon.rightPath, Color.magenta);
-
-        //Testing the perpendicular methods.
-        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.LEFT_GEAR_PEG), AutoPaths.LEFT_GEAR_PEG}, Color.cyan);
-        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.RIGHT_GEAR_PEG), AutoPaths.RIGHT_GEAR_PEG}, Color.cyan);
-        fig2.addData(new double[][]{AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG), AutoPaths.CENTER_GEAR_PEG}, Color.cyan);
-
 
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);
         fig2.addData(neutralZone, Color.green);
+
+        //adds the data to our graph
+        AddMotionProfile(fig2, falcon);
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
         if(false) {
             falcon.exportCSV();
 
         }
+
     }
 
     /**
@@ -105,5 +100,17 @@ public class MPCalculator {
             if (time >= path.smoothCenterVelocity[i][0])
                 return path.smoothCenterVelocity[i][1];
         return result;
+    }
+    public static void AddMotionProfile(FalconLinePlot fig, FalconPathPlanner falcon){
+
+        fig.addData(falcon.smoothPath, Color.red, Color.blue);
+        fig.addData(falcon.leftPath, Color.magenta);
+        fig.addData(falcon.rightPath, Color.magenta);
+    }
+    public static void AddVelocityProfile(FalconLinePlot fig, FalconPathPlanner falcon){
+
+        fig.addData(falcon.smoothCenterVelocity, Color.red, Color.blue);
+        fig.addData(falcon.smoothLeftVelocity, Color.red);
+        fig.addData(falcon.smoothRightVelocity, Color.magenta);
     }
 }

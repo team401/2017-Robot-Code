@@ -12,13 +12,13 @@ public class AutoPaths {
     //points for final waypoints
 //if the points vary depending on the size of our robot
     public static final double[] CENTER_GEAR_PEG = new double[]{
-            13.5, 9.325
+            (11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0
     };
     public static final double[] LEFT_GEAR_PEG = new double[]{
-            11, 14
+            (11.831875 + 10.16375)/2.0, (15.2075 + 12.26625)/2.0
     };
     public static final double[] RIGHT_GEAR_PEG = new double[]{
-            16, 14
+            (16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0
     };
     public static final double[] STARTING_MID = new double[]{
             13.5, 2
@@ -46,6 +46,13 @@ Waypoint Paths:
     //goes from the middle starting position to the right gear lift
     public static final double[][] START_MID_TO_R_LIFT = new double[][]{
             STARTING_MID,
+            {17, 4},
+            {20, 8},
+            {20, 12},
+            {20, 14},
+            perpendicular_To_Airship(RIGHT_GEAR_PEG),
+            RIGHT_GEAR_PEG
+
 
 
     };
