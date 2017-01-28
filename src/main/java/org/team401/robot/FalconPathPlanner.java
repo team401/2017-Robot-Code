@@ -679,14 +679,14 @@ public class FalconPathPlanner {
 
 		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
 
-		result[0] = new double[]{0, source[0][1], 0};
+		result[0] = new double[]{0, source[0][1], source[0][0]*1000};
 
 		for (int i = 1; i < source.length; i++) {
-			result[i] = new double[]{dist, source[i][1] * ratio, source[i][0] - source[i - 1][0]};
+			result[i] = new double[]{dist, source[i][1] * ratio, (source[i][0] - source[i - 1][0])*1000};
 
 			x = wheel[i][0] - wheel[i - 1][0];//Get dX and dY
 			y = wheel[i][1] - wheel[i - 1][1];
-			dist += Math.sqrt(Math.abs(x * x + y * y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
+			dist += ratio * Math.sqrt(Math.abs(x * x + y * y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
 		}
 
 		return result;
@@ -699,7 +699,7 @@ public class FalconPathPlanner {
 	public double getRatio(){
 		double[] ratios = new double[]{
 				1.0/6.0/Math.PI,//Reciprocal of circumference.  Middle number is diameter of wheel. Transforms feet to rotations.
-				mecanum ? 3.0 : 1.0 / 3.0//Gear differently if mecanum or not
+				mecanum ? 1.0 : 0.5//Divide by 2 if in traction drive
 		};
 		double result = 1;
 		for (double x:ratios)
@@ -736,10 +736,10 @@ public class FalconPathPlanner {
 	 * @return
 	 */
 	public double[] polarMecanum(double mag, double dir, double rot) {
-
+		System.out.println("1: "+mag);
 		// Normalized for full power along the Cartesian axes.
 		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
-
+		System.out.println("2: "+mag);
 		// The rollers are at 45 degree angles.
 		double dirInRad = Math.toRadians(dir + 45.0);
 		double cosD = Math.cos(dirInRad);
@@ -752,22 +752,22 @@ public class FalconPathPlanner {
 				(sinD * mag - rot)//RIGHT REAR
 		};
 
-		normalize(wheelSpeeds);
+		//normalize(wheelSpeeds);//This line only works in %VBUS mode, not Motion Profile.
+		System.out.println(wheelSpeeds[0]+" "+wheelSpeeds[1]+" "+wheelSpeeds[2]+" "+wheelSpeeds[3]);
 		scale(wheelSpeeds, 1.0);
 		return wheelSpeeds;
 	}
 
 	//These 2 methods were stolen from https://github.com/strongback/strongback-java/blob/master/strongback/src/org/strongback/drive/MecanumDrive.java
-	private static void normalize(double wheelSpeeds[]) {
+	private static void normalize(double[] wheelSpeeds) {
 		double maxMagnitude = Math.abs(wheelSpeeds[0]);
 		for (int i = 1; i < 4; i++) {
 			double temp = Math.abs(wheelSpeeds[i]);
 			if (maxMagnitude < temp) maxMagnitude = temp;
 		}
 		if (maxMagnitude > 1.0) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 4; i++)
 				wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
-			}
 		}
 	}
 
