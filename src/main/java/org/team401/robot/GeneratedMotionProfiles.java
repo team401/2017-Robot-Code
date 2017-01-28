@@ -1,9 +1,13 @@
 
 package org.team401.robot;
 
-public class GeneratedMotionProfile {
+public class GeneratedMotionProfiles {
     public static final int kNumPoints = 185;
     // Position (rotations)	Velocity (RPM)	Duration (ms)
+    public static double[][] getProfile(int start, int tgt, boolean mecanum){
+        return Points;
+    }
+
     public static double[][] Points = new double[][]{
             {0, 0, 10},
             {0.00004761904762, 0.5714285714, 10},
