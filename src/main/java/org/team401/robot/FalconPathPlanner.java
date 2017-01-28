@@ -698,7 +698,7 @@ public class FalconPathPlanner {
 
 	public double getRatio(){
 		double[] ratios = new double[]{
-				1.0/6.0/Math.PI,//Reciprocal of circumference.  Middle number is diameter of wheel. Transforms feet to rotations.
+				1.0/0.5/Math.PI,//Reciprocal of circumference.  Middle number is diameter of wheel in FEET
 				mecanum ? 1.0 : 0.5//Divide by 2 if in traction drive
 		};
 		double result = 1;
@@ -714,16 +714,22 @@ public class FalconPathPlanner {
 	}
 	public double[][][] mecanumProfile(double ratio) {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
-		double[][] path = doubleArrayCopy(smoothPath);
+		double[][] path = doubleArrayCopy(smoothPath),
+			vel = doubleArrayCopy(smoothCenterVelocity);
+		System.out.println(ratio);
 
 		for (int h = 0; h < 4; h++) {
 			double dist = 0.0;
 			result[h][0] = new double[3];
+			double lastVel = 0.0,
+				interval = 0.0;
 			for (int i = 1; i < numFinalPoints; i++) {
-				dist += smoothCenterVelocity[i - 1][0] * smoothCenterVelocity[i - 1][1] / 60*ratio;
+				dist += lastVel*interval / 60;
+				lastVel = polarMecanum(vel[i][1]*ratio, Math.atan(path[i][0] / path[i][1]), path[i][2])[h];
+				interval = (vel[i][0]-vel[i-1][0]);
 				result[h][i] = new double[]{dist,
-					polarMecanum(smoothCenterVelocity[i][1], Math.atan(path[i][0] / path[i][1]), path[i][2])[h]*ratio,
-					(smoothCenterVelocity[i][0]-smoothCenterVelocity[i-1][0]) * 1000.0
+					lastVel,
+					interval*1000.0
 				};
 			}
 		}
@@ -736,10 +742,8 @@ public class FalconPathPlanner {
 	 * @return
 	 */
 	public double[] polarMecanum(double mag, double dir, double rot) {
-		System.out.println("1: "+mag);
 		// Normalized for full power along the Cartesian axes.
 		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
-		System.out.println("2: "+mag);
 		// The rollers are at 45 degree angles.
 		double dirInRad = Math.toRadians(dir + 45.0);
 		double cosD = Math.cos(dirInRad);
@@ -753,7 +757,6 @@ public class FalconPathPlanner {
 		};
 
 		//normalize(wheelSpeeds);//This line only works in %VBUS mode, not Motion Profile.
-		System.out.println(wheelSpeeds[0]+" "+wheelSpeeds[1]+" "+wheelSpeeds[2]+" "+wheelSpeeds[3]);
 		scale(wheelSpeeds, 1.0);
 		return wheelSpeeds;
 	}

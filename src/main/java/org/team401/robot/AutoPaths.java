@@ -123,11 +123,31 @@ Waypoint Paths:
 			{5, 17},
 			{5, 15}
 	};
-
+	public static double[] concat(double[] a, double b){
+		return concat(a, new double[]{b});
+	}
+	public static double[] concat(double[] a, double[] b) {
+		double[] result = new double[a.length + b.length];
+		int index = 0;
+		for (double u : a){
+			result[index] = u;
+			index++;
+		}
+		for(double u : b){
+			result[index] = u;
+			index++;
+		}
+		return result;
+	}
 	//test mecanum path
 	public static final double[][] TEST_MECANUM = new double[][]{
-			{13.5, 2, -1},
-			{13.5, 8, 180}
+			concat(STARTING_MID, 0.0),
+			{10, 4, 70},
+			{7, 8, 180},
+			{7, 12, 30},
+			{7, 14, -45},
+			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 2), 0),
+			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 1), 0)
 	};
 
 	private static final String[][] names = new String[][]{

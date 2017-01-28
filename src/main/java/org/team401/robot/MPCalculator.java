@@ -37,6 +37,9 @@ public class MPCalculator {
 		//test mecanum mode
 		FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
 		mecaFalcon.calculate(15, 0.02, 2.16666);
+		FalconLinePlot mech = new FalconLinePlot(mecaFalcon.smoothCenterVelocity);
+		mech.xGridOn();
+		mech.yGridOn();
 
 		//adds the velocity graphs
 		Velocities(paths);
