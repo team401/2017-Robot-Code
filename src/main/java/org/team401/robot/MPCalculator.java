@@ -65,8 +65,10 @@ public class MPCalculator {
         //******************************
         //Add what paths you want here
         //******************************
-        //what the main path is
+        //DONT TOUCH THIS ONE!
         double[][] path = new double[][]{{0,0}};
+
+        //ADD YOUR PATHS HERE:
         double[][][] paths = new double[][][]{
                 AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE,
                 AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2
@@ -182,6 +184,15 @@ AddPaths(paths, fig2);
         fig.addData(falcon.smoothLeftVelocity, Color.red);
         fig.addData(falcon.smoothRightVelocity, Color.magenta);
     }
+
+    /**
+     * Takes a 3D array of the paths you want in your graph and calculates then adds them to the graph you specify
+     *
+     * NOTE: Only works for the wheen paths, does not do velocity graphs
+     *
+     * @param listOfPaths the 3D array housing your paths
+     * @param figure what graph you want the paths added to
+     */
     public static void AddPaths(double[][][] listOfPaths, FalconLinePlot figure){
         for(int i = 0;i<listOfPaths.length;i++){
             FalconPathPlanner falconPathPlanner = new FalconPathPlanner(listOfPaths[i]);
