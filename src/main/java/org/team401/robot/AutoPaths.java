@@ -130,6 +130,10 @@ Waypoint Paths:
             {13.5, 8, 180}
     };
 
+
+
+
+
    //NOTE: WE MAY WANT TO CHANGE THE FACTOR PART OF THIS. IT WOULD BE EASIER IN THE LONG RUN TO MAKE IT SO THAT
     //IT EXTENDS THE POINT ONLY AS FAR AS OUR ROBOT IS LONG
 
@@ -191,5 +195,10 @@ Waypoint Paths:
         else{
             return peg;
         }
+    }
+    public static void Names(){
+        double[][] names = new double[][]{
+
+        };
     }
 }
