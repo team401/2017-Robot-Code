@@ -780,14 +780,22 @@ public class FalconPathPlanner {
 	}
 
 	public static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException {
+		exportCSV(fileName, arr, false);
+	}
+
+	public static void exportCSV(String fileName, double[][] arr, boolean braces) throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
 		StringBuilder sb = new StringBuilder();
 		for (double[] u : arr) {
+			if(braces)
+				sb.append('{');
 			for (double v : u) {
 				sb.append(v);
 				sb.append(',');
 			}
 			sb.deleteCharAt(sb.length() - 1);
+			if(braces)
+				sb.append('}');
 			sb.append('\n');
 		}
 		pw.write(sb.toString());
