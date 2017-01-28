@@ -211,7 +211,7 @@ AddPaths(paths, fig2);
 
         }
     }
-    
+
     public static void Export(double[][][] listOfPaths) throws FileNotFoundException{
         for(int i = 0;i<listOfPaths.length;i++) {
             FalconPathPlanner falconPathPlanner = new FalconPathPlanner(listOfPaths[i]);
@@ -222,14 +222,23 @@ AddPaths(paths, fig2);
     }
     public static void Velocities(double[][][] paths){
 
+
         for(int i = 0;i<paths.length;i++){
+            
+            String name = "";
+            for(int j = 0;j<AutoPaths.names.length;j++){
+                if(AutoPaths.names[j][0].equals(paths[i].toString())){
+                    name = AutoPaths.names[j][1];
+                }
+            }
+
             FalconPathPlanner falconPathPlanner = new FalconPathPlanner(paths[i]);
             falconPathPlanner.calculate(15, 0.02, 2.16666);
 
             FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
             fig1.xGridOn();
             fig1.yGridOn();
-            fig1.setTitle("Velocities (" + paths[i].hashCode() + ") \n Center = blue, Left = red, Right = magenta");
+            fig1.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
             fig1.setXLabel("Time (seconds)");
             fig1.setYLabel("Velocity (ft/sec)");
 

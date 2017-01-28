@@ -130,7 +130,19 @@ Waypoint Paths:
             {13.5, 8, 180}
     };
 
-
+    public static final String[][] names = new String[][]{
+            {START_MID_TO_LIFT.toString(), "Start Mid to Center Lift"},
+            {START_MID_TO_L_LIFT.toString(), "Start Mid to Left Lift"},
+            {START_MID_TO_R_LIFT.toString(), "Start Mid to Right Lift"},
+            {START_LEFT_TO_LIFT.toString(), "Start Left to Center Lift"},
+            {START_LEFT_TO_L_LIFT.toString(), "Start Left to Left Lift"},
+            {START_LEFT_TO_R_LIFT.toString(), "Start Left to Right Lift"},
+            {START_RIGHT_TO_LIFT.toString(), "Start Right to Center Lift"},
+            {START_RIGHT_TO_L_LIFT.toString(), "Start Right to Left Lift"},
+            {START_RIGHT_TO_R_LIFT.toString(), "Start Right to Right Lift"},
+            {RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
+            {RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"}
+    };
 
 
 
@@ -196,9 +208,5 @@ Waypoint Paths:
             return peg;
         }
     }
-    public static void Names(){
-        double[][] names = new double[][]{
 
-        };
-    }
 }
