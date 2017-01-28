@@ -244,4 +244,32 @@ public class GeneratedMotionProfiles {
 			{4.999880952, 0.8571428571, 10},
 			{4.99997619, 0.2857142857, 10},
 			{5, 0, 10}};
-}			
+    public static double[][][] Start_Mid_To_Center_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Mid_To_Left_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Mid_To_Right_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Left_To_Center_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Left_To_Left_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Left_To_Right_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Right_To_Center_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Right_To_Left_Lift = new double[][][]{
+
+    };
+    public static double[][][] Start_Right_To_Right_Lift = new double[][][]{
+
+    };
+
+}

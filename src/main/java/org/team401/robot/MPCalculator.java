@@ -17,15 +17,7 @@ public class MPCalculator {
 
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = new double[][][]{
-				AutoPaths.START_LEFT_TO_L_LIFT,
-				AutoPaths.START_LEFT_TO_LIFT,
-				AutoPaths.START_LEFT_TO_R_LIFT,
-				AutoPaths.START_RIGHT_TO_L_LIFT,
-				AutoPaths.START_RIGHT_TO_R_LIFT,
-				AutoPaths.START_RIGHT_TO_LIFT,
-				AutoPaths.START_MID_TO_LIFT,
-				AutoPaths.START_MID_TO_R_LIFT,
-				AutoPaths.START_MID_TO_L_LIFT
+				AutoPaths.START_MID_TO_LIFT
 
 		};
 
