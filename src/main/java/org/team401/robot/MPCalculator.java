@@ -33,17 +33,50 @@ public class MPCalculator {
                 {0, 54 - 15.1681225},
                 {0, 15.1681225}
         };
+        double[][] key_blue = new double[][]{
+                {3.036, 0},
+                {9.525, 0},
+                {0, 9.525},
+                {0, 3.036},
+                {3.036, 0}
+        };
+        double[][] retrevalZone_blue = new double[][]{
+                {27, 5.735},
+                {27, 13.79583},
+                {27 - 7.30325, 0},
+                {27 - 3.036, 0},
+                {27, 5.735}
+        };
+        double[][] key_red = new double[][]{
+                {27 - 3.036, 0},
+                {27 - 9.525, 0},
+                {27, 9.525},
+                {27, 3.036},
+                {27 - 3.036, 0}
+        };
+        double[][] retrevalZone_red = new double[][]{
+                {0, 5.735},
+                {0, 13.79583},
+                {7.30325, 0},
+                {3.036, 0},
+                {0, 5.735}
+        };
 
         //******************************
         //Add what paths you want here
         //******************************
         //what the main path is
-        double[][] path = AutoPaths.START_RIGHT_TO_R_LIFT;
+        double[][] path = new double[][]{{0,0}};
+        double[][][] paths = new double[][][]{
+                AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE,
+                AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2
+        };
 
         //add the different paths we are using here
         FalconPathPlanner falcon = new FalconPathPlanner(path);
         falcon.calculate(15, 0.02, 2.16666);
-        //in feet
+
+
 
 
         //test mecanum mode
@@ -59,14 +92,12 @@ public class MPCalculator {
         fig1.setYLabel("Velocity (ft/sec)");
 
         //adds the data to the graph
-        AddVelocityProfile(fig1, falcon);
-
-
-        //Field map
+AddVelocityProfile(fig1, falcon);
+        //Field map from the blue alliance's perspective
         FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
         fig2.yGridOn();
-        fig2.setTitle("2017 Field Map\nNote: Size may be distorted slightly");
+        fig2.setTitle("2017 Field Map (From the blue alliance's perspective)\nNote: Size may be distorted slightly");
         fig2.setXLabel("Width of the Field (feet)");
         fig2.setYLabel("Length of the Field (feet)");
         //filed size: x: 54 ft y: 27 ft
@@ -77,9 +108,31 @@ public class MPCalculator {
         fig2.addData(airship, Color.black);
         fig2.addData(baseline, Color.blue);
         fig2.addData(neutralZone, Color.green);
+        fig2.addData(key_blue, Color.black);
+        fig2.addData(retrevalZone_blue, Color.black);
 
         //adds the data to our graph
-        AddMotionProfile(fig2, falcon);
+AddPaths(paths, fig2);
+        //Field map from the red alliance's perspective
+        FalconLinePlot fig3 = new FalconLinePlot(path);
+        fig3.xGridOn();
+        fig3.yGridOn();
+        fig3.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
+        fig3.setXLabel("Width of the Field (feet)");
+        fig3.setYLabel("Length of the Field (feet)");
+        //filed size: x: 54 ft y: 27 ft
+        fig3.setXTic(0, 27, 1);
+        fig3.setYTic(0, 39, 1);
+
+        //adds the field elements the field
+        fig3.addData(airship, Color.black);
+        fig3.addData(baseline, Color.blue);
+        fig3.addData(neutralZone, Color.green);
+        fig3.addData(key_red, Color.black);
+        fig3.addData(retrevalZone_red, Color.black);
+
+        //adds the data to our graph
+        AddMotionProfile(fig3, falcon);
 
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
@@ -128,5 +181,16 @@ public class MPCalculator {
         fig.addData(falcon.smoothCenterVelocity, Color.red, Color.blue);
         fig.addData(falcon.smoothLeftVelocity, Color.red);
         fig.addData(falcon.smoothRightVelocity, Color.magenta);
+    }
+    public static void AddPaths(double[][][] listOfPaths, FalconLinePlot figure){
+        for(int i = 0;i<listOfPaths.length;i++){
+            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(listOfPaths[i]);
+            falconPathPlanner.calculate(15, 0.02, 2.16666);
+
+            figure.addData(falconPathPlanner.smoothPath, Color.red, Color.blue);
+            figure.addData(falconPathPlanner.leftPath, Color.magenta);
+            figure.addData(falconPathPlanner.rightPath, Color.magenta);
+
+        }
     }
 }

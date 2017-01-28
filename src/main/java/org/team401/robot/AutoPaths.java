@@ -105,6 +105,24 @@ Waypoint Paths:
             perpendicular_To_Airship(LEFT_GEAR_PEG),
             LEFT_GEAR_PEG
     };
+    public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new double[][]{
+            RIGHT_GEAR_PEG,
+            {23, 18},
+    };
+    public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new double[][]{
+            LEFT_GEAR_PEG,
+            {4, 18},
+    };
+    public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = new double[][]{
+            {23, 18},
+            {22, 17},
+            {22, 15}
+    };
+    public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2 = new double[][]{
+            {4, 18},
+            {5, 17},
+            {5, 15}
+    };
 
     //test mecanum path
     public static final double[][] TEST_MECANUM = new double[][]{
