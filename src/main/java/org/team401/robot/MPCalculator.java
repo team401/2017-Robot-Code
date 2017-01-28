@@ -188,12 +188,6 @@ AddVelocities(paths, fig1);
             fig1.setXLabel("Time (seconds)");
             fig1.setYLabel("Velocity (ft/sec)");
 
-			FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
-			fig1.xGridOn();
-			fig1.yGridOn();
-			fig1.setTitle("Velocities (" + u.hashCode() + ") \n Center = blue, Left = red, Right = magenta");
-			fig1.setXLabel("Time (seconds)");
-			fig1.setYLabel("Velocity (ft/sec)");
 
 			//adds the data to the graph
 			fig1.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
