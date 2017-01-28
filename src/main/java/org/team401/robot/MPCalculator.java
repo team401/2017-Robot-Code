@@ -204,4 +204,22 @@ AddPaths(paths, fig2);
 
         }
     }
+
+    /**
+     * Does the same as AddPaths, only with velocities
+     * @param listOfPaths the paths, whose velocities you want added
+     * @param figure what graph you want the velocities added to
+     */
+    public static void AddVelocities(double[][][] listOfPaths, FalconLinePlot figure){
+        for(int i = 0;i<listOfPaths.length;i++){
+            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(listOfPaths[i]);
+            falconPathPlanner.calculate(15, 0.02, 2.16666);
+
+            figure.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
+            figure.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
+            figure.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
+
+        }
+    }
+
 }
