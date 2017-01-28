@@ -85,8 +85,10 @@ public class MPCalculator {
         FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
         mecaFalcon.calculate(15, 0.02, 2.16666);
 
+
+/*
         //creates the velocity graph
-        FalconLinePlot fig1 = new FalconLinePlot(path);
+        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity);
         fig1.xGridOn();
         fig1.yGridOn();
         fig1.setTitle("Velocities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
@@ -96,6 +98,8 @@ public class MPCalculator {
         //adds the data to the graph
 AddVelocities(paths, fig1);
 
+*/
+Velocities(paths);
         //Field map from the blue alliance's perspective
         FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
@@ -139,10 +143,10 @@ AddPaths(paths, fig2);
 
 
         //Exports raw speed controller instructions as 6 .csv spreadsheets.
-        if(false) {
-            falcon.exportCSV();
 
-        }
+        mecaFalcon.exportCSV();
+        Export(paths);
+
 
     }
 
@@ -203,6 +207,8 @@ AddPaths(paths, fig2);
             figure.addData(falconPathPlanner.leftPath, Color.magenta);
             figure.addData(falconPathPlanner.rightPath, Color.magenta);
 
+
+
         }
     }
 
@@ -222,5 +228,31 @@ AddPaths(paths, fig2);
 
         }
     }
+    public static void Export(double[][][] listOfPaths) throws FileNotFoundException{
+        for(int i = 0;i<listOfPaths.length;i++) {
+            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(listOfPaths[i]);
+            falconPathPlanner.calculate(15, 0.02, 2.16666);
+            falconPathPlanner.exportCSV();
+        }
 
+    }
+    public static void Velocities(double[][][] paths){
+
+        for(int i = 0;i<paths.length;i++){
+            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(paths[i]);
+            falconPathPlanner.calculate(15, 0.02, 2.16666);
+
+            FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
+            fig1.xGridOn();
+            fig1.yGridOn();
+            fig1.setTitle("Velocities (" + paths[i].hashCode() + ") \n Center = blue, Left = red, Right = magenta");
+            fig1.setXLabel("Time (seconds)");
+            fig1.setYLabel("Velocity (ft/sec)");
+
+            //adds the data to the graph
+            fig1.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
+            fig1.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
+            fig1.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
+        }
+    }
 }
