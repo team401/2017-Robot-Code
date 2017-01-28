@@ -32,7 +32,7 @@ public class MPCalculator {
 
 		//adds the velocity graphs
 		Velocities(paths);
-		
+
 		//Field map from the blue alliance's perspective
 		FalconLinePlot fig2 = new FalconLinePlot(path);
 		fig2.xGridOn();
@@ -146,6 +146,11 @@ public class MPCalculator {
 		}
 	}
 
+	/**
+	 * Exports the CSV files for each motion profile
+	 * @param listOfPaths the paths of the robot
+	 * @throws FileNotFoundException
+	 */
 	public static void Export(double[][][] listOfPaths) throws FileNotFoundException {
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
@@ -155,6 +160,10 @@ public class MPCalculator {
 
 	}
 
+	/**
+	 * Calculates the velocities of the paths, then creates the graphs and plots the velocities on them
+	 * @param paths the paths of the robot
+	 */
 	public static void Velocities(double[][][] paths) {
 
         for(double[][] u:paths){
