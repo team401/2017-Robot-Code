@@ -70,8 +70,8 @@ public class MPCalculator {
 
         //ADD YOUR PATHS HERE:
         double[][][] paths = new double[][][]{
-                AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE,
-                AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2
+                AutoPaths.RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE,
+                AutoPaths.RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2
         };
 
         //add the different paths we are using here
@@ -86,7 +86,7 @@ public class MPCalculator {
         mecaFalcon.calculate(15, 0.02, 2.16666);
 
         //creates the velocity graph
-        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
+        FalconLinePlot fig1 = new FalconLinePlot(path);
         fig1.xGridOn();
         fig1.yGridOn();
         fig1.setTitle("Velocities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
@@ -94,7 +94,8 @@ public class MPCalculator {
         fig1.setYLabel("Velocity (ft/sec)");
 
         //adds the data to the graph
-AddVelocityProfile(fig1, falcon);
+AddVelocities(paths, fig1);
+
         //Field map from the blue alliance's perspective
         FalconLinePlot fig2 = new FalconLinePlot(path);
         fig2.xGridOn();
