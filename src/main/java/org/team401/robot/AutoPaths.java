@@ -41,7 +41,7 @@ Waypoint Paths:
 	//goes from the middle starting position to the center gear lift
 	public static final double[][] START_MID_TO_LIFT = new double[][]{
 			STARTING_MID,
-			CENTER_GEAR_PEG,
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	//goes from the middle starting position to the right gear lift
 	public static final double[][] START_MID_TO_R_LIFT = new double[][]{
@@ -50,9 +50,10 @@ Waypoint Paths:
 			{20, 8},
 			{20, 12},
 			{20, 14},
-			perpendicular_To_Airship(RIGHT_GEAR_PEG),
-			RIGHT_GEAR_PEG
-	};
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
+            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+
+    };
 	//goes from the Middle starting position to the left gear lift
 	public static final double[][] START_MID_TO_L_LIFT = new double[][]{
 			STARTING_MID,
@@ -60,13 +61,13 @@ Waypoint Paths:
 			{7, 8},
 			{7, 12},
 			{7, 14},
-			perpendicular_To_Airship(LEFT_GEAR_PEG),
-			LEFT_GEAR_PEG,
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
+            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
 	public static final double[][] START_LEFT_TO_LIFT = new double[][]{
 			STARTING_LEFT,
-			perpendicular_To_Airship(CENTER_GEAR_PEG),
-			CENTER_GEAR_PEG
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
+            perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	public static final double[][] START_LEFT_TO_R_LIFT = new double[][]{
 			STARTING_LEFT,
@@ -74,36 +75,35 @@ Waypoint Paths:
 			{19, 5},
 			{20, 7},
 			{19, 14},
-			perpendicular_To_Airship(RIGHT_GEAR_PEG),
-			RIGHT_GEAR_PEG
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
+            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 	};
 	public static final double[][] START_LEFT_TO_L_LIFT = new double[][]{
 			STARTING_LEFT,
 			{5, 15},
-			{8, 16},
-			perpendicular_To_Airship(LEFT_GEAR_PEG),
-		   LEFT_GEAR_PEG
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
+            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
 	public static final double[][] START_RIGHT_TO_LIFT = new double[][]{
 			STARTING_RIGHT,
-			perpendicular_To_Airship(CENTER_GEAR_PEG),
-			CENTER_GEAR_PEG
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
+            perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	public static final double[][] START_RIGHT_TO_R_LIFT = new double[][]{
 			STARTING_RIGHT,
 			{22, 15},
-			{19, 16},
-			perpendicular_To_Airship(RIGHT_GEAR_PEG),
-			RIGHT_GEAR_PEG
-	};
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
+            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+
+    };
 	public static final double[][] START_RIGHT_TO_L_LIFT = new double[][]{
 			STARTING_RIGHT,
 			{20, 5},
 			{8, 5},
 			{7, 7},
 			{8, 14},
-			perpendicular_To_Airship(LEFT_GEAR_PEG),
-			LEFT_GEAR_PEG
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
+            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
 	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new double[][]{
 			RIGHT_GEAR_PEG,
@@ -166,10 +166,17 @@ Waypoint Paths:
 	 * @return Point C
 	 */
 	public static double[] perpendicular(double[] coords, double factor) {
-		return new double[]{
-			(coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
-			(coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
-        };
+	    if(coords[2] > coords[0] && !(coords[1] == coords[3])) {
+            return new double[]{
+                    (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
+                    (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
+            };
+        }else{
+            return new double[]{
+                    (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
+                    (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor
+            };
+        }
 	}
 
 	public static double[] perpendicular(double x1, double y1, double x2, double y2, double factor) {
@@ -189,16 +196,16 @@ Waypoint Paths:
 	 * @param peg What peg you are approaching
 	 * @return the point right before the peg (is perpendicular to the face of the airship)
 	 */
-	public static double[] perpendicular_To_Airship (double[] peg){
+	public static double[] perpendicular_To_Airship (double[] peg, double factor){
 		//Are you sure you wanted to use == instead of .equals?  With .equals, you have the option to input "new double[]{11, 14}" as peg and it would select the left peg option.
 		if(peg.equals(LEFT_GEAR_PEG)){
-			 return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075});
+			 return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075}, factor);
 		}
 		else if(peg.equals(RIGHT_GEAR_PEG)){
-			return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075});
+			return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075}, factor);
 		}
 		else if(peg.equals(CENTER_GEAR_PEG)){
-			return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325});
+			return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325}, factor);
 		}
 		else{
 			return peg;

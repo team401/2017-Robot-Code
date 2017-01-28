@@ -17,8 +17,16 @@ public class MPCalculator {
 
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = new double[][][]{
-				AutoPaths.RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE,
-				AutoPaths.RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2
+				AutoPaths.START_LEFT_TO_L_LIFT,
+				AutoPaths.START_LEFT_TO_LIFT,
+				AutoPaths.START_LEFT_TO_R_LIFT,
+				AutoPaths.START_RIGHT_TO_L_LIFT,
+				AutoPaths.START_RIGHT_TO_R_LIFT,
+				AutoPaths.START_RIGHT_TO_LIFT,
+				AutoPaths.START_MID_TO_LIFT,
+				AutoPaths.START_MID_TO_R_LIFT,
+				AutoPaths.START_MID_TO_L_LIFT
+
 		};
 
 		//add the different paths we are using here
