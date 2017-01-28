@@ -130,7 +130,7 @@ Waypoint Paths:
             {13.5, 8, 180}
     };
 
-    public static final String[][] names = new String[][]{
+    private static final String[][] names = new String[][]{
             {START_MID_TO_LIFT.toString(), "Start Mid to Center Lift"},
             {START_MID_TO_L_LIFT.toString(), "Start Mid to Left Lift"},
             {START_MID_TO_R_LIFT.toString(), "Start Mid to Right Lift"},
@@ -143,7 +143,12 @@ Waypoint Paths:
             {RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
             {RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"}
     };
-
+    public static String getName(double[][] arr){
+        for(String[] u:names)
+            if(u[0].equals(arr.toString()))
+                return u[1];
+        return "";
+    }
 
 
    //NOTE: WE MAY WANT TO CHANGE THE FACTOR PART OF THIS. IT WOULD BE EASIER IN THE LONG RUN TO MAKE IT SO THAT

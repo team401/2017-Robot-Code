@@ -157,16 +157,11 @@ public class MPCalculator {
 
 	public static void Velocities(double[][][] paths) {
 
-        for(int i = 0;i<paths.length;i++){
+        for(double[][] u:paths){
             
-            String name = "";
-            for(int j = 0;j<AutoPaths.names.length;j++){
-                if(AutoPaths.names[j][0].equals(paths[i].toString())){
-                    name = AutoPaths.names[j][1];
-                }
-            }
+            String name = AutoPaths.getName(u);
 
-            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(paths[i]);
+            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
             falconPathPlanner.calculate(15, 0.02, 2.16666);
 
             FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
