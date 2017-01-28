@@ -30,21 +30,9 @@ public class MPCalculator {
 		FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
 		mecaFalcon.calculate(15, 0.02, 2.16666);
 
-
-/*
-		//creates the velocity graph
-        FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity);
-        fig1.xGridOn();
-        fig1.yGridOn();
-        fig1.setTitle("Velocities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
-        fig1.setXLabel("Time (seconds)");
-        fig1.setYLabel("Velocity (ft/sec)");
-
-        //adds the data to the graph
-AddVelocities(paths, fig1);
-
-*/
+		//adds the velocity graphs
 		Velocities(paths);
+		
 		//Field map from the blue alliance's perspective
 		FalconLinePlot fig2 = new FalconLinePlot(path);
 		fig2.xGridOn();
