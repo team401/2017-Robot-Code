@@ -89,7 +89,7 @@ public class MPCalculator {
         FalconLinePlot fig1 = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.blue);
         fig1.xGridOn();
         fig1.yGridOn();
-        fig1.setTitle("Veloccities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
+        fig1.setTitle("Velocities of the wheels and the center \n Center = blue, Left = magenta, Right = cyan");
         fig1.setXLabel("Time (seconds)");
         fig1.setYLabel("Velocity (ft/sec)");
 
@@ -188,7 +188,7 @@ AddPaths(paths, fig2);
     /**
      * Takes a 3D array of the paths you want in your graph and calculates then adds them to the graph you specify
      *
-     * NOTE: Only works for the wheen paths, does not do velocity graphs
+     * NOTE: Only works for the wheel paths, does not do velocity graphs
      *
      * @param listOfPaths the 3D array housing your paths
      * @param figure what graph you want the paths added to
