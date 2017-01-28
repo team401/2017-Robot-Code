@@ -35,6 +35,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;*/
 
 //import org.strongback.Strongback;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.Motor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.MecanumDrive;
@@ -47,154 +49,176 @@ import org.team401.robot.commands.ToggleDriveMode;
 
 
 public class Robot extends IterativeRobot {
+	private SendableChooser autoStart,
+		autoTgt;
+	private double[][] autoMode;
+	private int start = 0, tgt = 0;
+	CANTalon leftMotor;
+	CANTalon rightMotor;
+
+	TankDrive drive;
 
 
-    CANTalon leftMotor;
-    CANTalon rightMotor;
+	/** The Talon we want to motion profile. */
+	//CANTalon _talon = new CANTalon(9);
 
-    TankDrive drive;
+	/** some example logic on how one can manage an MP */
+	MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
 
+	/** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
+	 * but for this simple example, lets just do quick compares to prev-btn-states */
+	boolean _btnLast = false;
 
-    /** The Talon we want to motion profile. */
-    //CANTalon _talon = new CANTalon(9);
+	FlightStick _joy;
 
-    /** some example logic on how one can manage an MP */
-    MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
+	//Scanner scan;
 
-    /** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
-     * but for this simple example, lets just do quick compares to prev-btn-states */
-    boolean _btnLast = false;
+	@Override
+	public void robotInit() {
+		/*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
+			switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
+		}catch(FileNotFoundException e){
+			System.out.println("ERROR: profile0.txt not found!");
+		}*/
+		_joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+		leftMotor = new CANTalon(0);
+		leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-    FlightStick _joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+		rightMotor = new CANTalon(1);
+		rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-    //Scanner scan;
+		drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
+				Hardware.Motors.talonSRX(rightMotor));
 
-    @Override
-    public void robotInit() {
-        /*try { //This is for when we have multiple profiles on the RIO to read to the Talons.
-            switch(){scan = new Scanner(new File("/home/lvuser/profile0.txt"));}
-        }catch(FileNotFoundException e){
-            System.out.println("ERROR: profile0.txt not found!");
-        }*/
-        leftMotor = new CANTalon(0);
-        leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
+		leftMP = new MotionProfileExample(leftMotor);
+		rightMP = new MotionProfileExample(rightMotor);
 
-        rightMotor = new CANTalon(1);
-        rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
+		autoStart = new SendableChooser();
+		autoStart.addDefault("Middle", 0);
+		autoStart.addObject("Left", 1);
+		autoStart.addObject("Right", 2);
+		SmartDashboard.putData("Starting Position", autoStart);
 
-        drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
-                Hardware.Motors.talonSRX(rightMotor));
+		autoTgt = new SendableChooser();
+		autoTgt.addDefault("Center Lift", 0);
+		autoTgt.addObject("Left Lift", 1);
+		autoTgt.addObject("Right Lift", 2);
+		autoTgt.addObject("Left Hopper", 3);
+		autoTgt.addObject("Right Hopper", 4);
+		SmartDashboard.putData("Auto Destination", autoTgt);
 
-        leftMP = new MotionProfileExample(leftMotor);
-        rightMP = new MotionProfileExample(rightMotor);
+		SmartDashboard.putBoolean("Mecanum Drive", true);
+	}
 
-        //_talon.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-        //_talon.reverseSensor(false); /* keep sensor and motor in phase */
+	@Override
+	public void autonomousInit() {
+		start = (int)autoStart.getSelected();
+		tgt = (int)autoTgt.getSelected();
+		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, SmartDashboard.getBoolean("Mecanum Drive", true));
+	}
+	/*@Override
+	public void autonomousInit() {
+		leftMotor.changeControlMode(TalonControlMode.MotionProfile);
+		rightMotor.changeControlMode(TalonControlMode.MotionProfile);
+		leftMP.startMotionProfile();
+		rightMP.startMotionProfile();
+	}
 
-    }
+	@Override
+	public void autonomousPeriodic() {
 
-    /*@Override
-    public void autonomousInit() {
-        leftMotor.changeControlMode(TalonControlMode.MotionProfile);
-        rightMotor.changeControlMode(TalonControlMode.MotionProfile);
-        leftMP.startMotionProfile();
-        rightMP.startMotionProfile();
-    }
+		leftMP.control();
+		rightMP.control();
+	}
+	@Override
+	public void autonomousInit(){
+		leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		rightMotor.changeControlMode(TalonControlMode.PercentVbus);
+	}*/
 
-    @Override
-    public void autonomousPeriodic() {
+	@Override
+	public void autonomousPeriodic(){
+		if(_joy.getTrigger().isTriggered()) {
+			leftMotor.set(100);
+			rightMotor.set(100);
+		}
+		System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
+	}
 
-        leftMP.control();
-        rightMP.control();
-    }*/
-    @Override
-    public void autonomousInit(){
-        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
-        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
-    }
+	@Override
+	public void teleopInit(){
+		leftMotor.changeControlMode(TalonControlMode.PercentVbus);
+		rightMotor.changeControlMode(TalonControlMode.PercentVbus);
+	}
 
-    @Override
-    public void autonomousPeriodic(){
-        if(_joy.getTrigger().isTriggered()) {
-            leftMotor.set(100);
-            rightMotor.set(100);
-        }
-        System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
-    }
-
-    @Override
-    public void teleopInit(){
-        leftMotor.changeControlMode(TalonControlMode.PercentVbus);
-        rightMotor.changeControlMode(TalonControlMode.PercentVbus);
-    }
-
-    /**  function is called periodically during operator control */
-    @Override
-    public void teleopPeriodic() {
-        double driveSpeed = _joy.getPitch().read();
-        double turnSpeed = _joy.getRoll().read();
+	/**  function is called periodically during operator control */
+	@Override
+	public void teleopPeriodic() {
+		double driveSpeed = _joy.getPitch().read();
+		double turnSpeed = _joy.getRoll().read();
 
 		/* get the left joystick axis on Logitech Gamepad */
-        double leftYjoystick = -1 * _joy.getPitch().read(); /* multiple by -1 so joystick forward is positive */
+		double leftYjoystick = -1 * _joy.getPitch().read(); /* multiple by -1 so joystick forward is positive */
 
 		/* call this periodically, and catch the output.  Only apply it if user wants to run MP. */
-        //_example.control();
+		//_example.control();
 
 
-        if (!_joy.getThumb().isTriggered()) { /* Check button 5 (top left shoulder on the logitech gamead). */
-            /*
+		if (!_joy.getThumb().isTriggered()) { /* Check button 5 (top left shoulder on the logitech gamead). */
+			/*
 			 * If it's not being pressed, just do a simple drive.  This
 			 * could be a RobotDrive class or custom drivetrain logic.
 			 * The point is we want the switch in and out of MP Control mode.*/
 
 			/* button5 is off so straight drive */
 
-            drive.arcade(driveSpeed, turnSpeed);
+			drive.arcade(driveSpeed, turnSpeed);
 
-            //_example.reset();
-        } else {
+			//_example.reset();
+		} else {
 			/* Button5 is held down so switch to motion profile control mode => This is done in MotionProfileControl.
 			 * When we transition from no-press to press,
 			 * pass a "true" once to MotionProfileControl.
 			 */
-            //_talon.changeControlMode(TalonControlMode.MotionProfile);
-            leftMotor.changeControlMode(TalonControlMode.MotionProfile);
-            rightMotor.changeControlMode(TalonControlMode.MotionProfile);
+			//_talon.changeControlMode(TalonControlMode.MotionProfile);
+			leftMotor.changeControlMode(TalonControlMode.MotionProfile);
+			rightMotor.changeControlMode(TalonControlMode.MotionProfile);
 
 
-            CANTalon.SetValueMotionProfile setOutput = null;//_example.getSetValue();
+			CANTalon.SetValueMotionProfile setOutput = null;//_example.getSetValue();
 
-            //_talon.set(setOutput.value);
-            leftMotor.set(setOutput.value);
-            rightMotor.set(setOutput.value);
+			//_talon.set(setOutput.value);
+			leftMotor.set(setOutput.value);
+			rightMotor.set(setOutput.value);
 
 			/* if btn is pressed and was not pressed last time,
 			 * In other words we just detected the on-press event.
 			 * This will signal the robot to start a MP */
-            if ((_joy.getTrigger().isTriggered()) && (_btnLast == false)) {
+			if ((_joy.getTrigger().isTriggered()) && (_btnLast == false)) {
 				/* user just tapped the trigger  */
-                //_example.startMotionProfile();
-            }
-        }
+				//_example.startMotionProfile();
+			}
+		}
 
-        _btnLast = _joy.getTrigger().isTriggered();
+		_btnLast = _joy.getTrigger().isTriggered();
 
-    }
+	}
 
-    /**  function is called periodically during disable */
-    @Override
-    public void disabledPeriodic() {
+	/**  function is called periodically during disable */
+	@Override
+	public void disabledPeriodic() {
 		/* it's generally a good idea to put motor controllers back
 		 * into a known state when robot is disabled.  That way when you
 		 * enable the robot doesn't just continue doing what it was doing before.
 		 * BUT if that's what the application/testing requires than modify this accordingly */
-        //_talon.changeControlMode(TalonControlMode.PercentVbus);
-        //_talon.set(0);
-        leftMotor.set(0);
-        rightMotor.set(0);
+		//_talon.changeControlMode(TalonControlMode.PercentVbus);
+		//_talon.set(0);
+		leftMotor.set(0);
+		rightMotor.set(0);
 		/* clear our buffer and put everything into a known state */
-        //_example.reset();
-    }
+		//_example.reset();
+	}
+
 }
