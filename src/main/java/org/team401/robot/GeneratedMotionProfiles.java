@@ -4,58 +4,108 @@ package org.team401.robot;
 public class GeneratedMotionProfiles {
 	public static final int kNumPoints = 185;
 	// Position (rotations)	Velocity (RPM)	Duration (ms)
-	public static double[][] getProfile(int start, int tgt, boolean mecanum){
-		if(mecanum)
+	public static double[][][] getProfile(int start, int tgt, boolean mecanum){
+	    double[][][] x = new double[Integer.MAX_VALUE][Integer.MAX_VALUE][Integer.MAX_VALUE];//Delete this line in production
+		if(mecanum)//Mecanum drive
 			switch(start){
 				case 0:
 					switch(tgt){
 						case 0:
-							return Points;//Middle to Center Lift
+							return x;//Middle to Center Lift
 						case 1:
-							return Points;//Middle to Left Lift
+							return x;//Middle to Left Lift
 						case 2:
-							return Points;//Middle to Right Lift
+							return x;//Middle to Right Lift
 						case 3:
-							return Points;//Middle to Left Hopper
+							return x;//Middle to Left Hopper
 						case 4:
-							return Points;//Middle to Right Hopper;
+							return x;//Middle to Right Hopper;
                         default:
-                            return new double[0][0];//Return empty array to sit still if something bad happened
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
 					}
 				case 1:
 					switch(tgt){
 						case 0:
-							return Points;//Left to Center Lift
+							return x;//Left to Center Lift
 						case 1:
-							return Points;//Left to Left Lift
+							return x;//Left to Left Lift
 						case 2:
-							return Points;//Left to Right Lift
+							return x;//Left to Right Lift
 						case 3:
-							return Points;//Left to Left Hopper
+							return x;//Left to Left Hopper
 						case 4:
-							return Points;//Left to Right Hopper;
+							return x;//Left to Right Hopper;
                         default:
-                            return new double[0][0];//Return empty array to sit still if something bad happened
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
 					}
                 case 2:
                     switch(tgt){
                         case 0:
-                            return Points;//Right to Center Lift
+                            return x;//Right to Center Lift
                         case 1:
-                            return Points;//Right to Left Lift
+                            return x;//Right to Left Lift
                         case 2:
-                            return Points;//Right to Right Lift
+                            return x;//Right to Right Lift
                         case 3:
-                            return Points;//Right to Left Hopper
+                            return x;//Right to Left Hopper
                         case 4:
-                            return Points;//Right to Right Hopper;
+                            return x;//Right to Right Hopper;
                         default:
-                            return new double[0][0];//Return empty array to sit still if something bad happened
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
                     }
                 default:
-                    return new double[0][0];//Return empty array to sit still if something bad happened
+                    return new double[0][0][0];//Return empty array to sit still if something bad happened
 			}
-		return Points;
+        else//Tank drive
+            switch(start) {
+                case 0:
+                    switch (tgt) {
+                        case 0:
+                            return x;//Middle to Center Lift
+                        case 1:
+                            return x;//Middle to Left Lift
+                        case 2:
+                            return x;//Middle to Right Lift
+                        case 3:
+                            return x;//Middle to Left Hopper
+                        case 4:
+                            return x;//Middle to Right Hopper;
+                        default:
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
+                    }
+                case 1:
+                    switch (tgt) {
+                        case 0:
+                            return x;//Left to Center Lift
+                        case 1:
+                            return x;//Left to Left Lift
+                        case 2:
+                            return x;//Left to Right Lift
+                        case 3:
+                            return x;//Left to Left Hopper
+                        case 4:
+                            return x;//Left to Right Hopper;
+                        default:
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
+                    }
+                case 2:
+                    switch (tgt) {
+                        case 0:
+                            return x;//Right to Center Lift
+                        case 1:
+                            return x;//Right to Left Lift
+                        case 2:
+                            return x;//Right to Right Lift
+                        case 3:
+                            return x;//Right to Left Hopper
+                        case 4:
+                            return x;//Right to Right Hopper;
+                        default:
+                            return new double[0][0][0];//Return empty array to sit still if something bad happened
+                    }
+                default:
+                    return new double[0][0][0];//Return empty array to sit still if something bad happened
+            }
 	}
 
 	public static double[][] Points = new double[][]{
