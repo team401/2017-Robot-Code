@@ -2,6 +2,8 @@ package org.team401.robot.camera
 
 import edu.wpi.cscore.UsbCamera
 import edu.wpi.first.wpilibj.CameraServer
+import org.strongback.Strongback
+import org.team401.robot.commands.camera.UpdateCamera
 
 class Camera {
 
@@ -15,6 +17,8 @@ class Camera {
     init {
         frontCam = server.startAutomaticCapture("Front", 0)
         backCam = server.startAutomaticCapture("Back", 1)
+
+        Strongback.submit(UpdateCamera(this))
     }
 
     fun getCurrentCamera(): UsbCamera {

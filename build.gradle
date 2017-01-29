@@ -30,7 +30,6 @@ wpi {
     ntcoreVersion = "+"
     opencvVersion = "+"
     cscoreVersion = "+"
-
     talonSrxVersion = "+"
 }
 
