@@ -1,7 +1,6 @@
-package org.team401.robot;
+package org.team401.robot.MPCreation;
 
 import java.awt.*;
-import java.awt.Rectangle;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -71,7 +70,7 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
     private String xLabel;
     private String yLabel;
     private String titleLabel;
-    protected static int count = 0;
+    private static int count = 0;
 
     JPopupMenu menu = new JPopupMenu("Popup");
 
@@ -625,7 +624,7 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
             }
 
 
-            lower = lower + xTicStepSize;
+            lower += xTicStepSize;
             x0 = newX + distance;
         }
     }
@@ -712,21 +711,6 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Copy files to clipboard");
-            
-            /*try {
-                Robot robot = new Robot();
-                Dimension screenSize  = Toolkit.getDefaultToolkit().getScreenSize();
-                Rectangle screen = new Rectangle( screenSize );
-                BufferedImage i =
-                TransferableImage trans = new TransferableImage( i );
-                Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
-                c.setContents( trans, p);
-            }
-            catch ( AWTException x ) {
-                x.printStackTrace();
-                System.exit( 1 );
-            }*/
-
             }
         });
 
@@ -735,20 +719,16 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
 
     class PopupTriggerListener extends MouseAdapter {
         public void mousePressed(MouseEvent ev) {
-            if (ev.isPopupTrigger()) {
+            if (ev.isPopupTrigger())
                 menu.show(ev.getComponent(), ev.getX(), ev.getY());
-            }
         }
 
         public void mouseReleased(MouseEvent ev) {
-            if (ev.isPopupTrigger()) {
+            if (ev.isPopupTrigger())
                 menu.show(ev.getComponent(), ev.getX(), ev.getY());
-            }
         }
 
-        public void mouseClicked(MouseEvent ev) {
-
-        }
+        public void mouseClicked(MouseEvent ev) {}
     }
 
     private class TransferableImage implements Transferable {
@@ -759,63 +739,23 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
             this.i = i;
         }
 
-        public Object getTransferData(DataFlavor flavor)
-                throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(DataFlavor.imageFlavor) && i != null) {
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (flavor.equals(DataFlavor.imageFlavor) && i != null)
                 return i;
-            } else {
+            else
                 throw new UnsupportedFlavorException(flavor);
-            }
         }
 
         public DataFlavor[] getTransferDataFlavors() {
-            DataFlavor[] flavors = new DataFlavor[1];
-            flavors[0] = DataFlavor.imageFlavor;
-            return flavors;
+            return new DataFlavor[]{DataFlavor.imageFlavor, null};
         }
 
         public boolean isDataFlavorSupported(DataFlavor flavor) {
             DataFlavor[] flavors = getTransferDataFlavors();
-            for (int i = 0; i < flavors.length; i++) {
-                if (flavor.equals(flavors[i])) {
+            for (int i = 0; i < flavors.length; i++)
+                if (flavor.equals(flavors[i]))
                     return true;
-                }
-            }
-
             return false;
         }
     }
-
-    /******TEST MAIN METHOD*******/
-    public static void main(String[] args) {
-
-        double[] data = {
-                -235, 14, 18, 03, 60, 150, 74, 87, 54, 77,
-                61, 55, 48, 60, 49, 36, 38, 27, 20, 18, 5
-        };
-
-        double[] data2 = {
-                -4, 124, 128, 33, -1, 1, 74, 87, 54, 77,
-                61, 55, 48, 60, 40, 36, 38, 27, 20, 18, 5
-        };
-
-        double[] test = {0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 2.0,
-                2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2
-        };
-
-
-        FalconLinePlot fig2 = new FalconLinePlot(data, Color.red, Color.blue);
-
-        fig2.yGridOn();
-        fig2.xGridOn();
-        fig2.setYLabel("This is a new");
-
-        fig2.addData(data2, Color.blue);
-
-        FalconLinePlot fig1 = new FalconLinePlot(test, data);
-
-    }
-
-
 }
-   

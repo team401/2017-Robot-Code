@@ -1,5 +1,5 @@
 /**
- * Apparently CTRE doesn't use SmartDashboard.  I updated this file to report in a better way.
+ * Apparently CTRE doesn't use SmartDashboard.  I updated this file to report in a (hopefully) better way.
  * 
  * 
  */

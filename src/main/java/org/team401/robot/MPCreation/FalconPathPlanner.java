@@ -1,4 +1,4 @@
-package org.team401.robot;
+package org.team401.robot.MPCreation;
 
 import org.strongback.util.Values;
 
@@ -779,11 +779,11 @@ public class FalconPathPlanner {
 			wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor;
 	}
 
-	public static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException {
+	private static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException {
 		exportCSV(fileName, arr, false);
 	}
 
-	public static void exportCSV(String fileName, double[][] arr, boolean braces) throws FileNotFoundException {
+	private static void exportCSV(String fileName, double[][] arr, boolean braces) throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
 		StringBuilder sb = new StringBuilder();
 		for (double[] u : arr) {
@@ -832,4 +832,5 @@ public class FalconPathPlanner {
 			exportCSV(prefix+"Right"+suffix, talonSRXProfile(false, 1), braces);
 		}
 	}
+
 }

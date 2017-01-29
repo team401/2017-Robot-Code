@@ -96,15 +96,20 @@ public class MotionProfileExample {
     }
 
     private Notifier _notifier = new Notifier(new PeriodicRunnable());
-
+	private double[][] profile;
 
     /**
      * Constructor
      *
      * @param talon reference to Talon object to fetch motion profile status from.
      */
-    public MotionProfileExample(CANTalon talon) {
+    public MotionProfileExample(CANTalon talon){//If you use this version of the constructor you MUST also use the setProfile method!
+    	this(talon, null);
+	}
+
+    public MotionProfileExample(CANTalon talon, double[][] profile) {
         _talon = talon;
+        this.profile = profile;
         /*
          * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
@@ -112,6 +117,10 @@ public class MotionProfileExample {
         _talon.changeMotionControlFramePeriod(5);
         _notifier.startPeriodic(0.005);
     }
+
+    public void setProfile(double[][] profile){
+    	this.profile = profile;
+	}
 
     /**
      * Called to clear Motion profile buffer and reset state info during
@@ -181,7 +190,7 @@ public class MotionProfileExample {
                         _bStart = false;
 
                         _setValue = CANTalon.SetValueMotionProfile.Disable;
-                        startFilling();
+                        startFilling(profile);
 						/*
 						 * MP is being sent to CAN bus, wait a small amount of time
 						 */
@@ -235,11 +244,6 @@ public class MotionProfileExample {
     /**
      * Start filling the MPs to all of the involved Talons.
      */
-    private void startFilling() {
-		/* since this example only has one talon, just update that one */
-        startFilling(GeneratedMotionProfiles.Points, GeneratedMotionProfiles.kNumPoints);
-    }
-
     private void startFilling(double[][] profile) {
         startFilling(profile, profile.length);
     }

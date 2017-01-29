@@ -1,10 +1,7 @@
-package org.team401.robot;
+package org.team401.robot.MPCreation;
 
 import java.awt.*;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class MPCalculator {
 	public static void main(String[] args) throws FileNotFoundException {
