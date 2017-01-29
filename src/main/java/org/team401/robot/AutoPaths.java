@@ -21,7 +21,7 @@ public class AutoPaths {
 			(16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0
 	};
 	public static final double[] STARTING_MID = new double[]{
-			13.5, 2
+			13.5, 2, 0
 	};
 	public static final double[] STARTING_LEFT = new double[]{
 			5, 2
@@ -40,7 +40,7 @@ Waypoint Paths:
 
 	//goes from the middle starting position to the center gear lift
 	public static final double[][] START_MID_TO_LIFT = new double[][]{
-			STARTING_MID,
+            STARTING_MID,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	//goes from the middle starting position to the right gear lift

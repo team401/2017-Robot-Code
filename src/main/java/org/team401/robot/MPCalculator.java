@@ -81,7 +81,7 @@ public class MPCalculator {
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
 
 		mecaFalcon.exportCSV();
-		Export(paths);
+		Export(paths, true);
 
 
 	}
@@ -154,11 +154,11 @@ public class MPCalculator {
 	 * @param listOfPaths the paths of the robot
 	 * @throws FileNotFoundException
 	 */
-	public static void Export(double[][][] listOfPaths) throws FileNotFoundException {
+	public static void Export(double[][][] listOfPaths, boolean braces) throws FileNotFoundException {
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
 			falconPathPlanner.calculate(15, 0.02, 2.16666);
-			falconPathPlanner.exportCSV();
+			falconPathPlanner.exportCSV(braces);
 		}
 
 	}
