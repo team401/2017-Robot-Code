@@ -794,8 +794,10 @@ public class FalconPathPlanner {
 				sb.append(',');
 			}
 			sb.deleteCharAt(sb.length() - 1);
-			if(braces)
+			if(braces) {
 				sb.append('}');
+				sb.append(',');
+			}
 			sb.append('\n');
 		}
 		pw.write(sb.toString());
