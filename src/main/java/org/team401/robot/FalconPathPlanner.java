@@ -804,19 +804,28 @@ public class FalconPathPlanner {
 	public void exportCSV() throws FileNotFoundException{
 		exportCSV("");
 	}
+	public void exportCSV(boolean braces) throws FileNotFoundException{
+		exportCSV("", braces);
+	}
 	public void exportCSV(String suffix) throws FileNotFoundException{
 		exportCSV("", suffix);
 	}
-	public void exportCSV(String prefix, String suffix) throws FileNotFoundException{//Method only works with traction drive for now
+	public void exportCSV(String suffix, boolean braces) throws FileNotFoundException{
+		exportCSV("", suffix, braces);
+	}
+	public void exportCSV(String prefix, String suffix) throws FileNotFoundException{
+		exportCSV(prefix, suffix, false);
+	}
+	public void exportCSV(String prefix, String suffix, boolean braces) throws FileNotFoundException{//Method only works with traction drive for now
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
-			exportCSV(prefix+"FrontLeft"+suffix, temp[0]);
-			exportCSV(prefix+"FrontRight"+suffix, temp[1]);
-			exportCSV(prefix+"RearLeft"+suffix, temp[2]);
-			exportCSV(prefix+"RearRight"+suffix, temp[3]);
+			exportCSV(prefix+"FrontLeft"+suffix, temp[0], braces);
+			exportCSV(prefix+"FrontRight"+suffix, temp[1], braces);
+			exportCSV(prefix+"RearLeft"+suffix, temp[2], braces);
+			exportCSV(prefix+"RearRight"+suffix, temp[3], braces);
 		}else {
-			exportCSV(prefix+"Left"+suffix, talonSRXProfile(true, 1));
-			exportCSV(prefix+"Right"+suffix, talonSRXProfile(false, 1));
+			exportCSV(prefix+"Left"+suffix, talonSRXProfile(true, 1), braces);
+			exportCSV(prefix+"Right"+suffix, talonSRXProfile(false, 1), braces);
 		}
 	}
 }
