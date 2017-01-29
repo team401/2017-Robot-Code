@@ -800,7 +800,8 @@ public class FalconPathPlanner {
 			}
 			sb.append('\n');
 		}
-		sb.deleteCharAt(sb.length()-1);
+		if(braces)
+			sb.deleteCharAt(sb.length()-1);
 		pw.write(sb.toString());
 		pw.close();
 	}

@@ -51,7 +51,8 @@ import org.team401.robot.commands.ToggleDriveMode;
 public class Robot extends IterativeRobot {
 	private SendableChooser autoStart,
 		autoTgt;
-	private double[][] autoMode;
+	private boolean mecanum;
+	private double[][][] autoMode;
 	private int start = 0, tgt = 0;
 	CANTalon leftMotor;
 	CANTalon rightMotor;
@@ -116,8 +117,15 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		start = (int)autoStart.getSelected();
 		tgt = (int)autoTgt.getSelected();
-		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, SmartDashboard.getBoolean("Mecanum Drive", true));
+		mecanum = SmartDashboard.getBoolean("Mecanum Drive", true);
+		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, mecanum);
+		if(mecanum)
+			return;//Replace with mecanum-specific MP code
+		else
+			return;//Replace with tankdrive-specific MP code
+
 	}
+
 	/*@Override
 	public void autonomousInit() {
 		leftMotor.changeControlMode(TalonControlMode.MotionProfile);
