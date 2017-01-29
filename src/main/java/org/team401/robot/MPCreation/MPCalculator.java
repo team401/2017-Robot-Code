@@ -29,6 +29,12 @@ public class MPCalculator {
 		FalconLinePlot mech = new FalconLinePlot(mecaFalcon.smoothCenterVelocity);
 		mech.xGridOn();
 		mech.yGridOn();
+		mech.setTitle("Mecanum drive test profile velocities");
+		mech.setXLabel("Time(seconds)");
+		mech.setYLabel("Velocity\n(ft/sec for red, RPM for magenta)");
+		double[][][] mechProf = mecaFalcon.mecanumProfile();
+		for (double[][] u:mechProf)
+			mech.addData(FalconLinePlot.getXVector(mecaFalcon.smoothCenterVelocity), FalconLinePlot.getYVector(u), Color.MAGENTA);
 
 		//adds the velocity graphs
 		Velocities(paths);
