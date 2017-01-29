@@ -37,7 +37,7 @@ public class FalconPathPlanner {
 
 	//Path Variables
 	public final boolean mecanum;
-	private double[][] origPath;
+	public double[][] origPath;
 	public double[][] nodeOnlyPath;
 	public double[][] smoothPath;
 	public double[][] leftPath;
@@ -56,13 +56,13 @@ public class FalconPathPlanner {
 	//accumulated heading
 	public double[][] heading;
 
-	double numFinalPoints;
-	double pathAlpha;
-	double pathBeta;
-	double pathTolerance;
-	double velocityAlpha;
-	double velocityBeta;
-	double velocityTolerance;
+	public double numFinalPoints,
+		pathAlpha,
+		pathBeta,
+		pathTolerance,
+		velocityAlpha,
+		velocityBeta,
+		velocityTolerance;
 
 
 	/**
@@ -133,8 +133,7 @@ public class FalconPathPlanner {
 			temp[i] = new double[arr[i].length];
 
 			//Copy Contents
-			for (int j = 0; j < arr[i].length; j++)
-				temp[i][j] = arr[i][j];
+			System.arraycopy(arr[i], 0, temp[i], 0, arr[i].length);
 		}
 
 		return temp;
@@ -187,7 +186,6 @@ public class FalconPathPlanner {
 		morePoints[index][1] = orig[orig.length - 1][1];
 		if (mecanum)
 			morePoints[index][2] = orig[orig.length - 1][2];
-		index++;
 
 		return morePoints;
 	}
@@ -237,7 +235,7 @@ public class FalconPathPlanner {
 	 */
 	public double[][] nodeOnlyWayPoints(double[][] path) {
 
-		List<double[]> li = new LinkedList<double[]>();
+		List<double[]> li = new LinkedList<>();
 
 		//save first value
 		li.add(path[0]);
@@ -346,11 +344,11 @@ public class FalconPathPlanner {
 		//when this converges, the fixed velocity vector will be smooth, start
 		//and end with 0 velocity, and travel the same final distance as the original
 		//un-smoothed velocity profile
-		double increase = 0.0;
+		double increase;
 		int j = 0;
 		while (Math.abs(difference[difference.length - 1]) > tolerance) {
 			if (j >= 200) {
-				System.out.println("Infinite Loop in FalconPathPlanner.java(359)");
+				System.out.println("Infinite Loop in FalconPathPlanner.java's velocityFix method");//This actually was an issue at one point
 				return fixVel;
 			}
 			increase = difference[difference.length - 1] / 50;
@@ -427,7 +425,7 @@ public class FalconPathPlanner {
 
 		numFinalPoints = 0;
 
-		int[] ret = null;
+		int[] ret;
 
 		double totalPoints = maxTimeToComplete / timeStep;
 
@@ -452,9 +450,9 @@ public class FalconPathPlanner {
 			ret = new int[]{first, second, third};
 		} else {
 
-			double pointsFirst = 0;
-			double pointsSecond = 0;
-			double pointsTotal = 0;
+			double pointsFirst,
+				pointsSecond,
+				pointsTotal;
 
 			for (int i = 1; i <= 5; i++)
 				for (int j = 1; j <= 8; j++)
@@ -573,11 +571,11 @@ public class FalconPathPlanner {
 	}
 
 	public void setPathBeta(double beta) {
-		pathAlpha = beta;
+		pathBeta = beta;
 	}
 
 	public void setPathTolerance(double tolerance) {
-		pathAlpha = tolerance;
+		pathTolerance = tolerance;
 	}
 
 	/**
@@ -716,7 +714,6 @@ public class FalconPathPlanner {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath),
 			vel = doubleArrayCopy(smoothCenterVelocity);
-		System.out.println(ratio);
 
 		for (int h = 0; h < 4; h++) {
 			double dist = 0.0;
@@ -768,10 +765,9 @@ public class FalconPathPlanner {
 			double temp = Math.abs(wheelSpeeds[i]);
 			if (maxMagnitude < temp) maxMagnitude = temp;
 		}
-		if (maxMagnitude > 1.0) {
+		if (maxMagnitude > 1.0)
 			for (int i = 0; i < 4; i++)
 				wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
-		}
 	}
 
 	private static void scale(double wheelSpeeds[], double scaleFactor) {

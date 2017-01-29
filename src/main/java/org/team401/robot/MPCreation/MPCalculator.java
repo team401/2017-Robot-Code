@@ -33,7 +33,7 @@ public class MPCalculator {
 		mech.setXLabel("Time(seconds)");
 		mech.setYLabel("Velocity\n(ft/sec for red, RPM for magenta)");
 		double[][][] mechProf = mecaFalcon.mecanumProfile();
-		for (double[][] u:mechProf)
+		for (double[][] u : mechProf)
 			mech.addData(FalconLinePlot.getXVector(mecaFalcon.smoothCenterVelocity), FalconLinePlot.getYVector(u), Color.MAGENTA);
 
 		//adds the velocity graphs
@@ -133,7 +133,7 @@ public class MPCalculator {
 
 	/**
 	 * Takes a 3D array of the paths you want in your graph and calculates then adds them to the graph you specify
-	 * <p>
+	 *
 	 * NOTE: Only works for the wheel paths, does not do velocity graphs
 	 *
 	 * @param listOfPaths the 3D array housing your paths
@@ -147,13 +147,12 @@ public class MPCalculator {
 			figure.addData(falconPathPlanner.smoothPath, Color.red, Color.blue);
 			figure.addData(falconPathPlanner.leftPath, Color.magenta);
 			figure.addData(falconPathPlanner.rightPath, Color.magenta);
-
-
 		}
 	}
 
 	/**
 	 * Exports the CSV files for each motion profile
+	 *
 	 * @param listOfPaths the paths of the robot
 	 * @throws FileNotFoundException
 	 */
@@ -168,23 +167,24 @@ public class MPCalculator {
 
 	/**
 	 * Calculates the velocities of the paths, then creates the graphs and plots the velocities on them
+	 *
 	 * @param paths the paths of the robot
 	 */
 	public static void Velocities(double[][][] paths) {
 
-        for(double[][] u:paths){
-            
-            String name = AutoPaths.getName(u);
+		for (double[][] u : paths) {
 
-            FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
-            falconPathPlanner.calculate(15, 0.02, 2.16666);
+			String name = AutoPaths.getName(u);
 
-            FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
-            fig1.xGridOn();
-            fig1.yGridOn();
-            fig1.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
-            fig1.setXLabel("Time (seconds)");
-            fig1.setYLabel("Velocity (ft/sec)");
+			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
+			falconPathPlanner.calculate(15, 0.02, 2.16666);
+
+			FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
+			fig1.xGridOn();
+			fig1.yGridOn();
+			fig1.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
+			fig1.setXLabel("Time (seconds)");
+			fig1.setYLabel("Velocity (ft/sec)");
 
 
 			//adds the data to the graph

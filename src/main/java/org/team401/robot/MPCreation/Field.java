@@ -1,8 +1,5 @@
 package org.team401.robot.MPCreation;
 
-/**
- * Created by Driver Station on 1/28/2017.
- */
 public class Field {
 	public static final double[][] AIRSHIP = new double[][]{
 			{11.831875, 9.325},
