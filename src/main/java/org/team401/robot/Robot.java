@@ -1,61 +1,44 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
-import org.strongback.SwitchReactor;
 import org.strongback.components.Motor;
-import org.strongback.components.Solenoid;
+import org.strongback.components.Switch;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
-import org.team401.robot.chassis.Hopper;
-import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.chassis.OctocanumGearbox;
-import org.team401.robot.commands.ToggleDriveMode;
 
 public class Robot extends IterativeRobot {
 
-    private OctocanumDrive octocanumDrive;
-    private Hopper hopper;
-    private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
+    private Motor turretSpinner;
+    private FlightStick joysticky;
+    private Switch switchy;
+    private double sentryState = 1;
+    private VisionDataStream visionDataStream;
+    private VisionData currentVisionData;
+    private double allowedRange;
+    private double turningState;
+
 
     @Override
     public void robotInit() {
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
-
-        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
-        OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
-        OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
-        OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
-        Solenoid shifter = Hardware.Solenoids.doubleSolenoid(Constants.GEARBOX_SHIFTER,0, Solenoid.Direction.RETRACTING);
-        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, shifter);
-
-        Motor intakeLeft = Hardware.Motors.talonSRX(Constants.INTAKE_1);
-        Motor intakeRight = Hardware.Motors.talonSRX(Constants.INTAKE_2);
-        Motor agitator = Hardware.Motors.talonSRX(Constants.HOPPER_AGITATOR);
-        hopper = new Hopper(intakeLeft, intakeRight, agitator);
-
-        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
-        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
-        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
-
-        SwitchReactor switchReactor = Strongback.switchReactor();
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
-                () -> new ToggleDriveMode(octocanumDrive));
-    }
-
-    @Override
-    public void robotPeriodic() {
+        turretSpinner = Hardware.Motors.talonSRX(0);
+        SmartDashboard.putNumber("allowedRange", 5);
+        allowedRange = SmartDashboard.getNumber("allowedRange", 5);
+        joysticky = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+        switchy = Hardware.Switches.normallyClosed(0);
+        visionDataStream = new VisionDataStream("10.4.1.17", 5801);
+        visionDataStream.start();
+        turningState = 1;
 
     }
 
     @Override
     public void autonomousInit() {
         Strongback.start();
-        hopper.enableIntake(true);
-        hopper.enableAgitator(true);
     }
 
     @Override
@@ -66,22 +49,53 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopInit() {
         Strongback.restart();
-        hopper.enableIntake(true);
-        hopper.enableAgitator(true);
     }
 
     @Override
     public void teleopPeriodic() {
-        // drive the robot, mode specific drive code is in the OctocanumDrive class
-        octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(), driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
+        allowedRange = SmartDashboard.getNumber("allowedRange", 5);
+        //vision variable
+        currentVisionData = visionDataStream.getGoalLatestData();
+
+        //If the camera CAN see the target, it will rotate towards it and focus on it
+        if (currentVisionData.isValid()) { //insert currentVisionData.isValid
+            //Turns the turret to be facing the goal with about 5 degrees accuracy
+            double correctionAngle = currentVisionData.getYaw() * -1;
+            if (correctionAngle > allowedRange || correctionAngle < -allowedRange) {
+                //enforces a soft stop so that the wires don't get tangled
+                if (switchy.isTriggered() && correctionAngle < 0 && turningState < 1) {
+                    turretSpinner.setSpeed(0);
+                } else if (switchy.isTriggered() && correctionAngle > 0 && turningState > 1) {
+                    turretSpinner.setSpeed(0);
+                } else {
+                    turretSpinner.setSpeed(correctionAngle/20);
+                }
+            } else {
+                turretSpinner.setSpeed(0);
+            }
+            if (correctionAngle > 1)
+                turningState = 1;
+            else
+                turningState = -1;
+        }
+        //If the cameron CANNOT see the target, it will go into sentry mode and scan to/fro until it finds the target
+        else {
+            turretSpinner.setSpeed(sentryState * 0.4);
+            if (switchy.isTriggered() && sentryState > 1) {
+                sentryState = -1;
+            } else if (switchy.isTriggered() && sentryState <= 1) {
+                sentryState = 1;
+            }
+        }
+        //If the joystick is triggered (to shoot on the real robot) the turret won't spin
+        if (joysticky.getTrigger().isTriggered()) {
+            turretSpinner.setSpeed(0);
+        }
+
     }
 
     @Override
-    public void disabledInit() {
-        Strongback.disable();
-        hopper.enableIntake(false);
-        hopper.enableAgitator(false);
-    }
+    public void disabledInit() {Strongback.disable();}
 
     @Override
     public void disabledPeriodic() {}
