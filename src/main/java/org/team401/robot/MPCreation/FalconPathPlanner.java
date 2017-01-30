@@ -752,71 +752,55 @@ public class FalconPathPlanner {
 				(cosD * mag + rot),//LEFT REAR
 				(sinD * mag - rot)//RIGHT REAR
 		};
-
-		//normalize(wheelSpeeds);//This line only works in %VBUS mode, not Motion Profile.
-		scale(wheelSpeeds, 1.0);
 		return wheelSpeeds;
 	}
 
-	//These 2 methods were stolen from https://github.com/strongback/strongback-java/blob/master/strongback/src/org/strongback/drive/MecanumDrive.java
-	private static void normalize(double[] wheelSpeeds) {
-		double maxMagnitude = Math.abs(wheelSpeeds[0]);
-		for (int i = 1; i < 4; i++) {
-			double temp = Math.abs(wheelSpeeds[i]);
-			if (maxMagnitude < temp) maxMagnitude = temp;
-		}
-		if (maxMagnitude > 1.0)
-			for (int i = 0; i < 4; i++)
-				wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
-	}
-
-	private static void scale(double wheelSpeeds[], double scaleFactor) {
-		for (int i = 1; i < 4; i++)
-			wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor;
-	}
-
-	private static void exportCSV(String fileName, double[][] arr) throws FileNotFoundException {
+	private static void exportCSV(String fileName, double[][] arr){
 		exportCSV(fileName, arr, false);
 	}
 
-	private static void exportCSV(String fileName, double[][] arr, boolean braces) throws FileNotFoundException {
-		PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
-		StringBuilder sb = new StringBuilder();
-		for (double[] u : arr) {
-			if(braces)
-				sb.append('{');
-			for (double v : u) {
-				sb.append(v);
-				sb.append(',');
+	private static void exportCSV(String fileName, double[][] arr, boolean braces){
+		try {
+			PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
+			StringBuilder sb = new StringBuilder();
+			for (double[] u : arr) {
+				if (braces)
+					sb.append('{');
+				for (double v : u) {
+					sb.append(v);
+					sb.append(',');
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				if (braces) {
+					sb.append('}');
+					sb.append(',');
+				}
+				sb.append('\n');
 			}
-			sb.deleteCharAt(sb.length() - 1);
-			if(braces) {
-				sb.append('}');
-				sb.append(',');
-			}
-			sb.append('\n');
+			if (braces)
+				sb.deleteCharAt(sb.length() - 1);
+			pw.write(sb.toString());
+			pw.close();
+		}catch(FileNotFoundException e){
+			System.out.println("File \""+fileName+".csv\" is being used by another program!  Close the other program and restart Motion Profile Generator.");
 		}
-		if(braces)
-			sb.deleteCharAt(sb.length()-1);
-		pw.write(sb.toString());
-		pw.close();
 	}
-	public void exportCSV() throws FileNotFoundException{
+	public void exportCSV(){
 		exportCSV("");
 	}
-	public void exportCSV(boolean braces) throws FileNotFoundException{
+	public void exportCSV(boolean braces){
 		exportCSV("", braces);
 	}
-	public void exportCSV(String suffix) throws FileNotFoundException{
+	public void exportCSV(String suffix){
 		exportCSV("", suffix);
 	}
-	public void exportCSV(String suffix, boolean braces) throws FileNotFoundException{
+	public void exportCSV(String suffix, boolean braces){
 		exportCSV("", suffix, braces);
 	}
-	public void exportCSV(String prefix, String suffix) throws FileNotFoundException{
+	public void exportCSV(String prefix, String suffix){
 		exportCSV(prefix, suffix, false);
 	}
-	public void exportCSV(String prefix, String suffix, boolean braces) throws FileNotFoundException{//Method only works with traction drive for now
+	public void exportCSV(String prefix, String suffix, boolean braces){//Method only works with traction drive for now
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
 			exportCSV(prefix+"FrontLeft"+suffix, temp[0], braces);

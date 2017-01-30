@@ -4,7 +4,7 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class MPCalculator {
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args){
 
 		//******************************
 		//Add what paths you want here
@@ -37,7 +37,7 @@ public class MPCalculator {
 			mech.addData(FalconLinePlot.getXVector(mecaFalcon.smoothCenterVelocity), FalconLinePlot.getYVector(u), Color.MAGENTA);
 
 		//adds the velocity graphs
-		Velocities(paths);
+		velocities(paths);
 
 		//Field map from the blue alliance's perspective
 		FalconLinePlot fig2 = new FalconLinePlot(path);
@@ -58,7 +58,7 @@ public class MPCalculator {
 		fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
 
 		//adds the data to our graph
-		AddPaths(paths, fig2);
+		addPaths(paths, fig2);
 		//Field map from the red alliance's perspective
 		FalconLinePlot fig3 = new FalconLinePlot(path);
 		fig3.xGridOn();
@@ -84,7 +84,7 @@ public class MPCalculator {
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
 
 		mecaFalcon.exportCSV();
-		Export(paths, true);
+		export(paths, true);
 
 
 	}
@@ -96,7 +96,7 @@ public class MPCalculator {
 	 * @param time the time you want to know the velocity at in seconds
 	 * @return returns the velocity of the center at the time requested
 	 */
-	public static double InstantVelocity(FalconPathPlanner path, double time) {
+	public static double instantVelocity(FalconPathPlanner path, double time) {
 		double result = 0;
 
 		for (double[] u : path.smoothCenterVelocity)
@@ -124,7 +124,7 @@ public class MPCalculator {
 	 * @param fig    what figure to add the data to
 	 * @param falcon what path we are adding
 	 */
-	public static void AddVelocityProfile(FalconLinePlot fig, FalconPathPlanner falcon) {
+	public static void addVelocityProfile(FalconLinePlot fig, FalconPathPlanner falcon) {
 
 		fig.addData(falcon.smoothCenterVelocity, Color.red, Color.blue);
 		fig.addData(falcon.smoothLeftVelocity, Color.red);
@@ -139,7 +139,7 @@ public class MPCalculator {
 	 * @param listOfPaths the 3D array housing your paths
 	 * @param figure      what graph you want the paths added to
 	 */
-	public static void AddPaths(double[][][] listOfPaths, FalconLinePlot figure) {
+	public static void addPaths(double[][][] listOfPaths, FalconLinePlot figure) {
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
 			falconPathPlanner.calculate(15, 0.02, 2.16666);
@@ -156,7 +156,7 @@ public class MPCalculator {
 	 * @param listOfPaths the paths of the robot
 	 * @throws FileNotFoundException
 	 */
-	public static void Export(double[][][] listOfPaths, boolean braces) throws FileNotFoundException {
+	public static void export(double[][][] listOfPaths, boolean braces){
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
 			falconPathPlanner.calculate(15, 0.02, 2.16666);
@@ -170,7 +170,7 @@ public class MPCalculator {
 	 *
 	 * @param paths the paths of the robot
 	 */
-	public static void Velocities(double[][][] paths) {
+	public static void velocities(double[][][] paths) {
 
 		for (double[][] u : paths) {
 
