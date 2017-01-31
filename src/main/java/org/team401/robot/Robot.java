@@ -30,7 +30,7 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
-        /*OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
+        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
         OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
@@ -40,7 +40,7 @@ public class Robot extends IterativeRobot {
         Motor intakeLeft = Hardware.Motors.talonSRX(Constants.INTAKE_1);
         Motor intakeRight = Hardware.Motors.talonSRX(Constants.INTAKE_2);
         Motor agitator = Hardware.Motors.talonSRX(Constants.HOPPER_AGITATOR);
-        hopper = new Hopper(intakeLeft, intakeRight, agitator);*/
+        hopper = new Hopper(intakeLeft, intakeRight, agitator);
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
@@ -84,9 +84,9 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
-        /*// drive the robot, mode specific drive code is in the OctocanumDrive class
+        // drive the robot, mode specific drive code is in the OctocanumDrive class
         octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());*/
+                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
     }
 
     @Override
