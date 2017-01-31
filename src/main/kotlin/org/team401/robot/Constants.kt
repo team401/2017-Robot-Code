@@ -41,5 +41,10 @@ object Constants {
 
     // joystick button mapping
     const val BUTTON_SHIFT          = 2
+    const val BUTTON_SWITCH_CAMERA  = 1
+
+    // camera mapping
+    const val CAMERA_FRONT          = 0
+    const val CAMERA_BACK           = 1
 
 }

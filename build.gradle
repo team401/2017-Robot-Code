@@ -28,9 +28,8 @@ frc {
 wpi {
     wpilibVersion = "+"
     ntcoreVersion = "+"
-    //opencvVersion = "+"
+    opencvVersion = "+"
     cscoreVersion = "+"
-
     talonSrxVersion = "+"
 }
 
