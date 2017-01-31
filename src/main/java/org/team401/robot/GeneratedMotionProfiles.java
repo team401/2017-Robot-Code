@@ -105,158 +105,158 @@ public class GeneratedMotionProfiles {
 			}
 	}
 
-	public static final double[][][] mecanumMidCenterLift = new double[][][]{
+	public static final double[][][] mecanumMidCenterLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumMidLeftLift = new double[][][]{
+	public static final double[][][] mecanumMidLeftLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumMidRightLift = new double[][][]{
+	public static final double[][][] mecanumMidRightLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumMidLeftHopper = new double[][][]{
+	public static final double[][][] mecanumMidLeftHopper = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumMidRightHopper = new double[][][]{
-			{},//Front left wheel
-			{},//Front right wheel
-			{},//Rear left wheel
-			{}//Rear right wheel
-	};
-
-	public static final double[][][] mecanumLeftCenterLift = new double[][][]{
-			{},//Front left wheel
-			{},//Front right wheel
-			{},//Rear left wheel
-			{}//Rear right wheel
-	};
-	public static final double[][][] mecanumLeftLeftLift = new double[][][]{
-			{},//Front left wheel
-			{},//Front right wheel
-			{},//Rear left wheel
-			{}//Rear right wheel
-	};
-	public static final double[][][] mecanumLeftRightLift = new double[][][]{
-			{},//Front left wheel
-			{},//Front right wheel
-			{},//Rear left wheel
-			{}//Rear right wheel
-	};
-	public static final double[][][] mecanumLeftLeftHopper = new double[][][]{
-			{},//Front left wheel
-			{},//Front right wheel
-			{},//Rear left wheel
-			{}//Rear right wheel
-	};
-	public static final double[][][] mecanumLeftRightHopper = new double[][][]{
+	public static final double[][][] mecanumMidRightHopper = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
 
-	public static final double[][][] mecanumRightCenterLift = new double[][][]{
+	public static final double[][][] mecanumLeftCenterLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumRightLeftLift = new double[][][]{
+	public static final double[][][] mecanumLeftLeftLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumRightRightLift = new double[][][]{
+	public static final double[][][] mecanumLeftRightLift = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumRightLeftHopper = new double[][][]{
+	public static final double[][][] mecanumLeftLeftHopper = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
-	public static final double[][][] mecanumRightRightHopper = new double[][][]{
+	public static final double[][][] mecanumLeftRightHopper = {
 			{},//Front left wheel
 			{},//Front right wheel
 			{},//Rear left wheel
 			{}//Rear right wheel
 	};
 
-	public static final double[][][] tractionMidCenterLift = new double[][][]{
+	public static final double[][][] mecanumRightCenterLift = {
+			{},//Front left wheel
+			{},//Front right wheel
+			{},//Rear left wheel
+			{}//Rear right wheel
+	};
+	public static final double[][][] mecanumRightLeftLift = {
+			{},//Front left wheel
+			{},//Front right wheel
+			{},//Rear left wheel
+			{}//Rear right wheel
+	};
+	public static final double[][][] mecanumRightRightLift = {
+			{},//Front left wheel
+			{},//Front right wheel
+			{},//Rear left wheel
+			{}//Rear right wheel
+	};
+	public static final double[][][] mecanumRightLeftHopper = {
+			{},//Front left wheel
+			{},//Front right wheel
+			{},//Rear left wheel
+			{}//Rear right wheel
+	};
+	public static final double[][][] mecanumRightRightHopper = {
+			{},//Front left wheel
+			{},//Front right wheel
+			{},//Rear left wheel
+			{}//Rear right wheel
+	};
+
+	public static final double[][][] tractionMidCenterLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionMidLeftLift = new double[][][]{
+	public static final double[][][] tractionMidLeftLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionMidRightLift = new double[][][]{
+	public static final double[][][] tractionMidRightLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionMidLeftHopper = new double[][][]{
+	public static final double[][][] tractionMidLeftHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionMidRightHopper = new double[][][]{
+	public static final double[][][] tractionMidRightHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
 
-	public static final double[][][] tractionLeftCenterLift = new double[][][]{
+	public static final double[][][] tractionLeftCenterLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionLeftLeftLift = new double[][][]{
+	public static final double[][][] tractionLeftLeftLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionLeftRightLift = new double[][][]{
+	public static final double[][][] tractionLeftRightLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionLeftLeftHopper = new double[][][]{
+	public static final double[][][] tractionLeftLeftHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionLeftRightHopper = new double[][][]{
+	public static final double[][][] tractionLeftRightHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
 
-	public static final double[][][] tractionRightCenterLift = new double[][][]{
+	public static final double[][][] tractionRightCenterLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionRightLeftLift = new double[][][]{
+	public static final double[][][] tractionRightLeftLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionRightRightLift = new double[][][]{
+	public static final double[][][] tractionRightRightLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionRightLeftHopper = new double[][][]{
+	public static final double[][][] tractionRightLeftHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-	public static final double[][][] tractionRightRightHopper = new double[][][]{
+	public static final double[][][] tractionRightRightHopper = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};

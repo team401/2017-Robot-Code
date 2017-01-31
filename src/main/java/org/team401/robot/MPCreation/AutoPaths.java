@@ -11,22 +11,22 @@ public class AutoPaths {
 
 	//points for final waypoints
 //if the points vary depending on the size of our robot
-	public static final double[] CENTER_GEAR_PEG = new double[]{
+	public static final double[] CENTER_GEAR_PEG = {
 			(11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0
 	};
-	public static final double[] LEFT_GEAR_PEG = new double[]{
+	public static final double[] LEFT_GEAR_PEG = {
 			(11.831875 + 10.16375)/2.0, (15.2075 + 12.26625)/2.0
 	};
-	public static final double[] RIGHT_GEAR_PEG = new double[]{
+	public static final double[] RIGHT_GEAR_PEG = {
 			(16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0
 	};
-	public static final double[] STARTING_MID = new double[]{
+	public static final double[] STARTING_MID = {
 			13.5, 2, 0
 	};
-	public static final double[] STARTING_LEFT = new double[]{
+	public static final double[] STARTING_LEFT = {
 			5, 2
 	};
-	public static final double[] STARTING_RIGHT = new double[]{
+	public static final double[] STARTING_RIGHT = {
 			22, 2
 	};
 
@@ -39,12 +39,12 @@ Waypoint Paths:
 
 
 	//goes from the middle starting position to the center gear lift
-	public static final double[][] START_MID_TO_LIFT = new double[][]{
+	public static final double[][] START_MID_TO_LIFT = {
             STARTING_MID,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	//goes from the middle starting position to the right gear lift
-	public static final double[][] START_MID_TO_R_LIFT = new double[][]{
+	public static final double[][] START_MID_TO_R_LIFT = {
 			STARTING_MID,
 			{17, 4},
 			{20, 8},
@@ -55,7 +55,7 @@ Waypoint Paths:
 
     };
 	//goes from the Middle starting position to the left gear lift
-	public static final double[][] START_MID_TO_L_LIFT = new double[][]{
+	public static final double[][] START_MID_TO_L_LIFT = {
 			STARTING_MID,
 			{10, 4},
 			{7, 8},
@@ -64,12 +64,12 @@ Waypoint Paths:
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
-	public static final double[][] START_LEFT_TO_LIFT = new double[][]{
+	public static final double[][] START_LEFT_TO_LIFT = {
 			STARTING_LEFT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
             perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
-	public static final double[][] START_LEFT_TO_R_LIFT = new double[][]{
+	public static final double[][] START_LEFT_TO_R_LIFT = {
 			STARTING_LEFT,
 			{7, 5},
 			{19, 5},
@@ -78,25 +78,25 @@ Waypoint Paths:
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 	};
-	public static final double[][] START_LEFT_TO_L_LIFT = new double[][]{
+	public static final double[][] START_LEFT_TO_L_LIFT = {
 			STARTING_LEFT,
 			{5, 15},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
-	public static final double[][] START_RIGHT_TO_LIFT = new double[][]{
+	public static final double[][] START_RIGHT_TO_LIFT = {
 			STARTING_RIGHT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
             perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
-	public static final double[][] START_RIGHT_TO_R_LIFT = new double[][]{
+	public static final double[][] START_RIGHT_TO_R_LIFT = {
 			STARTING_RIGHT,
 			{22, 15},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 
     };
-	public static final double[][] START_RIGHT_TO_L_LIFT = new double[][]{
+	public static final double[][] START_RIGHT_TO_L_LIFT = {
 			STARTING_RIGHT,
 			{20, 5},
 			{8, 5},
@@ -105,20 +105,20 @@ Waypoint Paths:
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new double[][]{
+	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
 			RIGHT_GEAR_PEG,
 			{23, 18},
 	};
-	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new double[][]{
+	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
 			LEFT_GEAR_PEG,
 			{4, 18},
 	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = new double[][]{
+	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
 			{23, 18},
 			{22, 17},
 			{22, 15}
 	};
-	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2 = new double[][]{
+	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
 			{4, 18},
 			{5, 17},
 			{5, 15}
@@ -140,7 +140,7 @@ Waypoint Paths:
 		return result;
 	}
 	//test mecanum path
-	public static final double[][] TEST_MECANUM = new double[][]{
+	public static final double[][] TEST_MECANUM = {
 			concat(STARTING_MID, 0.0),
 			{10, 4, 70},
 			{7, 8, 180},
@@ -150,7 +150,7 @@ Waypoint Paths:
 			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 1), 0)
 	};
 
-	private static final String[][] names = new String[][]{
+	private static final String[][] names = {
 			{START_MID_TO_LIFT.toString(), "Start Mid to Center Lift"},
 			{START_MID_TO_L_LIFT.toString(), "Start Mid to Left Lift"},
 			{START_MID_TO_R_LIFT.toString(), "Start Mid to Right Lift"},

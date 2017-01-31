@@ -10,12 +10,11 @@ public class MPCalculator {
 		//Add what paths you want here
 		//******************************
 		//DONT TOUCH THIS ONE!
-		double[][] path = new double[][]{{0, 0}};
+		double[][] path = {{0, 0}};
 
 		//ADD YOUR PATHS HERE:
-		double[][][] paths = new double[][][]{
+		double[][][] paths = {
 				AutoPaths.START_MID_TO_LIFT
-
 		};
 
 		//add the different paths we are using here
@@ -78,7 +77,7 @@ public class MPCalculator {
 		fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
 
 		//adds the data to our graph
-		AddMotionProfile(fig3, falcon);
+		addMotionProfile(fig3, falcon);
 
 
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
@@ -111,7 +110,7 @@ public class MPCalculator {
 	 * @param fig    what figure to add the data to
 	 * @param falcon what path we are adding
 	 */
-	public static void AddMotionProfile(FalconLinePlot fig, FalconPathPlanner falcon) {
+	public static void addMotionProfile(FalconLinePlot fig, FalconPathPlanner falcon) {
 
 		fig.addData(falcon.smoothPath, Color.red, Color.blue);
 		fig.addData(falcon.leftPath, Color.magenta);
