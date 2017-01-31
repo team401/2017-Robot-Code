@@ -2,8 +2,7 @@ package org.team401.robot.camera
 
 import edu.wpi.cscore.UsbCamera
 import edu.wpi.first.wpilibj.CameraServer
-import org.strongback.Strongback
-import org.team401.robot.commands.camera.UpdateCamera
+import org.team401.robot.Constants
 
 class Camera {
 
@@ -15,10 +14,12 @@ class Camera {
     var frontEnabled: Boolean = true
 
     init {
-        frontCam = server.startAutomaticCapture("Front", 0)
-        backCam = server.startAutomaticCapture("Back", 1)
-
-        Strongback.submit(UpdateCamera(this))
+        frontCam = server.startAutomaticCapture("Front", Constants.CAMERA_FRONT)
+        frontCam.setResolution(480, 400)
+        frontCam.setFPS(10)
+        backCam = server.startAutomaticCapture("Back", Constants.CAMERA_BACK)
+        backCam.setResolution(480, 400)
+        backCam.setFPS(10)
     }
 
     fun getCurrentCamera(): UsbCamera {
@@ -27,19 +28,20 @@ class Camera {
         return backCam
     }
 
-    fun getImage() {
-        server.putVideo("DashCam", 640, 480)
-    }
-
     fun switchCamera() {
-        frontEnabled = !frontEnabled
+        if (frontEnabled)
+            switchToBackCamera()
+        else
+            switchToFrontCamera()
     }
 
     fun switchToBackCamera() {
         frontEnabled = false
+        server.server.source = backCam
     }
 
     fun switchToFrontCamera() {
         frontEnabled = true
+        server.server.source = frontCam
     }
 }

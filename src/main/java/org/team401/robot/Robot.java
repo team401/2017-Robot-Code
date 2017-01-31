@@ -8,6 +8,7 @@ import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.Motor;
 import org.strongback.components.Solenoid;
+import org.strongback.components.Switch;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
@@ -39,17 +40,22 @@ public class Robot extends IterativeRobot {
         Motor intakeLeft = Hardware.Motors.talonSRX(Constants.INTAKE_1);
         Motor intakeRight = Hardware.Motors.talonSRX(Constants.INTAKE_2);
         Motor agitator = Hardware.Motors.talonSRX(Constants.HOPPER_AGITATOR);
-        hopper = new Hopper(intakeLeft, intakeRight, agitator);
+        hopper = new Hopper(intakeLeft, intakeRight, agitator);*/
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
         masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
-        SwitchReactor switchReactor = Strongback.switchReactor();
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
-                () -> new ToggleDriveMode(octocanumDrive));*/
-
         camera = new Camera();
+
+        SwitchReactor switchReactor = Strongback.switchReactor();
+
+        // shift drive modes
+        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
+                () -> new ToggleDriveMode(octocanumDrive));
+        // camera switching
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());
     }
 
     @Override
