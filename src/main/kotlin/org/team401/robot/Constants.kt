@@ -10,6 +10,7 @@ object Constants {
     // solenoid ids (module 1)
     const val GEARBOX_SHIFTER       = 0
     const val TURRET_HOOD           = 1
+    const val COL_EXTENDER          = 2
     // solenoid ids (module 2)
 
     // can device ids
@@ -26,13 +27,15 @@ object Constants {
     const val CIM_REAR_RIGHT        = 9
     const val PRO_REAR_RIGHT        = 10
     // can device ids for the turret
-    const val SHOOTER_LEFT          = 11
-    const val SHOOTER_RIGHT         = 12
-    const val ROTATOR               = 13
-    // collection
-    const val COL_PRO_0             = 14
-    const val COL_PRO_1             = 15
-    const val COL_PRO_2             = 16
+    const val TURRET_SHOOTER_LEFT   = 11
+    const val TURRET_SHOOTER_RIGHT  = 12
+    const val TURRET_ROTATOR        = 13
+
+    // pwm motor ports
+    const val TURRET_FEEDER         = 0
+    const val COL_PRO_1             = 1
+    const val COL_PRO_2             = 2
+    const val COL_PRO_3             = 3
 
     // joystick ids
     const val DRIVE_JOYSTICK_LEFT   = 0
