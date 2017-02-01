@@ -1,4 +1,4 @@
-package org.team401.robot.chassis
+package org.team401.robot.components
 
 import com.ctre.CANTalon
 
