@@ -26,9 +26,9 @@ object Constants {
     const val CIM_REAR_RIGHT        = 9
     const val PRO_REAR_RIGHT        = 10
     // can device ids for the turret
-    const val SHOOTER_CONTROLLER    = 11
-    const val FEEDER_CONTROLLER     = 12
-    const val SPIN_CONTROLLER       = 13
+    const val SHOOTER_LEFT          = 11
+    const val SHOOTER_RIGHT         = 12
+    const val ROTATOR               = 13
     // collection
     const val COL_PRO_0             = 14
     const val COL_PRO_1             = 15
