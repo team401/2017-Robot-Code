@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
         masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
-        camera = new Camera();
+        camera = new Camera(640, 480, 10);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 

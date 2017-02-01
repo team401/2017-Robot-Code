@@ -4,9 +4,9 @@ import edu.wpi.cscore.UsbCamera
 import edu.wpi.first.wpilibj.CameraServer
 import org.team401.robot.Constants
 
-class Camera {
+class Camera(val width: Int, val height: Int, val fps: Int) {
 
-    val server = CameraServer.getInstance()!!
+    val cameraServer = CameraServer.getInstance()!!
 
     val frontCam: UsbCamera
     val backCam: UsbCamera
@@ -14,12 +14,12 @@ class Camera {
     var frontEnabled: Boolean = true
 
     init {
-        frontCam = server.startAutomaticCapture("Front", Constants.CAMERA_FRONT)
-        frontCam.setResolution(480, 400)
-        frontCam.setFPS(10)
-        backCam = server.startAutomaticCapture("Back", Constants.CAMERA_BACK)
-        backCam.setResolution(480, 400)
-        backCam.setFPS(10)
+        frontCam = cameraServer.startAutomaticCapture("Front", Constants.CAMERA_FRONT)
+        frontCam.setResolution(width, height)
+        frontCam.setFPS(fps)
+        backCam = cameraServer.startAutomaticCapture("Back", Constants.CAMERA_BACK)
+        backCam.setResolution(width, height)
+        backCam.setFPS(fps)
     }
 
     fun getCurrentCamera(): UsbCamera {
@@ -37,11 +37,11 @@ class Camera {
 
     fun switchToBackCamera() {
         frontEnabled = false
-        server.server.source = backCam
+        cameraServer.server.source = backCam
     }
 
     fun switchToFrontCamera() {
         frontEnabled = true
-        server.server.source = frontCam
+        cameraServer.server.source = frontCam
     }
 }
