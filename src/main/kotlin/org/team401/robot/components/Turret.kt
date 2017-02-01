@@ -11,6 +11,4 @@ class Turret(var enabled: Boolean, val rotationController: CANTalon, val shooter
 
         hoodController.setControlMode(CANTalon.TalonControlMode.Position.value)
     }
-
-
 }
