@@ -24,10 +24,10 @@ public class AutoPaths {
 			13.5, 2, 0
 	};
 	public static final double[] STARTING_LEFT = {
-			5, 2
+			5, 2, 0
 	};
 	public static final double[] STARTING_RIGHT = {
-			22, 2
+			22, 2, 0
 	};
 
 /*
@@ -41,6 +41,7 @@ Waypoint Paths:
 	//goes from the middle starting position to the center gear lift
 	public static final double[][] START_MID_TO_LIFT = {
             STARTING_MID,
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
 	};
 	//goes from the middle starting position to the right gear lift
@@ -57,10 +58,10 @@ Waypoint Paths:
 	//goes from the Middle starting position to the left gear lift
 	public static final double[][] START_MID_TO_L_LIFT = {
 			STARTING_MID,
-			{10, 4},
-			{7, 8},
-			{7, 12},
-			{7, 14},
+			{10, 4, 0},
+			{7, 8, 0},
+			{7, 12, 0},
+			{7, 14, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
@@ -189,12 +190,15 @@ Waypoint Paths:
 	    if(coords[2] > coords[0] && !(coords[1] == coords[3])) {
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
-                    (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor
+                    (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor,
+					Math.toDegrees(Math.atan2(coords[0], coords[1]) + (Math.PI/2))
             };
         }else{
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
-                    (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor
+                    (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor,
+					Math.toDegrees(Math.atan2(coords[0], coords[1]) + (Math.PI/2))
+
             };
         }
 	}

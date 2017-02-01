@@ -14,8 +14,10 @@ public class MPCalculator {
 
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = {
-				AutoPaths.START_MID_TO_LIFT
+				AutoPaths.START_MID_TO_L_LIFT,
+
 		};
+		MecanumInject(paths);
 
 		//add the different paths we are using here
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
@@ -190,6 +192,24 @@ public class MPCalculator {
 			fig1.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
 			fig1.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
 			fig1.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
+		}
+	}
+
+	/**
+	 * Addes the mecanum direction value to the paths. Run immediately after the paths array is initialized.
+	 *
+	 * @param paths the different paths you're running
+	 */
+	public static void MecanumInject(double[][][] paths){
+
+		for(int i = 0;i<paths.length;i++){
+			double finalRotate = paths[i][paths[i].length - 1][2];
+			System.out.println(paths[i].length);
+
+			for(int j = 0;j<paths[i].length - 3;j++){
+				paths[i][j+1][2] += finalRotate/paths[i].length-3;
+				System.out.println(paths[i][j][2] = finalRotate/paths[i].length-3);
+			}
 		}
 	}
 }
