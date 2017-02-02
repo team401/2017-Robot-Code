@@ -115,7 +115,7 @@ public class FalconPathPlanner {
 		for(double[] u:path) {
 			while (u[2] < 0)
 				u[2] += 360;
-			while (u[2] > 360)
+			while (u[2] > 359)
 				u[2] -=360;
 		}
 	}
@@ -700,7 +700,7 @@ public class FalconPathPlanner {
 
 	public double getRatio(){
 		double[] ratios = new double[]{
-				1.0/0.5/Math.PI,//Reciprocal of circumference.  Middle number is diameter of wheel in FEET
+				3.0 / Math.PI,//Reciprocal of circumference, in FEET
 				mecanum ? 1.0 : 0.5//Divide by 2 if in traction drive
 		};
 		double result = 1;
@@ -807,6 +807,9 @@ public class FalconPathPlanner {
 	public void exportCSV(String prefix, String suffix, boolean braces){//Method only works with traction drive for now
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
+			for(double[][] u:temp)
+				for(double[] v:u)
+					v[2] = (int)v[2];
 			exportCSV(prefix+"FrontLeft"+suffix, temp[0], braces);
 			exportCSV(prefix+"FrontRight"+suffix, temp[1], braces);
 			exportCSV(prefix+"RearLeft"+suffix, temp[2], braces);
