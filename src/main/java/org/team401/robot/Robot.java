@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
-        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
+        /*OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
         OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
                 () -> new ToggleDriveMode(octocanumDrive));
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
-                () -> camera.switchCamera());
+                () -> camera.switchCamera());*/
     }
 
     @Override
@@ -70,8 +70,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
-        octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
+        /*octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
+                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());*/
     }
 
     @Override
@@ -80,5 +80,7 @@ public class Robot extends IterativeRobot {
     }
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+
+    }
 }
