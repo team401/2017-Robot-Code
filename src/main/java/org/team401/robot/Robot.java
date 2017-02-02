@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot {
 		autoTgt;
 	private boolean mecanum;
 	private double[][][] autoMode;
-	private int start = 0, tgt = 0;
+	private String start = "M", tgt = "CL";
 	CANTalon leftMotor;
 	CANTalon rightMotor;
 
@@ -85,17 +85,17 @@ public class Robot extends IterativeRobot {
 		rightMP = new MotionProfileExample(rightMotor);
 
 		autoStart = new SendableChooser();
-		autoStart.addDefault("Middle", 0);
-		autoStart.addObject("Left", 1);
-		autoStart.addObject("Right", 2);
+		autoStart.addDefault("Middle", "M");
+		autoStart.addObject("Left", "L");
+		autoStart.addObject("Right", "R");
 		SmartDashboard.putData("Starting Position", autoStart);
 
 		autoTgt = new SendableChooser();
-		autoTgt.addDefault("Center Lift", 0);
-		autoTgt.addObject("Left Lift", 1);
-		autoTgt.addObject("Right Lift", 2);
-		autoTgt.addObject("Left Hopper", 3);
-		autoTgt.addObject("Right Hopper", 4);
+		autoTgt.addDefault("Center Lift", "CL");
+		autoTgt.addObject("Left Lift", "LL");
+		autoTgt.addObject("Right Lift", "RL");
+		autoTgt.addObject("Left Hopper", "LH");
+		autoTgt.addObject("Right Hopper", "RH");
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
 		SmartDashboard.putBoolean("Mecanum Drive", true);
@@ -103,8 +103,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		start = (int)autoStart.getSelected();
-		tgt = (int)autoTgt.getSelected();
+		start = (String)autoStart.getSelected();
+		tgt = (String)autoTgt.getSelected();
 		mecanum = SmartDashboard.getBoolean("Mecanum Drive", true);
 		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, mecanum);
 		if(mecanum)
