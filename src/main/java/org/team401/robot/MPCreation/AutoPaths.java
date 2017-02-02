@@ -81,7 +81,7 @@ Waypoint Paths:
 	};
 	public static final double[][] START_LEFT_TO_L_LIFT = {
 			STARTING_LEFT,
-			{5, 15},
+			{5, 15, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
@@ -92,37 +92,37 @@ Waypoint Paths:
 	};
 	public static final double[][] START_RIGHT_TO_R_LIFT = {
 			STARTING_RIGHT,
-			{22, 15},
+			{22, 15, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 
     };
 	public static final double[][] START_RIGHT_TO_L_LIFT = {
 			STARTING_RIGHT,
-			{20, 5},
-			{8, 5},
-			{7, 7},
-			{8, 14},
+			{20, 5, 0},
+			{8, 5, 0},
+			{7, 7, 0},
+			{8, 14, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
 	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
 			RIGHT_GEAR_PEG,
-			{23, 18},
+			{23, 18, 0},
 	};
 	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
 			LEFT_GEAR_PEG,
-			{4, 18},
+			{4, 18, 0},
 	};
 	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
-			{23, 18},
-			{22, 17},
-			{22, 15}
+			{23, 18, 0},
+			{22, 17, 0},
+			{22, 15, 0}
 	};
 	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
-			{4, 18},
-			{5, 17},
-			{5, 15}
+			{4, 18, 0},
+			{5, 17, 0},
+			{5, 15, 0}
 	};
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
