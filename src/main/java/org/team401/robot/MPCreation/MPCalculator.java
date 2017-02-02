@@ -14,7 +14,7 @@ public class MPCalculator {
 
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = {
-				AutoPaths.START_MID_TO_L_LIFT,
+				AutoPaths.START_LEFT_TO_LIFT,
 
 		};
 		mecanumInject(paths);

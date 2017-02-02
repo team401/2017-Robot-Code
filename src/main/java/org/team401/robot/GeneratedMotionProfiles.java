@@ -199,12 +199,10 @@ public class GeneratedMotionProfiles {
 	};
 
 	public static final double[][][] tractionMidCenterLift = {
-			{},//Left profile, should be sent to both left wheels
-			{}//Right profile, should be sent to both right wheels
-	};
+
+			};
 	public static final double[][][] tractionMidLeftLift = {
-			{},//Left profile, should be sent to both left wheels
-			{}//Right profile, should be sent to both right wheels
+
 	};
 	public static final double[][][] tractionMidRightLift = {
 			{},//Left profile, should be sent to both left wheels
@@ -218,7 +216,6 @@ public class GeneratedMotionProfiles {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-
 	public static final double[][][] tractionLeftCenterLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
@@ -239,7 +236,6 @@ public class GeneratedMotionProfiles {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
 	};
-
 	public static final double[][][] tractionRightCenterLift = {
 			{},//Left profile, should be sent to both left wheels
 			{}//Right profile, should be sent to both right wheels
