@@ -690,7 +690,7 @@ public class FalconPathPlanner {
 			y = wheel[i][1] - wheel[i - 1][1];
 			dist += ratio * Math.sqrt(Math.abs(x * x + y * y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
 		}
-
+		roundall(result);
 		return result;
 	}
 
@@ -808,8 +808,7 @@ public class FalconPathPlanner {
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
 			for(double[][] u:temp)
-				for(double[] v:u)
-					v[2] = Math.round(v[2]);
+				roundall(u);
 			exportCSV(prefix+"FrontLeft"+suffix, temp[0], braces);
 			exportCSV(prefix+"FrontRight"+suffix, temp[1], braces);
 			exportCSV(prefix+"RearLeft"+suffix, temp[2], braces);
@@ -819,5 +818,8 @@ public class FalconPathPlanner {
 			exportCSV(prefix+"Right"+suffix, talonSRXProfile(false, 1), braces);
 		}
 	}
-
+	private void roundall(double[][] x) {
+			for(double[] v:x)
+				v[2] = Math.round(v[2]);
+	}
 }
