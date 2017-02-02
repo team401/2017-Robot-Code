@@ -804,7 +804,7 @@ public class FalconPathPlanner {
 	public void exportCSV(String prefix, String suffix){
 		exportCSV(prefix, suffix, false);
 	}
-	public void exportCSV(String prefix, String suffix, boolean braces){//Method only works with traction drive for now
+	public void exportCSV(String prefix, String suffix, boolean braces){
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
 			for(double[][] u:temp)

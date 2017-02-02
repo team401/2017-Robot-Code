@@ -15,7 +15,14 @@ public class MPCalculator {
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = {
 				AutoPaths.START_LEFT_TO_LIFT,
-
+				AutoPaths.START_LEFT_TO_L_LIFT,
+				AutoPaths.START_LEFT_TO_R_LIFT,
+				AutoPaths.START_MID_TO_LIFT,
+				AutoPaths.START_MID_TO_L_LIFT,
+				AutoPaths.START_MID_TO_R_LIFT,
+				AutoPaths.START_RIGHT_TO_LIFT,
+				AutoPaths.START_RIGHT_TO_L_LIFT,
+				AutoPaths.START_RIGHT_TO_R_LIFT
 		};
 		mecanumInject(paths);
 
@@ -59,7 +66,7 @@ public class MPCalculator {
 		fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
 
 		//adds the data to our graph
-		addPaths(paths, fig2);
+		addPaths(paths, fig2, true);
 		//Field map from the red alliance's perspective
 		FalconLinePlot fig3 = new FalconLinePlot(path);
 		fig3.xGridOn();
@@ -85,7 +92,7 @@ public class MPCalculator {
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
 
 		mecaFalcon.exportCSV();
-		export(paths, true);
+		export(paths, true, true);
 
 
 	}
@@ -140,10 +147,10 @@ public class MPCalculator {
 	 * @param listOfPaths the 3D array housing your paths
 	 * @param figure      what graph you want the paths added to
 	 */
-	public static void addPaths(double[][][] listOfPaths, FalconLinePlot figure) {
+	public static void addPaths(double[][][] listOfPaths, FalconLinePlot figure, boolean mecanum) {
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
-			falconPathPlanner.calculate(15, 0.02, 2.16666);
+			falconPathPlanner.calculate(15, 0.02, 2.16666, mecanum);
 
 			figure.addData(falconPathPlanner.smoothPath, Color.red, Color.blue);
 			figure.addData(falconPathPlanner.leftPath, Color.magenta);
@@ -157,11 +164,12 @@ public class MPCalculator {
 	 * @param listOfPaths the paths of the robot
 	 * @throws FileNotFoundException
 	 */
-	public static void export(double[][][] listOfPaths, boolean braces){
+	public static void export(double[][][] listOfPaths, boolean braces, boolean mecanum){
 		for (double[][] u : listOfPaths) {
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
+			String name = AutoPaths.getName(u);
+			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u, mecanum);
 			falconPathPlanner.calculate(15, 0.02, 2.16666);
-			falconPathPlanner.exportCSV(braces);
+			falconPathPlanner.exportCSV(name + " "," motor", braces);
 		}
 
 	}
