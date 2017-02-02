@@ -124,6 +124,22 @@ Waypoint Paths:
 			{5, 17, 0},
 			{5, 15, 0}
 	};
+	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE = {
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
+			{1.5, 16.7916, 0},
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
+
+	};
+	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE = {
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
+			{23, 10, 0},
+			{25.5, 9.7916, 0},
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916})
+
+	};
+
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
 	}

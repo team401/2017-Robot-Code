@@ -22,7 +22,9 @@ public class MPCalculator {
 				AutoPaths.START_MID_TO_R_LIFT,
 				AutoPaths.START_RIGHT_TO_LIFT,
 				AutoPaths.START_RIGHT_TO_L_LIFT,
-				AutoPaths.START_RIGHT_TO_R_LIFT
+				AutoPaths.START_RIGHT_TO_R_LIFT,
+				AutoPaths.LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE,
+				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE
 		};
 		mecanumInject(paths);
 
@@ -64,6 +66,8 @@ public class MPCalculator {
 		fig2.addData(Field.NEUTRAL_ZONE, Color.green);
 		fig2.addData(Field.KEY_BLU, Color.black);
 		fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
+		fig2.addData(Field.LEFTHOPPERS, Color.black);
+		fig2.addData(Field.RIGHTHOPPERS, Color.black);
 
 		//adds the data to our graph
 		addPaths(paths, fig2, true);
@@ -84,6 +88,7 @@ public class MPCalculator {
 		fig3.addData(Field.NEUTRAL_ZONE, Color.green);
 		fig3.addData(Field.KEY_RED, Color.black);
 		fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
+
 
 		//adds the data to our graph
 		addMotionProfile(fig3, falcon);
