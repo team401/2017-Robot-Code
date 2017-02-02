@@ -1,14 +1,12 @@
 package org.team401.robot.components
 
 import com.ctre.CANTalon
+import org.strongback.components.Motor
 
-class Turret(var enabled: Boolean, val rotationController: CANTalon, val shooterController: CANTalon, val hoodController: CANTalon) {
+class Turret(var enabled: Boolean, val leftSpinner: CANTalon, val rightSpinner: CANTalon, val rotator: CANTalon, val feeder: Motor) {
 
     init {
-        rotationController.setControlMode(CANTalon.TalonControlMode.Position.value)
-
-        shooterController.setControlMode(CANTalon.TalonControlMode.Speed.value)
-
-        hoodController.setControlMode(CANTalon.TalonControlMode.Position.value)
+        leftSpinner.setControlMode(CANTalon.TalonControlMode.Speed.value)
+        rightSpinner.setControlMode(CANTalon.TalonControlMode.Speed.value)
     }
 }
