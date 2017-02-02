@@ -91,13 +91,7 @@ public class FalconPathPlanner {
 	}
 
 	/**
-	 * Waypoint array if using Mecanum drive.  -1 for direction if unchanged.
-	 *
-	 * double[][] pathWithDirection =  new double[][]{
-	 * {1, 1, -1},
-	 * {5, 1, 330},
-	 * {9, 12, 180}...
-	 * };
+	 * Waypoint array if using Mecanum drive.
 	 *
 	 * @param path    Points to move to relative to robot start
 	 * @param mecanum Is the robot in mecanum drive mode?
@@ -105,7 +99,8 @@ public class FalconPathPlanner {
 	public FalconPathPlanner(double[][] path, boolean mecanum) {
 		origPath = doubleArrayCopy(path);
 		this.mecanum = mecanum;
-
+		if(mecanum)
+			fixAngles(origPath);
 		//default values DO NOT MODIFY;
 		pathAlpha = 0.7;
 		pathBeta = 0.3;
@@ -114,6 +109,15 @@ public class FalconPathPlanner {
 		velocityAlpha = 0.1;
 		velocityBeta = 0.3;
 		velocityTolerance = 0.0000001;
+	}
+
+	private void fixAngles(double[][] path){
+		for(double[] u:path) {
+			while (u[2] < 0)
+				u[2] += 360;
+			while (u[2] > 360)
+				u[2] -=360;
+		}
 	}
 
 	/**
