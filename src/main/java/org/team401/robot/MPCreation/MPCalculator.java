@@ -17,7 +17,7 @@ public class MPCalculator {
 				AutoPaths.START_MID_TO_L_LIFT,
 
 		};
-		MecanumInject(paths);
+		mecanumInject(paths);
 
 		//add the different paths we are using here
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
@@ -200,7 +200,7 @@ public class MPCalculator {
 	 *
 	 * @param paths the different paths you're running
 	 */
-	public static void MecanumInject(double[][][] paths){
+	public static void mecanumInject(double[][][] paths){
 
 		for(int i = 0;i<paths.length;i++){
 			double finalRotate = paths[i][paths[i].length - 1][2];

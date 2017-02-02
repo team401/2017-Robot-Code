@@ -47,10 +47,10 @@ Waypoint Paths:
 	//goes from the middle starting position to the right gear lift
 	public static final double[][] START_MID_TO_R_LIFT = {
 			STARTING_MID,
-			{17, 4},
-			{20, 8},
-			{20, 12},
-			{20, 14},
+			{17, 4, 0},
+			{20, 8, 0},
+			{20, 12, 0},
+			{20, 14, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 
@@ -72,10 +72,10 @@ Waypoint Paths:
 	};
 	public static final double[][] START_LEFT_TO_R_LIFT = {
 			STARTING_LEFT,
-			{7, 5},
-			{19, 5},
-			{20, 7},
-			{19, 14},
+			{7, 5, 0},
+			{19, 5, 0},
+			{20, 7, 0},
+			{19, 14, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 	};
