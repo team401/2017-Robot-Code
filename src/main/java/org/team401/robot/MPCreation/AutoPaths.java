@@ -197,7 +197,7 @@ Waypoint Paths:
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor,
-					Math.toDegrees(Math.atan2(coords[0], coords[1]) + (Math.PI/2))
+					Math.toDegrees(Math.atan2(coords[0], coords[1]) - (Math.PI/2))
 
             };
         }
