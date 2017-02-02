@@ -809,7 +809,7 @@ public class FalconPathPlanner {
 			double[][][] temp = mecanumProfile();
 			for(double[][] u:temp)
 				for(double[] v:u)
-					v[2] = (int)v[2];
+					v[2] = Math.round(v[2]);
 			exportCSV(prefix+"FrontLeft"+suffix, temp[0], braces);
 			exportCSV(prefix+"FrontRight"+suffix, temp[1], braces);
 			exportCSV(prefix+"RearLeft"+suffix, temp[2], braces);
