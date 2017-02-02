@@ -206,9 +206,11 @@ public class MPCalculator {
 			double finalRotate = paths[i][paths[i].length - 1][2];
 			System.out.println(paths[i].length);
 
+			double rotation = 0;
 			for(int j = 0;j<paths[i].length - 3;j++){
-				paths[i][j+1][2] += finalRotate/paths[i].length-3;
-				System.out.println(paths[i][j][2] = finalRotate/paths[i].length-3);
+				rotation += finalRotate/paths[i].length-3;
+				paths[i][j+1][2] = rotation;
+				System.out.println(paths[i][j+1][2]);
 			}
 		}
 	}
