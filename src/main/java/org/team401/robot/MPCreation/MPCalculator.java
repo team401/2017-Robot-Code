@@ -174,7 +174,7 @@ public class MPCalculator {
 			String name = AutoPaths.getName(u);
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u, mecanum);
 			falconPathPlanner.calculate(15, 0.02, 2.16666);
-			falconPathPlanner.exportCSV(name + " ", "", braces);
+			falconPathPlanner.exportCSV(name, "", braces);
 		}
 
 	}
