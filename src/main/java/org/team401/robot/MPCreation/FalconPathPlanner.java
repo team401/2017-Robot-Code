@@ -809,13 +809,13 @@ public class FalconPathPlanner {
 			double[][][] temp = mecanumProfile();
 			for(double[][] u:temp)
 				roundall(u);
-			exportCSV(prefix+"FL"+suffix, temp[0], braces);
-			exportCSV(prefix+"FR"+suffix, temp[1], braces);
-			exportCSV(prefix+"RL"+suffix, temp[2], braces);
-			exportCSV(prefix+"RR"+suffix, temp[3], braces);
+			exportCSV(prefix+" FL"+suffix, temp[0], braces);
+			exportCSV(prefix+" FR"+suffix, temp[1], braces);
+			exportCSV(prefix+" RL"+suffix, temp[2], braces);
+			exportCSV(prefix+" RR"+suffix, temp[3], braces);
 		}else {
-			exportCSV(prefix+"L"+suffix, talonSRXProfile(true, 1), braces);
-			exportCSV(prefix+"R"+suffix, talonSRXProfile(false, 1), braces);
+			exportCSV(prefix+" L"+suffix, talonSRXProfile(true, 1), braces);
+			exportCSV(prefix+" R"+suffix, talonSRXProfile(false, 1), braces);
 		}
 	}
 	private void roundall(double[][] x) {
