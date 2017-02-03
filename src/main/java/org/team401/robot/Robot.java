@@ -45,7 +45,7 @@ import org.team401.robot.commands.ToggleDriveMode;
 
 public class Robot extends IterativeRobot {
 	private SendableChooser autoStart,
-		autoTgt;
+		autoTgt, autoDrive;
 	private boolean mecanum;
 	private double[][][] autoMode;
 	private String start = "M", tgt = "CL";
@@ -53,13 +53,15 @@ public class Robot extends IterativeRobot {
 	CANTalon rightMotor;
 
 	TankDrive drive;
+	CANTalon.TrajectoryPoint point;
+	CANTalon.MotionProfileStatus status;
 
 
 	/** The Talon we want to motion profile. */
 	//CANTalon _talon = new CANTalon(9);
 
 	/** some example logic on how one can manage an MP */
-	MotionProfileExample leftMP, rightMP;//_example = new MotionProfileExample(_talon);
+	MotionProfileExample leftMP, rightMP, frontLeftMP, frontRightMP, rearLeftMP, rearRightMP;//_example = new MotionProfileExample(_talon);
 
 	/** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
 	 * but for this simple example, lets just do quick compares to prev-btn-states */
@@ -84,6 +86,10 @@ public class Robot extends IterativeRobot {
 		leftMP = new MotionProfileExample(leftMotor);
 		rightMP = new MotionProfileExample(rightMotor);
 
+		point = new CANTalon.TrajectoryPoint();
+		status = new CANTalon.MotionProfileStatus();
+
+//creates drop-down menu's for selecting the robots path
 		autoStart = new SendableChooser();
 		autoStart.addDefault("Middle", "M");
 		autoStart.addObject("Left", "L");
@@ -96,9 +102,12 @@ public class Robot extends IterativeRobot {
 		autoTgt.addObject("Right Lift", "RL");
 		autoTgt.addObject("Left Hopper", "LH");
 		autoTgt.addObject("Right Hopper", "RH");
+
+
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
 		SmartDashboard.putBoolean("Mecanum Drive", true);
+
 	}
 
 	@Override
@@ -107,11 +116,18 @@ public class Robot extends IterativeRobot {
 		tgt = (String)autoTgt.getSelected();
 		mecanum = SmartDashboard.getBoolean("Mecanum Drive", true);
 		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, mecanum);
-		if(mecanum)
+		if(mecanum) {
+			frontLeftMP.startFilling(autoMode[0]);
+			frontRightMP.startFilling(autoMode[1]);
+			rearLeftMP.startFilling(autoMode[2]);
+			rearRightMP.startFilling(autoMode[3]);
 			return;//Replace with mecanum-specific MP code
-		else
-			return;//Replace with tankdrive-specific MP code
 
+		}else {
+			leftMP.startFilling(autoMode[0]);
+			rightMP.startFilling(autoMode[1]);
+			return;//Replace with tankdrive-specific MP code
+		}
 	}
 
 
@@ -122,6 +138,15 @@ public class Robot extends IterativeRobot {
 			rightMotor.set(100);
 		}
 		System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
+		if(mecanum) {
+			frontLeftMP.control();
+			frontRightMP.control();
+			rearLeftMP.control();
+			rearRightMP.control();
+		}else{
+			leftMP.control();
+			rearRightMP.control();
+		}
 	}
 
 	@Override

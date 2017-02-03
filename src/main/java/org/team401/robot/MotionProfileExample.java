@@ -244,11 +244,11 @@ public class MotionProfileExample {
     /**
      * Start filling the MPs to all of the involved Talons.
      */
-    private void startFilling(double[][] profile) {
+    public void startFilling(double[][] profile) {
         startFilling(profile, profile.length);
     }
 
-    private void startFilling(double[][] profile, int totalCnt) {
+    public void startFilling(double[][] profile, int totalCnt) {
 
 		/* create an empty point */
         CANTalon.TrajectoryPoint point = new CANTalon.TrajectoryPoint();
