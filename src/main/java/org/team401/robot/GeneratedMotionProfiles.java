@@ -10,7 +10,13 @@ public class GeneratedMotionProfiles {
 	public static double[][][] getProfile(String start, String tgt, boolean mecanum) {
 		return mecanum ?
 			new double[][][]{//Mecanum drive
+				scanCSV(start+tgt+" FL"),
+				scanCSV(start+tgt+" FR"),
+				scanCSV(start+tgt+" RL"),
+				scanCSV(start+tgt+" RR")
 			}: new double[][][]{//Tank drive
+				scanCSV(start+tgt+" L"),
+				scanCSV(start+tgt+" R")
 			};
 	}
 
