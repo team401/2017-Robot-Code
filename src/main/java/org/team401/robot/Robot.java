@@ -7,6 +7,8 @@ import org.strongback.components.Motor;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
+import org.team401.vision.VisionDataStream.VisionData;
+import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class Robot extends IterativeRobot {
 
@@ -55,7 +57,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         allowedRange = SmartDashboard.getNumber("allowedRange", 5);
         //vision variable
-        currentVisionData = visionDataStream.getGoalLatestData();
+        currentVisionData = visionDataStream.getLatestData();
 
         //If the camera CAN see the target, it will rotate towards it and focus on it
         if (currentVisionData.isValid()) { //insert currentVisionData.isValid
@@ -68,7 +70,7 @@ public class Robot extends IterativeRobot {
                 } else if (switchy.isTriggered() && correctionAngle > 0 && turningState > 1) {
                     turretSpinner.setSpeed(0);
                 } else {
-                    turretSpinner.setSpeed(correctionAngle/20);
+                    turretSpinner.setSpeed(correctionAngle/90 * 1.0);
                 }
             } else {
                 turretSpinner.setSpeed(0);
@@ -80,7 +82,7 @@ public class Robot extends IterativeRobot {
         }
         //If the cameron CANNOT see the target, it will go into sentry mode and scan to/fro until it finds the target
         else {
-            turretSpinner.setSpeed(sentryState * 0.4);
+            turretSpinner.setSpeed(sentryState * 0.1);
             if (switchy.isTriggered() && sentryState > 1) {
                 sentryState = -1;
             } else if (switchy.isTriggered() && sentryState <= 1) {
