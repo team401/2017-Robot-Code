@@ -17,9 +17,11 @@ class Camera(val width: Int, val height: Int, val fps: Int) {
         frontCam = cameraServer.startAutomaticCapture("Front", Constants.CAMERA_FRONT)
         frontCam.setResolution(width, height)
         frontCam.setFPS(fps)
+        cameraServer.getVideo(frontCam).setEnabled(true)
         backCam = cameraServer.startAutomaticCapture("Back", Constants.CAMERA_BACK)
         backCam.setResolution(width, height)
         backCam.setFPS(fps)
+        cameraServer.getVideo(backCam).setEnabled(true)
     }
 
     fun getCurrentCamera(): UsbCamera {
