@@ -1,6 +1,6 @@
 package org.team401.robot.chassis
 
-import org.strongback.components.Solenoid
+import edu.wpi.first.wpilibj.Solenoid
 import org.team401.robot.Constants
 import org.team401.robot.MathUtils
 import org.team401.robot.components.OctocanumGearbox
@@ -55,18 +55,18 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
             // also just direct drive
             gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftYThrottle)
             gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(leftYThrottle)
-            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(rightYThrottle)
-            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(rightYThrottle)
+            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(-rightYThrottle)
+            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(-rightYThrottle)
         } else {
             // drive with orientation to the field
             // TODO add gyro code
 
             // map the input speeds to match the driver's orientation to the field
-            val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
+            val speed = MathUtils.rotateVector(rightXThrottle, -rightYThrottle, 0.0)
 
             val x = speed[0]
             val y = speed[1]
-            val rot = rightXThrottle
+            val rot = leftXThrottle
 
             val wheelSpeeds = DoubleArray(4)
             wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y + rot
@@ -76,8 +76,8 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
 
             MathUtils.normalize(wheelSpeeds)
             // MathUtils.scale(wheelSpeeds, 1.0) scaling to 1 does nothing!
-            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
             gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
             gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
         }
@@ -92,7 +92,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param leftZThrottle Left joystick's getYaw() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, leftZThrottle: Double) {
-        if (driveMode != DriveMode.MECHANUM)
+        if (driveMode == DriveMode.TRACTION)
             return println("User tried to use drive(x, y, z) while in DriveMode.TRACTION!")
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftXThrottle + leftYThrottle + leftZThrottle)
         gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-leftXThrottle + leftYThrottle + leftZThrottle)
@@ -117,11 +117,11 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param driveMode The DriveMode to switch to
      */
     fun shift(driveMode: DriveMode) {
-        if (driveMode == DriveMode.TRACTION && this.driveMode != DriveMode.TRACTION) {
-            shifter.extend()
+        if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECHANUM) {
+            shifter.set(false)
             this.driveMode = DriveMode.TRACTION
-        } else if (this.driveMode != DriveMode.MECHANUM) {
-            shifter.retract()
+        } else if (driveMode == DriveMode.MECHANUM && this.driveMode == DriveMode.TRACTION) {
+            shifter.set(true)
             this.driveMode = DriveMode.MECHANUM
         }
     }

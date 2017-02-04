@@ -11,9 +11,13 @@ import com.ctre.CANTalon
 class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
 
     init {
-        cimMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
+        cimMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        proMotor.changeControlMode(CANTalon.TalonControlMode.Follower)
+        proMotor.set(cimMotor.deviceID.toDouble())
+    }
 
-        proMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
+    fun setControlMode(mode: CANTalon.TalonControlMode) {
+        cimMotor.changeControlMode(mode)
     }
 
     /**
@@ -23,6 +27,5 @@ class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
      */
     fun setSpeed(throttle: Double) {
         cimMotor.setpoint = throttle
-        proMotor.setpoint = -throttle
     }
 }
