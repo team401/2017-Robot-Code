@@ -30,63 +30,28 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
-import org.strongback.Strongback;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.strongback.components.Motor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
-import org.team401.robot.chassis.Hopper;
 import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.chassis.OctocanumGearbox;
-import org.team401.robot.commands.ToggleDriveMode;
 
 
 public class Robot extends IterativeRobot {
-	private SendableChooser autoStart,
-		autoTgt;
-	CANTalon leftMotor;
-	CANTalon rightMotor;
+	private SendableChooser autoStart, autoTgt;
+	private Auto2017 autonomous;
+	private OctocanumDrive drive;
 
-	TankDrive drive;
-	CANTalon.TrajectoryPoint point;
-	CANTalon.MotionProfileStatus status;
-
-
-	/** The Talon we want to motion profile. */
-	//CANTalon _talon = new CANTalon(9);
-
-	/** some example logic on how one can manage an MP */
-	MotionProfileExample leftMP, rightMP, frontLeftMP, frontRightMP, rearLeftMP, rearRightMP;//_example = new MotionProfileExample(_talon);
-
-	/** cache last buttons so we can detect press events.  In a command-based project you can leverage the on-press event
-	 * but for this simple example, lets just do quick compares to prev-btn-states */
-	boolean _btnLast = false;
-
-	FlightStick _joy;
+	private FlightStick _joy;
 
 	@Override
 	public void robotInit() {
 		_joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
-		leftMotor = new CANTalon(0);
-		leftMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-		leftMotor.reverseSensor(false); /* keep sensor and motor in phase */
 
-		rightMotor = new CANTalon(1);
-		rightMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-		rightMotor.reverseSensor(false); /* keep sensor and motor in phase */
+		//also initialize drive and others here
 
-		drive = new TankDrive(Hardware.Motors.talonSRX(leftMotor),
-				Hardware.Motors.talonSRX(rightMotor));
-
-		leftMP = new MotionProfileExample(leftMotor);
-		rightMP = new MotionProfileExample(rightMotor);
-
-		point = new CANTalon.TrajectoryPoint();
-		status = new CANTalon.MotionProfileStatus();
-
-//creates drop-down menu's for selecting the robots path
+		//creates radio buttons for selecting the robots path
 		autoStart = new SendableChooser();
 		autoStart.addDefault("Middle", "M");
 		autoStart.addObject("Left", "L");
@@ -106,7 +71,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("Mecanum Drive", true);
 
 	}
-	private Auto2017 autonomous;
+
 	@Override
 	public void autonomousInit() {
 		autonomous = new Auto2017((String)autoStart.getSelected(),
@@ -121,40 +86,12 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void teleopInit(){
-		leftMotor.changeControlMode(TalonControlMode.PercentVbus);
-		rightMotor.changeControlMode(TalonControlMode.PercentVbus);
-	}
-
-	/**  function is called periodically during operator control */
-	@Override
 	public void teleopPeriodic() {
-		double driveSpeed = _joy.getPitch().read();
-		double turnSpeed = _joy.getRoll().read();
-
-
-		if (!_joy.getThumb().isTriggered()) {
-			drive.arcade(driveSpeed, turnSpeed);
-		} else {
-			leftMotor.changeControlMode(TalonControlMode.MotionProfile);
-			rightMotor.changeControlMode(TalonControlMode.MotionProfile);
-
-
-			CANTalon.SetValueMotionProfile setOutput = null;//_example.getSetValue();
-			leftMotor.set(setOutput.value);
-			rightMotor.set(setOutput.value);
-
-			if ((_joy.getTrigger().isTriggered()) && (_btnLast == false)) {
-			}
-		}
-
-		_btnLast = _joy.getTrigger().isTriggered();
-
+		//some driving code
 	}
 	@Override
 	public void disabledPeriodic() {
-		leftMotor.set(0);
-		rightMotor.set(0);
+		drive.drive(0, 0, 0, 0);
 	}
 
 }

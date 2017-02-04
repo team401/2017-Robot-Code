@@ -28,7 +28,7 @@ import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Notifier;
 import com.ctre.CANTalon.TalonControlMode;
 
-public class MotionProfileExample {
+public class SRXProfile {
 
     /**
      * The status of the motion profile executer and buffer inside the Talon.
@@ -97,17 +97,20 @@ public class MotionProfileExample {
 
     private Notifier _notifier = new Notifier(new PeriodicRunnable());
 	private double[][] profile;
+	public void resetEncoder(){
+	    _talon.setEncPosition(0);
+    }
 
     /**
      * Constructor
      *
      * @param talon reference to Talon object to fetch motion profile status from.
      */
-    public MotionProfileExample(CANTalon talon){//If you use this version of the constructor you MUST also use the setProfile method!
+    public SRXProfile(CANTalon talon){//If you use this version of the constructor you MUST also use the setProfile method!
     	this(talon, null);
 	}
 
-    public MotionProfileExample(CANTalon talon, double[][] profile) {
+    public SRXProfile(CANTalon talon, double[][] profile) {
         _talon = talon;
         this.profile = profile;
         /*
