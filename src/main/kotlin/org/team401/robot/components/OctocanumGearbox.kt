@@ -1,6 +1,6 @@
 package org.team401.robot.components
 
-import com.ctre.CANTalon
+import org.strongback.components.Motor
 
 /**
  * Wrapper class for the octocanum gearbox
@@ -8,12 +8,10 @@ import com.ctre.CANTalon
  * @param cimMotor CANTalon reference
  * @param proMotor CANTalon reference
  */
-class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
+class OctocanumGearbox(val cimMotor: Motor, val proMotor: Motor) {
 
     init {
-        cimMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
 
-        proMotor.setControlMode(CANTalon.TalonControlMode.PercentVbus.value)
     }
 
     /**
@@ -22,7 +20,7 @@ class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
      * @param throttle % power for the motors
      */
     fun setSpeed(throttle: Double) {
-        cimMotor.setpoint = throttle
-        proMotor.setpoint = -throttle
+        cimMotor.speed = throttle
+        proMotor.speed = -throttle
     }
 }
