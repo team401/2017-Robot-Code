@@ -24,7 +24,11 @@ public class MPCalculator {
 				AutoPaths.START_RIGHT_TO_L_LIFT,
 				AutoPaths.START_RIGHT_TO_R_LIFT,
 				AutoPaths.LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE,
-				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE
+				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE,
+				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B,
+				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B,
+				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R,
+				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R
 		};
 		mecanumInject(paths);
 
@@ -47,7 +51,7 @@ public class MPCalculator {
 			mech.addData(FalconLinePlot.getXVector(mecaFalcon.smoothCenterVelocity), FalconLinePlot.getYVector(u), Color.MAGENTA);
 
 		//adds the velocity graphs
-		velocities(paths);
+		//velocities(paths);
 
 		//Field map from the blue alliance's perspective
 		FalconLinePlot fig2 = new FalconLinePlot(path);

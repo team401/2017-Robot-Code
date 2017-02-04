@@ -12,13 +12,13 @@ public class AutoPaths {
 	//points for final waypoints
 //if the points vary depending on the size of our robot
 	public static final double[] CENTER_GEAR_PEG = {
-			(11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0
+			(11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0, 0
 	};
 	public static final double[] LEFT_GEAR_PEG = {
-			(11.831875 + 10.16375)/2.0, (15.2075 + 12.26625)/2.0
+			(11.831875 + 10.16375)/2.0, (15.2075 + 12.26625)/2.0, 0
 	};
 	public static final double[] RIGHT_GEAR_PEG = {
-			(16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0
+			(16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0, 0
 	};
 	public static final double[] STARTING_MID = {
 			13.5, 2, 0
@@ -136,27 +136,35 @@ Waypoint Paths:
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
 			{25.5, 9.7916, 0},
-			perpendicular(new double[]{27, 10.7916, 27, 8.7916})
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
 			CENTER_GEAR_PEG,
-			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
-			perpendicular(new double[]{27, 10.7916, 27, 8.7916})
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = {
 			CENTER_GEAR_PEG,
-			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
-			{10, 7},
-			{5, 16},
-			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
+			{10, 7, 0},
+			{5, 16, 0},
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1)
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
 			CENTER_GEAR_PEG,
-			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
-
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
+			{20, 8, 0},
+			{23, 15, 0},
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
-
+			CENTER_GEAR_PEG,
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
 	};
 
 	public static double[] concat(double[] a, double b){
@@ -199,7 +207,11 @@ Waypoint Paths:
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE.toString(), "RLHR"},
-			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE.toString(), "LLHR"}
+			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE.toString(), "LLHR"},
+			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "CLRHR"},//Center Lift to Right Hopper Red
+			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLLHR"},//Center Lift to Left Hopper Red
+			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLRHB"},//Center Lift to Right Hopper Blue
+			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "CLLHB"},//Center Lift to Left Hopper Blue
 
 	};
 	public static String getName(double[][] arr){
