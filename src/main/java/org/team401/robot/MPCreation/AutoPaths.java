@@ -12,7 +12,7 @@ public class AutoPaths {
 	//points for final waypoints
 //if the points vary depending on the size of our robot
 	public static final double[] CENTER_GEAR_PEG = {
-			(11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0, 0
+			(11.831875 + 15.168225)/2.0, 7.775, 0
 	};
 	public static final double[] LEFT_GEAR_PEG = {
 			(11.831875 + 10.16375)/2.0, (9.325 + 12.26625)/2.0, 0
@@ -146,7 +146,7 @@ Waypoint Paths:
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
 			CENTER_GEAR_PEG,
-			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0)-2, 0},
 			{20, 8, 0},
 			{23, 15, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),

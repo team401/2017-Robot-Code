@@ -23,10 +23,20 @@ public class MPCalculator {
 				AutoPaths.START_RIGHT_TO_LIFT,
 				AutoPaths.START_RIGHT_TO_L_LIFT,
 				AutoPaths.START_RIGHT_TO_R_LIFT,
+				//AutoPaths.LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE,
+				//AutoPaths.LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2,
+				//AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE,
+				//AutoPaths.RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2,
+				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R,
+				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R
+
 
 		};
 		mecanumInject(paths);
 
+
+		System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 2));
+		System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 1));
 		//add the different paths we are using here
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
 		falcon.calculate(15, 0.02, 2.16666);
