@@ -28,7 +28,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
     /**
      * The current drive mode of the chassis
      */
-    var driveMode = DriveMode.TRACTION
+    var driveMode = DriveMode.MECHANUM
 
     init {
         // add gearbox references to an array to make it easier to iterate through them
@@ -55,8 +55,8 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
             // also just direct drive
             gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftYThrottle)
             gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(leftYThrottle)
-            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(rightYThrottle)
-            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(rightYThrottle)
+            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(-rightYThrottle)
+            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(-rightYThrottle)
         } else {
             // drive with orientation to the field
             // TODO add gyro code
@@ -76,8 +76,8 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
 
             MathUtils.normalize(wheelSpeeds)
             // MathUtils.scale(wheelSpeeds, 1.0) scaling to 1 does nothing!
-            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
             gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
             gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
         }
@@ -120,7 +120,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         if (driveMode == DriveMode.TRACTION && this.driveMode != DriveMode.TRACTION) {
             shifter.extend()
             this.driveMode = DriveMode.TRACTION
-        } else if (this.driveMode != DriveMode.MECHANUM) {
+        } else if (driveMode == DriveMode.MECHANUM && this.driveMode != DriveMode.MECHANUM) {
             shifter.retract()
             this.driveMode = DriveMode.MECHANUM
         }

@@ -21,6 +21,6 @@ class OctocanumGearbox(val cimMotor: Motor, val proMotor: Motor) {
      */
     fun setSpeed(throttle: Double) {
         cimMotor.speed = throttle
-        proMotor.speed = -throttle
+        proMotor.speed = throttle
     }
 }

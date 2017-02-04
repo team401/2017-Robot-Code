@@ -28,23 +28,23 @@ public class Robot extends IterativeRobot {
         OctocanumGearbox frontRight = new OctocanumGearbox(Hardware.Motors.victorSP(4), Hardware.Motors.victorSP(5));
         OctocanumGearbox rearLeft = new OctocanumGearbox(Hardware.Motors.victorSP(2), Hardware.Motors.victorSP(3));
         OctocanumGearbox rearRight = new OctocanumGearbox(Hardware.Motors.victorSP(6), Hardware.Motors.victorSP(7));
-        Solenoid shifter = Hardware.Solenoids.doubleSolenoid(Constants.GEARBOX_SHIFTER,0, Solenoid.Direction.RETRACTING);
+        Solenoid shifter = Hardware.Solenoids.doubleSolenoid(Constants.GEARBOX_SHIFTER,4, Solenoid.Direction.RETRACTING);
         octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, shifter);
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
         masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
-        camera = new Camera(640, 480, 10);
+        //camera = new Camera(640, 480, 10);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
-                () -> new ToggleDriveMode(octocanumDrive));
+        /*switchReactor.onTriggered(driveJoystickLeft.getTrigger(),
+                () -> new ToggleDriveMode(octocanumDrive));*/
         // camera switching
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
-                () -> camera.switchCamera());
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());*/
     }
 
     @Override
@@ -72,6 +72,11 @@ public class Robot extends IterativeRobot {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
         octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
+        System.out.println(octocanumDrive.getDriveMode().toString());
+        if (driveJoystickLeft.getTrigger().isTriggered())
+            octocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION);
+        else if (driveJoystickRight.getTrigger().isTriggered())
+            octocanumDrive.shift(OctocanumDrive.DriveMode.MECHANUM);
     }
 
     @Override
