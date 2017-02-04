@@ -62,11 +62,11 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
             // TODO add gyro code
 
             // map the input speeds to match the driver's orientation to the field
-            val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
+            val speed = MathUtils.rotateVector(rightXThrottle, -rightYThrottle, 0.0)
 
             val x = speed[0]
             val y = speed[1]
-            val rot = rightXThrottle
+            val rot = leftXThrottle
 
             val wheelSpeeds = DoubleArray(4)
             wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y + rot
