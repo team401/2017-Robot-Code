@@ -138,6 +138,26 @@ Waypoint Paths:
 			{25.5, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916})
 	};
+	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
+			CENTER_GEAR_PEG,
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916})
+	};
+	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = {
+			CENTER_GEAR_PEG,
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
+			{10, 7},
+			{5, 16},
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
+	};
+	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
+			CENTER_GEAR_PEG,
+			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2},
+
+	};
+	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
+
+	};
 
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});

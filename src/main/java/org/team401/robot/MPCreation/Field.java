@@ -49,7 +49,7 @@ public class Field {
 			{3.036, 0},
 			{0, 5.735}
 	};
-	public static final double[][] LEFTHOPPERS = {
+	public static final double[][] LEFTHOPPERS_B = {
 			{0, 13.7916},
 			{0, 15.7916},
 			{-1, 15.7916},
@@ -60,7 +60,7 @@ public class Field {
 			{-1, 17.7916},
 			{0, 17.7916},
 	};
-	public static final double[][] RIGHTHOPPERS = {
+	public static final double[][] RIGHTHOPPERS_B = {
 			{27, 6.525},
 			{27, 8.525},
 			{28, 8.525},
@@ -70,5 +70,27 @@ public class Field {
 			{28, 12.525},
 			{28, 10.525},
 			{27, 10.525},
+	};
+	public static final double[][] LEFTHOPPERS_R = {
+			{0, 6.525},
+			{0, 8.525},
+			{-1, 8.525},
+			{-1, 6.525},
+			{0, 6.525},
+			{0, 12.525},
+			{-1, 12.525},
+			{-1, 10.525},
+			{0, 10.525},
+	};
+	public static final double[][] RIGHTHOPPERS_R = {
+			{27, 13.7916},
+			{27, 15.7916},
+			{28, 15.7916},
+			{28, 13.7916},
+			{27, 13.7916},
+			{27, 19.7916},
+			{28, 19.7916},
+			{28, 17.7916},
+			{27, 17.7916},
 	};
 }

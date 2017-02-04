@@ -66,8 +66,8 @@ public class MPCalculator {
 		fig2.addData(Field.NEUTRAL_ZONE, Color.green);
 		fig2.addData(Field.KEY_BLU, Color.black);
 		fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
-		fig2.addData(Field.LEFTHOPPERS, Color.black);
-		fig2.addData(Field.RIGHTHOPPERS, Color.black);
+		fig2.addData(Field.LEFTHOPPERS_B, Color.black);
+		fig2.addData(Field.RIGHTHOPPERS_B, Color.black);
 
 		//adds the data to our graph
 		addPaths(paths, fig2, true);
@@ -88,10 +88,13 @@ public class MPCalculator {
 		fig3.addData(Field.NEUTRAL_ZONE, Color.green);
 		fig3.addData(Field.KEY_RED, Color.black);
 		fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
+		fig3.addData(Field.LEFTHOPPERS_R, Color.black);
+		fig3.addData(Field.RIGHTHOPPERS_R, Color.black);
 
 
 		//adds the data to our graph
-		addMotionProfile(fig3, falcon);
+		addPaths(paths, fig3, true);
+
 
 
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
