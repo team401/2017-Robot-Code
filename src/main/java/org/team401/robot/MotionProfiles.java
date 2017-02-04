@@ -5,9 +5,13 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class GeneratedMotionProfiles {
+import edu.wpi.first.wpilibj.DriverStation;
+
+public class MotionProfiles {
 	// Data format: Position (rotations)	Velocity (RPM)	Duration (ms)
-	public static double[][][] getProfile(String start, String tgt, boolean mecanum) {
+	public static double[][][] get(String start, String tgt, boolean mecanum) {
+		String alliance = DriverStation.getInstance().getAlliance().name().substring(0, 1);
+		//Do something with the alliance string(R, B, or I) if our paths are alliance-dependent.
 		return mecanum ?
 			new double[][][]{//Mecanum drive
 				scanCSV(start+tgt+" FL"),
@@ -21,7 +25,7 @@ public class GeneratedMotionProfiles {
 	}
 
 	public static double[][] scanCSV(String fileName){
-		BufferedReader br = null;
+		BufferedReader br;
 		String line;
 		fileName = fileName + ".csv";
 		double[][] result;
