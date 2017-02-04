@@ -273,7 +273,7 @@ Waypoint Paths:
 			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 2), 0),
 			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 1), 0)
 	};
-
+		//list so we can find the name of each path
 	private static final String[][] names = {
 			{START_MID_TO_LIFT.toString(), "MCL"},
 			{START_MID_TO_L_LIFT.toString(), "MLL"},
@@ -308,6 +308,7 @@ Waypoint Paths:
 
 
 	};
+	//finds the name of each path
 	public static String getName(double[][] arr){
 		for(String[] u:names)
 			if(u[0].equals(arr.toString()))

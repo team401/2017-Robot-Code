@@ -42,12 +42,11 @@ public class MPCalculator {
 				AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_R,
 				AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_B
 		};
+		//adds the direction value to mecanum
 		mecanumInject(paths);
 
 
-		//System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 2));
-		//System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 1));
-		//add the different paths we are using here
+		//defalut/dummy path
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
 		falcon.calculate(15, 0.02, robotWidth);
 		
