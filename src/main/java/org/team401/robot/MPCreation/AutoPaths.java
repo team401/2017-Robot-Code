@@ -117,18 +117,32 @@ Waypoint Paths:
 			{5, 15, 0}
 	};
 	//USE THE OPPOSITE SIDES FOR OPPOSITE SIDES OF THE MAP
-	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE = {
+	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			{1.5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
 	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE = {
+	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
 			{25.5, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
+	};
+	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = {
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
+
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
+	};
+	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
+			{23, 10, 0},
+			{24, 15, 0},
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
 	};
 	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
 			CENTER_GEAR_PEG,
@@ -230,13 +244,13 @@ Waypoint Paths:
 			{START_RIGHT_TO_R_LIFT.toString(), "RRL"},
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
-			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE.toString(), "RLHR"},
-			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE.toString(), "LLHR"},
+			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "RLR"},
+			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "LLR"},
 			//CLR FL.csv
-			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "CLRHR"},//Center Lift to Right Hopper Red
-			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLLHR"},//Center Lift to Left Hopper Red
-			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLRHB"},//Center Lift to Right Hopper Blue
-			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "CLLHB"},//Center Lift to Left Hopper Blue
+			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "LLB"},
+			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "RLB"},
+			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},//Center Lift to Left Hopper Red
+			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLB"},//Center Lift to Right Hopper Blue
 			{LEFT_HOPPER_COLLECTION_B.toString(), "LHCB"},
 			{LEFT_HOPPER_COLLECTION_R.toString(), "LHCR"},
 			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHCB"},
