@@ -1,14 +1,5 @@
 /**
- * This Java FRC robot application is meant to demonstrate an example using the Motion Profile control mode
- * in Talon SRX.  The CANTalon class gives us the ability to buffer up trajectory points and execute them
- * as the roboRIO streams them into the Talon SRX.
- *
- * There are many valid ways to use this feature and this example does not sufficiently demonstrate every possible
- * method.  Motion Profile streaming can be as complex as the developer needs it to be for advanced applications,
- * or it can be used in a simple fashion for fire-and-forget actions that require precise timing.
- *
- * This application is an IterativeRobot project to demonstrate a minimal implementation not requiring the command
- * framework, however these code excerpts could be moved into a command-based project.
+ * FRC Team 401 2017 Autonomous Testing
  */
 
 package org.team401.robot;
@@ -31,11 +22,12 @@ public class Robot extends IterativeRobot {
 	private Auto2017 autonomous;
 	private OctocanumDrive drive;
 
-	private FlightStick joystick;
+	private FlightStick joy0, joy1;
 
 	@Override
 	public void robotInit() {
-		joystick = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+		joy0 = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+		joy1 = Hardware.HumanInterfaceDevices.logitechAttack3D(1);
 
 		//init drive
 		drive = new OctocanumDrive(
@@ -86,7 +78,9 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		//some driving code
+		if(joy0.getTrigger().isTriggered()||joy1.getTrigger().isTriggered())
+			drive.shift();
+		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
 	}
 	@Override
 	public void disabledPeriodic() {
