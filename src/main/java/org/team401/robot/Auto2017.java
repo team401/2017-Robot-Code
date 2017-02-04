@@ -1,8 +1,7 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.VictorSP;
-
+//import edu.wpi.first.wpilibj.VictorSP;
 import java.util.Date;
 
 public class Auto2017 {
@@ -11,9 +10,9 @@ public class Auto2017 {
 	private Date startTimeout;
 	private static final int HOPPER_TIMEOUT = 1, PEG_TIMEOUT = 4;
 	private double[][][] profiles;
-	private boolean mecanum, victor;
+	private boolean mecanum/*, victor*/;
 	private ProfileSender fl, fr, rl, rr;
-	private VictorSP flv, frv, rlv, rrv;
+	//private VictorSP flv, frv, rlv, rrv;
 
 	/*public Auto2017(String start, String tgt, boolean mecanum){
 		this(start, tgt, mecanum, false);//Default to no victors
@@ -92,6 +91,7 @@ public class Auto2017 {
 				break;
 			case 4:
 				//auto should be done by now
+				System.out.println("Autonomous finished!");
 				break;
 			default:
 				//do nothing if not in correct states

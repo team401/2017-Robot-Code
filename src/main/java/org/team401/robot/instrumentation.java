@@ -3,30 +3,30 @@
  */
 package org.team401.robot;
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class instrumentation {
 
-	static double timeout = 0;
+	private static double timeout = 0;
 
 	private static final String []_table = {"Disabled","Enabled","Hold"};
 	
 	public static void OnUnderrun() {
-		System.out.format("%s\n", "UNDERRUN");
+		System.out.println("UNDERRUN");
 	}
 	public static void OnNoProgress() {
-		System.out.format("%s\n", "NOPROGRESS");
+		System.out.println("NO PROGRESS");
 	}
-	static private String StrOutputEnable(CANTalon.SetValueMotionProfile sv)
-	{
+	static private String StrOutputEnable(CANTalon.SetValueMotionProfile sv){
 		if(sv == null)
 			return "null";
 		if(sv.value > 3)
-			return "Inval";
+			return "Invalid";
 		return _table[sv.value];
 	}
 	public static void process(CANTalon.MotionProfileStatus status1) {
-		double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+		double now = Timer.getFPGATimestamp();
 
 		if((now-timeout) > 0.2){
 			timeout = now;

@@ -18,7 +18,7 @@ public class MotionProfiles {
 		//Second profile names:
 		//STARTPOS{LH, LL, CL, RL, RH}+ALLIANCE{R, B}+space+WHEEL{FL, FR, RL, RR, L, R}
 
-		String all = alliance||tgt.charAt(1)=='H' ? DriverStation.getInstance().getAlliance().name().substring(0, 1) : "";
+		String all = alliance||tgt.endsWith("H") ? DriverStation.getInstance().getAlliance().name().substring(0, 1) : "";
 		//Add on an alliance identifier(R, B, or I) if our paths are alliance-dependent.
 		//Should return nothing if alliance is Invalid
 		return mecanum ?

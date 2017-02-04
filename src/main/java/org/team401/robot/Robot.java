@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
 
 		//creates radio buttons for selecting the robots path
 		autoStart = new SendableChooser();
-		autoStart.addDefault("Middle", "M");
+		autoStart.addDefault("Center", "C");
 		autoStart.addObject("Left", "L");
 		autoStart.addObject("Right", "R");
 		SmartDashboard.putData("Starting Position", autoStart);
