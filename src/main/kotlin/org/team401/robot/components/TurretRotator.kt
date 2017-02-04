@@ -9,7 +9,8 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
 
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
-        rotator.setControlMode(CANTalon.TalonControlMode.Position.value)
+        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
+        rotator.enableBrakeMode(true)
     }
 
     /**
@@ -26,6 +27,11 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
             setPos(0.0)
         else
             setPos(getAngle() + angle)
+    }
+
+    fun stop() {
+        rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        rotator.setpoint = 0.0
     }
 
     private fun getAngle() = (14*(rotator.get()/4096))/187 * 360
