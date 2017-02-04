@@ -2,9 +2,12 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 
+import java.util.Date;
+
 public class Auto2017 {
 	private String tgt;
 	private int state;
+	private Date startTimeout;
 	private final int HOPPER_TIMEOUT = 1, PEG_TIMEOUT = 4;
 	private double[][][] profiles;
 	private boolean mecanum;
@@ -17,7 +20,6 @@ public class Auto2017 {
 		profiles = GeneratedMotionProfiles.getProfile(start, tgt, mecanum);
 		startProfile();
 	}
-	private int i = 0;
 	private void startProfile(){
 		fl = new SRXProfile(new CANTalon(Constants.CIM_FRONT_LEFT), profiles[0]);
 		fr = new SRXProfile(new CANTalon(Constants.CIM_FRONT_RIGHT), profiles[1]);
@@ -34,8 +36,15 @@ public class Auto2017 {
 		fr.control();
 		rl.control();
 		rr.control();
-		if(finished())
+		if(finished()) {
 			state++;
+			startTimeout = new Date();
+			fl.resetEncoder();
+			fr.resetEncoder();
+			rl.resetEncoder();
+			rr.resetEncoder();
+			profiles = GeneratedMotionProfiles.getProfile("", tgt, mecanum);
+		}
 	}
 	private boolean finished(){//Should return true if and only if a profile is finished.
 		return fl.getSetValue().value==2&&
@@ -43,22 +52,17 @@ public class Auto2017 {
 				rl.getSetValue().value==2&&
 				rr.getSetValue().value==2;
 	}
+
 	public void periodic(){
 		switch(state){
 			case 0://Execute starting MP until finished
 				move();
 				break;
 			case 1://Wait for a specified time for balls to fall in the robot or a pilot to lift the gear
-				i++;
-				if(i>=(tgt.endsWith("H")?HOPPER_TIMEOUT:PEG_TIMEOUT)*50)
+				if(startTimeout.getTime()+(tgt.endsWith("H")?HOPPER_TIMEOUT:PEG_TIMEOUT)*1000<=new Date().getTime())
 					state++;
 				break;
 			case 2://Reset encoders so feed-forward won't be confused, then start a second MP
-				fl.resetEncoder();
-				fr.resetEncoder();
-				rl.resetEncoder();
-				rr.resetEncoder();
-				profiles = GeneratedMotionProfiles.getProfile("", tgt, mecanum);
 				startProfile();
 				break;
 			case 3:
