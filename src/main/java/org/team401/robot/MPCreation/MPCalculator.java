@@ -29,8 +29,6 @@ public class MPCalculator {
 				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B,
 				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R,
 				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B
-
-
 		};
 		mecanumInject(paths);
 

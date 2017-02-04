@@ -102,21 +102,11 @@ Waypoint Paths:
 			RIGHT_GEAR_PEG,
 			{23, 18, 0},
 	};
-	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
-			LEFT_GEAR_PEG,
-			{4, 18, 0},
-	};
 	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
 			{23, 18, 0},
 			{22, 17, 0},
 			{22, 15, 0}
 	};
-	public static final double[][] LEFT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
-			{4, 18, 0},
-			{5, 17, 0},
-			{5, 15, 0}
-	};
-	//USE THE OPPOSITE SIDES FOR OPPOSITE SIDES OF THE MAP
 	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
