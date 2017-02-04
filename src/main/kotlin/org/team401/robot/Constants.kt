@@ -15,21 +15,20 @@ object Constants {
 
     // can device ids
     const val PDP                   = 0
-    const val PCM1                  = 1
-    const val PCM2                  = 2
+    const val PCM                   = 12
     // can device ids for the motor controllers
-    const val CIM_FRONT_LEFT        = 3
-    const val PRO_FRONT_LEFT        = 4
+    const val CIM_FRONT_LEFT        = 1
+    const val PRO_FRONT_LEFT        = 2
     const val CIM_FRONT_RIGHT       = 5
     const val PRO_FRONT_RIGHT       = 6
-    const val CIM_REAR_LEFT         = 7
-    const val PRO_REAR_LEFT         = 8
-    const val CIM_REAR_RIGHT        = 9
-    const val PRO_REAR_RIGHT        = 10
+    const val CIM_REAR_LEFT         = 3
+    const val PRO_REAR_LEFT         = 4
+    const val CIM_REAR_RIGHT        = 7
+    const val PRO_REAR_RIGHT        = 8
     // can device ids for the turret
-    const val TURRET_SHOOTER_LEFT   = 11
-    const val TURRET_SHOOTER_RIGHT  = 12
-    const val TURRET_ROTATOR        = 13
+    const val TURRET_SHOOTER_LEFT   = 9
+    const val TURRET_SHOOTER_RIGHT  = 10
+    const val TURRET_ROTATOR        = 11
 
     // pwm motor ports
     const val TURRET_FEEDER         = 0

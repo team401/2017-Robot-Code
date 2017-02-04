@@ -92,7 +92,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param leftZThrottle Left joystick's getYaw() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, leftZThrottle: Double) {
-        if (driveMode != DriveMode.MECHANUM)
+        if (driveMode == DriveMode.TRACTION)
             return println("User tried to use drive(x, y, z) while in DriveMode.TRACTION!")
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftXThrottle + leftYThrottle + leftZThrottle)
         gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-leftXThrottle + leftYThrottle + leftZThrottle)
