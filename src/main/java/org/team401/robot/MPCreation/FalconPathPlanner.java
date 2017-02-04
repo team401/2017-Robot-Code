@@ -712,7 +712,7 @@ public class FalconPathPlanner {
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
 	public double[][][] mecanumProfile(){
-		return mecanumProfile(getRatio());
+		return mecanumProfile(getRatio());//Default to the ratio defined above
 	}
 	public double[][][] mecanumProfile(double ratio) {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
@@ -807,15 +807,18 @@ public class FalconPathPlanner {
 	public void exportCSV(String prefix, String suffix, boolean braces){
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
+
+			//Sometimes we get floating-point errors with the time column, so just round to nearest millisecond.
 			for(double[][] u:temp)
 				roundall(u);
+
 			exportCSV(prefix+" FL"+suffix, temp[0], braces);
 			exportCSV(prefix+" FR"+suffix, temp[1], braces);
 			exportCSV(prefix+" RL"+suffix, temp[2], braces);
 			exportCSV(prefix+" RR"+suffix, temp[3], braces);
 		}else {
-			exportCSV(prefix+" L"+suffix, talonSRXProfile(true, 1), braces);
-			exportCSV(prefix+" R"+suffix, talonSRXProfile(false, 1), braces);
+			exportCSV(prefix+" L"+suffix, talonSRXProfile(true), braces);
+			exportCSV(prefix+" R"+suffix, talonSRXProfile(false), braces);
 		}
 	}
 	private void roundall(double[][] x) {
