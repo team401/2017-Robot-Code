@@ -35,26 +35,12 @@ public class MPCalculator {
 		mecanumInject(paths);
 
 
-		System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 2));
-		System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 1));
+		//System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 2));
+		//System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 1));
 		//add the different paths we are using here
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
 		falcon.calculate(15, 0.02, 2.16666);
-
-
-		//test mecanum mode
-		FalconPathPlanner mecaFalcon = new FalconPathPlanner(AutoPaths.TEST_MECANUM, true);
-		mecaFalcon.calculate(15, 0.02, 2.16666);
-		FalconLinePlot mech = new FalconLinePlot(mecaFalcon.smoothCenterVelocity);
-		mech.xGridOn();
-		mech.yGridOn();
-		mech.setTitle("Mecanum drive test profile velocities");
-		mech.setXLabel("Time(seconds)");
-		mech.setYLabel("Velocity\n(ft/sec for red, RPM for magenta)");
-		double[][][] mechProf = mecaFalcon.mecanumProfile();
-		for (double[][] u : mechProf)
-			mech.addData(FalconLinePlot.getXVector(mecaFalcon.smoothCenterVelocity), FalconLinePlot.getYVector(u), Color.MAGENTA);
-
+		
 		//adds the velocity graphs
 		//velocities(paths);
 
@@ -108,7 +94,6 @@ public class MPCalculator {
 
 		//Exports raw speed controller instructions as 6 .csv spreadsheets.
 
-		mecaFalcon.exportCSV();
 		export(paths, true);
 
 
