@@ -64,6 +64,12 @@ public class ProfileSender {
     private boolean _bStart = false;
 
     /**
+     * If this is set to false, we won't update SmartDashboard.  With 4 different Talons going at once,
+     * we will have race conditions.  Even if we didn't, we'd still have way too much on the screen.
+     */
+    private boolean alerts;
+
+    /**
      * Since the CANTalon.set() routine is mode specific, deduce what we want
      * the set value to be and let the calling module apply it whenever we
      * decide to switch to MP mode.
@@ -109,10 +115,16 @@ public class ProfileSender {
     public ProfileSender(CANTalon talon){//If you use this version of the constructor you MUST also use the setProfile method!
     	this(talon, null);
 	}
-
-    public ProfileSender(CANTalon talon, double[][] profile) {
+    public ProfileSender(CANTalon talon, boolean alerts){
+        this(talon, null, alerts);
+    }
+    public ProfileSender(CANTalon talon, double[][] profile){
+        this(talon, profile, true);//Default alerts to true
+    }
+    public ProfileSender(CANTalon talon, double[][] profile, boolean alerts) {
         _talon = talon;
         this.profile = profile;
+        this.alerts = alerts;
         /*
          * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
@@ -167,7 +179,8 @@ public class ProfileSender {
 				 * something is wrong. Talon is not present, unplugged, breaker
 				 * tripped
 				 */
-                instrumentation.OnNoProgress();
+                if(alerts)
+                    instrumentation.OnNoProgress();
             else
                 _loopTimeout--;
 
@@ -241,7 +254,8 @@ public class ProfileSender {
             }
         }
 		/* printfs and/or logging */
-        instrumentation.process(_status);
+        if(alerts)
+            instrumentation.process(_status);
     }
 
     /**
@@ -259,7 +273,8 @@ public class ProfileSender {
 		/* did we get an underrun condition since last time we checked ? */
         if (_status.hasUnderrun) {
 			/* better log it so we know about it */
-            instrumentation.OnUnderrun();
+            if(alerts)
+			    instrumentation.OnUnderrun();
 			/*
 			 * clear the error. This flag does not auto clear, this way 
 			 * we never miss logging it.
