@@ -13,7 +13,12 @@ public class MotionProfiles {
 		return get(start, tgt, mecanum, false);
 	}
 	public static double[][][] get(String start, String tgt, boolean mecanum, boolean alliance) {
-		String all = alliance ? DriverStation.getInstance().getAlliance().name().substring(0, 1) : "";
+		//Format for first profile names:
+		//STARTPOS{L, C, R}+DESTINATION{LH, LL, CL, RL, RH}+IFHOPPER{ALLIANCE{R, B}}+space+WHEEL{FL, FR, RL, RR, L, R}
+		//Second profile names:
+		//STARTPOS{LH, LL, CL, RL, RH}+ALLIANCE{R, B}+space+WHEEL{FL, FR, RL, RR, L, R}
+
+		String all = alliance||tgt.charAt(1)=='H' ? DriverStation.getInstance().getAlliance().name().substring(0, 1) : "";
 		//Add on an alliance identifier(R, B, or I) if our paths are alliance-dependent.
 		//Should return nothing if alliance is Invalid
 		return mecanum ?
