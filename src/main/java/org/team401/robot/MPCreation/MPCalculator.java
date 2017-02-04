@@ -4,6 +4,8 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class MPCalculator {
+	private static double robotWidth = 1.9375;
+
 	public static void main(String[] args){
 
 		//******************************
@@ -14,6 +16,7 @@ public class MPCalculator {
 
 		//ADD YOUR PATHS HERE:
 		double[][][] paths = {
+				/*
 				AutoPaths.START_LEFT_TO_LIFT,
 				AutoPaths.START_LEFT_TO_L_LIFT,
 				AutoPaths.START_LEFT_TO_R_LIFT,
@@ -28,7 +31,16 @@ public class MPCalculator {
 				AutoPaths.LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B,
 				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B,
 				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R,
-				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B
+				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B,
+				*/
+				AutoPaths.STARTING_LEFT_TO_LEFT_HOPPER_R,
+				AutoPaths.STARTING_LEFT_TO_LEFT_HOPPER_B,
+				AutoPaths.STARTING_RIGHT_TO_RIGHT_HOPPER_R,
+				AutoPaths.STARTING_RIGHT_TO_RIGHT_HOPPER_B,
+				AutoPaths.STARTING_MID_TO_LEFT_HOPPER_R,
+				AutoPaths.STARTING_MID_TO_LEFT_HOPPER_B,
+				AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_R,
+				AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_B
 		};
 		mecanumInject(paths);
 
@@ -37,7 +49,7 @@ public class MPCalculator {
 		//System.out.println(AutoPaths.perpendicular_To_Airship(AutoPaths.CENTER_GEAR_PEG, 1));
 		//add the different paths we are using here
 		FalconPathPlanner falcon = new FalconPathPlanner(path);
-		falcon.calculate(15, 0.02, 2.16666);
+		falcon.calculate(15, 0.02, robotWidth);
 		
 		//adds the velocity graphs
 		//velocities(paths);
@@ -150,7 +162,7 @@ public class MPCalculator {
 	public static void addPaths(double[][][] listOfPaths, FalconLinePlot figure, boolean mecanum) {
 		for (double[][] u : listOfPaths) {
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
-			falconPathPlanner.calculate(15, 0.02, 2.16666, mecanum);
+			falconPathPlanner.calculate(15, 0.02, robotWidth, mecanum);
 
 			figure.addData(falconPathPlanner.smoothPath, Color.red, Color.blue);
 			figure.addData(falconPathPlanner.leftPath, Color.magenta);
@@ -168,11 +180,11 @@ public class MPCalculator {
 		for (double[][] u : listOfPaths) {
 			String name = AutoPaths.getName(u);
 			FalconPathPlanner falconPathPlannerMech = new FalconPathPlanner(u, true);
-			falconPathPlannerMech.calculate(15, 0.02, 2.16666);
+			falconPathPlannerMech.calculate(15, 0.02, robotWidth);
 			falconPathPlannerMech.exportCSV(name, "", braces);
 
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u, false);
-			falconPathPlanner.calculate(15, 0.02, 2.16666);
+			falconPathPlanner.calculate(15, 0.02, robotWidth);
 			falconPathPlanner.exportCSV(name, "", braces);
 
 		}
@@ -191,7 +203,7 @@ public class MPCalculator {
 			String name = AutoPaths.getName(u);
 
 			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
-			falconPathPlanner.calculate(15, 0.02, 2.16666);
+			falconPathPlanner.calculate(15, 0.02, robotWidth);
 
 			FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
 			fig1.xGridOn();

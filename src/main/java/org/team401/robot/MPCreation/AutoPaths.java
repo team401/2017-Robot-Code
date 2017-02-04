@@ -194,6 +194,58 @@ Waypoint Paths:
 			{26, 20, -90},
 			{26, 10, -90}
 	};
+	public static final double[][] STARTING_LEFT_TO_LEFT_HOPPER_R={
+			STARTING_LEFT,
+			{5, 9.7916, 0},
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
+	};
+	public static final double[][] STARTING_LEFT_TO_LEFT_HOPPER_B={
+			STARTING_LEFT,
+			{5, 16.7916, 0},
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
+	};
+	public static final double[][] STARTING_RIGHT_TO_RIGHT_HOPPER_R = {
+			STARTING_RIGHT,
+			{22, 16.7916, 0},
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
+	};
+	public static final double[][] STARTING_RIGHT_TO_RIGHT_HOPPER_B = {
+			STARTING_RIGHT,
+			{22, 9.7916, 0},
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
+	};
+	public static final double[][] STARTING_MID_TO_LEFT_HOPPER_R={
+			STARTING_MID,
+			{5, 9.7916, 0},
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
+	};
+	public static final double[][] STARTING_MID_TO_LEFT_HOPPER_B={
+			STARTING_MID,
+			{5, 9.7916, 0},
+			{5, 16.7916, 0},
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
+	};
+	public static final double[][] STARTING_MID_TO_RIGHT_HOPPER_R = {
+			STARTING_MID,
+			{22, 9.7916, 0},
+			{22, 16.7916, 0},
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
+	};
+	public static final double[][] STARTING_MID_TO_RIGHT_HOPPER_B = {
+			STARTING_MID,
+			{22, 9.7916, 0},
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
+	};
+
+
 
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
@@ -245,6 +297,15 @@ Waypoint Paths:
 			{LEFT_HOPPER_COLLECTION_R.toString(), "LHCR"},
 			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHCB"},
 			{RIGHT_HOPPER_COLLECTION_R.toString(), "RHCR"},
+			{STARTING_LEFT_TO_LEFT_HOPPER_R.toString(), "LLHR"},
+			{STARTING_LEFT_TO_LEFT_HOPPER_B.toString(), "LLHB"},
+			{STARTING_RIGHT_TO_RIGHT_HOPPER_R.toString(), "RRHR"},
+			{STARTING_RIGHT_TO_RIGHT_HOPPER_B.toString(), "RRHB"},
+			{STARTING_MID_TO_LEFT_HOPPER_R.toString(), "CLHR"},
+			{STARTING_MID_TO_LEFT_HOPPER_B.toString(), "CLHB"},
+			{STARTING_MID_TO_RIGHT_HOPPER_R.toString(), "CRHR"},
+			{STARTING_MID_TO_RIGHT_HOPPER_B.toString(), "CRHB"},
+
 
 	};
 	public static String getName(double[][] arr){
