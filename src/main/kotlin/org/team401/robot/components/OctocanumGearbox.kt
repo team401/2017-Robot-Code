@@ -10,10 +10,6 @@ import org.strongback.components.Motor
  */
 class OctocanumGearbox(val cimMotor: Motor, val proMotor: Motor) {
 
-    init {
-
-    }
-
     /**
      * Sets the setpoint of the TalonSRX to the specified speed (percent vbus)
      *

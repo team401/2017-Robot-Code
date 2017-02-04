@@ -1,6 +1,6 @@
 package org.team401.robot.chassis
 
-import org.strongback.components.Solenoid
+import edu.wpi.first.wpilibj.Solenoid
 import org.team401.robot.Constants
 import org.team401.robot.MathUtils
 import org.team401.robot.components.OctocanumGearbox
@@ -28,7 +28,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
     /**
      * The current drive mode of the chassis
      */
-    var driveMode = DriveMode.MECHANUM
+    var driveMode = DriveMode.TRACTION
 
     init {
         // add gearbox references to an array to make it easier to iterate through them
@@ -117,11 +117,11 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param driveMode The DriveMode to switch to
      */
     fun shift(driveMode: DriveMode) {
-        if (driveMode == DriveMode.TRACTION && this.driveMode != DriveMode.TRACTION) {
-            shifter.extend()
+        if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECHANUM) {
+            shifter.set(false)
             this.driveMode = DriveMode.TRACTION
-        } else if (driveMode == DriveMode.MECHANUM && this.driveMode != DriveMode.MECHANUM) {
-            shifter.retract()
+        } else if (driveMode == DriveMode.MECHANUM && this.driveMode == DriveMode.TRACTION) {
+            shifter.set(true)
             this.driveMode = DriveMode.MECHANUM
         }
     }

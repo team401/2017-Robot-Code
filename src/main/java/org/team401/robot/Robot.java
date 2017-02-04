@@ -2,9 +2,9 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
-import org.strongback.components.Solenoid;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
@@ -28,23 +28,22 @@ public class Robot extends IterativeRobot {
         OctocanumGearbox frontRight = new OctocanumGearbox(Hardware.Motors.victorSP(4), Hardware.Motors.victorSP(5));
         OctocanumGearbox rearLeft = new OctocanumGearbox(Hardware.Motors.victorSP(2), Hardware.Motors.victorSP(3));
         OctocanumGearbox rearRight = new OctocanumGearbox(Hardware.Motors.victorSP(6), Hardware.Motors.victorSP(7));
-        Solenoid shifter = Hardware.Solenoids.doubleSolenoid(Constants.GEARBOX_SHIFTER,4, Solenoid.Direction.RETRACTING);
-        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, shifter);
+        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(0));
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
-        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
+        //masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
-        //camera = new Camera(640, 480, 10);
+        camera = new Camera(640, 480, 10);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        /*switchReactor.onTriggered(driveJoystickLeft.getTrigger(),
-                () -> new ToggleDriveMode(octocanumDrive));*/
+        switchReactor.onTriggeredSubmit(driveJoystickLeft.getTrigger(),
+                () -> new ToggleDriveMode(octocanumDrive));
         // camera switching
-        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
-                () -> camera.switchCamera());*/
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());
     }
 
     @Override
@@ -72,11 +71,6 @@ public class Robot extends IterativeRobot {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
         octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
-        System.out.println(octocanumDrive.getDriveMode().toString());
-        if (driveJoystickLeft.getTrigger().isTriggered())
-            octocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION);
-        else if (driveJoystickRight.getTrigger().isTriggered())
-            octocanumDrive.shift(OctocanumDrive.DriveMode.MECHANUM);
     }
 
     @Override
