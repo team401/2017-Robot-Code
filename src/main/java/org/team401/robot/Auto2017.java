@@ -15,24 +15,28 @@ public class Auto2017 {
 	private ProfileSender fl, fr, rl, rr;
 	private VictorSP flv, frv, rlv, rrv;
 
-	public Auto2017(String start, String tgt, boolean mecanum){
+	/*public Auto2017(String start, String tgt, boolean mecanum){
 		this(start, tgt, mecanum, false);//Default to no victors
-	}
-	public Auto2017(String start, String tgt, boolean mecanum, boolean victor) {
+	}*/
+	public Auto2017(String start, String tgt, boolean mecanum/*, boolean victor*/) {
 		this.tgt = tgt;
 		this.mecanum = mecanum;
-		this.victor = victor;
+		//this.victor = victor;
 		profiles = MotionProfiles.get(start, tgt, mecanum);
-		if (victor){//If we don't have enough Talon SRX's, we may have to manually drive 4 Victors.
+		/*if (victor){//If we don't have enough Talon SRX's, we may have to manually drive 4 Victors.
 			flv = new VictorSP(Constants.PRO_FRONT_LEFT);
 			frv = new VictorSP(Constants.PRO_FRONT_RIGHT);
 			rlv = new VictorSP(Constants.PRO_REAR_LEFT);
 			rrv = new VictorSP(Constants.PRO_REAR_RIGHT);
-		}
+		}*/
 		startProfile();
 	}
 	private void startProfile(){
 		fl = new ProfileSender(new CANTalon(Constants.CIM_FRONT_LEFT), profiles[0]);
+		//These 3 lines should be copied to all the secondary Talons if the rest of the robot code doesn't correctly establish followers.
+		/*CANTalon flt = new CANTalon(Constants.PRO_FRONT_LEFT);
+		flt.changeControlMode(CANTalon.TalonControlMode.Follower);
+		flt.set(Constants.CIM_FRONT_LEFT);*/
 		fr = new ProfileSender(new CANTalon(Constants.CIM_FRONT_RIGHT), profiles[1]);
 		rl = new ProfileSender(new CANTalon(Constants.CIM_REAR_LEFT), profiles[mecanum ? 2 : 0]);
 		rr = new ProfileSender(new CANTalon(Constants.CIM_REAR_RIGHT), profiles[mecanum ? 3 : 1]);
@@ -47,12 +51,12 @@ public class Auto2017 {
 		fr.control();
 		rl.control();
 		rr.control();
-		if(victor){//I hate these 6 lines and hope we never use them
+		/*if(victor){//I hate these 6 lines.  They are only in case we run out of Talon SRX's.
 			flv.setSpeed(fl.getTalon().getSpeed());
 			frv.setSpeed(fr.getTalon().getSpeed());
 			rlv.setSpeed(rl.getTalon().getSpeed());
 			rrv.setSpeed(rr.getTalon().getSpeed());
-		}
+		}*/
 		if(finished()) {
 			state++;
 			startTimeout = new Date();
@@ -61,7 +65,7 @@ public class Auto2017 {
 			fr.resetEncoder();
 			rl.resetEncoder();
 			rr.resetEncoder();
-			profiles = MotionProfiles.get("", tgt, mecanum);
+			profiles = MotionProfiles.get("", tgt, mecanum, true);
 		}
 	}
 	private boolean finished(){//Should return true if and only if a profile is finished.

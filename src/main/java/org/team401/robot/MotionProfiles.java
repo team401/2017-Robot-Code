@@ -9,18 +9,22 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class MotionProfiles {
 	// Data format: Position (rotations)	Velocity (RPM)	Duration (ms)
-	public static double[][][] get(String start, String tgt, boolean mecanum) {
-		String alliance = DriverStation.getInstance().getAlliance().name().substring(0, 1);
-		//Do something with the alliance string(R, B, or I) if our paths are alliance-dependent.
+	public static double[][][] get(String start, String tgt, boolean mecanum){
+		return get(start, tgt, mecanum, false);
+	}
+	public static double[][][] get(String start, String tgt, boolean mecanum, boolean alliance) {
+		String all = alliance ? DriverStation.getInstance().getAlliance().name().substring(0, 1) : "";
+		//Add on an alliance identifier(R, B, or I) if our paths are alliance-dependent.
+		//Should return nothing if alliance is Invalid
 		return mecanum ?
 			new double[][][]{//Mecanum drive
-				scanCSV(start+tgt+" FL"),
-				scanCSV(start+tgt+" FR"),
-				scanCSV(start+tgt+" RL"),
-				scanCSV(start+tgt+" RR")
+				scanCSV(start+tgt+all+" FL"),
+				scanCSV(start+tgt+all+" FR"),
+				scanCSV(start+tgt+all+" RL"),
+				scanCSV(start+tgt+all+" RR")
 			}: new double[][][]{//Tank drive
-				scanCSV(start+tgt+" L"),
-				scanCSV(start+tgt+" R")
+				scanCSV(start+tgt+all+" L"),
+				scanCSV(start+tgt+all+" R")
 			};
 	}
 
