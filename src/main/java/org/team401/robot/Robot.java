@@ -10,7 +10,7 @@
  * This application is an IterativeRobot project to demonstrate a minimal implementation not requiring the command
  * framework, however these code excerpts could be moved into a command-based project.
  * <p>
- * The project also includes instrumentation.java which simply has debug printfs, and a MotionProfile.java which is generated
+ * The project also includes SenderPrinting.java which simply has debug printfs, and a MotionProfile.java which is generated
  * in @link https://docs.google.com/spreadsheets/d/1PgT10EeQiR92LNXEOEe3VGn737P7WDP4t0CQxQgC8k0/edit#gid=1813770630&vpid=A1
  * <p>
  * Logitech Gamepad mapping, use left y axis to drive Talon normally.

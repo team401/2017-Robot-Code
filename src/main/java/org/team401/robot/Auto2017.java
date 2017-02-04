@@ -1,35 +1,29 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
-//import edu.wpi.first.wpilibj.VictorSP;
-import java.util.Date;
+import edu.wpi.first.wpilibj.Timer;
+
+/**
+ * To run autonomous mode, place the constructor in autonomousInit() and periodic() in autonomousPeriodic().
+ * This class will handle
+ */
 
 public class Auto2017 {
 	private String tgt;
 	private int state = 0;
-	private Date startTimeout;
-	private static final int HOPPER_TIMEOUT = 1, PEG_TIMEOUT = 4;
+	private double startTimeout;
+	private static final double HOPPER_TIMEOUT = 1.0, PEG_TIMEOUT = 4.0;//Number of seconds to pause at these locations
 	private double[][][] profiles;
-	private boolean mecanum/*, victor*/;
+	private boolean mecanum;
 	private ProfileSender fl, fr, rl, rr;
-	//private VictorSP flv, frv, rlv, rrv;
 
-	/*public Auto2017(String start, String tgt, boolean mecanum){
-		this(start, tgt, mecanum, false);//Default to no victors
-	}*/
-	public Auto2017(String start, String tgt, boolean mecanum/*, boolean victor*/) {
+	public Auto2017(String start, String tgt, boolean mecanum) {
 		this.tgt = tgt;
 		this.mecanum = mecanum;
-		//this.victor = victor;
 		profiles = MotionProfiles.get(start, tgt, mecanum);
-		/*if (victor){//If we don't have enough Talon SRX's, we may have to manually drive 4 Victors.
-			flv = new VictorSP(Constants.PRO_FRONT_LEFT);
-			frv = new VictorSP(Constants.PRO_FRONT_RIGHT);
-			rlv = new VictorSP(Constants.PRO_REAR_LEFT);
-			rrv = new VictorSP(Constants.PRO_REAR_RIGHT);
-		}*/
 		startProfile();
 	}
+
 	private void startProfile(){
 		fl = new ProfileSender(new CANTalon(Constants.CIM_FRONT_LEFT), profiles[0]);
 		//These 3 lines should be copied to all the secondary Talons if the rest of the robot code doesn't correctly establish followers.
@@ -50,15 +44,9 @@ public class Auto2017 {
 		fr.control();
 		rl.control();
 		rr.control();
-		/*if(victor){//I hate these 6 lines.  They are only in case we run out of Talon SRX's.
-			flv.setSpeed(fl.getTalon().getSpeed());
-			frv.setSpeed(fr.getTalon().getSpeed());
-			rlv.setSpeed(rl.getTalon().getSpeed());
-			rrv.setSpeed(rr.getTalon().getSpeed());
-		}*/
 		if(finished()) {
 			state++;
-			startTimeout = new Date();
+			startTimeout = Timer.getFPGATimestamp();
 			//Reset encoders so position feed-forward doesn't get confused
 			fl.resetEncoder();
 			fr.resetEncoder();
@@ -80,7 +68,7 @@ public class Auto2017 {
 				move();
 				break;
 			case 1://Wait for a specified time for balls to fall in the robot or a pilot to lift the gear
-				if(startTimeout.getTime()+(tgt.endsWith("H")?HOPPER_TIMEOUT:PEG_TIMEOUT)*1000<=new Date().getTime())
+				if(startTimeout+(tgt.endsWith("H") ? HOPPER_TIMEOUT : PEG_TIMEOUT)<=Timer.getFPGATimestamp())
 					state++;
 				break;
 			case 2://Start a second MP for the rest of auto

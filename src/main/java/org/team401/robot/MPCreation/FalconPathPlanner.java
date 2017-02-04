@@ -738,9 +738,7 @@ public class FalconPathPlanner {
 	}
 
 	/**
-	 * Modified from the same location as normalize and scale methods
-	 *
-	 * @return
+	 * Taken straight from the Strongback source code
 	 */
 	public double[] polarMecanum(double mag, double dir, double rot) {
 		// Normalized for full power along the Cartesian axes.

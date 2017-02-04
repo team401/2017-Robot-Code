@@ -1,5 +1,9 @@
 package org.team401.robot.MPCreation;
 
+/**
+ * Provides coordinates, in feet, of all relevant static objects in FIRST: Steamworks.
+ */
+
 public class Field {
 	public static final double[][] AIRSHIP = {
 			{11.831875, 9.325},

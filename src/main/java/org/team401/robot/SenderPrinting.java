@@ -6,7 +6,7 @@ import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class instrumentation {
+public class SenderPrinting {
 
 	private static double timeout = 0;
 
@@ -18,7 +18,7 @@ public class instrumentation {
 	public static void OnNoProgress() {
 		System.out.println("NO PROGRESS");
 	}
-	static private String StrOutputEnable(CANTalon.SetValueMotionProfile sv){
+	private static String StrOutputEnable(CANTalon.SetValueMotionProfile sv){
 		if(sv == null)
 			return "null";
 		if(sv.value > 3)

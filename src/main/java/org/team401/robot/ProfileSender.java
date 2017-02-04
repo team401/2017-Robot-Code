@@ -180,7 +180,7 @@ public class ProfileSender {
 				 * tripped
 				 */
                 if(alerts)
-                    instrumentation.OnNoProgress();
+                    SenderPrinting.OnNoProgress();
             else
                 _loopTimeout--;
 
@@ -255,7 +255,7 @@ public class ProfileSender {
         }
 		/* printfs and/or logging */
         if(alerts)
-            instrumentation.process(_status);
+            SenderPrinting.process(_status);
     }
 
     /**
@@ -274,7 +274,7 @@ public class ProfileSender {
         if (_status.hasUnderrun) {
 			/* better log it so we know about it */
             if(alerts)
-			    instrumentation.OnUnderrun();
+			    SenderPrinting.OnUnderrun();
 			/*
 			 * clear the error. This flag does not auto clear, this way 
 			 * we never miss logging it.
