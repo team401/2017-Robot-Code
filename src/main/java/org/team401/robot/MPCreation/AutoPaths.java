@@ -177,7 +177,10 @@ Waypoint Paths:
 			{START_RIGHT_TO_L_LIFT.toString(), "RLL"},
 			{START_RIGHT_TO_R_LIFT.toString(), "RRL"},
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
-			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"}
+			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
+			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE.toString(), "RLHR"},
+			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE.toString(), "LLHR"}
+
 	};
 	public static String getName(double[][] arr){
 		for(String[] u:names)
