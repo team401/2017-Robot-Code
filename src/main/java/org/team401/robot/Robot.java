@@ -45,10 +45,7 @@ import org.team401.robot.commands.ToggleDriveMode;
 
 public class Robot extends IterativeRobot {
 	private SendableChooser autoStart,
-		autoTgt, autoDrive;
-	private boolean mecanum;
-	private double[][][] autoMode;
-	private String start = "M", tgt = "CL";
+		autoTgt;
 	CANTalon leftMotor;
 	CANTalon rightMotor;
 
@@ -109,44 +106,18 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("Mecanum Drive", true);
 
 	}
-
+	private Auto2017 autonomous;
 	@Override
 	public void autonomousInit() {
-		start = (String)autoStart.getSelected();
-		tgt = (String)autoTgt.getSelected();
-		mecanum = SmartDashboard.getBoolean("Mecanum Drive", true);
-		autoMode = GeneratedMotionProfiles.getProfile(start, tgt, mecanum);
-		if(mecanum) {
-			frontLeftMP.startFilling(autoMode[0]);
-			frontRightMP.startFilling(autoMode[1]);
-			rearLeftMP.startFilling(autoMode[2]);
-			rearRightMP.startFilling(autoMode[3]);
-			return;//Replace with mecanum-specific MP code
-
-		}else {
-			leftMP.startFilling(autoMode[0]);
-			rightMP.startFilling(autoMode[1]);
-			return;//Replace with tankdrive-specific MP code
-		}
+		autonomous = new Auto2017((String)autoStart.getSelected(),
+			(String)autoTgt.getSelected(),
+			SmartDashboard.getBoolean("Mecanum Drive", true));
 	}
 
 
 	@Override
 	public void autonomousPeriodic(){
-		if(_joy.getTrigger().isTriggered()) {
-			leftMotor.set(100);
-			rightMotor.set(100);
-		}
-		System.out.println(rightMotor.getEncVelocity()+"\t"+rightMotor.getEncPosition());
-		if(mecanum) {
-			frontLeftMP.control();
-			frontRightMP.control();
-			rearLeftMP.control();
-			rearRightMP.control();
-		}else{
-			leftMP.control();
-			rearRightMP.control();
-		}
+		autonomous.periodic();
 	}
 
 	@Override
