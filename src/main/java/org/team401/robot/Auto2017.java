@@ -2,6 +2,8 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Timer;
+import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.components.OctocanumGearbox;
 
 /**
  * To run autonomous mode, place the constructor in autonomousInit() and periodic() in autonomousPeriodic().
@@ -16,23 +18,21 @@ public class Auto2017 {
 	private double[][][] profiles;
 	private boolean mecanum;
 	private ProfileSender fl, fr, rl, rr;
+	private OctocanumDrive drive;
 
-	public Auto2017(String start, String tgt, boolean mecanum) {
+	public Auto2017(String start, String tgt, boolean mecanum, OctocanumDrive drive) {
 		this.tgt = tgt;
 		this.mecanum = mecanum;
+		this.drive = drive;
 		profiles = MotionProfiles.get(start, tgt, mecanum);
 		startProfile();
 	}
 
 	private void startProfile(){
-		fl = new ProfileSender(new CANTalon(Constants.CIM_FRONT_LEFT), profiles[0]);
-		//These 3 lines should be copied to all the secondary Talons if the rest of the robot code doesn't correctly establish followers.
-		/*CANTalon flt = new CANTalon(Constants.PRO_FRONT_LEFT);
-		flt.changeControlMode(CANTalon.TalonControlMode.Follower);
-		flt.set(Constants.CIM_FRONT_LEFT);*/
-		fr = new ProfileSender(new CANTalon(Constants.CIM_FRONT_RIGHT), profiles[1]);
-		rl = new ProfileSender(new CANTalon(Constants.CIM_REAR_LEFT), profiles[mecanum ? 2 : 0]);
-		rr = new ProfileSender(new CANTalon(Constants.CIM_REAR_RIGHT), profiles[mecanum ? 3 : 1]);
+		fl = new ProfileSender(drive.getGearboxes().get(0).getCimMotor(), profiles[0]);
+		fr = new ProfileSender(drive.getGearboxes().get(1).getCimMotor(), profiles[1]);
+		rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[mecanum ? 2 : 0]);
+		rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[mecanum ? 3 : 1]);
 		fl.startMotionProfile();
 		fr.startMotionProfile();
 		rl.startMotionProfile();
