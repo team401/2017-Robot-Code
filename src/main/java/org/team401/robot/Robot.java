@@ -27,15 +27,15 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
-import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.strongback.components.Solenoid;
 import org.strongback.components.ui.FlightStick;
-import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.chassis.OctocanumGearbox;
 
 
 public class Robot extends IterativeRobot {
@@ -43,14 +43,21 @@ public class Robot extends IterativeRobot {
 	private Auto2017 autonomous;
 	private OctocanumDrive drive;
 
-	private FlightStick _joy;
+	private FlightStick joystick;
 
 	@Override
 	public void robotInit() {
-		_joy = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
+		joystick = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
 
-		//also initialize drive and others here
+		//init drive
+		drive = new OctocanumDrive(
+				new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT)),
+				new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT)),
+				new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT)),
+				new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT)),
+				Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.EXTENDING));
 
+		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
 		//creates radio buttons for selecting the robots path
 		autoStart = new SendableChooser();
 		autoStart.addDefault("Center", "C");
