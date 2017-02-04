@@ -1,11 +1,7 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
-import org.team401.robot.chassis.OctocanumDrive;
 
-/**
- * Created by Driver Station on 2/3/2017.
- */
 public class Auto2017 {
 	private String tgt;
 	private int state;
@@ -32,13 +28,16 @@ public class Auto2017 {
 		rl.startMotionProfile();
 		rr.startMotionProfile();
 	}
-	private void control(){
+	private void move(){
+		//Keeps the MP loops going and increments state if at the end of the profile
 		fl.control();
 		fr.control();
 		rl.control();
 		rr.control();
+		if(finished())
+			state++;
 	}
-	private boolean finished(){
+	private boolean finished(){//Should return true if and only if a profile is finished.
 		return fl.getSetValue().value==2&&
 				fr.getSetValue().value==2&&
 				rl.getSetValue().value==2&&
@@ -46,17 +45,15 @@ public class Auto2017 {
 	}
 	public void periodic(){
 		switch(state){
-			case 0:
-				control();
-				if(finished())
-					state++;
+			case 0://Execute starting MP until finished
+				move();
 				break;
-			case 1:
+			case 1://Wait for a specified time for balls to fall in the robot or a pilot to lift the gear
 				i++;
 				if(i>=(tgt.endsWith("H")?HOPPER_TIMEOUT:PEG_TIMEOUT)*50)
 					state++;
 				break;
-			case 2:
+			case 2://Reset encoders so feed-forward won't be confused, then start a second MP
 				fl.resetEncoder();
 				fr.resetEncoder();
 				rl.resetEncoder();
@@ -65,9 +62,7 @@ public class Auto2017 {
 				startProfile();
 				break;
 			case 3:
-				control();
-				if(finished())
-					state++;
+				move();
 				break;
 			case 4:
 				//auto should be done by now
