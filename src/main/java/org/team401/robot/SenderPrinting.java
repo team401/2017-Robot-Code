@@ -1,5 +1,5 @@
 /**
- * Apparently CTRE doesn't use SmartDashboard.  I updated this file to report in a (hopefully) better way.
+ * Sends data to SmartDashboard for display.
  */
 package org.team401.robot;
 import com.ctre.CANTalon;
@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SenderPrinting {
 
-	private static double timeout = 0;
+	private static double timeout = 0;//Amount of time passed since last SD update
 
 	private static final String []_table = {"Disabled","Enabled","Hold"};
 	
