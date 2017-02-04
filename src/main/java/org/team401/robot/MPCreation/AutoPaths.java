@@ -293,10 +293,10 @@ Waypoint Paths:
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "RLB"},
 			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},//Center Lift to Left Hopper Red
 			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLB"},//Center Lift to Right Hopper Blue
-			{LEFT_HOPPER_COLLECTION_B.toString(), "LHCB"},
-			{LEFT_HOPPER_COLLECTION_R.toString(), "LHCR"},
-			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHCB"},
-			{RIGHT_HOPPER_COLLECTION_R.toString(), "RHCR"},
+			{LEFT_HOPPER_COLLECTION_B.toString(), "LHB"},
+			{LEFT_HOPPER_COLLECTION_R.toString(), "LHR"},
+			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHB"},
+			{RIGHT_HOPPER_COLLECTION_R.toString(), "RHR"},
 			{STARTING_LEFT_TO_LEFT_HOPPER_R.toString(), "LLHR"},
 			{STARTING_LEFT_TO_LEFT_HOPPER_B.toString(), "LLHB"},
 			{STARTING_RIGHT_TO_RIGHT_HOPPER_R.toString(), "RRHR"},
