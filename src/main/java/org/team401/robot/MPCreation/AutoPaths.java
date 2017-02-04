@@ -15,10 +15,10 @@ public class AutoPaths {
 			(11.831875 + 15.168225)/2.0, (9.325 + 9.325)/2.0, 0
 	};
 	public static final double[] LEFT_GEAR_PEG = {
-			(11.831875 + 10.16375)/2.0, (15.2075 + 12.26625)/2.0, 0
+			(11.831875 + 10.16375)/2.0, (9.325 + 12.26625)/2.0, 0
 	};
 	public static final double[] RIGHT_GEAR_PEG = {
-			(16.83625 + 15.1681225)/2.0, (15.2075 + 12.26625)/2.0, 0
+			(16.83625 + 15.1681225)/2.0, (9.325 + 12.26625)/2.0, 0
 	};
 	public static final double[] STARTING_MID = {
 			13.5, 2, 0
@@ -47,10 +47,7 @@ Waypoint Paths:
 	//goes from the middle starting position to the right gear lift
 	public static final double[][] START_MID_TO_R_LIFT = {
 			STARTING_MID,
-			{17, 4, 0},
-			{20, 8, 0},
-			{20, 12, 0},
-			{20, 14, 0},
+			{20, 3, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 
@@ -58,10 +55,7 @@ Waypoint Paths:
 	//goes from the Middle starting position to the left gear lift
 	public static final double[][] START_MID_TO_L_LIFT = {
 			STARTING_MID,
-			{10, 4, 0},
-			{7, 8, 0},
-			{7, 12, 0},
-			{7, 14, 0},
+			{7, 3, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
@@ -75,13 +69,12 @@ Waypoint Paths:
 			{7, 5, 0},
 			{19, 5, 0},
 			{20, 7, 0},
-			{19, 14, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 	};
 	public static final double[][] START_LEFT_TO_L_LIFT = {
 			STARTING_LEFT,
-			{5, 15, 0},
+			{5, 8, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
@@ -92,7 +85,7 @@ Waypoint Paths:
 	};
 	public static final double[][] START_RIGHT_TO_R_LIFT = {
 			STARTING_RIGHT,
-			{22, 15, 0},
+			{22, 8, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
             perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 
@@ -102,7 +95,6 @@ Waypoint Paths:
 			{20, 5, 0},
 			{8, 5, 0},
 			{7, 7, 0},
-			{8, 14, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
             perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 	};
@@ -166,6 +158,38 @@ Waypoint Paths:
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
 	};
+	public static final double[][] LEFT_HOPPER_COLLECTION_B = {
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
+			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
+			{1, 16.7916, -90},
+			{1, 20, -90},
+			{1, 20, 90},
+			{1, 10, 90}
+	};
+	public static final double[][] RIGHT_HOPPER_COLLECTION_B = {
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
+			{26, 9.7916, 90},
+			{26, 14, 90},
+			{26, 14, -90},
+			{26, 4, -90}
+	};
+	public static final double[][] LEFT_HOPPER_COLLECTION_R = {
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
+			{1, 9.7916, -90},
+			{1, 14, -90},
+			{1, 14, 90},
+			{1, 4, 90}
+	};
+	public static final double[][] RIGHT_HOPPER_COLLECTION_R = {
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
+			{26, 16.7916, 90},
+			{26, 20, 90},
+			{26, 20, -90},
+			{26, 10, -90}
+	};
 
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
@@ -208,10 +232,15 @@ Waypoint Paths:
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE.toString(), "RLHR"},
 			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE.toString(), "LLHR"},
+			//CLR FL.csv
 			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "CLRHR"},//Center Lift to Right Hopper Red
 			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLLHR"},//Center Lift to Left Hopper Red
 			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLRHB"},//Center Lift to Right Hopper Blue
 			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "CLLHB"},//Center Lift to Left Hopper Blue
+			{LEFT_HOPPER_COLLECTION_B.toString(), "LHCB"},
+			{LEFT_HOPPER_COLLECTION_R.toString(), "LHCR"},
+			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHCB"},
+			{RIGHT_HOPPER_COLLECTION_R.toString(), "RHCR"},
 
 	};
 	public static String getName(double[][] arr){
@@ -237,7 +266,7 @@ Waypoint Paths:
 	 * @return Point C
 	 */
 	public static double[] perpendicular(double[] coords, double factor) {
-	    if(coords[2] > coords[0] && !(coords[1] == coords[3])) {
+	    if(coords[2] < coords[0] && (coords[3] < coords[1]) && !(coords[1] == coords[3])) {
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
                     (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor,
@@ -273,10 +302,10 @@ Waypoint Paths:
 	public static double[] perpendicular_To_Airship (double[] peg, double factor){
 		//Are you sure you wanted to use == instead of .equals?  With .equals, you have the option to input "new double[]{11, 14}" as peg and it would select the left peg option.
 		if(peg.equals(LEFT_GEAR_PEG)){
-			 return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 15.2075}, factor);
+			 return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 9.325}, factor);
 		}
 		else if(peg.equals(RIGHT_GEAR_PEG)){
-			return perpendicular(new double[]{16.83625, 12.26625, 15.1681225, 15.2075}, factor);
+			return perpendicular(new double[]{15.1681225, 9.325, 16.83625, 12.26625}, factor);
 		}
 		else if(peg.equals(CENTER_GEAR_PEG)){
 			return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325}, factor);

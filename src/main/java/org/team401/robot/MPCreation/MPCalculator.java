@@ -23,12 +23,7 @@ public class MPCalculator {
 				AutoPaths.START_RIGHT_TO_LIFT,
 				AutoPaths.START_RIGHT_TO_L_LIFT,
 				AutoPaths.START_RIGHT_TO_R_LIFT,
-				AutoPaths.LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE,
-				AutoPaths.RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE,
-				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B,
-				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B,
-				AutoPaths.CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R,
-				AutoPaths.CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R
+
 		};
 		mecanumInject(paths);
 
@@ -225,10 +220,12 @@ public class MPCalculator {
 		for(int i = 0;i<paths.length;i++){
 			double finalRotate = paths[i][paths[i].length - 1][2];
 			double rotation = 0;
-			
-			for(int j = 0;j<paths[i].length - 3;j++){
-				rotation += finalRotate/paths[i].length-3;
-				paths[i][j+1][2] = rotation;
+			String name = AutoPaths.getName(paths[i]);
+			if(!(name.equals("LHCB")) || !(name.equals("LHCR")) || !(name.equals("RHCB")) || !(name.equals("RHCR"))) {
+				for (int j = 0; j < paths[i].length - 3; j++) {
+					rotation += finalRotate / paths[i].length - 3;
+					paths[i][j + 1][2] = rotation;
+				}
 			}
 		}
 	}
