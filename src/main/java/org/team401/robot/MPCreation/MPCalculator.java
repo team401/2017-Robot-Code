@@ -82,7 +82,7 @@ public class MPCalculator {
 		fig3.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
 		fig3.setXLabel("Width of the Field (feet)");
 		fig3.setYLabel("Length of the Field (feet)");
-		//filed size: x: 54 ft y: 27 ft
+		//filed size: y: 54 ft x: 27 ft
 		fig3.setXTic(0, 27, 1);
 		fig3.setYTic(0, 39, 1);
 

@@ -288,7 +288,6 @@ Waypoint Paths:
 			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "RLR"},
 			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "LLR"},
-			//CLR FL.csv
 			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "LLB"},
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "RLB"},
 			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},//Center Lift to Left Hopper Red
