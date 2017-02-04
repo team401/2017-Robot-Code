@@ -1,7 +1,5 @@
 /**
  * Apparently CTRE doesn't use SmartDashboard.  I updated this file to report in a (hopefully) better way.
- * 
- * 
  */
 package org.team401.robot;
 import com.ctre.CANTalon;
