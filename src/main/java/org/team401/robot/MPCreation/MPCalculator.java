@@ -46,65 +46,67 @@ public class MPCalculator {
         };
         //adds the direction value to mecanum
         mecanumInject(paths);
+        //checks to see if the graphs can run (needs a display)
+        if(!GraphicsEnvironment.isHeadless()) {
+
+            //default/dummy path
+            FalconPathPlanner falcon = new FalconPathPlanner(path);
+            falcon.calculate(15, 0.02, robotWidth);
+
+            //adds the velocity graphs
+            velocities(paths);
+
+            //Field map from the blue alliance's perspective
+            FalconLinePlot fig2 = new FalconLinePlot(path);
+            fig2.xGridOn();
+            fig2.yGridOn();
+            fig2.setTitle("2017 Field Map (From the blue alliance's perspective)\nNote: Size may be distorted slightly");
+            fig2.setXLabel("Width of the Field (feet)");
+            fig2.setYLabel("Length of the Field (feet)");
+            //filed size: x: 54 ft y: 27 ft
+            fig2.setXTic(0, 27, 1);
+            fig2.setYTic(0, 39, 1);
+
+            //adds the field elements to the field
+            fig2.addData(Field.AIRSHIP, Color.black);
+            fig2.addData(Field.BASELINE, Color.blue);
+            fig2.addData(Field.NEUTRAL_ZONE, Color.green);
+            fig2.addData(Field.KEY_BLU, Color.black);
+            fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
+            fig2.addData(Field.LEFTHOPPERS_B, Color.black);
+            fig2.addData(Field.RIGHTHOPPERS_B, Color.black);
+
+            //adds the path data to our graph
+            addPaths(paths, fig2, true);
+
+            //Field map from the red alliance's perspective
+            FalconLinePlot fig3 = new FalconLinePlot(path);
+            fig3.xGridOn();
+            fig3.yGridOn();
+            fig3.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
+            fig3.setXLabel("Width of the Field (feet)");
+            fig3.setYLabel("Length of the Field (feet)");
+            //filed size: y: 54 ft x: 27 ft
+            fig3.setXTic(0, 27, 1);
+            fig3.setYTic(0, 39, 1);
+
+            //adds the field elements the field
+            fig3.addData(Field.AIRSHIP, Color.black);
+            fig3.addData(Field.BASELINE, Color.blue);
+            fig3.addData(Field.NEUTRAL_ZONE, Color.green);
+            fig3.addData(Field.KEY_RED, Color.black);
+            fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
+            fig3.addData(Field.LEFTHOPPERS_R, Color.black);
+            fig3.addData(Field.RIGHTHOPPERS_R, Color.black);
 
 
-        //default/dummy path
-        FalconPathPlanner falcon = new FalconPathPlanner(path);
-        falcon.calculate(15, 0.02, robotWidth);
+            //adds the data to our graph
+            addPaths(paths, fig3, true);
 
-        //adds the velocity graphs
-        //velocities(paths);
+            //Exports raw speed controller instructions as 6 .csv spreadsheets.
+            export(paths, true);
 
-        //Field map from the blue alliance's perspective
-        FalconLinePlot fig2 = new FalconLinePlot(path);
-        fig2.xGridOn();
-        fig2.yGridOn();
-        fig2.setTitle("2017 Field Map (From the blue alliance's perspective)\nNote: Size may be distorted slightly");
-        fig2.setXLabel("Width of the Field (feet)");
-        fig2.setYLabel("Length of the Field (feet)");
-        //filed size: x: 54 ft y: 27 ft
-        fig2.setXTic(0, 27, 1);
-        fig2.setYTic(0, 39, 1);
-
-        //adds the field elements to the field
-        fig2.addData(Field.AIRSHIP, Color.black);
-        fig2.addData(Field.BASELINE, Color.blue);
-        fig2.addData(Field.NEUTRAL_ZONE, Color.green);
-        fig2.addData(Field.KEY_BLU, Color.black);
-        fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
-        fig2.addData(Field.LEFTHOPPERS_B, Color.black);
-        fig2.addData(Field.RIGHTHOPPERS_B, Color.black);
-
-        //adds the path data to our graph
-        addPaths(paths, fig2, true);
-
-        //Field map from the red alliance's perspective
-        FalconLinePlot fig3 = new FalconLinePlot(path);
-        fig3.xGridOn();
-        fig3.yGridOn();
-        fig3.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
-        fig3.setXLabel("Width of the Field (feet)");
-        fig3.setYLabel("Length of the Field (feet)");
-        //filed size: y: 54 ft x: 27 ft
-        fig3.setXTic(0, 27, 1);
-        fig3.setYTic(0, 39, 1);
-
-        //adds the field elements the field
-        fig3.addData(Field.AIRSHIP, Color.black);
-        fig3.addData(Field.BASELINE, Color.blue);
-        fig3.addData(Field.NEUTRAL_ZONE, Color.green);
-        fig3.addData(Field.KEY_RED, Color.black);
-        fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
-        fig3.addData(Field.LEFTHOPPERS_R, Color.black);
-        fig3.addData(Field.RIGHTHOPPERS_R, Color.black);
-
-
-        //adds the data to our graph
-        addPaths(paths, fig3, true);
-
-        //Exports raw speed controller instructions as 6 .csv spreadsheets.
-        export(paths, true);
-
+        }//if !GraphicsEnviroments.isHeadless() statement ends
     }
 
     /**
