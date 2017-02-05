@@ -1,9 +1,13 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
+
 import edu.wpi.first.wpilibj.Timer;
+
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.components.OctocanumGearbox;
+
+import java.util.List;
 
 /**
  * To run autonomous mode, place the constructor in autonomousInit() and periodic() in autonomousPeriodic().
@@ -50,8 +54,19 @@ public class Auto2017 {
 		this.drive = drive;
 
 		//Tell all Talon SRXs to get ready for Motion Profile
-		for (OctocanumGearbox x:drive.getGearboxes()) {
-			x.setControlMode(CANTalon.TalonControlMode.MotionProfile);
+		List<OctocanumGearbox> boxes = drive.getGearboxes();
+		boxes.get(0).setControlMode(TalonControlMode.MotionProfile);
+		boxes.get(1).setControlMode(TalonControlMode.MotionProfile);
+
+		//Make the rear Talons followers if in Traction mode
+		if(mecanum) {
+			boxes.get(2).setControlMode(TalonControlMode.MotionProfile);
+			boxes.get(3).setControlMode(TalonControlMode.MotionProfile);
+		}else {
+			boxes.get(2).setControlMode(TalonControlMode.Follower);
+			boxes.get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
+			boxes.get(3).setControlMode(TalonControlMode.Follower);
+			boxes.get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
 		}
 
 		//Read profiles from correct spreadsheet
@@ -71,15 +86,11 @@ public class Auto2017 {
 		//Start up the ProfileSenders
 		fl = new ProfileSender(drive.getGearboxes().get(0).getCimMotor(), profiles[0]);
 		fr = new ProfileSender(drive.getGearboxes().get(1).getCimMotor(), profiles[1]);
+
+		//Only need 2 if in traction mode
 		if(mecanum) {
 			rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
 			rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
-		}else{
-			//If we are in tank drive, make all MPs run on 1 sensor for each side.
-			drive.getGearboxes().get(2).setControlMode(CANTalon.TalonControlMode.Follower);
-			drive.getGearboxes().get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
-			drive.getGearboxes().get(3).setControlMode(CANTalon.TalonControlMode.Follower);
-			drive.getGearboxes().get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
 		}
 
 		//Start sending the profiles
@@ -153,7 +164,7 @@ public class Auto2017 {
 				break;
 			case 1:
 				//Wait for a specified time for balls to fall in the robot or a pilot to lift the gear
-				if(startTimeout+(tgt.endsWith("H") ? HOPPER_TIMEOUT : PEG_TIMEOUT)<=Timer.getFPGATimestamp())
+				if(startTimeout+(tgt.endsWith("H") ? HOPPER_TIMEOUT : PEG_TIMEOUT) <= Timer.getFPGATimestamp())
 					state++;
 				break;
 			case 2:
@@ -169,6 +180,10 @@ public class Auto2017 {
 				//auto should be done by now
 				System.out.println("Autonomous finished!");
 				state++;
+
+				//reset Talon control modes
+				for (OctocanumGearbox x: drive.getGearboxes())
+					x.setControlMode(TalonControlMode.PercentVbus);
 				break;
 			default:
 				//do nothing if not in correct states

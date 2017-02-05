@@ -1,322 +1,267 @@
 package org.team401.robot.MPCreation;
 
+import java.util.Arrays;
 
 /**
- * Created by EJ on 1/23/2017.
- * This is a list off all the possible paths will may want to take in auto
- * And some methods that help plot points
+ * Provides waypoint paths for transformation into motion profiles.
+ * All measurements are in feet.
  */
+
 public class AutoPaths {
-
-
-	//points for final waypoints
-	//if the points vary depending on the size of our robot
-	public static final double[] CENTER_GEAR_PEG = {
+	//Starting and finishing positions of the first profile options.
+	private static final double[] CENTER_GEAR_PEG = {
 			(11.831875 + 15.168225)/2.0, 7.775, 0
-	};
-	public static final double[] LEFT_GEAR_PEG = {
+		}, LEFT_GEAR_PEG = {
 			(11.831875 + 10.16375)/2.0, (9.325 + 12.26625)/2.0, 0
-	};
-	public static final double[] RIGHT_GEAR_PEG = {
+		}, RIGHT_GEAR_PEG = {
 			(16.83625 + 15.1681225)/2.0, (9.325 + 12.26625)/2.0, 0
-	};
-	public static final double[] STARTING_MID = {
+		}, STARTING_MID = {
 			13.5, 2, 0
-	};
-	public static final double[] STARTING_LEFT = {
+		}, STARTING_LEFT = {
 			5, 2, 0
-	};
-	public static final double[] STARTING_RIGHT = {
+		}, STARTING_RIGHT = {
 			22, 2, 0
 	};
 
-/*
-*******************************
-Waypoint Paths:
-
-*******************************
- */
-
-
-	//goes from the middle starting position to the center gear lift
-	public static final double[][] START_MID_TO_LIFT = {
-            STARTING_MID,
+	/**
+	 * Actual paths
+	 */
+	public static final NamedPath START_MID_TO_LIFT = new NamedPath("CCL", new double[][]{
+			STARTING_MID,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
-			perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
-	};
-	//goes from the middle starting position to the right gear lift
-	public static final double[][] START_MID_TO_R_LIFT = {
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
+
+		}), START_MID_TO_R_LIFT = new NamedPath("CRL", new double[][]{
 			STARTING_MID,
 			{20, 3, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
-            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
 
-    };
-	//goes from the Middle starting position to the left gear lift
-	public static final double[][] START_MID_TO_L_LIFT = {
+		}), START_MID_TO_L_LIFT = new NamedPath("CLL", new double[][]{
 			STARTING_MID,
 			{7, 3, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
-            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
-	};
-	public static final double[][] START_LEFT_TO_LIFT = {
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 1)
+
+		}), START_LEFT_TO_LIFT = new NamedPath("LCL", new double[][]{
 			STARTING_LEFT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
-            perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
-	};
-	public static final double[][] START_LEFT_TO_R_LIFT = {
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
+
+		}), START_LEFT_TO_R_LIFT = new NamedPath("LRL", new double[][]{
 			STARTING_LEFT,
 			{7, 5, 0},
 			{19, 5, 0},
 			{20, 7, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
-            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
-	};
-	public static final double[][] START_LEFT_TO_L_LIFT = {
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
+
+		}), START_LEFT_TO_L_LIFT = new NamedPath("LLL", new double[][]{
 			STARTING_LEFT,
 			{5, 8, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
-            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
-	};
-	public static final double[][] START_RIGHT_TO_LIFT = {
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 1)
+
+		}), START_RIGHT_TO_LIFT = new NamedPath("RCL", new double[][]{
 			STARTING_RIGHT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
-            perpendicular_To_Airship(CENTER_GEAR_PEG, 1),
-	};
-	public static final double[][] START_RIGHT_TO_R_LIFT = {
+			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
+
+		}), START_RIGHT_TO_R_LIFT = new NamedPath("RRL", new double[][]{
 			STARTING_RIGHT,
 			{22, 8, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
-            perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
+			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
 
-    };
-	public static final double[][] START_RIGHT_TO_L_LIFT = {
+		}), START_RIGHT_TO_L_LIFT = new NamedPath("RLL", new double[][]{
 			STARTING_RIGHT,
 			{20, 5, 0},
 			{8, 5, 0},
 			{7, 7, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
-            perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
-	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = {
+			perpendicular_To_Airship(LEFT_GEAR_PEG, 1)
+
+		}), RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE = new NamedPath("Right Gear Peg to Shooting Position (Reverse)", new double[][]{
 			RIGHT_GEAR_PEG,
-			{23, 18, 0},
-	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = {
+			{23, 18, 0}
+
+		}), RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2 = new NamedPath("Right Gear Peg to Shooting Position 2", new double[][]{
 			{23, 18, 0},
 			{22, 17, 0},
 			{22, 15, 0}
-	};
-	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
+
+		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("LLR", new double[][]{
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			{1.5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
-	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
+
+		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("RLR", new double[][]{
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
 			{25.5, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
-	};
-	public static final double[][] LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = {
+
+		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("LLB", new double[][]{
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
-
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
-	};
-	public static final double[][] RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
+
+		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("RLB", new double[][]{
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
 			{24, 15, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
-	};
-	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = {
+
+		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("CLB", new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
-	};
-	//Likely never to be used but there just in case
-	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = {
+
+		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("DONOTUSE", new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			{10, 7, 0},
 			{5, 16, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1)
-	};
-	public static final double[][] CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = {
+
+		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("DONOTUSE", new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0)-2, 0},
 			{20, 8, 0},
 			{23, 15, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
-	};
-	public static final double[][] CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = {
+
+		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("CLR", new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
-	};
-	public static final double[][] LEFT_HOPPER_COLLECTION_B = {
+
+		}), LEFT_HOPPER_COLLECTION_B = new NamedPath("LHB", new double[][]{
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
 			{1, 16.7916, -90},
 			{1, 20, -90},
 			{1, 20, 90},
 			{1, 10, 90}
-	};
-	public static final double[][] RIGHT_HOPPER_COLLECTION_B = {
+
+		}), RIGHT_HOPPER_COLLECTION_B = new NamedPath("RHB", new double[][]{
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
 			{26, 9.7916, 90},
 			{26, 14, 90},
 			{26, 14, -90},
 			{26, 4, -90}
-	};
-	public static final double[][] LEFT_HOPPER_COLLECTION_R = {
+
+		}), LEFT_HOPPER_COLLECTION_R = new NamedPath("LHR", new double[][]{
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
 			{1, 9.7916, -90},
 			{1, 14, -90},
 			{1, 14, 90},
 			{1, 4, 90}
-	};
-	public static final double[][] RIGHT_HOPPER_COLLECTION_R = {
+
+		}), RIGHT_HOPPER_COLLECTION_R = new NamedPath("RHR", new double[][]{
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			{26, 16.7916, 90},
 			{26, 20, 90},
 			{26, 20, -90},
 			{26, 10, -90}
-	};
-	public static final double[][] STARTING_LEFT_TO_LEFT_HOPPER_R={
+
+		}), STARTING_LEFT_TO_LEFT_HOPPER_R = new NamedPath("LLHR", new double[][]{
 			STARTING_LEFT,
 			{5, 9.7916, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
-			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
-	};
-	public static final double[][] STARTING_LEFT_TO_LEFT_HOPPER_B={
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2)
+
+		}), STARTING_LEFT_TO_LEFT_HOPPER_B = new NamedPath("LLHB", new double[][]{
 			STARTING_LEFT,
 			{5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
-	};
-	public static final double[][] STARTING_RIGHT_TO_RIGHT_HOPPER_R = {
+
+		}), STARTING_RIGHT_TO_RIGHT_HOPPER_R = new NamedPath("RRHR", new double[][]{
 			STARTING_RIGHT,
 			{22, 16.7916, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
-			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
-	};
-	public static final double[][] STARTING_RIGHT_TO_RIGHT_HOPPER_B = {
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2)
+
+		}), STARTING_RIGHT_TO_RIGHT_HOPPER_B = new NamedPath("RRHB", new double[][]{
 			STARTING_RIGHT,
 			{22, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
-			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
-	};
-	public static final double[][] STARTING_MID_TO_LEFT_HOPPER_R={
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2)
+
+		}), STARTING_MID_TO_LEFT_HOPPER_R = new NamedPath("CLHR", new double[][]{
 			STARTING_MID,
 			{5, 9.7916, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
-			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
-	};
-	public static final double[][] STARTING_MID_TO_LEFT_HOPPER_B={
+			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2)
+
+		}), STARTING_MID_TO_LEFT_HOPPER_B = new NamedPath("CLHB", new double[][]{
 			STARTING_MID,
 			{5, 9.7916, 0},
 			{5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
-	};
-	public static final double[][] STARTING_MID_TO_RIGHT_HOPPER_R = {
+
+		}), STARTING_MID_TO_RIGHT_HOPPER_R = new NamedPath("CRHR", new double[][]{
 			STARTING_MID,
 			{22, 9.7916, 0},
 			{22, 16.7916, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
-			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
-	};
-	public static final double[][] STARTING_MID_TO_RIGHT_HOPPER_B = {
+			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2)
+
+		}), STARTING_MID_TO_RIGHT_HOPPER_B = new NamedPath("CRHB", new double[][]{
 			STARTING_MID,
 			{22, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
-			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
-	};
+			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2)
+	});
 
-
-
+	//overloaded to accept a single value for b
 	public static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
 	}
+
+	/**
+	 * Concatenates one array onto the end of another.
+	 * Not currently used, but I have a feeling we may need it.
+	 *
+	 * @param a Original array
+	 * @param b The array to append
+	 * @return Arrays combined end-to-end
+	 */
 	public static double[] concat(double[] a, double[] b) {
+		//Make space for the result
 		double[] result = new double[a.length + b.length];
+
+		//Fill in data from first array, keeping track of location in result
 		int index = 0;
 		for (double u : a){
 			result[index] = u;
 			index++;
 		}
+
+		//Same for the second loop
 		for(double u : b){
 			result[index] = u;
 			index++;
 		}
 		return result;
 	}
-	//test mecanum path
-	public static final double[][] TEST_MECANUM = {
-			concat(STARTING_MID, 0.0),
-			{10, 4, 70},
-			{7, 8, 180},
-			{7, 12, 30},
-			{7, 14, -45},
-			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 2), 0),
-			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 1), 0)
-	};
-		//list so we can find the name of each path
-		//uses a naming system. For airships: Starting position(M, L, R) + What lift(LL, RL, CL) + alliance(R or B, if needed)
-		//or for hopper code: Starting peg(C, R, L) + what side hopper(R, L) + alliance(R or B)
-	private static final String[][] names = {
-			{START_MID_TO_LIFT.toString(), "MCL"},
-			{START_MID_TO_L_LIFT.toString(), "MLL"},
-			{START_MID_TO_R_LIFT.toString(), "MRL"},
-			{START_LEFT_TO_LIFT.toString(), "LCL"},
-			{START_LEFT_TO_L_LIFT.toString(), "LLL"},
-			{START_LEFT_TO_R_LIFT.toString(), "LRL"},
-			{START_RIGHT_TO_LIFT.toString(), "RCL"},
-			{START_RIGHT_TO_L_LIFT.toString(), "RLL"},
-			{START_RIGHT_TO_R_LIFT.toString(), "RRL"},
-			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_REVERSE.toString(), "Right Gear Peg to Shooting Position (Reverse)"},
-			{RIGHT_GEAR_PEG_TO_SHOOTING_POSITION_2.toString(), "Right Gear Peg to Shooting Position 2"},
-			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R.toString(), "RLR"},
-			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "LLR"},
-			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "LLB"},
-			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "RLB"},
-			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},
-			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLB"},
-			{LEFT_HOPPER_COLLECTION_B.toString(), "LHB"},
-			{LEFT_HOPPER_COLLECTION_R.toString(), "LHR"},
-			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHB"},
-			{RIGHT_HOPPER_COLLECTION_R.toString(), "RHR"},
-			{STARTING_LEFT_TO_LEFT_HOPPER_R.toString(), "LLHR"},
-			{STARTING_LEFT_TO_LEFT_HOPPER_B.toString(), "LLHB"},
-			{STARTING_RIGHT_TO_RIGHT_HOPPER_R.toString(), "RRHR"},
-			{STARTING_RIGHT_TO_RIGHT_HOPPER_B.toString(), "RRHB"},
-			{STARTING_MID_TO_LEFT_HOPPER_R.toString(), "CLHR"},
-			{STARTING_MID_TO_LEFT_HOPPER_B.toString(), "CLHB"},
-			{STARTING_MID_TO_RIGHT_HOPPER_R.toString(), "CRHR"},
-			{STARTING_MID_TO_RIGHT_HOPPER_B.toString(), "CRHB"},
 
-
-	};
-	//finds the name of each path
-	//returns "" if no name is found
-	public static String getName(double[][] arr){
-		for(String[] u:names)
-			if(u[0].equals(arr.toString()))
-				return u[1];
-		return "";
+	//factor defaults to 1.0
+	private static double[] perpendicular(double[] coords) {
+		return perpendicular(coords, 1.0);
 	}
 
 	/**
@@ -327,38 +272,19 @@ Waypoint Paths:
 	 * Works no matter what order the points are entered
 	 *
 	 * @param coords The coordinates of the points.  Should be in the order [x1, y1, x2, y2].
-	 * @param factor Scales the result to the correct length
+	 * @param factor Scales the result to the correct length.  Should always be positive.
 	 * @return Point C
 	 */
-	public static double[] perpendicular(double[] coords, double factor) {
-		//finds the way to coordinates are entered and adjusts so no matter which way they are entered, the result is the same.
-		//Factor will need to be adjusted on verticle or horizontal slopes
-	    if(coords[2] < coords[0] && (coords[3] < coords[1]) && !(coords[1] == coords[3])) {
-            return new double[]{
-                    (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
-                    (coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor,
-					Math.toDegrees(Math.atan2(coords[0], coords[1]) + (Math.PI/2))
-            };
-        }else{
-            return new double[]{
-                    (coords[0] + coords[2]) / 2.0 - (coords[1] - coords[3]) / 2.0 * factor,
-                    (coords[1] + coords[3]) / 2.0 - (coords[2] - coords[0]) / 2.0 * factor,
-					Math.toDegrees(Math.atan2(coords[0], coords[1]) - (Math.PI/2))
+	private static double[] perpendicular(double[] coords, double factor) {
+		//Makes sure the result will always be outside the airship and not inside
+		factor *= (coords[2] < coords[0] && (coords[3] < coords[1]) && !(coords[1] == coords[3])) ? 1 : -1;
 
-            };
-        }
-	}
-
-	public static double[] perpendicular(double x1, double y1, double x2, double y2, double factor) {
-		return perpendicular(new double[]{x1, y1, x2, y2}, factor);
-	}
-
-	public static double[] perpendicular(double[] coords) {
-		return perpendicular(coords, 1.0);
-	}
-
-	public static double[] perpendicular(double x1, double y1, double x2, double y2) {
-		return perpendicular(new double[]{x1, y1, x2, y2});
+		//Look on Stack Exchange if you want to understand this math.
+		return new double[]{
+				(coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
+				(coords[1] + coords[3]) / 2.0 + (coords[2] - coords[0]) / 2.0 * factor,
+				Math.toDegrees(Math.atan2(coords[0], coords[1]) + (Math.PI/2))
+		};
 	}
 
 	/**
@@ -366,20 +292,18 @@ Waypoint Paths:
 	 * @param peg What peg you are approaching
 	 * @return the point right before the peg (is perpendicular to the face of the airship)
 	 */
-	public static double[] perpendicular_To_Airship (double[] peg, double factor){
-		//Are you sure you wanted to use == instead of .equals?  With .equals, you have the option to input "new double[]{11, 14}" as peg and it would select the left peg option.
-		if(peg.equals(LEFT_GEAR_PEG)){
+	private static double[] perpendicular_To_Airship (double[] peg, double factor){
+		if(Arrays.equals(peg, LEFT_GEAR_PEG)){
 			 return perpendicular(new double[]{10.16375, 12.26625, 11.831875, 9.325}, factor);
 		}
-		else if(peg.equals(RIGHT_GEAR_PEG)){
+		else if(Arrays.equals(peg, RIGHT_GEAR_PEG)){
 			return perpendicular(new double[]{15.1681225, 9.325, 16.83625, 12.26625}, factor);
 		}
-		else if(peg.equals(CENTER_GEAR_PEG)){
+		else if(Arrays.equals(peg, CENTER_GEAR_PEG)){
 			return perpendicular(new double[]{11.831875, 9.325, 15.1681225, 9.325}, factor);
 		}
 		else{
 			return peg;
 		}
 	}
-
 }

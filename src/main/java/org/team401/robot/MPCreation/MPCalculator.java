@@ -1,6 +1,7 @@
 package org.team401.robot.MPCreation;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GraphicsEnvironment;
 
 /**
  * Run this class as an executable.
@@ -22,11 +23,12 @@ public class MPCalculator {
             System.out.println("No display! Aborting...");
             return;
         }
+
 		//Constant that starts line plots correctly.
 		final double[][] path = {{0, 0}};
 
 		//Add all desired paths to this array.
-		double[][][] paths = {
+		NamedPath[] paths = {
 			AutoPaths.START_LEFT_TO_LIFT,
 			AutoPaths.START_LEFT_TO_L_LIFT,
 			AutoPaths.START_LEFT_TO_R_LIFT,
@@ -56,60 +58,56 @@ public class MPCalculator {
 		//add the direction value for mecanum drive
 		mecanumInject(paths);
 
-		//default/dummy path
-		FalconPathPlanner falcon = new FalconPathPlanner(path);
-		falcon.calculate(15, 0.02, robotWidth);
-
 		//adds the velocity graphs
 		velocities(paths);
 
 		//Field map from the blue alliance's perspective
-		FalconLinePlot fig2 = new FalconLinePlot(path);
-		fig2.xGridOn();
-		fig2.yGridOn();
-		fig2.setTitle("2017 Field Map (From the blue alliance's perspective)\nNote: Size may be distorted slightly");
-		fig2.setXLabel("Width of the Field (feet)");
-		fig2.setYLabel("Length of the Field (feet)");
+		FalconLinePlot bluePlot = new FalconLinePlot(path);
+		bluePlot.xGridOn();
+		bluePlot.yGridOn();
+		bluePlot.setTitle("2017 Field Map (From the blue alliance's perspective)\nNote: Size may be distorted slightly");
+		bluePlot.setXLabel("Width of the Field (feet)");
+		bluePlot.setYLabel("Length of the Field (feet)");
 
 		//set field size
-		fig2.setXTic(0, 27, 1);
-		fig2.setYTic(0, 39, 1);
+		bluePlot.setXTic(0, 27, 1);
+		bluePlot.setYTic(0, 39, 1);
 
 		//add the field elements
-		fig2.addData(Field.AIRSHIP, Color.black);
-		fig2.addData(Field.BASELINE, Color.blue);
-		fig2.addData(Field.NEUTRAL_ZONE, Color.green);
-		fig2.addData(Field.KEY_BLU, Color.black);
-	    fig2.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
-		fig2.addData(Field.LEFT_HOPPERS_B, Color.black);
-		fig2.addData(Field.RIGHT_HOPPERS_B, Color.black);
+		bluePlot.addData(Field.AIRSHIP, Color.black);
+		bluePlot.addData(Field.BASELINE, Color.blue);
+		bluePlot.addData(Field.NEUTRAL_ZONE, Color.green);
+		bluePlot.addData(Field.KEY_BLU, Color.black);
+	    bluePlot.addData(Field.RETRIEVAL_ZONE_BLU, Color.black);
+		bluePlot.addData(Field.LEFT_HOPPERS_B, Color.black);
+		bluePlot.addData(Field.RIGHT_HOPPERS_B, Color.black);
 
 		//adds the path data to our graph
-		addPaths(paths, fig2, true);
+		addPaths(paths, bluePlot, true);
 
 		//Field map from the red alliance's perspective
-		FalconLinePlot fig3 = new FalconLinePlot(path);
-		fig3.xGridOn();
-		fig3.yGridOn();
-		fig3.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
-		fig3.setXLabel("Width of the Field (feet)");
-		fig3.setYLabel("Length of the Field (feet)");
+		FalconLinePlot redPlot = new FalconLinePlot(path);
+		redPlot.xGridOn();
+		redPlot.yGridOn();
+		redPlot.setTitle("2017 Field Map (From the red alliance's perspective)\nNote: Size may be distorted slightly");
+		redPlot.setXLabel("Width of the Field (feet)");
+		redPlot.setYLabel("Length of the Field (feet)");
 
 		//set field size
-        fig3.setXTic(0, 27, 1);
-		fig3.setYTic(0, 39, 1);
+        redPlot.setXTic(0, 27, 1);
+		redPlot.setYTic(0, 39, 1);
 
 		//add the field elements
-		fig3.addData(Field.AIRSHIP, Color.black);
-		fig3.addData(Field.BASELINE, Color.blue);
-		fig3.addData(Field.NEUTRAL_ZONE, Color.green);
-		fig3.addData(Field.KEY_RED, Color.black);
-		fig3.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
-		fig3.addData(Field.LEFT_HOPPERS_R, Color.black);
-		fig3.addData(Field.RIGHT_HOPPERS_R, Color.black);
+		redPlot.addData(Field.AIRSHIP, Color.black);
+		redPlot.addData(Field.BASELINE, Color.blue);
+		redPlot.addData(Field.NEUTRAL_ZONE, Color.green);
+		redPlot.addData(Field.KEY_RED, Color.black);
+		redPlot.addData(Field.RETRIEVEAL_ZONE_RED, Color.black);
+		redPlot.addData(Field.LEFT_HOPPERS_R, Color.black);
+		redPlot.addData(Field.RIGHT_HOPPERS_R, Color.black);
 
 		//adds the data to our graph
-		addPaths(paths, fig3, true);
+		addPaths(paths, redPlot, true);
 
 		//Export raw speed controller instructions as .csv spreadsheets.
 		export(paths);
@@ -139,10 +137,10 @@ public class MPCalculator {
 	 * @param listOfPaths the 3D array housing your paths
 	 * @param figure what graph you want the paths added to
 	 */
-	public static void addPaths(double[][][] listOfPaths, FalconLinePlot figure, boolean mecanum) {
-		for (double[][] u : listOfPaths) {
+	public static void addPaths(NamedPath[] listOfPaths, FalconLinePlot figure, boolean mecanum) {
+		for (NamedPath u : listOfPaths) {
 		    //Create a planner for each path
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
+			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u.getArr());
 			falconPathPlanner.calculate(15, 0.02, robotWidth, mecanum);
 
 			//Add to the path
@@ -157,17 +155,17 @@ public class MPCalculator {
 	 *
 	 * @param listOfPaths the paths of the robot
 	 */
-	public static void export(double[][][] listOfPaths) {
-		for (double[][] u : listOfPaths) {
-			String name = AutoPaths.getName(u);
+	public static void export(NamedPath[] listOfPaths) {
+		for (NamedPath u : listOfPaths) {
+			String name = u.getName();
 
 			//exports the motion profile for each of the 4 motors for mecanum mode
-			FalconPathPlanner falconPathPlannerMech = new FalconPathPlanner(u, true);
+			FalconPathPlanner falconPathPlannerMech = new FalconPathPlanner(u.getArr(), true);
 			falconPathPlannerMech.calculate(15, 0.02, robotWidth);
 			falconPathPlannerMech.exportCSV(name, "", false);
 
 			//exports the motion profile for each of the 2 motors for traction mode
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u, false);
+			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u.getArr(), false);
 			falconPathPlanner.calculate(15, 0.02, robotWidth);
 			falconPathPlanner.exportCSV(name, "", false);
 		}
@@ -178,27 +176,27 @@ public class MPCalculator {
 	 *
 	 * @param paths the paths of the robot
 	 */
-	public static void velocities(double[][][] paths) {
-		for (double[][] u : paths) {
+	public static void velocities(NamedPath[] paths) {
+		for (NamedPath u : paths) {
 			//finds the name of the path
-			String name = AutoPaths.getName(u);
+			String name = u.getName();
 
 			//creates the object and does the calculations
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
+			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u.getArr());
 			falconPathPlanner.calculate(15, 0.02, robotWidth);
 
 			//makes the graph for the motion profile
-			FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
-			fig1.xGridOn();
-			fig1.yGridOn();
-			fig1.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
-			fig1.setXLabel("Time (seconds)");
-			fig1.setYLabel("Velocity (ft/sec)");
+			FalconLinePlot fig = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
+			fig.xGridOn();
+			fig.yGridOn();
+			fig.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
+			fig.setXLabel("Time (seconds)");
+			fig.setYLabel("Velocity (ft/sec)");
 
 			//adds the data to the graph
-			fig1.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
-			fig1.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
-			fig1.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
+			fig.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
+			fig.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
+			fig.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
 		}
 	}
 
@@ -207,23 +205,23 @@ public class MPCalculator {
 	 *
 	 * @param paths the different paths you're running
 	 */
-	public static void mecanumInject(double[][][] paths) {
-		for (double[][] u:paths) {
+	public static void mecanumInject(NamedPath[] paths) {
+		for (NamedPath u:paths) {
 			//finds the end direction
-			double finalRotate = u[u.length - 1][2];
+			double finalRotate = u.getArr()[u.getArr().length - 1][2];
 
 			//robot starts out facing 0 degrees
 			double rotation = 0;
 
 			//finds the name of the motion profile
-			String name = AutoPaths.getName(u);
+			String name = u.getName();
 
 			//check for the hopper collection paths, for they have their own directions
 			if (!(name.equals("LHCB")) || !(name.equals("LHCR")) || !(name.equals("RHCB")) || !(name.equals("RHCR"))) {
 				//add an equal amount of turning to each point for smooth rotation
-				for (int j = 0; j < u.length - 3; j++) {
-					rotation += finalRotate / u.length - 3;
-					u[j + 1][2] = rotation;
+				for (int j = 0; j < u.getArr().length - 3; j++) {
+					rotation += finalRotate / u.getArr().length - 3;
+					u.getArr()[j + 1][2] = rotation;
 				}
 			}
 		}
