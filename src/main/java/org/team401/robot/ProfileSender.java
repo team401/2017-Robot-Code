@@ -76,200 +76,169 @@ public class ProfileSender {
         this.talon.changeMotionControlFramePeriod((int)(profile[0][2]/2));
         _notifier.startPeriodic(profile[0][2]/2000);
     }
-	public void resetEncoder(){
+
+    /**
+     * Sets the encoder on the Talon to 0.
+     * Should be called when the profile is done so position values will be fresh for the next.
+     */
+    public void resetEncoder(){
 	    talon.setEncPosition(0);
     }
 
-
-
-    public void setProfile(double[][] profile){
-    	this.profile = profile;
-	}
-
     /**
-     * Called to clear Motion profile buffer and reset state info during
+     * Called to clear motion profile buffer and reset state info during
      * disabled and when Talon is not in MP control mode.
      */
     public void reset() {
-		/*
-		 * Let's clear the buffer just in case user decided to disable in the
-		 * middle of an MP, and now we have the second half of a profile just
-		 * sitting in memory.
-		 */
+		//Clear the Talon's buffer
         talon.clearMotionProfileTrajectories();
-		/* When we do re-enter motionProfile control mode, stay disabled. */
+
+        //Set instance data to the defaults
         setValue = SetValueMotionProfile.Disable;
-		/* When we do start running our state machine start at the beginning. */
         state = 0;
         timeoutCount = -1;
-		/*
-		 * If application wanted to start an MP before, ignore and wait for next
-		 * button press
-		 */
         startSignal = false;
     }
 
     /**
-     * Called every loop.
+     * Call this every loop.
      */
     public void control() {
-		/* Get the motion profile status every loop */
+		//Update the Talon's status
         talon.getMotionProfileStatus(status);
 
-
-		/*
-		 * track time, this is rudimentary but that's okay, we just want to make
-		 * sure things never get stuck.
-		 */
-        if (!(timeoutCount < 0))
-			/* our timeout is nonzero */
-            if (timeoutCount == 0)
-				/*
-				 * something is wrong. Talon is not present, unplugged, breaker
-				 * tripped
-				 */
-                if(alerts)
+		//Timeout tracker will send a No Progress message if stuff isn't going on fast enough.
+        if (timeoutCount >= 0)
+            if (timeoutCount == 0) {
+				//Something must have gone wrong!
+                if (alerts)
                     SenderPrinting.OnNoProgress();
+            }
             else
+                //Wait for something to go wrong
                 timeoutCount--;
 
-
-
-		/* first check if we are in MP mode */
+		//Check if we are motion profiling
         if (talon.getControlMode() != TalonControlMode.MotionProfile) {
-			/*
-			 * we are not in MP mode. We are probably driving the robot around
-			 * using gamepads or some other mode.
-			 */
+			//Not profiling right now, so reset the state machine and do nothing.
             state = 0;
             timeoutCount = -1;
         } else {
-			/*
-			 * we are in MP control mode. That means: starting Mps, checking Mp
-			 * progress, and possibly interrupting MPs if thats what you want to
-			 * do.
-			 */
+			//Talon is configured to profile, so move through the process of sending a profile.
             switch (state) {
-                case 0: /* wait for application to tell us to start an MP */
+                case 0:
+                    //Wait here until told to start
                     if (startSignal) {
+                        //Reset for next time
                         startSignal = false;
 
+                        //Disable the profile until we have enough points in
                         setValue = SetValueMotionProfile.Disable;
+
+                        //Send points and progress state machine
                         startFilling(profile);
-						/*
-						 * MP is being sent to CAN bus, wait a small amount of time
-						 */
                         state = 1;
                         timeoutCount = timeoutAmt;
                     }
                     break;
-                case 1: /*
-						 * wait for MP to stream to Talon, really just the first few
-						 * points
-						 */
-					/* do we have a minimum numberof points in Talon */
+                case 1:
+					//Wait until enough points are in
                     if (status.btmBufferCnt > minPointsSent) {
-						/* start (once) the motion profile */
+						//Enable the motors
                         setValue = SetValueMotionProfile.Enable;
-						/* MP will start once the control frame gets scheduled */
+
+                        //Progress to next state
                         state = 2;
                         timeoutCount = timeoutAmt;
                     }
                     break;
-                case 2: /* check the status of the MP */
-					/*
-					 * if talon is reporting things are good, keep adding to our
-					 * timeout. Really this is so that you can unplug your talon in
-					 * the middle of an MP and react to it.
-					 */
+                case 2:
+                    //As long as everything is alright, never timeout.
                     if (!status.isUnderrun) {
                         timeoutCount = timeoutAmt;
                     }
-					/*
-					 * If we are executing an MP and the MP finished, start loading
-					 * another. We will go into hold state so robot servo's
-					 * position.
-					 */
+
+					//Stop everything if the profile is over.
                     if (status.activePointValid && status.activePoint.isLastPoint) {
-						/*
-						 * because we set the last point's isLast to true, we will
-						 * get here when the MP is done
-						 */
+                        //Hold mode keeps motor in place and can be used as an external signal
                         setValue = SetValueMotionProfile.Hold;
                         state = 0;
                         timeoutCount = -1;
                     }
                     break;
+                default:
+                    //Error message if state machine breaks
+                    System.out.println("Invalid ProfileSender state!");
+                    break;
             }
         }
-		/* printfs and/or logging */
+
+		//Send data to SmartDashboard if desired
         if(alerts)
             SenderPrinting.process(status);
+    }
+
+    //totalCount defaults to the length of the profile
+    public void startFilling(double[][] profile) {
+        startFilling(profile, profile.length);
     }
 
     /**
      * Start filling the MPs to all of the involved Talons.
      */
-    public void startFilling(double[][] profile) {
-        startFilling(profile, profile.length);
-    }
-
-    public void startFilling(double[][] profile, int totalCnt) {
-
-		/* create an empty point */
+    public void startFilling(double[][] profile, int totalCount) {
+		//create an empty point
         TrajectoryPoint point = new TrajectoryPoint();
 
-		/* did we get an underrun condition since last time we checked ? */
+		//did we get an underrun condition since last time we checked?
         if (status.hasUnderrun) {
-			/* better log it so we know about it */
+			//Only log if we really want to
             if(alerts)
 			    SenderPrinting.OnUnderrun();
-			/*
-			 * clear the error. This flag does not auto clear, this way 
-			 * we never miss logging it.
-			 */
+			//Clear error
             talon.clearMotionProfileHasUnderrun();
         }
-		/*
-		 * just in case we are interrupting another MP and there is still buffer
-		 * points in memory, clear it.
-		 */
+
+		//Remove previous MP in case we interrupt
         talon.clearMotionProfileTrajectories();
 
-		/* This is fast since it's just into our TOP buffer */
-        for (int i = 0; i < totalCnt; i++) {
-			/* for each point, fill our structure and pass it to API */
+		// This is fast since it's just into our top buffer
+        for (int i = 0; i < totalCount; i++) {
+			//Fill up the point since the constructor is empty
             point.position = profile[i][0];
             point.velocity = profile[i][1];
             point.timeDurMs = (int) profile[i][2];
-            point.profileSlotSelect = 0; /* which set of gains would you like to use? */
-            point.velocityOnly = false; /* set true to not do any position
-										 * servo, just velocity feedforward
-										 */
-            point.zeroPos = i == 0; /* set this to true on the first point */
-            point.isLastPoint = (i + 1) == totalCnt;/* set this to true on the last point  */
+
+            //Talon supports multiple saved PID profiles.  Just use the first.
+            point.profileSlotSelect = 0;
+
+            //yes we want to use the position data
+            point.velocityOnly = false;
+
+            //Define the first and last points
+            point.zeroPos = i == 0;
+            point.isLastPoint = (i + 1) == totalCount;
+
+            //Push to the Talon
             talon.pushMotionProfileTrajectory(point);
         }
+
+        //Print our success at the end
         System.out.println("Done streaming!");
     }
 
     /**
-     * Called by application to signal Talon to start the buffered MP (when it's
-     * able to).
+     * Call this to trigger the profile when ready.
      */
     public void startMotionProfile() {
         startSignal = true;
     }
 
     /**
-     * @return the output value to pass to Talon's set() routine. 0 for disable
-     * motion-profile output, 1 for enable motion-profile, 2 for hold
-     * current motion profile trajectory point.
+     * Gets the set value so we know if the loop is disabled, enabled, or holding.
+     * @return Set value.  "Hold" or 2 if finished profiling.
      */
     SetValueMotionProfile getSetValue() {
         return setValue;
-    }
-    CANTalon getTalon(){
-        return talon;
     }
 }
