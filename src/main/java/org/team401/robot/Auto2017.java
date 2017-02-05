@@ -71,14 +71,26 @@ public class Auto2017 {
 		//Start up the ProfileSenders
 		fl = new ProfileSender(drive.getGearboxes().get(0).getCimMotor(), profiles[0]);
 		fr = new ProfileSender(drive.getGearboxes().get(1).getCimMotor(), profiles[1]);
-		rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[mecanum ? 2 : 0]);
-		rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[mecanum ? 3 : 1]);
+		if(mecanum) {
+			rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
+			rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
+		}else{
+			//If we are in tank drive, make all MPs run on 1 sensor for each side.
+			drive.getGearboxes().get(2).setControlMode(CANTalon.TalonControlMode.Follower);
+			drive.getGearboxes().get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
+			drive.getGearboxes().get(3).setControlMode(CANTalon.TalonControlMode.Follower);
+			drive.getGearboxes().get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
+		}
 
 		//Start sending the profiles
 		fl.startMotionProfile();
 		fr.startMotionProfile();
-		rl.startMotionProfile();
-		rr.startMotionProfile();
+
+		//Mostly, at least.
+		if(mecanum) {
+			rl.startMotionProfile();
+			rr.startMotionProfile();
+		}
 	}
 
 	/**
@@ -89,8 +101,10 @@ public class Auto2017 {
 		//Keeps the MP loops going and increments state if at the end of the profile
 		fl.control();
 		fr.control();
-		rl.control();
-		rr.control();
+		if(mecanum) {
+			rl.control();
+			rr.control();
+		}
 
 		//Check if we're at the end of the path
 		if(finished()) {
@@ -103,8 +117,10 @@ public class Auto2017 {
 			//Reset encoders so position feed-forward doesn't get confused
 			fl.resetEncoder();
 			fr.resetEncoder();
-			rl.resetEncoder();
-			rr.resetEncoder();
+			if(mecanum) {
+				rl.resetEncoder();
+				rr.resetEncoder();
+			}
 
 			//Get next path
 			profiles = MotionProfiles.get("", tgt, mecanum, true);
@@ -119,9 +135,10 @@ public class Auto2017 {
 	private boolean finished(){
 		//The setValue is "Hold" with a value of 2 when a ProfileSender detects a finished profile.
 		return fl.getSetValue().value==2&&
-				fr.getSetValue().value==2&&
-				rl.getSetValue().value==2&&
-				rr.getSetValue().value==2;
+				fr.getSetValue().value==2&&(!mecanum||
+					//Only check 2 if in traction
+					rl.getSetValue().value==2&&
+					rr.getSetValue().value==2);
 	}
 
 	/**
