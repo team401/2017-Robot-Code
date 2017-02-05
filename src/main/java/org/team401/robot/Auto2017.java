@@ -37,6 +37,7 @@ public class Auto2017 {
 
 	/**
 	 * Constructor.  Call this in autonomousInit(), please.
+	 *
 	 * @param start Either "L", "C", or "R".  Defines if the robot is starting in the left, center, or right side of the field.
 	 * @param tgt Either "LH", "LL", "CL", "RL", or "RH".  Defines where the robot will go in the first path.
 	 * @param mecanum Defines if we will be using mecanum or traction wheels.
@@ -112,6 +113,7 @@ public class Auto2017 {
 
 	/**
 	 * Determines if we are finished with the current path
+	 *
 	 * @return True if all the ProfileSenders are finished.
 	 */
 	private boolean finished(){
