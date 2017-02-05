@@ -66,7 +66,7 @@ public class MPCalculator {
         fig2.setXTic(0, 27, 1);
         fig2.setYTic(0, 39, 1);
 
-        //adds the field elements the field
+        //adds the field elements to the field
         fig2.addData(Field.AIRSHIP, Color.black);
         fig2.addData(Field.BASELINE, Color.blue);
         fig2.addData(Field.NEUTRAL_ZONE, Color.green);
@@ -75,7 +75,7 @@ public class MPCalculator {
         fig2.addData(Field.LEFTHOPPERS_B, Color.black);
         fig2.addData(Field.RIGHTHOPPERS_B, Color.black);
 
-        //adds the data to our graph
+        //adds the path data to our graph
         addPaths(paths, fig2, true);
 
         //Field map from the red alliance's perspective
@@ -151,16 +151,15 @@ public class MPCalculator {
     public static void export(double[][][] listOfPaths, boolean braces) {
         for (double[][] u : listOfPaths) {
             String name = AutoPaths.getName(u);
+            //exports the motion profile for each of the 4 motors for mecanum mode
             FalconPathPlanner falconPathPlannerMech = new FalconPathPlanner(u, true);
             falconPathPlannerMech.calculate(15, 0.02, robotWidth);
             falconPathPlannerMech.exportCSV(name, "", braces);
-
+            //exports the motion profile for each of the 2 motors for traction mode
             FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u, false);
             falconPathPlanner.calculate(15, 0.02, robotWidth);
             falconPathPlanner.exportCSV(name, "", braces);
-
         }
-
     }
 
     /**
@@ -171,20 +170,18 @@ public class MPCalculator {
     public static void velocities(double[][][] paths) {
 
         for (double[][] u : paths) {
-
+            //finds the name of the path
             String name = AutoPaths.getName(u);
-
+            //creates the object and does the calculations
             FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u);
             falconPathPlanner.calculate(15, 0.02, robotWidth);
-
+            //makes the graph for the motion profile
             FalconLinePlot fig1 = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
             fig1.xGridOn();
             fig1.yGridOn();
             fig1.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
             fig1.setXLabel("Time (seconds)");
             fig1.setYLabel("Velocity (ft/sec)");
-
-
             //adds the data to the graph
             fig1.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
             fig1.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
@@ -200,10 +197,14 @@ public class MPCalculator {
     public static void mecanumInject(double[][][] paths) {
 
         for (int i = 0; i < paths.length; i++) {
+            //finds the end direction
             double finalRotate = paths[i][paths[i].length - 1][2];
             double rotation = 0;
+            //finds the name of the motion profile
             String name = AutoPaths.getName(paths[i]);
+            //checks for the hopper collection paths, for they have their own directions
             if (!(name.equals("LHCB")) || !(name.equals("LHCR")) || !(name.equals("RHCB")) || !(name.equals("RHCR"))) {
+                //adds an equal amount of direction to create a smoot turn throughout the motion profile
                 for (int j = 0; j < paths[i].length - 3; j++) {
                     rotation += finalRotate / paths[i].length - 3;
                     paths[i][j + 1][2] = rotation;

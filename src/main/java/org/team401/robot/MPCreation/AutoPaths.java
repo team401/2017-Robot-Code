@@ -275,6 +275,8 @@ Waypoint Paths:
 			concat(perpendicular_To_Airship(LEFT_GEAR_PEG, 1), 0)
 	};
 		//list so we can find the name of each path
+		//uses a naming system. For airships: Starting position(M, L, R) + What lift(LL, RL, CL) + alliance(R or B, if needed)
+		//or for hopper code: Starting peg(C, R, L) + what side hopper(R, L) + alliance(R or B)
 	private static final String[][] names = {
 			{START_MID_TO_LIFT.toString(), "MCL"},
 			{START_MID_TO_L_LIFT.toString(), "MLL"},
@@ -291,8 +293,8 @@ Waypoint Paths:
 			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "LLR"},
 			{LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B.toString(), "LLB"},
 			{RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "RLB"},
-			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},//Center Lift to Left Hopper Red
-			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLB"},//Center Lift to Right Hopper Blue
+			{CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R.toString(), "CLR"},
+			{CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B.toString(), "CLB"},
 			{LEFT_HOPPER_COLLECTION_B.toString(), "LHB"},
 			{LEFT_HOPPER_COLLECTION_R.toString(), "LHR"},
 			{RIGHT_HOPPER_COLLECTION_B.toString(), "RHB"},
@@ -309,6 +311,7 @@ Waypoint Paths:
 
 	};
 	//finds the name of each path
+	//returns "" if no name is found
 	public static String getName(double[][] arr){
 		for(String[] u:names)
 			if(u[0].equals(arr.toString()))
@@ -316,13 +319,9 @@ Waypoint Paths:
 		return "";
 	}
 
-
-   //NOTE: WE MAY WANT TO CHANGE THE FACTOR PART OF THIS. IT WOULD BE EASIER IN THE LONG RUN TO MAKE IT SO THAT
-	//IT EXTENDS THE POINT ONLY AS FAR AS OUR ROBOT IS LONG
-
-
 	/**
-	 * Returns the coordinates of C, where C is the vertex of a triangle and A and B are known points with angles of 45 degrees.
+	 * Returns the coordinates of C, where C is the vertex of a triangle and A and B are known points with angles of 45 degrees, and the angle that the
+	 * robot needs to be in to be perpendicular
 	 * Slightly modified from http://math.stackexchange.com/questions/1842614/find-third-coordinate-for-a-right-triangle-with-45degree-angles
 	 *
 	 * Works no matter what order the points are entered
@@ -332,6 +331,8 @@ Waypoint Paths:
 	 * @return Point C
 	 */
 	public static double[] perpendicular(double[] coords, double factor) {
+		//finds the way to coordinates are entered and adjusts so no matter which way they are entered, the result is the same.
+		//Factor will need to be adjusted on verticle or horizontal slopes
 	    if(coords[2] < coords[0] && (coords[3] < coords[1]) && !(coords[1] == coords[3])) {
             return new double[]{
                     (coords[0] + coords[2]) / 2.0 + (coords[1] - coords[3]) / 2.0 * factor,
