@@ -10,125 +10,83 @@ import java.util.List;
 
 
 /**
- * This Class provides many useful algorithms for Robot Path Planning. It uses optimization techniques and knowledge
- * of Robot Motion in order to calculate smooth path trajectories, if given only discrete waypoints. The Benefit of these optimization
- * algorithms are very efficient path planning that can be used to Navigate in Real-time.
- *
- * This Class uses a method of Gradient Decent, and other optimization techniques to produce smooth Velocity profiles
- * for both left and right wheels of a differential drive robot.
- *
- * This Class does not attempt to calculate quintic or cubic splines for best fitting a curve. It is for this reason, the algorithm can be ran
- * on embedded devices with very quick computation times.
- *
- * The output of this function are independent velocity profiles for the left and right wheels of a differential drive chassis. The velocity
- * profiles start and end with 0 velocity and maintain smooth transitions throughout the path.
- *
- * This algorithm is a port from a similar algorithm running on a Robot used for my PhD thesis. I have not fully optimized
- * these functions, so there is room for some improvement.
- *
- * Initial tests on the 2015 FRC NI RoboRio, the complete algorithm finishes in under 15ms using the Java System Timer for paths with less than 50 nodes.
- *
- * @author Kevin Harrilal
- * @version 1.0
- * @email kevin@team2168.org
- * @date 2014-Aug-11
+ * Modified from Kevin Harrilal's work at Team 2168.
+ * Transforms a set of waypoints into a smooth robot path.
+ * After calculate()ing, you can export Talon SRX motion profile instructions in .csv files for both tank and mecanum drives.
  */
+
 public class FalconPathPlanner {
-
-	//Path Variables
+	//Is this using mecanum logic?
 	public final boolean mecanum;
-	public double[][] origPath;
-	public double[][] nodeOnlyPath;
-	public double[][] smoothPath;
-	public double[][] leftPath;
-	public double[][] rightPath;
 
-	//Orig Velocity
-	public double[][] origCenterVelocity;
-	public double[][] origRightVelocity;
-	public double[][] origLeftVelocity;
+	//Original and smoothed paths
+	public double[][] origPath,
+		nodeOnlyPath,
+		smoothPath,
+		leftPath,
+		rightPath;
 
-	//smooth velocity
-	public double[][] smoothCenterVelocity;
-	public double[][] smoothRightVelocity;
-	public double[][] smoothLeftVelocity;
+	//Original and smoothed velocity
+	public double[][] origCenterVelocity,
+		origRightVelocity,
+		origLeftVelocity,
+		smoothCenterVelocity,
+		smoothRightVelocity,
+		smoothLeftVelocity;
 
-	//accumulated heading
+	//Accumulated heading
 	public double[][] heading;
 
-	public double numFinalPoints,
-		pathAlpha,
-		pathBeta,
-		pathTolerance,
-		velocityAlpha,
+	//Various doubles.  UPDATE THESE COMMENTS AS YOU MOVE THROUGH THE CODE
+	public double numFinalPoints,//How many points are in the smooth paths/velocities
+		pathAlpha,//How much the smoothing sticks to original waypoints
+		pathBeta,//How aggressive the smoothing is
+		pathTolerance,//How precise the smooth path must be.  Creates an infinite loop if too low.
+		velocityAlpha,//Same as above but for velocity
 		velocityBeta,
 		velocityTolerance;
 
-
-	/**
-	 * Constructor, takes a Path of Way Points defined as a double array of column vectors representing the global
-	 * cartesian points of the path in {x,y} coordinates. The waypoint are traveled from one point to the next in sequence.
-	 *
-	 * For example: here is a properly formated waypoint array
-	 *
-	 * double[][] waypointPath = new double[][]{
-	 * {1, 1},
-	 * {5, 1},
-	 * {9, 12},
-	 * {12, 9},
-	 * {15,6},
-	 * {15, 4}
-	 * };
-	 *
-	 * This path goes from {1,1} -> {5,1} -> {9,12} -> {12, 9} -> {15,6} -> {15,4}
-	 *
-	 * The units of these coordinates are position units assumed by the user (i.e inch, foot, meters)
-	 *
-	 * @param path
-	 */
+	//Mecanum defaults to false
 	public FalconPathPlanner(double[][] path) {
 		this(path, false);
 	}
 
 	/**
-	 * Waypoint array if using Mecanum drive.
+	 * Constructor.  Takes a 2D array of cartesian x/y coordinates(feet) and sets up the object for processing.
 	 *
-	 * @param path    Points to move to relative to robot start
-	 * @param mecanum Is the robot in mecanum drive mode?
+	 * @param path Waypoints the robot will travel to
+	 * @param mecanum Specifies if we are in mecanum or tank drive
 	 */
 	public FalconPathPlanner(double[][] path, boolean mecanum) {
+		//Save instance data
 		origPath = doubleArrayCopy(path);
 		this.mecanum = mecanum;
+
+		//Cut angles to a 0-359 range if applicable
 		if(mecanum)
-			fixAngles(origPath);
-		//default values DO NOT MODIFY;
+			for(double[] u:path) {
+				while (u[2] < 0)
+					u[2] += 360;
+				while (u[2] > 359)
+					u[2] -=360;
+			}
+
+		//Default values for double instance data.  See above for description.
 		pathAlpha = 0.7;
 		pathBeta = 0.3;
 		pathTolerance = 0.0000001;
-
 		velocityAlpha = 0.1;
 		velocityBeta = 0.3;
 		velocityTolerance = 0.0000001;
 	}
 
-	private void fixAngles(double[][] path){
-		for(double[] u:path) {
-			while (u[2] < 0)
-				u[2] += 360;
-			while (u[2] > 359)
-				u[2] -=360;
-		}
-	}
-
 	/**
-	 * Performs a deep copy of a 2 Dimensional Array looping thorough each element in the 2D array
-	 * <p>
-	 * BigO: Order N x M
+	 * Performs a deep copy of a 2D Array
 	 *
-	 * @param arr
-	 * @return
+	 * @param arr Array to copy
+	 * @return Reference to separate but equal array
 	 */
-	public static double[][] doubleArrayCopy(double[][] arr) {
+	private static double[][] doubleArrayCopy(double[][] arr) {
 		//size first dimension of array
 		double[][] temp = new double[arr.length][arr[0].length];
 
@@ -139,83 +97,67 @@ public class FalconPathPlanner {
 			//Copy Contents
 			System.arraycopy(arr[i], 0, temp[i], 0, arr[i].length);
 		}
-
 		return temp;
-
 	}
 
 	/**
-	 * Method upsamples the Path by linear injection. The result providing more waypoints along the path.
-	 * <p>
-	 * BigO: Order N * injection#
+	 * Supersamples the path by linear injection.
 	 *
-	 * @param orig
-	 * @param numToInject
-	 * @return
+	 * @param orig The original array
+	 * @param numToInject How many points we inject between each waypoint
+	 * @return Array with more points in it
 	 */
-	public double[][] inject(double[][] orig, int numToInject) {
-		double morePoints[][];
-
-		//create extended 2 Dimensional array to hold additional points
-		morePoints = new double[orig.length + ((numToInject) * (orig.length - 1))][orig[0].length];
-
+	private double[][] inject(double[][] orig, int numToInject) {
+		//Initialize result and index of loop's progress in result
+		double morePoints[][] = new double[orig.length + ((numToInject) * (orig.length - 1))][orig[0].length];
 		int index = 0;
 
-		//loop through original array
 		for (int i = 0; i < orig.length - 1; i++) {
-			//copy first
+			//Copy the newest point in the original array
 			morePoints[index][0] = orig[i][0];
 			morePoints[index][1] = orig[i][1];
 			if (mecanum)
 				morePoints[index][2] = orig[i][2];
 			index++;
 
+			//Calculate intermediate points between j and j+1  originals
 			for (int j = 1; j < numToInject + 1; j++) {
-				//calculate intermediate x points between j and j+1 original points
-				morePoints[index][0] = j * ((orig[i + 1][0] - orig[i][0]) / (numToInject + 1)) + orig[i][0];
-
-				//calculate intermediate y points  between j and j+1 original points
-				morePoints[index][1] = j * ((orig[i + 1][1] - orig[i][1]) / (numToInject + 1)) + orig[i][1];
-
-				//calculate intermediate direction between j and j+1 original points if in mecanum
+				morePoints[index][0] = j * ((orig[i + 1][0] - orig[i][0]) / (numToInject + 1)) + orig[i][0];//x
+				morePoints[index][1] = j * ((orig[i + 1][1] - orig[i][1]) / (numToInject + 1)) + orig[i][1];//y
 				if (mecanum)
-					morePoints[index][2] = j * ((orig[i + 1][2] - orig[i][2]) / (numToInject + 1)) + orig[i][2];
-
+					morePoints[index][2] = j * ((orig[i + 1][2] - orig[i][2]) / (numToInject + 1)) + orig[i][2];//rotation
 				index++;
 			}
 		}
 
-		//copy last
+		//Copy last point in original and return
 		morePoints[index][0] = orig[orig.length - 1][0];
 		morePoints[index][1] = orig[orig.length - 1][1];
 		if (mecanum)
 			morePoints[index][2] = orig[orig.length - 1][2];
-
 		return morePoints;
 	}
 
-
 	/**
-	 * Optimization algorithm, which optimizes the data points in path to create a smooth trajectory.
-	 * This optimization uses gradient descent. While unlikely, it is possible for this algorithm to never
-	 * converge. If this happens, try increasing the tolerance level.
-	 * <p>
-	 * BigO: N^x, where X is the number of of times the while loop iterates before tolerance is met.
+	 * Optimizes the data points in path to create a smooth trajectory using gradient descent.
+	 * While unlikely, it is possible for this algorithm to never converge. If this happens, try increasing the tolerance level.
 	 *
-	 * @param path
-	 * @param weight_data
-	 * @param weight_smooth
-	 * @param tolerance
-	 * @return
+	 * @param path Path to optimize
+	 * @param weight_data Increases/decreases the importance of the original data
+	 * @param weight_smooth Increases/decreases the importance of smooth movement
+	 * @param tolerance How precise the resultant path needs to be
+	 * @return A smoothed-out path, neatly curving between waypoints.
 	 */
-	public double[][] smoother(double[][] path, double weight_data, double weight_smooth, double tolerance) {
-
-		//copy array
+	private double[][] smooth(double[][] path, double weight_data, double weight_smooth, double tolerance) {
+		//copy array and set process variable
 		double[][] newPath = doubleArrayCopy(path);
-
 		double change = tolerance;
+
+		//Reset change every loop until it gets small enough to be tolerable
 		while (change >= tolerance) {
 			change = 0.0;
+
+			//Loops through every value in the path except first row
 			for (int i = 1; i < path.length - 1; i++)
 				for (int j = 0; j < path[i].length; j++) {
 					double aux = newPath[i][j];
@@ -223,22 +165,21 @@ public class FalconPathPlanner {
 					change += Math.abs(aux - newPath[i][j]);
 				}
 		}
-
 		return newPath;
-
 	}
 
 	/**
-	 * reduces the path into only nodes which change direction. This allows the algorithm to know at what points
-	 * the original WayPoint vector changes.
-	 * <p>
-	 * BigO: Order N + Order M, Where N is length of original Path, and M is length of Nodes found in Path
+	 * Reduces the path into only nodes which change direction.
 	 *
-	 * @param path
-	 * @return
+	 * @param path Path to simplify
+	 * @return Simplified path
 	 */
 	public double[][] nodeOnlyWayPoints(double[][] path) {
+		//Don't do anything in Mecanum mode, as the robot may rotate no matter what direction it's moving in.
+		if(mecanum)
+			return path;
 
+		//Linked list allows variable size, perfect for something like this
 		List<double[]> li = new LinkedList<>();
 
 		//save first value
@@ -251,44 +192,36 @@ public class FalconPathPlanner {
 			double vector2 = Math.atan2((path[i + 1][1] - path[i][1]), path[i + 1][0] - path[i][0]);
 
 			//determine if both vectors have a change in direction
-			//method doesn't do anything if in mecanum mode
-			if (Math.abs(vector2 - vector1) >= 0.01 || mecanum)
+			if (Math.abs(vector2 - vector1) >= 0.01)
 				li.add(path[i]);
 		}
 
-		//save last
+		//save last point
 		li.add(path[path.length - 1]);
 
-		//re-write nodes into new 2D Array
+		//re-write nodes into new 2D Array, which is returned
 		double[][] temp = new double[li.size()][path[0].length];
-
 		for (int i = 0; i < li.size(); i++) {
 			temp[i][0] = li.get(i)[0];
 			temp[i][1] = li.get(i)[1];
-			if (mecanum)
-				temp[i][2] = li.get(i)[2];
 		}
-
 		return temp;
 	}
 
-
 	/**
-	 * Returns Velocity as a double array. The First Column vector is time, based on the time step, the second vector
-	 * is the velocity magnitude.
-	 * <p>
-	 * BigO: order N
+	 * Gets the velocity at a series of times.
 	 *
-	 * @param smoothPath
-	 * @param timeStep
-	 * @return
+	 * @param smoothPath Path to calculate from
+	 * @param timeStep Time between each point(s)
+	 * @return 2D Array. Column 0 stores time since path started(s). Column 1 stores velocity at that time.
 	 */
-	double[][] velocity(double[][] smoothPath, double timeStep) {
+	private double[][] velocity(double[][] smoothPath, double timeStep) {
+		//Size working arrays
 		double[] dxdt = new double[smoothPath.length];
 		double[] dydt = new double[smoothPath.length];
 		double[][] velocity = new double[smoothPath.length][2];
 
-		//set first instance to zero
+		//set first to zero
 		dxdt[0] = 0;
 		dydt[0] = 0;
 		velocity[0][0] = 0;
@@ -296,26 +229,24 @@ public class FalconPathPlanner {
 		heading[0][1] = 0;
 
 		for (int i = 1; i < smoothPath.length; i++) {
+			//Calculate horizontal and vertical velocities separately, then merge into overall
 			dxdt[i] = (smoothPath[i][0] - smoothPath[i - 1][0]) / timeStep;
 			dydt[i] = (smoothPath[i][1] - smoothPath[i - 1][1]) / timeStep;
+			velocity[i][1] = Math.sqrt(Math.pow(dxdt[i], 2) + Math.pow(dydt[i], 2));
 
-			//create time vector
+			//Add time since last entry
 			velocity[i][0] = velocity[i - 1][0] + timeStep;
 			heading[i][0] = heading[i - 1][0] + timeStep;
-
-			//calculate velocity
-			velocity[i][1] = Math.sqrt(Math.pow(dxdt[i], 2) + Math.pow(dydt[i], 2));
 		}
 		return velocity;
-
 	}
 
 	/**
-	 * optimize velocity by minimizing the error distance at the end of travel
+	 * Optimize velocity by minimizing the error distance at the end of travel
 	 * when this function converges, the fixed velocity vector will be smooth, start
 	 * and end with 0 velocity, and travel the same final distance as the original
 	 * un-smoothed velocity profile
-	 * <p>
+	 *
 	 * This Algorithm may never converge. If this happens, reduce tolerance.
 	 *
 	 * @param smoothVelocity
@@ -365,7 +296,7 @@ public class FalconPathPlanner {
 			j++;
 		}
 
-		//fixVel =  smoother(fixVel, 0.001, 0.001, 0.0000001);
+		//fixVel =  smooth(fixVel, 0.001, 0.001, 0.0000001);
 		return fixVel;
 
 	}
@@ -618,10 +549,10 @@ public class FalconPathPlanner {
 		for (int i = 0; i < inject.length; i++) {
 			if (i == 0) {
 				smoothPath = inject(nodeOnlyPath, inject[0]);
-				smoothPath = smoother(smoothPath, pathAlpha, pathBeta, pathTolerance);
+				smoothPath = smooth(smoothPath, pathAlpha, pathBeta, pathTolerance);
 			} else {
 				smoothPath = inject(smoothPath, inject[i]);
-				smoothPath = smoother(smoothPath, 0.1, 0.3, 0.0000001);
+				smoothPath = smooth(smoothPath, 0.1, 0.3, 0.0000001);
 			}
 		}
 
@@ -643,9 +574,9 @@ public class FalconPathPlanner {
 		smoothRightVelocity[smoothRightVelocity.length - 1][1] = 0.0;
 
 		//Smooth velocity with zero final V
-		smoothCenterVelocity = smoother(smoothCenterVelocity, velocityAlpha, velocityBeta, velocityTolerance);
-		smoothLeftVelocity = smoother(smoothLeftVelocity, velocityAlpha, velocityBeta, velocityTolerance);
-		smoothRightVelocity = smoother(smoothRightVelocity, velocityAlpha, velocityBeta, velocityTolerance);
+		smoothCenterVelocity = smooth(smoothCenterVelocity, velocityAlpha, velocityBeta, velocityTolerance);
+		smoothLeftVelocity = smooth(smoothLeftVelocity, velocityAlpha, velocityBeta, velocityTolerance);
+		smoothRightVelocity = smooth(smoothRightVelocity, velocityAlpha, velocityBeta, velocityTolerance);
 
 		//fix velocity distance error
 		smoothCenterVelocity = velocityFix(smoothCenterVelocity, origCenterVelocity, 0.0000001);
@@ -674,7 +605,7 @@ public class FalconPathPlanner {
 	 * @param ratio Double used to transform feet/second into RPM
 	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
 	 */
-	public double[][] talonSRXProfile(boolean left, double ratio) {
+	private double[][] tankProfile(boolean left, double ratio) {
 		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
 				result = new double[source.length][3],
 				wheel = left ? leftPath : rightPath;
@@ -694,8 +625,8 @@ public class FalconPathPlanner {
 		return result;
 	}
 
-	public double[][] talonSRXProfile(boolean left){
-		return talonSRXProfile(left, getRatio());
+	private double[][] tankProfile(boolean left){
+		return tankProfile(left, getRatio());
 	}
 
 	public double getRatio(){
@@ -711,10 +642,10 @@ public class FalconPathPlanner {
 	/**
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
-	public double[][][] mecanumProfile(){
+	private double[][][] mecanumProfile(){
 		return mecanumProfile(getRatio());//Default to the ratio defined above
 	}
-	public double[][][] mecanumProfile(double ratio) {
+	private double[][][] mecanumProfile(double ratio) {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath),
 			vel = doubleArrayCopy(smoothCenterVelocity);
@@ -740,7 +671,7 @@ public class FalconPathPlanner {
 	/**
 	 * Taken straight from the Strongback source code
 	 */
-	public double[] polarMecanum(double mag, double dir, double rot) {
+	private double[] polarMecanum(double mag, double dir, double rot) {
 		// Normalized for full power along the Cartesian axes.
 		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
 		// The rollers are at 45 degree angles.
@@ -758,29 +689,17 @@ public class FalconPathPlanner {
 	}
 
 	private static void exportCSV(String fileName, double[][] arr){
-		exportCSV(fileName, arr, false);
-	}
-
-	private static void exportCSV(String fileName, double[][] arr, boolean braces){
 		try {
 			PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
 			StringBuilder sb = new StringBuilder();
 			for (double[] u : arr) {
-				if (braces)
-					sb.append('{');
 				for (double v : u) {
 					sb.append(v);
 					sb.append(',');
 				}
 				sb.deleteCharAt(sb.length() - 1);
-				if (braces) {
-					sb.append('}');
-					sb.append(',');
-				}
 				sb.append('\n');
 			}
-			if (braces)
-				sb.deleteCharAt(sb.length() - 1);
 			pw.write(sb.toString());
 			pw.close();
 		}catch(FileNotFoundException e){
@@ -790,19 +709,10 @@ public class FalconPathPlanner {
 	public void exportCSV(){
 		exportCSV("");
 	}
-	public void exportCSV(boolean braces){
-		exportCSV("", braces);
-	}
-	public void exportCSV(String suffix){
-		exportCSV("", suffix);
-	}
-	public void exportCSV(String suffix, boolean braces){
-		exportCSV("", suffix, braces);
+	public void exportCSV(String prefix){
+		exportCSV(prefix, "");
 	}
 	public void exportCSV(String prefix, String suffix){
-		exportCSV(prefix, suffix, false);
-	}
-	public void exportCSV(String prefix, String suffix, boolean braces){
 		if(mecanum) {
 			double[][][] temp = mecanumProfile();
 
@@ -810,13 +720,13 @@ public class FalconPathPlanner {
 			for(double[][] u:temp)
 				roundall(u);
 
-			exportCSV(prefix+" FL"+suffix, temp[0], braces);
-			exportCSV(prefix+" FR"+suffix, temp[1], braces);
-			exportCSV(prefix+" RL"+suffix, temp[2], braces);
-			exportCSV(prefix+" RR"+suffix, temp[3], braces);
+			exportCSV(prefix+" FL"+suffix, temp[0]);
+			exportCSV(prefix+" FR"+suffix, temp[1]);
+			exportCSV(prefix+" RL"+suffix, temp[2]);
+			exportCSV(prefix+" RR"+suffix, temp[3]);
 		}else {
-			exportCSV(prefix+" L"+suffix, talonSRXProfile(true), braces);
-			exportCSV(prefix+" R"+suffix, talonSRXProfile(false), braces);
+			exportCSV(prefix+" L"+suffix, tankProfile(true));
+			exportCSV(prefix+" R"+suffix, tankProfile(false));
 		}
 	}
 	private void roundall(double[][] x) {

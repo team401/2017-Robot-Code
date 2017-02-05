@@ -160,14 +160,14 @@ public class MPCalculator {
 			String name = u.getName();
 
 			//exports the motion profile for each of the 4 motors for mecanum mode
-			FalconPathPlanner falconPathPlannerMech = new FalconPathPlanner(u.getArr(), true);
-			falconPathPlannerMech.calculate(15, 0.02, robotWidth);
-			falconPathPlannerMech.exportCSV(name, "", false);
+			FalconPathPlanner fpp = new FalconPathPlanner(u.getArr(), true);
+			fpp.calculate(15, 0.02, robotWidth);
+			fpp.exportCSV(name);
 
 			//exports the motion profile for each of the 2 motors for traction mode
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u.getArr(), false);
-			falconPathPlanner.calculate(15, 0.02, robotWidth);
-			falconPathPlanner.exportCSV(name, "", false);
+			fpp = new FalconPathPlanner(u.getArr());
+			fpp.calculate(15, 0.02, robotWidth);
+			fpp.exportCSV(name);
 		}
 	}
 

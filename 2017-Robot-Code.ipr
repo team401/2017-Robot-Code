@@ -273,7 +273,7 @@
     </library>
     <library name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.9">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/thirdparty.frc.ctre/Toolsuite-Java/4.4.1.9/547aac1ebff1737c775cc2ea075cada66a0c7d26/Toolsuite-Java-4.4.1.9.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/java/lib/CTRLib.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
