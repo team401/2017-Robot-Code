@@ -216,23 +216,20 @@ public class FalconPathPlanner {
 	 * @return 2D Array. Column 0 stores time since path started(s). Column 1 stores velocity at that time.
 	 */
 	private double[][] velocity(double[][] smoothPath, double timeStep) {
-		//Size working arrays
-		double[] dxdt = new double[smoothPath.length];
-		double[] dydt = new double[smoothPath.length];
+		//Create vars and result array
+		double dxdt, dydt;
 		double[][] velocity = new double[smoothPath.length][2];
 
 		//set first to zero
-		dxdt[0] = 0;
-		dydt[0] = 0;
 		velocity[0][0] = 0;
 		velocity[0][1] = 0;
 		heading[0][1] = 0;
 
 		for (int i = 1; i < smoothPath.length; i++) {
 			//Calculate horizontal and vertical velocities separately, then merge into overall
-			dxdt[i] = (smoothPath[i][0] - smoothPath[i - 1][0]) / timeStep;
-			dydt[i] = (smoothPath[i][1] - smoothPath[i - 1][1]) / timeStep;
-			velocity[i][1] = Math.sqrt(Math.pow(dxdt[i], 2) + Math.pow(dydt[i], 2));
+			dxdt = (smoothPath[i][0] - smoothPath[i - 1][0]) / timeStep;
+			dydt = (smoothPath[i][1] - smoothPath[i - 1][1]) / timeStep;
+			velocity[i][1] = Math.sqrt(Math.pow(dxdt, 2) + Math.pow(dydt, 2));
 
 			//Add time since last entry
 			velocity[i][0] = velocity[i - 1][0] + timeStep;
@@ -242,77 +239,38 @@ public class FalconPathPlanner {
 	}
 
 	/**
-	 * Optimize velocity by minimizing the error distance at the end of travel
-	 * when this function converges, the fixed velocity vector will be smooth, start
-	 * and end with 0 velocity, and travel the same final distance as the original
-	 * un-smoothed velocity profile
+	 * Optimizes velocity, since there may be errors during smoothing.  If the algorithm doesn't converge, increase tolerance.
 	 *
-	 * This Algorithm may never converge. If this happens, reduce tolerance.
-	 *
-	 * @param smoothVelocity
-	 * @param origVelocity
-	 * @param tolerance
-	 * @return
+	 * @param smoothVelocity Previously smoothed velocity array with distance error at end
+	 * @param origVelocity Original velocity array
+	 * @param tolerance Precision of the output
+	 * @return Fixed array
 	 */
-	double[][] velocityFix(double[][] smoothVelocity, double[][] origVelocity, double tolerance) {
-
-		/*pseudo
-		 * 1. Find Error Between Original Velocity and Smooth Velocity
-		 * 2. Keep increasing the velocity between the first and last node of the smooth Velocity by a small amount
-		 * 3. Recalculate the difference, stop if threshold is met or repeat step 2 until the final threshold is met.
-		 * 3. Return the updated smoothVelocity
-		 */
-
+	private double[][] velocityFix(double[][] smoothVelocity, double[][] origVelocity, double tolerance) {
 		//calculate error difference
 		double[] difference = errorSum(origVelocity, smoothVelocity);
 
+		//result array starts as a copy
+		double[][] fixVel = doubleArrayCopy(smoothVelocity);
 
-		//copy smooth velocity into new Vector
-		double[][] fixVel = new double[smoothVelocity.length][2];
-
-		for (int i = 0; i < smoothVelocity.length; i++) {
-			fixVel[i][0] = smoothVelocity[i][0];
-			fixVel[i][1] = smoothVelocity[i][1];
-		}
-
-		//optimize velocity by minimizing the error distance at the end of travel
-		//when this converges, the fixed velocity vector will be smooth, start
-		//and end with 0 velocity, and travel the same final distance as the original
-		//un-smoothed velocity profile
+		//Correct the error until threshold is reached.  May cause infinite loop.
 		double increase;
-		int j = 0;
 		while (Math.abs(difference[difference.length - 1]) > tolerance) {
-			if (j >= 200) {
-				System.out.println("Infinite Loop in FalconPathPlanner.java's velocityFix method");//This actually was an issue at one point
-				return fixVel;
-			}
 			increase = difference[difference.length - 1] / 50;
-
 			for (int i = 1; i < fixVel.length - 1; i++)
-				fixVel[i][1] = fixVel[i][1] - increase;
-
+				fixVel[i][1] -= increase;
 			difference = errorSum(origVelocity, fixVel);
-
-			j++;
 		}
-
-		//fixVel =  smooth(fixVel, 0.001, 0.001, 0.0000001);
 		return fixVel;
-
 	}
 
-
 	/**
-	 * This method calculates the integral of the Smooth Velocity term and compares it to the Integral of the
-	 * original velocity term. In essence we are comparing the total distance by the original velocity path and
-	 * the smooth velocity path to ensure that as we modify the smooth Velocity it still covers the same distance
-	 * as was intended by the original velocity path.
-	 * <p>
-	 * BigO: Order N
+	 * This method calculates the integral of the smooth velocity term and compares it to the integral of the
+	 * original velocity term. This makes sure that the distance traveled is the same between the two.
 	 *
-	 * @param origVelocity
-	 * @param smoothVelocity
-	 * @return
+	 * @param origVelocity Original veloicty array
+	 * @param smoothVelocity Array after smoothing
+	 * @return Amount of error between the two
 	 */
 	private double[] errorSum(double[][] origVelocity, double[][] smoothVelocity) {
 		//copy vectors
@@ -320,41 +278,32 @@ public class FalconPathPlanner {
 		double[] tempSmoothDist = new double[smoothVelocity.length];
 		double[] difference = new double[smoothVelocity.length];
 
-
+		//Get how long between points
 		double timeStep = origVelocity[1][0] - origVelocity[0][0];
 
 		//copy first elements
 		tempOrigDist[0] = origVelocity[0][1];
 		tempSmoothDist[0] = smoothVelocity[0][1];
 
-
-		//calculate difference
+		//calculate and return difference
 		for (int i = 1; i < origVelocity.length; i++) {
 			tempOrigDist[i] = origVelocity[i][1] * timeStep + tempOrigDist[i - 1];
 			tempSmoothDist[i] = smoothVelocity[i][1] * timeStep + tempSmoothDist[i - 1];
-
 			difference[i] = tempSmoothDist[i] - tempOrigDist[i];
-
 		}
-
 		return difference;
 	}
 
 	/**
-	 * This method calculates the optimal parameters for determining what amount of nodes to inject into the path
-	 * to meet the time restraint. This approach uses an iterative process to inject and smooth, yielding more desirable
-	 * results for the final smooth path.
-	 * <p>
-	 * Big O: Constant Time
+	 * Calculates the optimal parameters for determining what amount of nodes to inject into the path
+	 * to meet the time restraint.
 	 *
-	 * @param numNodeOnlyPoints
-	 * @param maxTimeToComplete
-	 * @param timeStep
+	 * @param numNodeOnlyPoints How many waypoints we need to travel
+	 * @param maxTimeToComplete How much time we have to move(s)
+	 * @param timeStep How much time in each command loop
 	 */
 	public int[] injectionCounter2Steps(double numNodeOnlyPoints, double maxTimeToComplete, double timeStep) {
-		int first = 0;
-		int second = 0;
-		int third = 0;
+		int first = 0, second = 0, third = 0;
 
 		double oldPointsTotal = 0;
 
@@ -413,8 +362,6 @@ public class FalconPathPlanner {
 
 	/**
 	 * Calculates the left and right wheel paths based on robot track width
-	 * <p>
-	 * Big O: 2N
 	 *
 	 * @param smoothPath      - center smooth path of robot
 	 * @param robotTrackWidth - width between left and right wheels of robot of skid steer chassis.
