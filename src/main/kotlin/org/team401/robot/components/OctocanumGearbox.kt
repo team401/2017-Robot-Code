@@ -12,7 +12,9 @@ class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
 
     init {
         cimMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        cimMotor.isSafetyEnabled = false
         proMotor.changeControlMode(CANTalon.TalonControlMode.Follower)
+        proMotor.isSafetyEnabled = false
         proMotor.set(cimMotor.deviceID.toDouble())
     }
 

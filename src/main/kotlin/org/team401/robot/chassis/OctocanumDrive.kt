@@ -51,53 +51,32 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param rightYThrottle Right joysticks getRoll() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, rightYThrottle: Double, rightXThrottle: Double) {
-        if (driveMode == DriveMode.TRACTION) {
-            // also just direct drive
-            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftYThrottle)
-            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(leftYThrottle)
-            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(-rightYThrottle)
-            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(-rightYThrottle)
-        } else {
-            // drive with orientation to the field
-            // TODO add gyro code
+        // drive with orientation to the field
+        // TODO add gyro code
 
-            // map the input speeds to match the driver's orientation to the field
-            val speed = MathUtils.rotateVector(rightXThrottle, -rightYThrottle, 0.0)
+        // map the input speeds to match the driver's orientation to the field
+        val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
 
-            val x = speed[0]
-            val y = speed[1]
-            val rot = leftXThrottle
+        val x: Double
+        if (driveMode == DriveMode.MECHANUM)
+            x = speed[0]
+        else
+            x = 0.0
+        val y = speed[1]
+        val rot = rightXThrottle
 
-            val wheelSpeeds = DoubleArray(4)
-            wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y + rot
-            wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
-            wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
-            wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
+        val wheelSpeeds = DoubleArray(4)
+        wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y + rot
+        wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
+        wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
+        wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
 
-            MathUtils.normalize(wheelSpeeds)
-            // MathUtils.scale(wheelSpeeds, 1.0) scaling to 1 does nothing!
-            gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-            gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-            gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-            gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
-        }
-    }
-
-    /**
-     * Takes in joystick inputs from one joystick to drive the chassis, similar to arcade
-     * drive. Only works in DriveTrain.MECHANUM mode
-     *
-     * @param leftYThrottle Left joystick's getPitch() value
-     * @param leftXThrottle Left joystick's getRoll() value
-     * @param leftZThrottle Left joystick's getYaw() value
-     */
-    fun drive(leftYThrottle: Double, leftXThrottle: Double, leftZThrottle: Double) {
-        if (driveMode == DriveMode.TRACTION)
-            return println("User tried to use drive(x, y, z) while in DriveMode.TRACTION!")
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(leftXThrottle + leftYThrottle + leftZThrottle)
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-leftXThrottle + leftYThrottle + leftZThrottle)
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(-leftXThrottle + leftYThrottle - leftZThrottle)
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(leftXThrottle + leftYThrottle - leftZThrottle)
+        MathUtils.normalize(wheelSpeeds)
+        // MathUtils.scale(wheelSpeeds, 1.0) scaling to 1 does nothing!
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
     }
 
     /**
