@@ -12,9 +12,7 @@ public class NamedPath {
 
 	//invert defaults to false
 	public NamedPath(String name, double[][] arr){
-		this.name = name;
-		this.arr = arr;
-		invert = false;
+		this(name, false, arr);
 	}
 
 	/**
