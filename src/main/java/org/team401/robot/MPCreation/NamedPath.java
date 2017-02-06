@@ -8,15 +8,25 @@ public class NamedPath {
 	//Data to store
 	private double[][] arr;
 	private String name;
+	private boolean invert;
+
+	//invert defaults to false
+	public NamedPath(String name, double[][] arr){
+		this.name = name;
+		this.arr = arr;
+		invert = false;
+	}
 
 	/**
 	 * Constructor
 	 * @param name Instance data
+	 * @param invert Instance data
 	 * @param arr Instance data
 	 */
-	public NamedPath(String name, double[][] arr){
+	public NamedPath(String name,  boolean invert, double[][] arr){
 		this.name = name;
 		this.arr = arr;
+		this.invert = invert;
 	}
 
 	/**
@@ -28,6 +38,9 @@ public class NamedPath {
 	public double[][] getArr(){
 		return arr;
 	}
+	public boolean getInvert(){
+		return invert;
+	}
 
 	/**
 	 * Setters
@@ -37,5 +50,8 @@ public class NamedPath {
 	}
 	public void setArr(double[][] arr){
 		this.arr = arr;
+	}
+	public void setInvert(boolean invert){
+		this.invert = invert;
 	}
 }

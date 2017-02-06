@@ -273,7 +273,7 @@
     </library>
     <library name="Gradle: thirdparty.frc.ctre:Toolsuite-Java:4.4.1.9">
       <CLASSES>
-        <root url="jar://$USER_HOME$/wpilib/java/lib/CTRLib.jar!/" />
+        <root url="jar://$USER_HOME$/wpilib/user/java/lib/CTRLib.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
