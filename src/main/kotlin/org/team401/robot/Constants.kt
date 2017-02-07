@@ -18,8 +18,8 @@ object Constants {
     const val PCM                   = 12
     // can device ids for the motor controllers
     // CIM is master, PRO is slave
-    const val CIM_FRONT_LEFT        = 3
-    const val PRO_FRONT_LEFT        = 4
+    const val CIM_FRONT_LEFT        = 4
+    const val PRO_FRONT_LEFT        = 3
     const val CIM_FRONT_RIGHT       = 8
     const val PRO_FRONT_RIGHT       = 7
     const val CIM_REAR_LEFT         = 2

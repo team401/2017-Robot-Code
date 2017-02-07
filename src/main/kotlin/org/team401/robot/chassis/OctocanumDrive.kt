@@ -1,6 +1,7 @@
 package org.team401.robot.chassis
 
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.robot.MathUtils
 import org.team401.robot.components.OctocanumGearbox
@@ -8,7 +9,7 @@ import java.util.*
 
 /**
  * Drivetrain wrapper class for the octocanum chassis, supports shifting
- * between drive modes (DriveMode.TRACTION and DriveMode.MECHANUM).
+ * between drive modes (DriveMode.TRACTION and DriveMode.MECANUM).
  *
  * @param frontLeftGearbox Reference to the gearbox with talons 2 and 3
  * @param frontRightGearbox Reference to the gearbox with talons 4 and 5
@@ -58,7 +59,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
 
         val x: Double
-        if (driveMode == DriveMode.MECHANUM)
+        if (driveMode == DriveMode.MECANUM)
             x = speed[0]
         else
             x = 0.0
@@ -77,6 +78,9 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
         gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
         gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+
+        SmartDashboard.putNumber("Left", gearboxes[0].cimMotor.encVelocity.toDouble())
+        SmartDashboard.putNumber("right", gearboxes[2].cimMotor.encVelocity.toDouble())
     }
 
     /**
@@ -84,7 +88,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      */
     fun shift() {
         if (driveMode == DriveMode.TRACTION)
-            shift(DriveMode.MECHANUM)
+            shift(DriveMode.MECANUM)
         else
             shift(DriveMode.TRACTION)
     }
@@ -96,12 +100,12 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param driveMode The DriveMode to switch to
      */
     fun shift(driveMode: DriveMode) {
-        if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECHANUM) {
+        if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECANUM) {
             shifter.set(false)
             this.driveMode = DriveMode.TRACTION
-        } else if (driveMode == DriveMode.MECHANUM && this.driveMode == DriveMode.TRACTION) {
+        } else if (driveMode == DriveMode.MECANUM && this.driveMode == DriveMode.TRACTION) {
             shifter.set(true)
-            this.driveMode = DriveMode.MECHANUM
+            this.driveMode = DriveMode.MECANUM
         }
     }
 
@@ -110,6 +114,6 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      */
     enum class DriveMode {
         TRACTION,
-        MECHANUM
+        MECANUM
     }
 }
