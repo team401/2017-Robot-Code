@@ -1,8 +1,11 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
@@ -28,7 +31,8 @@ public class Robot extends IterativeRobot {
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
         OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
-        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER));
+        Gyro g = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
@@ -64,6 +68,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopInit() {
         Strongback.restart();
+        octocanumDrive.getGyro().reset();
     }
 
     @Override

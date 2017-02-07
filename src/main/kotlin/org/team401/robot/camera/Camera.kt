@@ -1,6 +1,5 @@
 package org.team401.robot.camera
 
-import edu.wpi.cscore.CvSink
 import edu.wpi.cscore.UsbCamera
 import edu.wpi.first.wpilibj.CameraServer
 import org.team401.robot.Constants

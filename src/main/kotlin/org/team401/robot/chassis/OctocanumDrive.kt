@@ -1,6 +1,7 @@
 package org.team401.robot.chassis
 
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.robot.MathUtils
@@ -20,7 +21,8 @@ import java.util.*
  * @version 1/15/17
  */
 class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: OctocanumGearbox,
-                     rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox, val shifter: Solenoid) {
+                     rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox,
+                     val shifter: Solenoid, val gyro: Gyro) {
     /**
      * Immutable list of gearboxes, will always have a size of 4
      */
@@ -52,11 +54,10 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param rightYThrottle Right joysticks getRoll() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, rightYThrottle: Double, rightXThrottle: Double) {
-        // drive with orientation to the field
-        // TODO add gyro code
-
         // map the input speeds to match the driver's orientation to the field
-        val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
+        val speed = MathUtils.rotateVector(leftXThrottle,
+                                        -leftYThrottle,
+                                        if (driveMode == DriveMode.MECANUM) gyro.angle else 0.0)
 
         val x: Double
         if (driveMode == DriveMode.MECANUM)
@@ -73,14 +74,10 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
 
         MathUtils.normalize(wheelSpeeds)
-        // MathUtils.scale(wheelSpeeds, 1.0) scaling to 1 does nothing!
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
         gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
         gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
         gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
-
-        SmartDashboard.putNumber("Left", gearboxes[0].cimMotor.encVelocity.toDouble())
-        SmartDashboard.putNumber("right", gearboxes[2].cimMotor.encVelocity.toDouble())
     }
 
     /**
