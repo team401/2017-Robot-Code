@@ -557,12 +557,16 @@ public class FalconPathPlanner {
 		return result;
 	}
 
-	/**
-	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
-	 */
+	//ratio defaults to the result of getRatio
 	private double[][][] mecanumProfile(){
 		return mecanumProfile(getRatio());//Default to the ratio defined above
 	}
+
+	/**
+	 *
+	 * @param ratio
+	 * @return
+	 */
 	private double[][][] mecanumProfile(double ratio) {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath),

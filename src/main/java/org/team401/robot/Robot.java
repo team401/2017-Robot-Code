@@ -91,11 +91,20 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Front Right Speed", drive.getGearboxes().get(1).getCimMotor().getEncVelocity());
 		SmartDashboard.putNumber("Rear Left Speed", drive.getGearboxes().get(2).getCimMotor().getEncVelocity());
 		SmartDashboard.putNumber("Rear Right Speed", drive.getGearboxes().get(3).getCimMotor().getEncVelocity());
+
+
+
+		//(100% * 1023)/max speed in native units per 100ms = F gain
 	}
 
 	@Override
 	public void disabledPeriodic() {//Called when the robot is on but inactive
 		drive.drive(0, 0, 0, 0);
 	}
+
+	public static double FGain(double maxSpeed){
+		return 1023/maxSpeed;
+	}
+
 
 }
