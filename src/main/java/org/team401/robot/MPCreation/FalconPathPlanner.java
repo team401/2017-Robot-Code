@@ -662,7 +662,7 @@ public class FalconPathPlanner {
 		}
 	}
 
-	//prefix and suffix default to empty strings(prefix first)
+	//prefix and suffix default to empty strings(suffix first)
 	public void exportCSV(){
 		exportCSV("");
 	}
