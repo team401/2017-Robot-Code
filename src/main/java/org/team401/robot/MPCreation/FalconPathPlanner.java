@@ -34,10 +34,7 @@ public class FalconPathPlanner {
 		smoothRightVelocity,
 		smoothLeftVelocity;
 
-	//Accumulated heading
-	public double[][] heading;
-
-	//Various doubles.  UPDATE THESE COMMENTS AS YOU MOVE THROUGH THE CODE
+	//Various doubles.
 	public double numFinalPoints,//How many points are in the smooth paths/velocities
 		pathAlpha,//How much the smoothing sticks to original waypoints
 		pathBeta,//How aggressive the smoothing is
@@ -223,7 +220,6 @@ public class FalconPathPlanner {
 		//set first to zero
 		velocity[0][0] = 0;
 		velocity[0][1] = 0;
-		heading[0][1] = 0;
 
 		for (int i = 1; i < smoothPath.length; i++) {
 			//Calculate horizontal and vertical velocities separately, then merge into overall
@@ -233,7 +229,6 @@ public class FalconPathPlanner {
 
 			//Add time since last entry
 			velocity[i][0] = velocity[i - 1][0] + timeStep;
-			heading[i][0] = heading[i - 1][0] + timeStep;
 		}
 		return velocity;
 	}
@@ -302,27 +297,19 @@ public class FalconPathPlanner {
 	 * @param maxTimeToComplete How much time we have to move(s)
 	 * @param timeStep How much time in each command loop
 	 */
-	public int[] injectionCounter2Steps(double numNodeOnlyPoints, double maxTimeToComplete, double timeStep) {
-		int first = 0, second = 0, third = 0;
-
-		double oldPointsTotal = 0;
-
+	private int[] injectionCounter2Steps(double numNodeOnlyPoints, double maxTimeToComplete, double timeStep) {
+		//reset point count and create process variables
 		numFinalPoints = 0;
-
+		int first = 0, second = 0, third = 0;
+		double oldPointsTotal = 0, totalPoints = maxTimeToComplete / timeStep, pointsFirst, pointsTotal;
 		int[] ret;
 
-		double totalPoints = maxTimeToComplete / timeStep;
-
+		//I can't be bothered to read this part of Harrilal's code, and it seems to work right, so too bad for comment-readers.
 		if (totalPoints < 100) {
-			double pointsFirst;
-			double pointsTotal;
-
-
 			for (int i = 4; i <= 6; i++)
 				for (int j = 1; j <= 8; j++) {
 					pointsFirst = i * (numNodeOnlyPoints - 1) + numNodeOnlyPoints;
 					pointsTotal = (j * (pointsFirst - 1) + pointsFirst);
-
 					if (pointsTotal <= totalPoints && pointsTotal > oldPointsTotal) {
 						first = i;
 						second = j;
@@ -330,14 +317,8 @@ public class FalconPathPlanner {
 						oldPointsTotal = pointsTotal;
 					}
 				}
-
-			ret = new int[]{first, second, third};
 		} else {
-
-			double pointsFirst,
-				pointsSecond,
-				pointsTotal;
-
+			double pointsSecond;
 			for (int i = 1; i <= 5; i++)
 				for (int j = 1; j <= 8; j++)
 					for (int k = 1; k < 8; k++) {
@@ -352,11 +333,8 @@ public class FalconPathPlanner {
 							numFinalPoints = pointsTotal;
 						}
 					}
-
-			ret = new int[]{first, second, third};
 		}
-
-
+		ret = new int[]{first, second, third};
 		return ret;
 	}
 
@@ -364,128 +342,101 @@ public class FalconPathPlanner {
 	 * Calculates the left and right wheel paths based on robot track width
 	 *
 	 * @param smoothPath      - center smooth path of robot
-	 * @param robotTrackWidth - width between left and right wheels of robot of skid steer chassis.
+	 * @param robotTrackWidth - width between left and right wheels of robot's chassis.
 	 */
-	public void leftRight(double[][] smoothPath, double robotTrackWidth) {
-
+	private void leftRight(double[][] smoothPath, double robotTrackWidth) {
+		//Create result arrays and storage for how much the robot turns
 		double[][] left = new double[smoothPath.length][2];
 		double[][] right = new double[smoothPath.length][2];
+		double[] gradient = new double[smoothPath.length];
 
-		double[][] gradient = new double[smoothPath.length][2];
-
+		//Construct the direction array
 		for (int i = 0; i < smoothPath.length - 1; i++)
-			gradient[i][1] = Math.atan2(smoothPath[i + 1][1] - smoothPath[i][1], smoothPath[i + 1][0] - smoothPath[i][0]);
-
-		gradient[gradient.length - 1][1] = gradient[gradient.length - 2][1];
-
+			gradient[i] = Math.atan2(smoothPath[i + 1][1] - smoothPath[i][1], smoothPath[i + 1][0] - smoothPath[i][0]);
+		gradient[gradient.length - 1] = gradient[gradient.length - 2];
 
 		for (int i = 0; i < gradient.length; i++) {
-			left[i][0] = (robotTrackWidth / 2 * Math.cos(gradient[i][1] + Math.PI / 2)) + smoothPath[i][0];
-			left[i][1] = (robotTrackWidth / 2 * Math.sin(gradient[i][1] + Math.PI / 2)) + smoothPath[i][1];
+			//Beef of processing.  Transforms the left and right x/y coords.
+			left[i][0] = robotTrackWidth / 2 * Math.cos(gradient[i] + Math.PI / 2) + smoothPath[i][0];
+			left[i][1] = robotTrackWidth / 2 * Math.sin(gradient[i] + Math.PI / 2) + smoothPath[i][1];
+			right[i][0] = robotTrackWidth / 2 * Math.cos(gradient[i] - Math.PI / 2) + smoothPath[i][0];
+			right[i][1] = robotTrackWidth / 2 * Math.sin(gradient[i] - Math.PI / 2) + smoothPath[i][1];
 
-			right[i][0] = robotTrackWidth / 2 * Math.cos(gradient[i][1] - Math.PI / 2) + smoothPath[i][0];
-			right[i][1] = robotTrackWidth / 2 * Math.sin(gradient[i][1] - Math.PI / 2) + smoothPath[i][1];
+			//convert to degrees 0 to 360 where 0 degrees is positive x-axis
+			double deg = Math.toDegrees(gradient[i]);
+			gradient[i] = deg;
 
-			//convert to degrees 0 to 360 where 0 degrees is +X - axis, accumulated to aline with WPI sensor
-			double deg = Math.toDegrees(gradient[i][1]);
-
-			gradient[i][1] = deg;
-
+			//Correct for excess angle change
 			if (i > 0) {
-				if ((deg - gradient[i - 1][1]) > 180)
-					gradient[i][1] = -360 + deg;
-
-				if ((deg - gradient[i - 1][1]) < -180)
-					gradient[i][1] = 360 + deg;
+				if ((deg - gradient[i - 1]) > 180)
+					gradient[i] = -360 + deg;
+				if ((deg - gradient[i - 1]) < -180)
+					gradient[i] = 360 + deg;
 			}
-
-
 		}
-
-		heading = gradient;
+		//Push results to path vars
 		leftPath = left;
 		rightPath = right;
 	}
 
 	/**
-	 * Returns the first column of a 2D array of doubles
+	 * Gets the X-values in a path
 	 *
 	 * @param arr 2D array of doubles
-	 * @return array of doubles representing the 1st column of the initial parameter
+	 * @return First column of original parameter
 	 */
-
 	public static double[] getXVector(double[][] arr) {
+		//Simple copy of every value in column 0
 		double[] temp = new double[arr.length];
-
 		for (int i = 0; i < temp.length; i++)
 			temp[i] = arr[i][0];
-
 		return temp;
 	}
 
 	/**
-	 * Returns the second column of a 2D array of doubles
+	 * Gets the X-values in a path
 	 *
 	 * @param arr 2D array of doubles
-	 * @return array of doubles representing the 1st column of the initial parameter
+	 * @return Second column of original parameter
 	 */
 	public static double[] getYVector(double[][] arr) {
+		//Simple copy of every value in column 1
 		double[] temp = new double[arr.length];
-
 		for (int i = 0; i < temp.length; i++)
 			temp[i] = arr[i][1];
-
 		return temp;
 	}
 
+	/**
+	 * Transposes a 2D array
+	 *
+	 * @param arr Array to transpose
+	 * @return Array, but first and second subscripts are switched
+	 */
 	public static double[][] transposeVector(double[][] arr) {
+		//Copies each value, but j and i are swapped inside the loop
 		double[][] temp = new double[arr[0].length][arr.length];
-
 		for (int i = 0; i < temp.length; i++)
 			for (int j = 0; j < temp[i].length; j++)
 				temp[i][j] = arr[j][i];
-
 		return temp;
 	}
 
-	public void setPathAlpha(double alpha) {
-		pathAlpha = alpha;
-	}
-
-	public void setPathBeta(double beta) {
-		pathBeta = beta;
-	}
-
-	public void setPathTolerance(double tolerance) {
-		pathTolerance = tolerance;
-	}
-
-	/**
-	 * This code will calculate a smooth path based on the program parameters. If the user doesn't set any parameters, the will use the defaults optimized for most cases. The results will be saved into the corresponding
-	 * class members. The user can then access .smoothPath, .leftPath, .rightPath, .smoothCenterVelocity, .smoothRightVelocity, .smoothLeftVelocity as needed.
-	 * <p>
-	 * After calling this method, the user only needs to pass .smoothRightVelocity[1], .smoothLeftVelocity[1] to the corresponding speed controllers on the Robot, and step through each setPoint.
-	 *
-	 * @param totalTime       - time the user wishes to complete the path in seconds. (this is the maximum amount of time the robot is allowed to take to traverse the path.)
-	 * @param timeStep        - the frequency at which the robot controller is running on the robot.
-	 * @param robotTrackWidth - distance between left and right side wheels of a skid steer chassis. Known as the track width.
-	 */
+	//invert defaults to false
 	public void calculate(double totalTime, double timeStep, double robotTrackWidth) {
 		calculate(totalTime, timeStep, robotTrackWidth, false);
 	}
 
-	public void calculate(double totalTime, double timeStep, double robotTrackWidth, boolean invert) {
-		/**
-		 * pseudo code
-		 *
-		 * 1. Reduce input waypoints to only essential (direction changing) node points
-		 * 2. Calculate how many total datapoints we need to satisfy the controller for "playback"
-		 * 3. Simultaneously inject and smooth the path until we end up with a smooth path with required number
-		 *    of datapoints, and which follows the waypoint path.
-		 * 4. Calculate left and right wheel paths by calculating parallel points at each datapoint
-		 */
-
-
+	/**
+	 * Calls other methods to make a smooth path based on the program parameters(with defaulting).
+	 * Results are saved in public variables(yes, bad java practice, but we aren't doing anything stupid with it in 2017 robot code).
+	 * For tank drive, simply pass .smoothRightVelocity[1] and .smoothLeftVelocity[1] to the corresponding speed controllers.
+	 *
+	 * @param totalTime time the user wishes to complete the path in seconds
+	 * @param timeStep the frequency at which the robot controller is running on the robot
+	 * @param robotTrackWidth distance between left and right side wheels of the chassis for tank drive
+	 */
+	public void calculate(double totalTime, double timeStep, double robotTrackWidth, boolean invert){
 		//first find only direction changing nodes
 		nodeOnlyPath = nodeOnlyWayPoints(origPath);
 
@@ -506,6 +457,7 @@ public class FalconPathPlanner {
 		//calculate left and right path based on center path
 		leftRight(smoothPath, robotTrackWidth);
 
+		//Original velocities calculated for fixing
 		origCenterVelocity = velocity(smoothPath, timeStep);
 		origLeftVelocity = velocity(leftPath, timeStep);
 		origRightVelocity = velocity(rightPath, timeStep);
@@ -520,7 +472,7 @@ public class FalconPathPlanner {
 		smoothLeftVelocity[smoothLeftVelocity.length - 1][1] = 0.0;
 		smoothRightVelocity[smoothRightVelocity.length - 1][1] = 0.0;
 
-		//Smooth velocity with zero final V
+		//Smooth velocity with zero at end
 		smoothCenterVelocity = smooth(smoothCenterVelocity, velocityAlpha, velocityBeta, velocityTolerance);
 		smoothLeftVelocity = smooth(smoothLeftVelocity, velocityAlpha, velocityBeta, velocityTolerance);
 		smoothRightVelocity = smooth(smoothRightVelocity, velocityAlpha, velocityBeta, velocityTolerance);
@@ -538,47 +490,65 @@ public class FalconPathPlanner {
 		}
 	}
 
-	public double[][] invertVelocity(double[][] vel) {
-		double[][] result = doubleArrayCopy(vel);
-		for (int i = 0; i < result.length; i++)
-			result[i][1] = result[i][1] * -1;
-		return result;
-	}
-
 	/**
-	 * Gives the data stored here in a usable format for the example Talon SRX motion profile project.
+	 * Inverts the velocities of a path so that the robot will know to go backwards in it
 	 *
-	 * @param left  Boolean determining whether to return the motion profile for left or right side of robot.
-	 * @param ratio Double used to transform feet/second into RPM
-	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
+	 * @param vel Original velocity array
+	 * @return All velocities are *='d by -1
 	 */
-	private double[][] tankProfile(boolean left, double ratio) {
-		double[][] source = left ? smoothLeftVelocity : smoothRightVelocity,//Switch depending on wheel
-				result = new double[source.length][3],
-				wheel = left ? leftPath : rightPath;
-
-		double dist = 0, x, y;//Assume encoder position is 0 at start.  If it isn't, each point can simply be +='d at runtime.
-
-		result[0] = new double[]{0, source[0][1], source[0][0]*1000};
-
-		for (int i = 1; i < source.length; i++) {
-			result[i] = new double[]{dist, source[i][1] * ratio, (source[i][0] - source[i - 1][0])*1000};
-
-			x = wheel[i][0] - wheel[i - 1][0];//Get dX and dY
-			y = wheel[i][1] - wheel[i - 1][1];
-			dist += ratio * Math.sqrt(Math.abs(x * x + y * y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
-		}
-		roundall(result);
+	private double[][] invertVelocity(double[][] vel) {
+		double[][] result = doubleArrayCopy(vel);
+		for (double[] x:result)
+			x[1] *= -1;
 		return result;
 	}
 
+	//ratio defaults to the result of getRatio
 	private double[][] tankProfile(boolean left){
 		return tankProfile(left, getRatio());
 	}
 
-	public double getRatio(){
+	/**
+	 * Transforms the tank drive data to a readable format by CTRE's example project and our 2017 code.
+	 *
+	 * @param left  Do we return the motion profile for left or right side of robot?
+	 * @param ratio Transforms feet/second into RPM
+	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
+	 */
+	private double[][] tankProfile(boolean left, double ratio) {
+		//Declare sources and result.  Switch depending on wheel.
+		double[][] velocity = left ? smoothLeftVelocity : smoothRightVelocity,
+				result = new double[velocity.length][3],
+				path = left ? leftPath : rightPath;
+
+		//Encoder should be 0 at start.  If it isn't, reset the encoder when starting each MP.
+		double dist = 0, x, y;
+
+		//First point is zeroed
+		result[0] = new double[]{0, velocity[0][1], velocity[0][0]*1000};
+
+		//Construct each entry in the result
+		for (int i = 1; i < velocity.length; i++) {
+			result[i] = new double[]{dist, velocity[i][1] * ratio, (velocity[i][0] - velocity[i - 1][0])*1000};
+
+			//Increment distance through pythag
+			x = path[i][0] - path[i - 1][0];
+			y = path[i][1] - path[i - 1][1];
+			dist += ratio * Math.sqrt(Math.abs(x * x + y * y));//Add distance between last and current points using Pythag.  Math.abs ensures no errors.
+		}
+
+		//Round times to make saved data smaller
+		roundall(result);
+		return result;
+	}
+
+	/**
+	 * Stores in an easily modifiable manner the robot's gear ratios so we can convert units.
+	 * @return Single scale factor between feet traveled and rotations
+	 */
+	private double getRatio(){
 		double[] ratios = new double[]{
-				3.0 / Math.PI,//Reciprocal of circumference, in FEET
+				3.0 / Math.PI,//Reciprocal of wheel circumference(feet)
 				mecanum ? 1.0 : 0.5//Divide by 2 if in traction drive
 		};
 		double result = 1;
@@ -586,6 +556,7 @@ public class FalconPathPlanner {
 			result*=x;
 		return result;
 	}
+
 	/**
 	 * @return Array of 4 motion profiles that control Front Left, Front Right, Rear Left, and Rear Right wheels respectively.
 	 */
