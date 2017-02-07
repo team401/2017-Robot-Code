@@ -513,7 +513,7 @@ public class FalconPathPlanner {
 	 *
 	 * @param left  Do we return the motion profile for left or right side of robot?
 	 * @param ratio Transforms feet/second into RPM
-	 * @return Array of array of 3 doubles: Position(rotations), Velocity(RPM), Duration(ms)
+	 * @return 2D array.  3 columns: Position(rotations), Velocity(RPM), Duration(ms)
 	 */
 	private double[][] tankProfile(boolean left, double ratio) {
 		//Declare sources and result.  Switch depending on wheel.
@@ -563,59 +563,91 @@ public class FalconPathPlanner {
 	}
 
 	/**
+	 * Transforms data into 4 motion profiles, each for a different mecanum wheel using polar drive.
 	 *
-	 * @param ratio
-	 * @return
+	 * @param ratio Transforms feet/second into RPM
+	 * @return Front left, front right, rear left, and rear right motion profiles in the same format as tankProfile().
 	 */
 	private double[][][] mecanumProfile(double ratio) {
+		//Declare sources and result.
 		double[][][] result = new double[4][(int) numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath),
 			vel = doubleArrayCopy(smoothCenterVelocity);
 
 		for (int h = 0; h < 4; h++) {
+			//For each wheel, zero distance traveled, first point data, time interval, and final velocity.
 			double dist = 0.0;
 			result[h][0] = new double[3];
-			double lastVel = 0.0,
+			double velocity = 0.0,
 				interval = 0.0;
+
+			//For each entry in the profile, produce:
 			for (int i = 1; i < numFinalPoints; i++) {
-				dist += lastVel*interval / 60;
-				lastVel = polarMecanum(vel[i][1]*ratio, Math.atan(path[i][0] / path[i][1]), path[i][2])[h];
+				//the total distance traveled by that point(rotations)
+				dist += velocity*interval / 60;
+
+				//the current velocity(RPM)
+				velocity = polarMecanum(vel[i][1]*ratio, Math.atan(path[i][0] / path[i][1]), path[i][2])[h];
+
+				//and change in time(s)
 				interval = (vel[i][0]-vel[i-1][0]);
+
+				//pack it in for export
 				result[h][i] = new double[]{dist,
-					lastVel,
+					velocity,
 					interval*1000.0
 				};
 			}
 		}
+		//Round times to make saved data smaller
+		for(double[][] u:result)
+			roundall(u);
 		return result;
 	}
 
 	/**
-	 * Taken straight from the Strongback source code
+	 * Modified slightly from the Strongback source code.
+	 *
+	 * @param mag The magnitude to move at
+	 * @param dir The direction the robot will move in
+	 * @param rot What direction the robot is trying to face
+	 * @return Array of each wheel's output
 	 */
 	private double[] polarMecanum(double mag, double dir, double rot) {
 		// Normalized for full power along the Cartesian axes.
 		mag = Values.symmetricLimiter(0.02, 1.0).applyAsDouble(mag) * Math.sqrt(2.0);
+
 		// The rollers are at 45 degree angles.
 		double dirInRad = Math.toRadians(dir + 45.0);
 		double cosD = Math.cos(dirInRad);
 		double sinD = Math.sin(dirInRad);
 
-		double wheelSpeeds[] = new double[]{
+		//Return the vectors for each wheel
+		return new double[]{
 				(sinD * mag + rot),//LEFT FRONT
 				(cosD * mag - rot),//RIGHT FRONT
 				(cosD * mag + rot),//LEFT REAR
 				(sinD * mag - rot)//RIGHT REAR
 		};
-		return wheelSpeeds;
 	}
 
-	private static void exportCSV(String fileName, double[][] arr){
+	/**
+	 * Creates and saves a .csv file containing the input.
+	 *
+	 * @param fileName Name of the file
+	 * @param arr Array to be saved
+	 */
+	private static void buildCSV(String fileName, double[][] arr){
+		//Auto-add file extension
+		fileName = fileName.concat(".csv");
 		try {
 			PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
+
+			//I could probably just concatenate, such as "str = str.concat(v + ',')"
 			StringBuilder sb = new StringBuilder();
 			for (double[] u : arr) {
 				for (double v : u) {
+					//In case you haven't seen a .csv before, the values are separated by commas.  It's a .CommaSeparatedValue file.
 					sb.append(v);
 					sb.append(',');
 				}
@@ -625,34 +657,48 @@ public class FalconPathPlanner {
 			pw.write(sb.toString());
 			pw.close();
 		}catch(FileNotFoundException e){
+			//Error message.  Probably not the only possible cause, but it's the only one I've encountered.
 			System.out.println("File \""+fileName+".csv\" is being used by another program!  Close the other program and restart Motion Profile Generator.");
 		}
 	}
+
+	//prefix and suffix default to empty strings(prefix first)
 	public void exportCSV(){
 		exportCSV("");
 	}
 	public void exportCSV(String prefix){
 		exportCSV(prefix, "");
 	}
+
+	/**
+	 * Exports the data from this path planner as 6 .csv files, all fully capable of being used as motion profile instructions.
+	 *
+	 * @param prefix Prefix to add to the start of the filename
+	 * @param suffix Suffix to add to the end of the filename
+	 */
 	public void exportCSV(String prefix, String suffix){
 		if(mecanum) {
+			//Export 4 wheels if in mecanum drive.
 			double[][][] temp = mecanumProfile();
-
-			//Sometimes we get floating-point errors with the time column, so just round to nearest millisecond.
-			for(double[][] u:temp)
-				roundall(u);
-
-			exportCSV(prefix+" FL"+suffix, temp[0]);
-			exportCSV(prefix+" FR"+suffix, temp[1]);
-			exportCSV(prefix+" RL"+suffix, temp[2]);
-			exportCSV(prefix+" RR"+suffix, temp[3]);
+			buildCSV(prefix+" FL"+suffix, temp[0]);
+			buildCSV(prefix+" FR"+suffix, temp[1]);
+			buildCSV(prefix+" RL"+suffix, temp[2]);
+			buildCSV(prefix+" RR"+suffix, temp[3]);
 		}else {
-			exportCSV(prefix+" L"+suffix, tankProfile(true));
-			exportCSV(prefix+" R"+suffix, tankProfile(false));
+			//Each side can use the same profile in tank drive.
+			buildCSV(prefix+" L"+suffix, tankProfile(true));
+			buildCSV(prefix+" R"+suffix, tankProfile(false));
 		}
 	}
+
+	/**
+	 * Rounds every value in the third column of a 2D array.
+	 *
+	 * @param x The array to round
+	 */
 	private void roundall(double[][] x) {
-			for(double[] v:x)
-				v[2] = Math.round(v[2]);
+		//This method really doesn't need to exist.  I guess I just felt like extra work.
+		for(double[] v:x)
+			v[2] = Math.round(v[2]);
 	}
 }

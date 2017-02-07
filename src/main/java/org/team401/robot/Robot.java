@@ -86,15 +86,23 @@ public class Robot extends IterativeRobot {
 		//Drive according to joysticks
 		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
 
-		//Send encoder data to SD to calculate F-Gain
-		SmartDashboard.putNumber("Front Left Speed", drive.getGearboxes().get(0).getCimMotor().getEncVelocity());
-		SmartDashboard.putNumber("Front Right Speed", drive.getGearboxes().get(1).getCimMotor().getEncVelocity());
-		SmartDashboard.putNumber("Rear Left Speed", drive.getGearboxes().get(2).getCimMotor().getEncVelocity());
-		SmartDashboard.putNumber("Rear Right Speed", drive.getGearboxes().get(3).getCimMotor().getEncVelocity());
+		//Get encoder data
+		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
+			frs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
+			rls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
+			rrs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity();
 
+		//Send encoder data to SD to manually calculate F-Gain if desired
+		SmartDashboard.putNumber("Front Left Speed", fls);
+		SmartDashboard.putNumber("Front Right Speed", frs);
+		SmartDashboard.putNumber("Rear Left Speed", rls);
+		SmartDashboard.putNumber("Rear Right Speed", rrs);
 
-
-		//(100% * 1023)/max speed in native units per 100ms = F gain
+		//Send auto-calculated F-gain because mashing calculator buttons is boring
+		SmartDashboard.putNumber("Front Left F-Gain", fGain(fls));
+		SmartDashboard.putNumber("Front Right F-Gain", fGain(frs));
+		SmartDashboard.putNumber("Rear Left F-Gain", fGain(rls));
+		SmartDashboard.putNumber("Rear Right F-Gain", fGain(rrs));
 	}
 
 	@Override
@@ -102,9 +110,20 @@ public class Robot extends IterativeRobot {
 		drive.drive(0, 0, 0, 0);
 	}
 
-	public static double FGain(double maxSpeed){
-		return 1023/maxSpeed;
+	//percentNeeded defaults to 1.0
+	private static double fGain(double maxSpeed){
+		return fGain(maxSpeed, 1.0);
 	}
 
-
+	/**
+	 * Calculates the Talons' F-gain based on Page 85 of:
+	 * http://www.ctr-electronics.com/downloads/pdf/Talon%20SRX%20Software%20Reference%20Manual.pdf
+	 *
+	 * @param maxSpeed Maximum speed reachable by the Talon's output, in encoder units/100ms.
+	 * @param percentNeeded 1 to 100, inclusive.  This should be the percentage of power the Talon needs to reach maxSpeed.
+	 * @return Correct F-gain to send to the Talon for motion profiling
+	 */
+	private static double fGain(double maxSpeed, double percentNeeded){
+		return percentNeeded / 100 * 1023 / maxSpeed;
+	}
 }
