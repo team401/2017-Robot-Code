@@ -110,9 +110,9 @@ public class Robot extends IterativeRobot {
 		drive.drive(0, 0, 0, 0);
 	}
 
-	//percentNeeded defaults to 1.0
+	//percentNeeded defaults to 100
 	private static double fGain(double maxSpeed){
-		return fGain(maxSpeed, 1.0);
+		return fGain(maxSpeed, 100);
 	}
 
 	/**

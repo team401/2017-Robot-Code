@@ -34,9 +34,6 @@ public class ProfileSender {
 	//Signal to start the motion profile
 	private boolean startSignal = false;
 
-	//SmartDashboard outputs to monitor this class are questionable.  This lets you disable them.
-	private boolean alerts;
-
 	//The Talon's set value
 	private SetValueMotionProfile setValue = SetValueMotionProfile.Disable;
 
@@ -55,22 +52,15 @@ public class ProfileSender {
 	//Notifier to run the above class
 	private Notifier _notifier = new Notifier(new PeriodicRunnable());
 
-	//alerts defaults to true
-	public ProfileSender(CANTalon talon, double[][] profile){
-		this(talon, profile, true);
-	}
-
 	/**
 	 * Constructor.  Also starts the PeriodicRunnable.
 	 * @param talon The Talon SRX to send data to
 	 * @param profile The motion profile to send
-	 * @param alerts Do we really want 10 things on SmartDashboard for this class?
 	 */
-	public ProfileSender(CANTalon talon, double[][] profile, boolean alerts) {
+	public ProfileSender(CANTalon talon, double[][] profile) {
 		//Save instance data
 		this.talon = talon;
 		this.profile = profile;
-		this.alerts = alerts;
 
 		//Change the control period and notifier rate to half the Java rate
 		this.talon.changeMotionControlFramePeriod((int)(profile[0][2]/2));
@@ -111,8 +101,7 @@ public class ProfileSender {
 		if (timeoutCount >= 0)
 			if (timeoutCount == 0) {
 				//Something must have gone wrong!
-				if (alerts)
-					SenderPrinting.OnNoProgress();
+				System.out.println("NO PROGRESS");
 			}
 			else
 				//Wait for something to go wrong
@@ -172,10 +161,6 @@ public class ProfileSender {
 					break;
 			}
 		}
-
-		//Send data to SmartDashboard if desired
-		if(alerts)
-			SenderPrinting.process(status);
 	}
 
 	//totalCount defaults to the length of the profile
@@ -192,9 +177,9 @@ public class ProfileSender {
 
 		//did we get an underrun condition since last time we checked?
 		if (status.hasUnderrun) {
-			//Only log if we really want to
-			if(alerts)
-				SenderPrinting.OnUnderrun();
+			//If so, tell the DS.
+				System.out.println("UNDERRUN");
+
 			//Clear error
 			talon.clearMotionProfileHasUnderrun();
 		}
