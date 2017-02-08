@@ -73,7 +73,7 @@ public class Auto2017 {
 		profiles = MotionProfiles.get(start, tgt, mecanum);
 
 		//Shifts to either mecanum or traction wheels
-		drive.shift(mecanum ? OctocanumDrive.DriveMode.MECHANUM : OctocanumDrive.DriveMode.TRACTION);
+		drive.shift(mecanum ? OctocanumDrive.DriveMode.MECANUM : OctocanumDrive.DriveMode.TRACTION);
 
 		//Start traveling along the first profile
 		startProfile();
