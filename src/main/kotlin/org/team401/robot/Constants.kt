@@ -8,7 +8,7 @@ object Constants {
     const val GEARBOX_REAR_RIGHT    = 3
 
     // solenoid ids (module 1)
-    const val GEARBOX_SHIFTER       = 0
+    const val GEARBOX_SHIFTER       = 7
     const val TURRET_HOOD           = 1
     const val COL_EXTENDER          = 2
     // solenoid ids (module 2)
@@ -17,14 +17,15 @@ object Constants {
     const val PDP                   = 0
     const val PCM                   = 12
     // can device ids for the motor controllers
-    const val CIM_FRONT_LEFT        = 1
-    const val PRO_FRONT_LEFT        = 2
-    const val CIM_FRONT_RIGHT       = 5
-    const val PRO_FRONT_RIGHT       = 6
-    const val CIM_REAR_LEFT         = 3
-    const val PRO_REAR_LEFT         = 4
-    const val CIM_REAR_RIGHT        = 7
-    const val PRO_REAR_RIGHT        = 8
+    // CIM is master, PRO is slave
+    const val CIM_FRONT_LEFT        = 5
+    const val PRO_FRONT_LEFT        = 6
+    const val CIM_FRONT_RIGHT       = 1
+    const val PRO_FRONT_RIGHT       = 2
+    const val CIM_REAR_LEFT         = 7
+    const val PRO_REAR_LEFT         = 8
+    const val CIM_REAR_RIGHT        = 3
+    const val PRO_REAR_RIGHT        = 4
     // can device ids for the turret
     const val TURRET_SHOOTER_LEFT   = 9
     const val TURRET_SHOOTER_RIGHT  = 10

@@ -1,12 +1,15 @@
 package org.team401.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
-
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
-
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.strongback.Strongback;
+import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 
@@ -53,6 +56,21 @@ public class Robot extends IterativeRobot {
 		autoStart.addObject("Right", "R");
 		SmartDashboard.putData("Starting Position", autoStart);
 
+        // shift drive modes
+        switchReactor.onTriggeredSubmit(driveJoystickLeft.getTrigger(),
+                () -> new ToggleDriveMode(octocanumDrive));
+        // camera switching
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());
+        switchReactor.onTriggered(driveJoystickLeft.getButton(2), () -> {
+            octocanumDrive.getGyro().reset();
+            System.out.println("calibrated");
+        });
+        switchReactor.onTriggered(driveJoystickLeft.getButton(4), () -> {
+            SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
+            System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
+        });
+    }
 		//Create radio buttons for selecting the robot's destination
 		autoTgt = new SendableChooser();
 		autoTgt.addDefault("Center Lift", "CL");
@@ -98,6 +116,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Front Right Speed", frs);
 		SmartDashboard.putNumber("Rear Left Speed", rls);
 		SmartDashboard.putNumber("Rear Right Speed", rrs);
+    @Override
+    public void teleopInit() {
+        Strongback.restart();
+        octocanumDrive.getGyro().reset();
+    }
 
 		//Send auto-calculated F-gain because mashing calculator buttons is boring
 		SmartDashboard.putNumber("Front Left F-Gain", fGain(fls));
