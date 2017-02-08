@@ -1,7 +1,28 @@
 
-/.gradle/
-/.idea/
-2017-Robot-Code.iws
-/2017-Robot-Code.iml
-/build/
-/.DS_Store
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+out/
+*.iml
+*.iws
+*.ipr
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Gource
+grav.perl
+
+# Add other files here:
