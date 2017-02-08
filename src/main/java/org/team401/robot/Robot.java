@@ -50,15 +50,8 @@ public class Robot extends IterativeRobot {
 				new Solenoid(Constants.GEARBOX_SHIFTER),
 				new ADIS16448_IMU());
 
-		//Reminder that a couple options aren't planned for and won't do anything
-		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
-
-		//Create radio buttons for selecting the robot's starting position
-		autoStart = new SendableChooser();
-		autoStart.addDefault("Center", "C");
-		autoStart.addObject("Left", "L");
-		autoStart.addObject("Right", "R");
-		SmartDashboard.putData("Starting Position", autoStart);
+		//defaults in traction mode until all encoders are done
+		drive.setDriveMode(OctocanumDrive.DriveMode.TRACTION);
 
 		SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -78,6 +71,15 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
             System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
         });
+		//Reminder that a couple options aren't planned for and won't do anything
+		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
+
+		//Create radio buttons for selecting the robot's starting position
+		autoStart = new SendableChooser();
+		autoStart.addDefault("Center", "C");
+		autoStart.addObject("Left", "L");
+		autoStart.addObject("Right", "R");
+		SmartDashboard.putData("Starting Position", autoStart);
 
 		//Create radio buttons for selecting the robot's destination
 		autoTgt = new SendableChooser();
@@ -88,8 +90,14 @@ public class Robot extends IterativeRobot {
 		autoTgt.addObject("Right Hopper", "RH");
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
+
 		//Button to select starting drive mode
-		SmartDashboard.putBoolean("Mecanum Drive", true);
+		if(drive.getDriveMode() == OctocanumDrive.DriveMode.MECANUM) {
+			SmartDashboard.putBoolean("Mecanum Drive", true);
+		}else{
+			SmartDashboard.putBoolean("Mecanum Drive", false);
+		}
+
 	}
 
 	@Override
@@ -120,15 +128,22 @@ public class Robot extends IterativeRobot {
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				frs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				rls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				rrs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity();
+				frs = drive.getGearboxes().get(1).getCimMotor().getEncVelocity(),
+				rls = drive.getGearboxes().get(2).getCimMotor().getEncVelocity(),
+				rrs = drive.getGearboxes().get(3).getCimMotor().getEncVelocity();
 
 		//Send encoder data to SD to manually calculate F-Gain if desired
 		SmartDashboard.putNumber("Front Left Speed", fls);
 		SmartDashboard.putNumber("Front Right Speed", frs);
 		SmartDashboard.putNumber("Rear Left Speed", rls);
 		SmartDashboard.putNumber("Rear Right Speed", rrs);
+
+		//Button to select starting drive mode
+		if(drive.getDriveMode() == OctocanumDrive.DriveMode.MECANUM) {
+			SmartDashboard.putBoolean("Mecanum Drive", true);
+		}else{
+			SmartDashboard.putBoolean("Mecanum Drive", false);
+		}
 	}
 
 
