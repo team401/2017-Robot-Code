@@ -1,5 +1,6 @@
 package org.team401.robot.chassis
 
+import com.analog.adis16448.frc.ADIS16448_IMU
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -22,7 +23,7 @@ import java.util.*
  */
 class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: OctocanumGearbox,
                      rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox,
-                     val shifter: Solenoid, val gyro: Gyro) {
+                     val shifter: Solenoid, val gyro: ADIS16448_IMU) {
     /**
      * Immutable list of gearboxes, will always have a size of 4
      */
@@ -55,9 +56,12 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, rightYThrottle: Double, rightXThrottle: Double) {
         // map the input speeds to match the driver's orientation to the field
-        val speed = MathUtils.rotateVector(leftXThrottle,
-                                        -leftYThrottle,
-                                        if (driveMode == DriveMode.MECANUM) gyro.angle else 0.0)
+        SmartDashboard.putNumber("Gyro Angle", gyro.angle)
+        val speed = MathUtils.rotateVector(
+                leftXThrottle,
+                -leftYThrottle,
+                if (driveMode == DriveMode.MECANUM && SmartDashboard.getBoolean("Gyro Enabled", true))
+                    gyro.angle*SmartDashboard.getNumber("Gyro Multiplier", 1.0) else 0.0)
 
         val x: Double
         if (driveMode == DriveMode.MECANUM)
@@ -78,6 +82,8 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
         gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
         gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+
+        SmartDashboard.putData("Gyro Stuff", gyro)
     }
 
     /**
