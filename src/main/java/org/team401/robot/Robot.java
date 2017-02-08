@@ -115,7 +115,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
 		//Drive according to joysticks
-		drive.drive(joy0.getPitch().invert().read(), joy0.getRoll().read(), joy1.getPitch().invert().read(), joy1.getRoll().read());
+		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
 
 
 		//Get encoder data
