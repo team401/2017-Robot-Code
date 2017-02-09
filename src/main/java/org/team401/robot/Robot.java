@@ -63,6 +63,9 @@ public class Robot extends IterativeRobot {
 		autoStart.addObject("Right", "R");
 		SmartDashboard.putData("Starting Position", autoStart);
 
+		//defaults in traction mode until all encoders are done
+		drive.setDriveMode(OctocanumDrive.DriveMode.TRACTION);
+
 		SwitchReactor switchReactor = Strongback.switchReactor();
 
 		Camera camera = new Camera(640, 480, 10);
@@ -81,6 +84,15 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
             System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
         });
+		//Reminder that a couple options aren't planned for and won't do anything
+		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
+
+		//Create radio buttons for selecting the robot's starting position
+		autoStart = new SendableChooser();
+		autoStart.addDefault("Center", "C");
+		autoStart.addObject("Left", "L");
+		autoStart.addObject("Right", "R");
+		SmartDashboard.putData("Starting Position", autoStart);
 
 		//Create radio buttons for selecting the robot's destination
 		autoTgt = new SendableChooser();
