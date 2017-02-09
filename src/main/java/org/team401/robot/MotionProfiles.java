@@ -36,14 +36,14 @@ public class MotionProfiles {
 		return mecanum ?
 			new double[][][]{
 				//Mecanum drive
-				scanCSV(start+tgt+all+" FL"),
-				scanCSV(start+tgt+all+" FR"),
-				scanCSV(start+tgt+all+" RL"),
-				scanCSV(start+tgt+all+" RR")
+				scanCSV("/home/mecanumprofiles/"+start+tgt+all+" FL"),
+				scanCSV("/home/mecanumprofiles/"+start+tgt+all+" FR"),
+				scanCSV("/home/mecanumprofiles/"+start+tgt+all+" RL"),
+				scanCSV("/home/mecanumprofiles/"+start+tgt+all+" RR")
 			}: new double[][][]{
 				//Tank drive
-				scanCSV(start+tgt+all+" L"),
-				scanCSV(start+tgt+all+" R")
+				scanCSV("/home/tankprofiles/"+start+tgt+all+" L"),
+				scanCSV("/home/tankprofiles/"+start+tgt+all+" R")
 			};
 	}
 
@@ -89,7 +89,7 @@ public class MotionProfiles {
 
 		//Notify user of exceptions
 		} catch (FileNotFoundException e) {
-			System.out.println("File " + fileName + "not found!");
+			System.out.println("File " + fileName + " not found!");
 		} catch (IOException e) {
 			System.out.println("IOException in scanCSV while scanning " + fileName + "!");
 		}

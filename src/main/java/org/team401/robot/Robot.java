@@ -50,6 +50,9 @@ public class Robot extends IterativeRobot {
 				new Solenoid(Constants.GEARBOX_SHIFTER),
 				new ADIS16448_IMU());
 
+		//Switch to tank drive default
+		drive.shift(OctocanumDrive.DriveMode.TRACTION);
+
 		//Reminder that a couple options aren't planned for and won't do anything
 		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
 
@@ -89,7 +92,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
 		//Button to select starting drive mode
-		SmartDashboard.putBoolean("Mecanum Drive", true);
+		SmartDashboard.putBoolean("Mecanum Drive", false);
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class Robot extends IterativeRobot {
 		//Start autonomous, passing through data from here
 		autonomous = new Auto2017((String)autoStart.getSelected(),
 			(String)autoTgt.getSelected(),
-			SmartDashboard.getBoolean("Mecanum Drive", true),
+			SmartDashboard.getBoolean("Mecanum Drive", false),
 			drive);
 	}
 
@@ -108,6 +111,11 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopInit(){
+		//reset Talon control modes
+		for (OctocanumGearbox x: drive.getGearboxes())
+			x.setControlMode(CANTalon.TalonControlMode.PercentVbus);
+
+		//reset Strongback/gyro
 		Strongback.restart();
 		drive.getGyro().reset();
 	}
@@ -120,9 +128,9 @@ public class Robot extends IterativeRobot {
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				frs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				rls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				rrs = drive.getGearboxes().get(0).getCimMotor().getEncVelocity();
+				frs = drive.getGearboxes().get(1).getCimMotor().getEncVelocity(),
+				rls = drive.getGearboxes().get(2).getCimMotor().getEncVelocity(),
+				rrs = drive.getGearboxes().get(3).getCimMotor().getEncVelocity();
 
 		//Send encoder data to SD to manually calculate F-Gain if desired
 		SmartDashboard.putNumber("Front Left Speed", fls);

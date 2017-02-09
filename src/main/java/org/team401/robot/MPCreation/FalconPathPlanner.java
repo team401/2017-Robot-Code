@@ -638,8 +638,6 @@ public class FalconPathPlanner {
 	 * @param arr Array to be saved
 	 */
 	private static void buildCSV(String fileName, double[][] arr){
-		//Auto-add file extension
-		fileName = fileName.concat(".csv");
 		try {
 			PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
 

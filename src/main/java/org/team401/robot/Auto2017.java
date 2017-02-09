@@ -180,10 +180,6 @@ public class Auto2017 {
 				//auto should be done by now
 				System.out.println("Autonomous finished!");
 				state++;
-
-				//reset Talon control modes
-				for (OctocanumGearbox x: drive.getGearboxes())
-					x.setControlMode(TalonControlMode.PercentVbus);
 				break;
 			default:
 				//do nothing if not in correct states
