@@ -223,7 +223,14 @@ public class ProfileSender {
 	 * Gets the set value so we know if the loop is disabled, enabled, or holding.
 	 * @return Set value.  "Hold" or 2 if finished profiling.
 	 */
-	SetValueMotionProfile getSetValue() {
+	public SetValueMotionProfile getSetValue() {
 		return setValue;
+	}
+
+	/**
+	 * Getter for the Talon so you don't have to dig as deep to get the reference
+	 */
+	public CANTalon getTalon(){
+		return talon;
 	}
 }

@@ -110,7 +110,19 @@ public class Auto2017 {
 	 * Prepares for next path if we are finished moving.
 	 */
 	private void move(){
-		//Keeps the MP loops going and increments state if at the end of the profile
+		//Prints to make sure the code is working
+		System.out.println(mecanum ? "Mecanum" : "Tank");
+		System.out.println(drive.getDriveMode().name());
+		System.out.println("FLV: "+fl.getTalon().getSpeed());
+		System.out.println("FRV: "+fr.getTalon().getSpeed());
+		//System.out.println("RLV: "+rl.getTalon().getSpeed());
+		//System.out.println("RRV: "+rr.getTalon().getSpeed());
+		System.out.println("FLE: "+fl.getTalon().getEncVelocity());
+		System.out.println("FRE: "+fr.getTalon().getEncVelocity());
+		//System.out.println("RLE: "+rl.getTalon().getEncVelocity());
+		//System.out.println("RRE: "+rr.getTalon().getEncVelocity());
+
+		//Keep the MP loops going
 		fl.control();
 		fr.control();
 		if(mecanum) {
