@@ -93,6 +93,9 @@ public class Auto2017 {
 			rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
 			rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
 		}
+		//Start sending the trajectory points to the talons
+		fl.startFilling(profiles[0]);
+		fr.startFilling(profiles[1]);
 
 		//Start sending the profiles
 		fl.startMotionProfile();
@@ -100,6 +103,10 @@ public class Auto2017 {
 
 		//Mostly, at least.
 		if(mecanum) {
+			//Start sending the trajectory points to the talons
+			rl.startFilling(profiles[2]);
+			rr.startFilling(profiles[3]);
+
 			rl.startMotionProfile();
 			rr.startMotionProfile();
 		}
