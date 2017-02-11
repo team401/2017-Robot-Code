@@ -171,6 +171,6 @@ public class Robot extends IterativeRobot {
 	 * @return Correct F-gain to send to the Talon for motion profiling
 	 */
 	private static double fGain(double maxSpeed, double percentNeeded){
-		return percentNeeded / 100 * 1023 / maxSpeed;
+		return (percentNeeded / 100) * 1023 / maxSpeed;
 	}
 }
