@@ -3,6 +3,7 @@ package org.team401.robot;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.components.OctocanumGearbox;
@@ -120,6 +121,7 @@ public class Auto2017 {
 	 * Prepares for next path if we are finished moving.
 	 */
 	private void move(){
+		/*
 		//Prints to make sure the code is working
 		System.out.println(mecanum ? "Mecanum" : "Tank");
 		System.out.println(drive.getDriveMode().name());
@@ -131,6 +133,19 @@ public class Auto2017 {
 		System.out.println("FRE: "+fr.getTalon().getEncVelocity());
 		//System.out.println("RLE: "+rl.getTalon().getEncVelocity());
 		//System.out.println("RRE: "+rr.getTalon().getEncVelocity());
+		*/
+
+		//SmartDashboard puts to make sure the code is working
+		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
+		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
+		SmartDashboard.putNumber("FLV: ", fl.getTalon().getSpeed());
+		SmartDashboard.putNumber("FRV: ", fr.getTalon().getSpeed());
+		//SmartDashboard.putNumber("RLV: ", rl.getTalon().getSpeed());
+		//SmartDashboard.putNumber("RRV: ", rr.getTalon().getSpeed());
+		SmartDashboard.putNumber("FLE: ", fl.getTalon().getEncVelocity());
+		SmartDashboard.putNumber("FRE: ", fr.getTalon().getEncVelocity());
+		//SmartDashboard.putNumber("RLE: ", rl.getTalon().getEncVelocity());
+		//SmartDashboard.putNumber("RRE: ", rr.getTalon().getEncVelocity());
 
 		//Keep the MP loops going
 		fl.control();

@@ -1,14 +1,14 @@
 package org.team401.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
+
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
@@ -56,13 +56,6 @@ public class Robot extends IterativeRobot {
 		//Reminder that a couple options aren't planned for and won't do anything
 		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
 
-		//Create radio buttons for selecting the robot's starting position
-		autoStart = new SendableChooser();
-		autoStart.addDefault("Center", "C");
-		autoStart.addObject("Left", "L");
-		autoStart.addObject("Right", "R");
-		SmartDashboard.putData("Starting Position", autoStart);
-
 		//defaults in traction mode until all encoders are done
 		drive.setDriveMode(OctocanumDrive.DriveMode.TRACTION);
 
@@ -84,6 +77,7 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
             System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
         });
+
 		//Reminder that a couple options aren't planned for and won't do anything
 		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
 
@@ -123,20 +117,22 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopInit(){
-		//reset Talon control modes
+		//reset Talon control modes from autonomous
 		for (OctocanumGearbox x: drive.getGearboxes())
 			x.setControlMode(CANTalon.TalonControlMode.PercentVbus);
 
 		//reset Strongback/gyro
 		Strongback.restart();
 		drive.getGyro().reset();
+
+		//Mecanum mode because the test bot doesn't have traction right now
+		drive.shift(OctocanumDrive.DriveMode.MECANUM);
 	}
 
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
 		//Drive according to joysticks
 		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
-
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
@@ -149,6 +145,12 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Front Right Speed", frs);
 		SmartDashboard.putNumber("Rear Left Speed", rls);
 		SmartDashboard.putNumber("Rear Right Speed", rrs);
+
+		//Send auto-calculated F-gain because mashing calculator buttons is boring
+		SmartDashboard.putNumber("Front Left F-Gain", fGain(fls));
+		SmartDashboard.putNumber("Front Right F-Gain", fGain(frs));
+		SmartDashboard.putNumber("Rear Left F-Gain", fGain(rls));
+		SmartDashboard.putNumber("Rear Right F-Gain", fGain(rrs));
 	}
 
 
@@ -168,9 +170,9 @@ public class Robot extends IterativeRobot {
 	 *
 	 * @param maxSpeed Maximum speed reachable by the Talon's output, in encoder units/100ms.
 	 * @param percentNeeded 1 to 100, inclusive.  This should be the percentage of power the Talon needs to reach maxSpeed.
-	 * @return Correct F-gain to send to the Talon for motion profiling
+	 * @return Correct F-gain(positive) to send to the Talon for motion profiling.  -1 if maxSpeed is 0.
 	 */
 	private static double fGain(double maxSpeed, double percentNeeded){
-		return (percentNeeded / 100) * 1023 / maxSpeed;
+		return maxSpeed == 0 ? -1 : percentNeeded / 100 * 1023 / Math.abs(maxSpeed);
 	}
 }
