@@ -154,6 +154,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Rear Right F-Gain", fGain(rrs));
 	}
 
+	@Override
+	public void disabledInit(){
+		SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
+		SmartDashboard.putNumber("I", SmartDashboard.getNumber("I", 0));
+		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));
+		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 0));
+		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 0));
+	}
 
 	@Override
 	public void disabledPeriodic() {//Called when the robot is on but inactive
