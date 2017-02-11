@@ -1,7 +1,7 @@
 package org.team401.robot.MPCreation;
 
 /**
- * Simple wrapper class for an array and string.
+ * Simple wrapper class for a 2D array , string, and boolean.
  */
 
 public class NamedPath {
@@ -51,5 +51,38 @@ public class NamedPath {
 	}
 	public void setInvert(boolean invert){
 		this.invert = invert;
+	}
+
+	/**
+	 * Gets the X- or Y-values in the path
+	 *
+	 * @return First or second column of original parameter
+	 */
+	public double[] getX() {
+		//Simple copy of every value in column 0
+		double[] temp = new double[arr.length];
+		for (int i = 0; i < temp.length; i++)
+			temp[i] = arr[i][0];
+		return temp;
+	}
+	public double[] getY() {
+		//Simple copy of every value in column 1
+		double[] temp = new double[arr.length];
+		for (int i = 0; i < temp.length; i++)
+			temp[i] = arr[i][1];
+		return temp;
+	}
+
+	/**
+	 * Transposes the array and returns it.
+	 *
+	 * @return Array, but first and second subscripts are switched
+	 */
+	public double[][] transpose() {
+		//Copies each value, but j and i are swapped inside the loop
+		for (int i = 0; i < arr.length; i++)
+			for (int j = 0; j < arr[i].length; j++)
+				arr[i][j] = arr[j][i];
+		return arr;
 	}
 }

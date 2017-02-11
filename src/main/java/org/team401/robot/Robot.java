@@ -1,14 +1,14 @@
 package org.team401.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
+
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
@@ -77,6 +77,7 @@ public class Robot extends IterativeRobot {
             SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
             System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
         });
+
 		//Reminder that a couple options aren't planned for and won't do anything
 		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
 
@@ -142,6 +143,12 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Front Right Speed", frs);
 		SmartDashboard.putNumber("Rear Left Speed", rls);
 		SmartDashboard.putNumber("Rear Right Speed", rrs);
+
+		//Send auto-calculated F-gain because mashing calculator buttons is boring
+		SmartDashboard.putNumber("Front Left F-Gain", fGain(fls));
+		SmartDashboard.putNumber("Front Right F-Gain", fGain(frs));
+		SmartDashboard.putNumber("Rear Left F-Gain", fGain(rls));
+		SmartDashboard.putNumber("Rear Right F-Gain", fGain(rrs));
 	}
 
 

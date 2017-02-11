@@ -379,49 +379,6 @@ public class FalconPathPlanner {
 		rightPath = right;
 	}
 
-	/**
-	 * Gets the X-values in a path
-	 *
-	 * @param arr 2D array of doubles
-	 * @return First column of original parameter
-	 */
-	public static double[] getXVector(double[][] arr) {
-		//Simple copy of every value in column 0
-		double[] temp = new double[arr.length];
-		for (int i = 0; i < temp.length; i++)
-			temp[i] = arr[i][0];
-		return temp;
-	}
-
-	/**
-	 * Gets the X-values in a path
-	 *
-	 * @param arr 2D array of doubles
-	 * @return Second column of original parameter
-	 */
-	public static double[] getYVector(double[][] arr) {
-		//Simple copy of every value in column 1
-		double[] temp = new double[arr.length];
-		for (int i = 0; i < temp.length; i++)
-			temp[i] = arr[i][1];
-		return temp;
-	}
-
-	/**
-	 * Transposes a 2D array
-	 *
-	 * @param arr Array to transpose
-	 * @return Array, but first and second subscripts are switched
-	 */
-	public static double[][] transposeVector(double[][] arr) {
-		//Copies each value, but j and i are swapped inside the loop
-		double[][] temp = new double[arr[0].length][arr.length];
-		for (int i = 0; i < temp.length; i++)
-			for (int j = 0; j < temp[i].length; j++)
-				temp[i][j] = arr[j][i];
-		return temp;
-	}
-
 	//invert defaults to false
 	public void calculate(double totalTime, double timeStep, double robotTrackWidth) {
 		calculate(totalTime, timeStep, robotTrackWidth, false);
