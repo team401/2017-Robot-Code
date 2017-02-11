@@ -50,4 +50,7 @@ object Constants {
     const val CAMERA_FRONT          = 0
     const val CAMERA_BACK           = 1
 
+    // sensor ports
+    const val TURRET_LIMIT_SWITCH   = 0
+
 }

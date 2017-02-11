@@ -5,33 +5,46 @@ import org.strongback.components.Switch
 
 class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
 
-    val maxAngle = 360.0
+
+    val maxAngle = 180.0
 
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.enableBrakeMode(true)
+        rotator.setForwardSoftLimit(maxAngle*187/5040)
+        rotator.enableForwardSoftLimit(true)
+        rotator.setReverseSoftLimit(0.0)
+        rotator.enableReverseSoftLimit(true)
     }
 
     /**
      * Set the position of the turret at a specific angle, must be between 0-360 degrees
      */
-    fun setPos(angle: Double) = rotator.set((angle*187*4096)/(14*360))
+    fun setPosition(angle: Double) = rotator.set((angle*187*4096)/(14*360))
 
-    fun getPos() = getAngle()
+    fun getPosition() = getAngle() * 1
 
     fun addDegrees(angle: Double) {
         if (angle > 0 && getAngle() + angle > maxAngle)
-            setPos(maxAngle)
+            setPosition(maxAngle)
         if (angle < 0 && getAngle() + angle < 0)
-            setPos(0.0)
+            setPosition(0.0)
         else
-            setPos(getAngle() + angle)
+            setPosition(getAngle() + angle)
     }
 
     fun stop() {
         rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
         rotator.setpoint = 0.0
+    }
+
+    fun zero() {
+        rotator.reset()
+    }
+
+    fun rotate(speed: Double) {
+        rotator.setpoint = speed
     }
 
     private fun getAngle() = (14*(rotator.get()/4096))/187 * 360
