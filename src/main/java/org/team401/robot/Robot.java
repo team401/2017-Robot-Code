@@ -61,14 +61,14 @@ public class Robot extends IterativeRobot {
 
 		SwitchReactor switchReactor = Strongback.switchReactor();
 
-		Camera camera = new Camera(640, 480, 10);
+		//Camera camera = new Camera(640, 480, 10);//Camera commented out because it ruins println's.
 
         // shift drive modes
         switchReactor.onTriggeredSubmit(joy0.getTrigger(),
                 () -> new ToggleDriveMode(drive));
         // camera switching
-        switchReactor.onTriggered(joy1.getButton(Constants.BUTTON_SWITCH_CAMERA),
-                () -> camera.switchCamera());
+        //switchReactor.onTriggered(joy1.getButton(Constants.BUTTON_SWITCH_CAMERA),
+        //        () -> camera.switchCamera());
         switchReactor.onTriggered(joy1.getButton(2), () -> {
             drive.getGyro().reset();
             System.out.println("calibrated");
@@ -104,6 +104,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {//Called on match start
 		//Start autonomous, passing through data from here
+		System.out.println("Auto started!");
 		autonomous = new Auto2017((String)autoStart.getSelected(),
 			(String)autoTgt.getSelected(),
 			SmartDashboard.getBoolean("Mecanum Drive", false),

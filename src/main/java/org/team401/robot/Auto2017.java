@@ -101,7 +101,9 @@ public class Auto2017 {
 */
 		//Start sending the profiles
 		fl.startMotionProfile();
+		fl.getTalon().set(1);
 		fr.startMotionProfile();
+		fr.getTalon().set(1);
 
 		//Mostly, at least.
 		if(mecanum) {
@@ -112,7 +114,9 @@ public class Auto2017 {
 			*/
 
 			rl.startMotionProfile();
+			rl.getTalon().set(1);
 			rr.startMotionProfile();
+			rr.getTalon().set(1);
 		}
 	}
 
