@@ -52,7 +52,7 @@ public class MotionProfiles {
 	 * @param fileName Name, without file extension, of the file to read from.
 	 * @return Contents of the .csv
 	 */
-	public static double[][] scanCSV(String fileName){
+	private static double[][] scanCSV(String fileName){
 		//Add file extension
 		fileName = fileName + ".csv";
 

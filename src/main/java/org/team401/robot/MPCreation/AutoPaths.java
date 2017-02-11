@@ -228,7 +228,7 @@ public class AutoPaths {
 	});
 
 	//overloaded to accept a single value for b
-	public static double[] concat(double[] a, double b){
+	private static double[] concat(double[] a, double b){
 		return concat(a, new double[]{b});
 	}
 
@@ -240,7 +240,7 @@ public class AutoPaths {
 	 * @param b The array to append
 	 * @return Arrays combined end-to-end
 	 */
-	public static double[] concat(double[] a, double[] b) {
+	private static double[] concat(double[] a, double[] b) {
 		//Make space for the result
 		double[] result = new double[a.length + b.length];
 

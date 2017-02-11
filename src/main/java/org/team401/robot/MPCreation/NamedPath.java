@@ -59,17 +59,16 @@ public class NamedPath {
 	 * @return First or second column of original parameter
 	 */
 	public double[] getX() {
-		//Simple copy of every value in column 0
-		double[] temp = new double[arr.length];
-		for (int i = 0; i < temp.length; i++)
-			temp[i] = arr[i][0];
-		return temp;
+		return getColumn(0);
 	}
 	public double[] getY() {
-		//Simple copy of every value in column 1
+		return getColumn(1);
+	}
+	public double[] getColumn(int col) {
+		//Simple copy of every value in the selected column
 		double[] temp = new double[arr.length];
 		for (int i = 0; i < temp.length; i++)
-			temp[i] = arr[i][1];
+			temp[i] = arr[i][col];
 		return temp;
 	}
 

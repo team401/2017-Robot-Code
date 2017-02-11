@@ -117,20 +117,22 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopInit(){
-		//reset Talon control modes
+		//reset Talon control modes from autonomous
 		for (OctocanumGearbox x: drive.getGearboxes())
 			x.setControlMode(CANTalon.TalonControlMode.PercentVbus);
 
 		//reset Strongback/gyro
 		Strongback.restart();
 		drive.getGyro().reset();
+
+		//Mecanum mode because the test bot doesn't have traction right now
+		drive.shift(OctocanumDrive.DriveMode.MECANUM);
 	}
 
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
 		//Drive according to joysticks
 		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
-
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
@@ -168,9 +170,9 @@ public class Robot extends IterativeRobot {
 	 *
 	 * @param maxSpeed Maximum speed reachable by the Talon's output, in encoder units/100ms.
 	 * @param percentNeeded 1 to 100, inclusive.  This should be the percentage of power the Talon needs to reach maxSpeed.
-	 * @return Correct F-gain to send to the Talon for motion profiling
+	 * @return Correct F-gain(positive) to send to the Talon for motion profiling.  -1 if maxSpeed is 0.
 	 */
 	private static double fGain(double maxSpeed, double percentNeeded){
-		return percentNeeded / 100 * 1023 / maxSpeed;
+		return maxSpeed == 0 ? -1 : percentNeeded / 100 * 1023 / Math.abs(maxSpeed);
 	}
 }
