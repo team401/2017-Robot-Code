@@ -26,29 +26,29 @@ public class AutoPaths {
 	/**
 	 * Actual paths
 	 */
-	public static final NamedPath START_MID_TO_LIFT = new NamedPath("CCL", new double[][]{
+	public static final NamedPath START_MID_TO_LIFT = new NamedPath("CCL",2, new double[][]{
 			STARTING_MID,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
 
-		}), START_MID_TO_R_LIFT = new NamedPath("CRL", new double[][]{
+		}), START_MID_TO_R_LIFT = new NamedPath("CRL", 2, new double[][]{
 			STARTING_MID,
 			{20, 3, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
 
-		}), START_MID_TO_L_LIFT = new NamedPath("CLL", new double[][]{
+		}), START_MID_TO_L_LIFT = new NamedPath("CLL", 2, new double[][]{
 			STARTING_MID,
 			{7, 3, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1)
 
-		}), START_LEFT_TO_LIFT = new NamedPath("LCL", new double[][]{
+		}), START_LEFT_TO_LIFT = new NamedPath("LCL", 2, new double[][]{
 			STARTING_LEFT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
 
-		}), START_LEFT_TO_R_LIFT = new NamedPath("LRL", new double[][]{
+		}), START_LEFT_TO_R_LIFT = new NamedPath("LRL", 4, new double[][]{
 			STARTING_LEFT,
 			{7, 5, 0},
 			{19, 5, 0},
@@ -56,24 +56,24 @@ public class AutoPaths {
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
 
-		}), START_LEFT_TO_L_LIFT = new NamedPath("LLL", new double[][]{
+		}), START_LEFT_TO_L_LIFT = new NamedPath("LLL", 2, new double[][]{
 			STARTING_LEFT,
 			{5, 8, 0},
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1)
 
-		}), START_RIGHT_TO_LIFT = new NamedPath("RCL", new double[][]{
+		}), START_RIGHT_TO_LIFT = new NamedPath("RCL", 2, new double[][]{
 			STARTING_RIGHT,
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 2),
 			perpendicular_To_Airship(CENTER_GEAR_PEG, 1)
 
-		}), START_RIGHT_TO_R_LIFT = new NamedPath("RRL", new double[][]{
+		}), START_RIGHT_TO_R_LIFT = new NamedPath("RRL", 2, new double[][]{
 			STARTING_RIGHT,
 			{22, 8, 0},
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1)
 
-		}), START_RIGHT_TO_L_LIFT = new NamedPath("RLL", new double[][]{
+		}), START_RIGHT_TO_L_LIFT = new NamedPath("RLL", 4, new double[][]{
 			STARTING_RIGHT,
 			{20, 5, 0},
 			{8, 5, 0},
@@ -90,25 +90,25 @@ public class AutoPaths {
 			{22, 17, 0},
 			{22, 15, 0}
 
-		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("LLR", true, new double[][]{
+		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("LLR", true, 5, new double[][]{
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			{1.5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916})
 
-		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("RLR", true,  new double[][]{
+		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("RLR", true,  5, new double[][]{
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
 			{25.5, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
 
-		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("LLB", true, new double[][]{
+		}), LEFT_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("LLB", true, 5, new double[][]{
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 1),
 			perpendicular_To_Airship(LEFT_GEAR_PEG, 2),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
 
-		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("RLB", true, new double[][]{
+		}), RIGHT_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("RLB", true, 5, new double[][]{
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 1),
 			perpendicular_To_Airship(RIGHT_GEAR_PEG, 2),
 			{23, 10, 0},
@@ -116,13 +116,13 @@ public class AutoPaths {
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
 
-		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("CLB", true, new double[][]{
+		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_B = new NamedPath("CLB", true, 5, new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1)
 
-		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("DONOTUSE", true, new double[][]{
+		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_B = new NamedPath("DONOTUSE", true, 5, new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			{10, 7, 0},
@@ -130,7 +130,7 @@ public class AutoPaths {
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1)
 
-		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("DONOTUSE", true, new double[][]{
+		}), CENTER_GEAR_PEG_TO_RIGHT_HOPPER_REVERSE_R = new NamedPath("DONOTUSE", true, 5, new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0)-2, 0},
 			{20, 8, 0},
@@ -138,13 +138,13 @@ public class AutoPaths {
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1)
 
-		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("CLR", true, new double[][]{
+		}), CENTER_GEAR_PEG_TO_LEFT_HOPPER_REVERSE_R = new NamedPath("CLR", true, 5, new double[][]{
 			CENTER_GEAR_PEG,
 			{(11.831875 + 15.168225)/2.0, ((9.325 + 9.325)/2.0) - 2, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1)
 
-		}), LEFT_HOPPER_COLLECTION_B = new NamedPath("LHB", new double[][]{
+		}), LEFT_HOPPER_COLLECTION_B = new NamedPath("LHB", 5, new double[][]{
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2),
 			{1, 16.7916, -90},
@@ -152,7 +152,7 @@ public class AutoPaths {
 			{1, 20, 90},
 			{1, 10, 90}
 
-		}), RIGHT_HOPPER_COLLECTION_B = new NamedPath("RHB", new double[][]{
+		}), RIGHT_HOPPER_COLLECTION_B = new NamedPath("RHB", 5, new double[][]{
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2),
 			{26, 9.7916, 90},
@@ -160,7 +160,7 @@ public class AutoPaths {
 			{26, 14, -90},
 			{26, 4, -90}
 
-		}), LEFT_HOPPER_COLLECTION_R = new NamedPath("LHR", new double[][]{
+		}), LEFT_HOPPER_COLLECTION_R = new NamedPath("LHR", 5, new double[][]{
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2),
 			{1, 9.7916, -90},
@@ -168,7 +168,7 @@ public class AutoPaths {
 			{1, 14, 90},
 			{1, 4, 90}
 
-		}), RIGHT_HOPPER_COLLECTION_R = new NamedPath("RHR", new double[][]{
+		}), RIGHT_HOPPER_COLLECTION_R = new NamedPath("RHR", 5, new double[][]{
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2),
 			{26, 16.7916, 90},
@@ -176,51 +176,51 @@ public class AutoPaths {
 			{26, 20, -90},
 			{26, 10, -90}
 
-		}), STARTING_LEFT_TO_LEFT_HOPPER_R = new NamedPath("LLHR", new double[][]{
+		}), STARTING_LEFT_TO_LEFT_HOPPER_R = new NamedPath("LLHR", 3, new double[][]{
 			STARTING_LEFT,
 			{5, 9.7916, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2)
 
-		}), STARTING_LEFT_TO_LEFT_HOPPER_B = new NamedPath("LLHB", new double[][]{
+		}), STARTING_LEFT_TO_LEFT_HOPPER_B = new NamedPath("LLHB", 3, new double[][]{
 			STARTING_LEFT,
 			{5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
 
-		}), STARTING_RIGHT_TO_RIGHT_HOPPER_R = new NamedPath("RRHR", new double[][]{
+		}), STARTING_RIGHT_TO_RIGHT_HOPPER_R = new NamedPath("RRHR", 3, new double[][]{
 			STARTING_RIGHT,
 			{22, 16.7916, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2)
 
-		}), STARTING_RIGHT_TO_RIGHT_HOPPER_B = new NamedPath("RRHB", new double[][]{
+		}), STARTING_RIGHT_TO_RIGHT_HOPPER_B = new NamedPath("RRHB", 3, new double[][]{
 			STARTING_RIGHT,
 			{22, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2)
 
-		}), STARTING_MID_TO_LEFT_HOPPER_R = new NamedPath("CLHR", new double[][]{
+		}), STARTING_MID_TO_LEFT_HOPPER_R = new NamedPath("CLHR", 3, new double[][]{
 			STARTING_MID,
 			{5, 9.7916, 0},
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -1),
 			perpendicular(new double[]{0, 10.7916, 0, 8.7916}, -2)
 
-		}), STARTING_MID_TO_LEFT_HOPPER_B = new NamedPath("CLHB", new double[][]{
+		}), STARTING_MID_TO_LEFT_HOPPER_B = new NamedPath("CLHB", 3, new double[][]{
 			STARTING_MID,
 			{5, 9.7916, 0},
 			{5, 16.7916, 0},
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 1),
 			perpendicular(new double[]{0, 15.7916, 0, 17.7916}, 2)
 
-		}), STARTING_MID_TO_RIGHT_HOPPER_R = new NamedPath("CRHR", new double[][]{
+		}), STARTING_MID_TO_RIGHT_HOPPER_R = new NamedPath("CRHR", 3, new double[][]{
 			STARTING_MID,
 			{22, 9.7916, 0},
 			{22, 16.7916, 0},
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -1),
 			perpendicular(new double[]{27, 15.7916, 27, 17.7916}, -2)
 
-		}), STARTING_MID_TO_RIGHT_HOPPER_B = new NamedPath("CRHB", new double[][]{
+		}), STARTING_MID_TO_RIGHT_HOPPER_B = new NamedPath("CRHB", 3, new double[][]{
 			STARTING_MID,
 			{22, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),

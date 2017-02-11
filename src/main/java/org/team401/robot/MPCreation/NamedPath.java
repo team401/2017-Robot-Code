@@ -18,6 +18,9 @@ public class NamedPath {
 	public NamedPath(String name, boolean invert, double[][] arr){
 		this(name, invert, 15, arr);
 	}
+	public NamedPath(String name, double time, double[][] arr) {
+		this(name, false, time, arr);
+	}
 	/**
 	 * Constructor
 	 * @param name Instance data
