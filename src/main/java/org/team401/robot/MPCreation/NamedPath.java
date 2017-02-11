@@ -7,24 +7,30 @@ package org.team401.robot.MPCreation;
 public class NamedPath {
 	//Data to store
 	private double[][] arr;
+	private double time, avg;
 	private String name;
 	private boolean invert;
 
-	//invert defaults to false
+	//invert defaults to false, time defaults to 15 seconds
 	public NamedPath(String name, double[][] arr){
 		this(name, false, arr);
 	}
-
+	public NamedPath(String name, boolean invert, double[][] arr){
+		this(name, invert, 15, arr);
+	}
 	/**
 	 * Constructor
 	 * @param name Instance data
 	 * @param invert Instance data
+	 * @param time Instance data
 	 * @param arr Instance data
 	 */
-	public NamedPath(String name,  boolean invert, double[][] arr){
+	public NamedPath(String name,  boolean invert, double time, double[][] arr){
 		this.name = name;
 		this.arr = arr;
 		this.invert = invert;
+		this.time = time;
+		this.avg = time/arr.length;
 	}
 
 	/**
@@ -39,6 +45,12 @@ public class NamedPath {
 	public boolean getInvert(){
 		return invert;
 	}
+	public double getTime() {
+		return time;
+	}
+	public double getAvg() {
+		return avg;
+	}
 
 	/**
 	 * Setters
@@ -48,9 +60,14 @@ public class NamedPath {
 	}
 	public void setArr(double[][] arr){
 		this.arr = arr;
+		avg = time/arr.length;
 	}
 	public void setInvert(boolean invert){
 		this.invert = invert;
+	}
+	public void setTime(double time){
+		this.time = time;
+		avg = time/arr.length;
 	}
 
 	/**

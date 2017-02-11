@@ -16,6 +16,8 @@ public class ProfileSender {
 	//The Talon SRX we are sending profiles to
 	private CANTalon talon;
 
+	public static double posMult, velMult;
+
 	//Current status of the Talon
 	private MotionProfileStatus status = new MotionProfileStatus();
 
@@ -101,7 +103,7 @@ public class ProfileSender {
 		if (timeoutCount >= 0)
 			if (timeoutCount == 0) {
 				//Something must have gone wrong!
-				System.out.println("NO PROGRESS: "+status.activePointValid);
+				//System.out.println("NO PROGRESS: "+status.activePointValid);
 			}
 			else
 				//Wait for something to go wrong
@@ -168,6 +170,7 @@ public class ProfileSender {
 					break;
 			}
 		}
+		talon.set(setValue.value);
 	}
 
 	//totalCount defaults to the length of the profile
@@ -178,8 +181,6 @@ public class ProfileSender {
 	/**
 	 * Start filling the MPs to all of the involved Talons.
 	 */
-
-	//private int index = 0;
 	public void startFilling(double[][] profile, int totalCount) {
 		//create an empty point
 		TrajectoryPoint point = new TrajectoryPoint();
@@ -199,8 +200,8 @@ public class ProfileSender {
 		// This is fast since it's just into our top buffer
 		for (int i = 0; i < totalCount; i++) {
 			//Fill up the point since the constructor is empty
-			point.position = profile[i][0];
-			point.velocity = profile[i][1];
+			point.position = profile[i][0]*posMult;
+			point.velocity = profile[i][1]*velMult;
 			point.timeDurMs = (int) profile[i][2];
 
 			//Talon supports multiple saved PID profiles.  Just use the first.

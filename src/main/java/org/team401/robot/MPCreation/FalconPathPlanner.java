@@ -445,6 +445,17 @@ public class FalconPathPlanner {
 			smoothLeftVelocity = invertVelocity(smoothLeftVelocity);
 			smoothRightVelocity = invertVelocity(smoothRightVelocity);
 		}
+		//smoothCenterVelocity = cullVelocity(smoothCenterVelocity);
+	}
+
+	//Should remove any points at the start that have 0 velocity
+	private double[][] cullVelocity(double[][] vel){
+		int x = 0;
+		while(vel[x][2]==0)
+				x++;
+		double[][] result = new double[vel.length-x][3];
+		System.arraycopy(vel, x, result, 0, vel.length-x);
+		return result;
 	}
 
 	/**

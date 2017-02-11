@@ -158,6 +158,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {//Called when the robot is on but inactive
 		drive.drive(0, 0, 0, 0);
+		for(OctocanumGearbox box:drive.getGearboxes())
+			box.getCimMotor().setPID(
+				SmartDashboard.getNumber("P", 0),
+				SmartDashboard.getNumber("I", 0),
+				SmartDashboard.getNumber("D", 0));
+		ProfileSender.posMult = SmartDashboard.getNumber("PM", 1);
+		ProfileSender.velMult = SmartDashboard.getNumber("VM", 1);
 	}
 
 	//percentNeeded defaults to 100

@@ -159,12 +159,12 @@ public class MPCalculator {
 		for (NamedPath u : listOfPaths) {
 			//exports the motion profile for each of the 4 motors for mecanum mode
 			FalconPathPlanner fpp = new FalconPathPlanner(u.getArr(), true);
-			fpp.calculate(15, 0.02, robotWidth, u.getInvert());
+			fpp.calculate(u.getTime(), 0.02, robotWidth, u.getInvert());
 			fpp.exportCSV("profilecsv\\mecanum\\" + u.getName());
 
 			//exports the motion profile for each of the 2 motors for traction mode
 			fpp = new FalconPathPlanner(u.getArr());
-			fpp.calculate(15, 0.02, robotWidth, u.getInvert());
+			fpp.calculate(u.getTime(), 0.02, robotWidth, u.getInvert());
 			fpp.exportCSV("profilecsv\\tank\\" + u.getName());
 		}
 	}

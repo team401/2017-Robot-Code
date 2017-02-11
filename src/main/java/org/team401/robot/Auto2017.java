@@ -1,5 +1,6 @@
 package org.team401.robot;
 
+import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -56,6 +57,8 @@ public class Auto2017 {
 
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
+		for(OctocanumGearbox box:boxes)
+			box.getCimMotor().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
 		boxes.get(0).setControlMode(TalonControlMode.MotionProfile);
 		boxes.get(1).setControlMode(TalonControlMode.MotionProfile);
 
@@ -94,29 +97,15 @@ public class Auto2017 {
 			rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
 			rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
 		}
-/*
-		//Start sending the trajectory points to the talons
-		fl.startFilling(profiles[0]);
-		fr.startFilling(profiles[1]);
-*/
+
 		//Start sending the profiles
 		fl.startMotionProfile();
-		fl.getTalon().set(1);
 		fr.startMotionProfile();
-		fr.getTalon().set(1);
 
 		//Mostly, at least.
 		if(mecanum) {
-			/*
-			//Start sending the trajectory points to the talons
-			rl.startFilling(profiles[2]);
-			rr.startFilling(profiles[3]);
-			*/
-
 			rl.startMotionProfile();
-			rl.getTalon().set(1);
 			rr.startMotionProfile();
-			rr.getTalon().set(1);
 		}
 	}
 
@@ -137,7 +126,7 @@ public class Auto2017 {
 		System.out.println("FRE: "+fr.getTalon().getEncVelocity());
 		//System.out.println("RLE: "+rl.getTalon().getEncVelocity());
 		//System.out.println("RRE: "+rr.getTalon().getEncVelocity());
-		*/
+
 
 		//SmartDashboard puts to make sure the code is working
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
@@ -150,6 +139,7 @@ public class Auto2017 {
 		SmartDashboard.putNumber("FRE: ", fr.getTalon().getEncVelocity());
 		//SmartDashboard.putNumber("RLE: ", rl.getTalon().getEncVelocity());
 		//SmartDashboard.putNumber("RRE: ", rr.getTalon().getEncVelocity());
+		*/
 
 		//Keep the MP loops going
 		fl.control();
