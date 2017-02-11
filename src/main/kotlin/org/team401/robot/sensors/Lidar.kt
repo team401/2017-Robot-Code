@@ -1,7 +1,8 @@
-package org.team401.robot.components
+package org.team401.robot.sensors
 
 import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj.Timer
+import java.lang.Byte
 
 object Lidar {
 
