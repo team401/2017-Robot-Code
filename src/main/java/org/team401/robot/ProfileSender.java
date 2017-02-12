@@ -16,6 +16,7 @@ public class ProfileSender {
 	//The Talon SRX we are sending profiles to
 	private CANTalon talon;
 
+	//Manual multipliers for position and velocity if the path was a bit off
 	public static double posMult, velMult;
 
 	//Current status of the Talon
@@ -103,10 +104,10 @@ public class ProfileSender {
 		if (timeoutCount >= 0)
 			if (timeoutCount == 0) {
 				//Something must have gone wrong!
-				//System.out.println("NO PROGRESS: "+status.activePointValid);
+				System.out.println("NO PROGRESS.  CURRENT POINT "+(status.activePointValid?"VALID":"INVALID"));
 			}
 			else
-				//Wait for something to go wrong
+				//Wait until unsafe latency is detected
 				timeoutCount--;
 
 		//Check if we are motion profiling
@@ -130,9 +131,7 @@ public class ProfileSender {
 						startFilling(profile);
 						state++;
 						timeoutCount = timeoutAmt;
-						//System.out.println("State 0 ran with signal!");
-					}else
-						//System.out.println("State 0 ran without signal!");
+					}
 					break;
 				case 1:
 					//Wait until enough points are in
@@ -143,9 +142,7 @@ public class ProfileSender {
 						//Progress to next state
 						state++;
 						timeoutCount = timeoutAmt;
-						//System.out.println("State 1 ran with enough points in!");
-					}else
-						//System.out.println("State 1 ran without enough points in!");
+					}
 					break;
 				case 2:
 					//As long as everything is alright, never timeout.
@@ -158,11 +155,10 @@ public class ProfileSender {
 						//Hold mode keeps motor in place and can be used as an external signal
 						setValue = SetValueMotionProfile.Hold;
 
+						//Reset to beginning state in machine.
 						state = 0;
 						timeoutCount = -1;
-						//System.out.println("State 2 ran and stopped!");
-					}//else
-						//System.out.println("State 2: "+status.activePointValid+", "+status.activePoint.position);
+					}
 					break;
 				default:
 					//Error message if state machine breaks
@@ -234,6 +230,7 @@ public class ProfileSender {
 
 	/**
 	 * Gets the set value so we know if the loop is disabled, enabled, or holding.
+	 *
 	 * @return Set value.  "Hold" or 2 if finished profiling.
 	 */
 	public SetValueMotionProfile getSetValue() {
