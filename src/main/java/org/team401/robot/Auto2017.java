@@ -114,32 +114,20 @@ public class Auto2017 {
 	 * Prepares for next path if we are finished moving.
 	 */
 	private void move(){
-		/*
-		//Prints to make sure the code is working
-		System.out.println(mecanum ? "Mecanum" : "Tank");
-		System.out.println(drive.getDriveMode().name());
-		System.out.println("FLV: "+fl.getTalon().getSpeed());
-		System.out.println("FRV: "+fr.getTalon().getSpeed());
-		//System.out.println("RLV: "+rl.getTalon().getSpeed());
-		//System.out.println("RRV: "+rr.getTalon().getSpeed());
-		System.out.println("FLE: "+fl.getTalon().getEncVelocity());
-		System.out.println("FRE: "+fr.getTalon().getEncVelocity());
-		//System.out.println("RLE: "+rl.getTalon().getEncVelocity());
-		//System.out.println("RRE: "+rr.getTalon().getEncVelocity());
-
-
 		//SmartDashboard puts to make sure the code is working
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
-		SmartDashboard.putNumber("FLV: ", fl.getTalon().getSpeed());
-		SmartDashboard.putNumber("FRV: ", fr.getTalon().getSpeed());
-		//SmartDashboard.putNumber("RLV: ", rl.getTalon().getSpeed());
-		//SmartDashboard.putNumber("RRV: ", rr.getTalon().getSpeed());
-		SmartDashboard.putNumber("FLE: ", fl.getTalon().getEncVelocity());
-		SmartDashboard.putNumber("FRE: ", fr.getTalon().getEncVelocity());
-		//SmartDashboard.putNumber("RLE: ", rl.getTalon().getEncVelocity());
-		//SmartDashboard.putNumber("RRE: ", rr.getTalon().getEncVelocity());
-		*/
+		SmartDashboard.putString("GRAPH", ""+
+			fl.getTalon().getSpeed()+":"+
+			fr.getTalon().getSpeed()+":"+
+			fl.getTalon().getEncVelocity()+":"+
+			fr.getTalon().getEncVelocity()+
+			(mecanum ?
+				rl.getTalon().getSpeed()+":"+
+				rr.getTalon().getSpeed()+":"+
+				rl.getTalon().getEncVelocity()+":"+
+				rr.getTalon().getEncVelocity()+":"
+			: ""));
 
 		//Keep the MP loops going
 		fl.control();
