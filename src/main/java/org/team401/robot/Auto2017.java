@@ -114,7 +114,7 @@ public class Auto2017 {
 	 * Prepares for next path if we are finished moving.
 	 */
 	private void move(){
-		//SmartDashboard puts to make sure the code is working
+		//SmartDashboard puts to make sure the code is working and tune PID
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
 		SmartDashboard.putString("GRAPH", ""+

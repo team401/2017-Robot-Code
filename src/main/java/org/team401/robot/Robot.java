@@ -14,7 +14,6 @@ import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 
-import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ToggleDriveMode;
 import org.team401.robot.components.OctocanumGearbox;
