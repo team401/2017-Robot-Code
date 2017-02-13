@@ -1,10 +1,12 @@
 package org.team401.robot.chassis
 
 import com.analog.adis16448.frc.ADIS16448_IMU
+import edu.wpi.first.wpilibj.PIDController
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
+import org.team401.robot.GyroOutput
 import org.team401.robot.MathUtils
 import org.team401.robot.components.OctocanumGearbox
 import java.util.*
@@ -29,6 +31,9 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      */
     val gearboxes: List<OctocanumGearbox> = ArrayList()
 
+    val gyroPID: PIDController
+    val gyroError: GyroOutput
+
     /**
      * The current drive mode of the chassis
      */
@@ -42,6 +47,10 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         gearboxes.add(frontRightGearbox)
         gearboxes.add(rearLeftGearbox)
         gearboxes.add(rearRightGearbox)
+
+        gyroError = GyroOutput()
+        gyroPID = PIDController(1.0, 0.0, 0.0, gyro, gyroError)
+        gyroPID.enable()
     }
 
     /**
@@ -76,6 +85,10 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
         wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
         wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
+        MathUtils.scale(wheelSpeeds, 0.8)
+        for (it in wheelSpeeds.indices)
+            wheelSpeeds[it] += gyroError.output
+        SmartDashboard.putNumber("Gyro Error", gyroError.output)
 
         MathUtils.normalize(wheelSpeeds)
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
