@@ -28,7 +28,7 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
     fun addDegrees(angle: Double) {
         if (angle > 0 && getAngle() + angle > maxAngle)
             setPosition(maxAngle)
-        if (angle < 0 && getAngle() + angle < 0)
+        else if (angle < 0 && getAngle() + angle < 0)
             setPosition(0.0)
         else
             setPosition(getAngle() + angle)

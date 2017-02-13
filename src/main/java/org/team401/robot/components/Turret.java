@@ -32,8 +32,8 @@ public class Turret implements Runnable {
         if (turretRotator.getPosition() >= turretRotator.getMaxAngle())
             sentryState = 0;
         else if (turretRotator.getPosition() <= 0)
-            sentryState = 360;
-        turretRotator.addDegrees(sentryState);
+            sentryState = turretRotator.getMaxAngle();
+        turretRotator.setPosition(sentryState);
     }
 
     @Override
@@ -47,12 +47,16 @@ public class Turret implements Runnable {
                     turretRotator.stop();
             } else
                 sentryMode();
-
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public TurretRotator getTurretRotator() {
-        return turretRotator;;
+        return turretRotator;
     }
 }
 
