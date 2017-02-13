@@ -11,5 +11,7 @@ class SHARPGP2I2(port: Int) : DistanceSensor {
 
     val input = AnalogInput(port)
 
-    override fun getDistance(): Double = 1 / input.voltage - .42
+    override fun getDistance(): Double {
+        return 1 / input.voltage - .42
+    }
 }
