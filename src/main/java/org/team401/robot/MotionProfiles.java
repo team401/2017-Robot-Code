@@ -1,9 +1,11 @@
 package org.team401.robot;
 
+import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -56,22 +58,33 @@ public class MotionProfiles {
 		//Add file extension
 		fileName = fileName + ".csv";
 
-		//BufferedReader will read from the file
+		//BufferedReader will read from the file, Scanner will find row count
 		BufferedReader br;
+		Scanner scan;
 
-		//Gigantic String array to store as much data as needed
-		String[][] strs = new String[99999][3];
+		//Array to store data intermediately
+		String[][] strs;
+
+		//Index of the loops
+		int i = 0;
 
 		//Place to store the finished product
 		double[][] result;
 
 		//File I/O sometimes causes errors
 		try {
-			//Scan the file into Java
+			//Scan the file into Java, counting lines first to save memory
+			scan = new Scanner(new File(fileName));
+			scan.useDelimiter("\n");
+			while(scan.hasNext()){
+				scan.next();
+				i++;
+			}
+			strs = new String[i][3];
 			br = new BufferedReader(new FileReader(fileName));
 
 			//Read each line, and split it into 3 double strings
-			int i = 0;
+			i = 0;
 			for(String line; (line=br.readLine())!=null; i++)
 				strs[i] = line.split(",");
 
