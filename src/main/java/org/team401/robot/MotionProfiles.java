@@ -62,9 +62,6 @@ public class MotionProfiles {
 		BufferedReader br;
 		Scanner scan;
 
-		//Array to store data intermediately
-		String[][] strs;
-
 		//Index of the loops
 		int i = 0;
 
@@ -80,21 +77,18 @@ public class MotionProfiles {
 				scan.next();
 				i++;
 			}
-			strs = new String[i][3];
-			br = new BufferedReader(new FileReader(fileName));
-
-			//Read each line, and split it into 3 double strings
-			i = 0;
-			for(String line; (line=br.readLine())!=null; i++)
-				strs[i] = line.split(",");
 
 			//Size the result to the length of the file
 			result = new double[i][3];
 
-			//Parse the string array into doubles
-			for(int j = 0; j < i; j++)
-				for(int k = 0; k < 3; k++)
-					result[j][k] = Double.parseDouble(strs[j][k]);
+			//Read each line and parse it into 3 doubles
+			br = new BufferedReader(new FileReader(fileName));
+			i = 0;
+			for(String line; (line=br.readLine())!=null; i++) {
+				String[] str = line.split(",");
+				for (int j = 0; j < 3; j++)
+					result[i][j] = Double.parseDouble(str[j]);
+			}
 
 			//Close the file reader and return the result
 			br.close();
