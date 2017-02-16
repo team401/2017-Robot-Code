@@ -8,9 +8,10 @@ object Constants {
     const val GEARBOX_REAR_RIGHT    = 3
 
     // solenoid ids (module 1)
-    const val GEARBOX_SHIFTER       = 7
+    const val GEARBOX_SHIFTER       = 0
     const val TURRET_HOOD           = 1
     const val COL_EXTENDER          = 2
+    const val GEAR_HOLDER           = 3
     // solenoid ids (module 2)
 
     // can device ids

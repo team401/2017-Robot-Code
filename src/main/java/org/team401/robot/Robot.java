@@ -2,11 +2,8 @@ package org.team401.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
@@ -14,8 +11,8 @@ import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.OctocanumGearbox;
-import org.team401.robot.commands.ToggleDriveMode;
 
 public class Robot extends IterativeRobot {
 
@@ -50,18 +47,10 @@ public class Robot extends IterativeRobot {
 
         // shift drive modes
         switchReactor.onTriggeredSubmit(driveJoystickLeft.getTrigger(),
-                () -> new ToggleDriveMode(octocanumDrive));
+                () -> new ShiftDriveMode(octocanumDrive));
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
-        switchReactor.onTriggered(driveJoystickLeft.getButton(2), () -> {
-            octocanumDrive.getGyro().reset();
-            System.out.println("calibrated");
-        });
-        switchReactor.onTriggered(driveJoystickLeft.getButton(4), () -> {
-            SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
-            System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
-        });
     }
 
     @Override
@@ -82,7 +71,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopInit() {
         Strongback.restart();
-        octocanumDrive.getGyro().reset();
     }
 
     @Override

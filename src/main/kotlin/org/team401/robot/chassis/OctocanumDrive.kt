@@ -1,6 +1,7 @@
 package org.team401.robot.chassis
 
 import com.analog.adis16448.frc.ADIS16448_IMU
+import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.PIDController
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.interfaces.Gyro
@@ -111,7 +112,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
 
     /**
      * Set the drive mode to the passed mode. This method does nothing if
-     * the passed drive mode is the currently set drive mode.
+     * the passed drive mode is the currently config drive mode.
      *
      * @param driveMode The DriveMode to switch to
      */
@@ -126,7 +127,19 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
     }
 
     /**
-     * An enum object to represent different drive modes
+     * Changes the drive mode of each gearbox, and runs the lambdas (left) and (right)
+     * on the CANTalon objects for their respective sides on the robot.
+     */
+    fun changeControlMode(mode: CANTalon.TalonControlMode, left: (CANTalon) -> Unit, right: (CANTalon) -> Unit) {
+        gearboxes.forEach { it.changeControlMode(mode) }
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].config(left)
+        gearboxes[Constants.GEARBOX_REAR_LEFT].config(left)
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].config(right)
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].config(right)
+    }
+
+    /**
+     * An enum object to represent different drive modes.
      */
     enum class DriveMode {
         TRACTION,

@@ -18,8 +18,15 @@ class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
         proMotor.set(cimMotor.deviceID.toDouble())
     }
 
-    fun setControlMode(mode: CANTalon.TalonControlMode) {
+    fun changeControlMode(mode: CANTalon.TalonControlMode) {
         cimMotor.changeControlMode(mode)
+    }
+
+    /**
+     * Takes a lambda that can change settings on the master motor
+     */
+    fun config(func: (CANTalon) -> Unit) {
+        func(cimMotor)
     }
 
     /**
