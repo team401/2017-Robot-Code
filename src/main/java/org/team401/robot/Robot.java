@@ -12,6 +12,7 @@ import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ShiftDriveMode;
+import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.OctocanumGearbox;
 
 public class Robot extends IterativeRobot {
@@ -26,9 +27,6 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
-        SmartDashboard.putBoolean("Gyro Enabled", true);
-        SmartDashboard.putNumber("Gyro Multiplier", 1.0);
-
         OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
@@ -37,11 +35,22 @@ public class Robot extends IterativeRobot {
         g.calibrate();
         octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 
+        CollectionGearbox collectionGearbox = new CollectionGearbox(
+                Hardware.Motors.victorSP(Constants.COL_PRO_1),
+                Hardware.Motors.victorSP(Constants.COL_PRO_2),
+                Hardware.Motors.victorSP(Constants.COL_PRO_3)
+        );
+
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
         masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
         camera = new Camera(640, 480, 10);
+
+        Solenoid collectionExtender = new Solenoid(Constants.COL_EXTENDER);
+        collectionExtender.set(false);
+        Solenoid turretExtender = new Solenoid(Constants.TURRET_SHIFTER);
+        turretExtender.set(false);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -51,6 +60,27 @@ public class Robot extends IterativeRobot {
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
+        // collection
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
+                () -> {
+                    collectionExtender.set(!collectionExtender.get());
+                    SmartDashboard.putBoolean("Collection Down", collectionExtender.get());
+                });
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
+                () -> {
+                    if (collectionGearbox.isRunning())
+                        collectionGearbox.setSpeed(0);
+                    else
+                        collectionGearbox.setSpeed(1);
+                    SmartDashboard.putBoolean("Collection Enabled", collectionGearbox.isRunning());
+                });
+        // turret
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TURRET),
+                () -> {
+                    turretExtender.set(!turretExtender.get());
+                    SmartDashboard.putBoolean("Turret Extended", turretExtender.get());
+                });
+        //switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD));
     }
 
     @Override
