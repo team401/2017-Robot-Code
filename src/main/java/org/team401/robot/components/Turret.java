@@ -18,6 +18,7 @@ public class Turret implements Runnable {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
         latestData = new VisionData(0, 0, 0);
+        this.magSensor = magSensor;
         this.trigger = trigger;
     }
 
@@ -50,7 +51,7 @@ public class Turret implements Runnable {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
     }
