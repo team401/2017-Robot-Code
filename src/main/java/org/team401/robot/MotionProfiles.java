@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Static class that reads motion profiles from .csv files.
@@ -65,27 +66,28 @@ public class MotionProfiles {
 		//Index of the loops
 		int i = 0;
 
-		//Place to store the finished product
+		//Places to store each line and the finished product
+		String[] str;
 		double[][] result;
 
 		//File I/O sometimes causes errors
 		try {
-			//Scan the file into Java, counting lines first to save memory
+			//Scan the file into Java
+			br = new BufferedReader(new FileReader(fileName));
+
+			//Size the result to the length of the file
 			scan = new Scanner(new File(fileName));
 			scan.useDelimiter("\n");
 			while(scan.hasNext()){
 				scan.next();
 				i++;
 			}
-
-			//Size the result to the length of the file
 			result = new double[i][3];
 
 			//Read each line and parse it into 3 doubles
-			br = new BufferedReader(new FileReader(fileName));
 			i = 0;
 			for(String line; (line=br.readLine())!=null; i++) {
-				String[] str = line.split(",");
+				str = line.split(",");
 				for (int j = 0; j < 3; j++)
 					result[i][j] = Double.parseDouble(str[j]);
 			}
@@ -96,12 +98,16 @@ public class MotionProfiles {
 
 		//Notify user of exceptions
 		} catch (FileNotFoundException e) {
-			System.out.println("File " + fileName + " not found!");
+			notifyError("File " + fileName+" not found!");
 		} catch (IOException e) {
-			System.out.println("IOException in scanCSV while scanning " + fileName + "!");
+			notifyError("IOException in scanCSV while scanning " + fileName + "!");
 		}
 
 		//Return empty array if there was an exception
 		return new double[0][0];
+	}
+	private static void notifyError(String message){
+		SmartDashboard.putString("Latest Error", message);
+		System.out.println(message);
 	}
 }

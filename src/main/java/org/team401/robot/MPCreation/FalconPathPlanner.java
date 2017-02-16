@@ -609,7 +609,7 @@ public class FalconPathPlanner {
 		try {
 			PrintWriter pw = new PrintWriter(new File(fileName + ".csv"));
 
-			//I could probably just concatenate, such as "str = str.concat(v + ',')"
+			//If you haven't heard of StringBuilder, it concatenates strings far more efficiently.
 			StringBuilder sb = new StringBuilder();
 			for (double[] u : arr) {
 				for (double v : u) {
@@ -623,7 +623,7 @@ public class FalconPathPlanner {
 			pw.write(sb.toString());
 			pw.close();
 		}catch(FileNotFoundException e){
-			//Error message.  Probably not the only possible cause, but it's the only one I've encountered.
+			//Error message.  Probably not the only possible cause of the exception, but it's the only one I've encountered.
 			System.out.println("File \""+fileName+".csv\" is being used by another program!  Close the other program and restart Motion Profile Generator.");
 		}
 	}

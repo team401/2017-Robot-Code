@@ -25,14 +25,12 @@ public class ProfileSender {
 	//The profile to move along
 	private double[][] profile;
 
-	//Current state in control()'s state machine
-	private int state = 0;
+	//State machine's state and a timeout counter.  Timeout meanings:
+	//-1 is disabled.  >0 counts down each loop.  =0, an error message is printed.
+	private int state, timeoutCount = -1;
 
-	//State machine timeout counter.  -1 is disabled.  >0 counts down each loop.  At 0, an error message is printed.
-	private int timeoutCount = -1;
-
-	//Number of loops to timeout when timeout is needed
-	private static final int timeoutAmt = 10;
+	//Loops to wait until the timeout triggers and minimum sent points required to start motion.
+	private static final int timeoutAmt = 10, minPointsSent = 5;
 
 	//Signal to start the motion profile
 	private boolean startSignal = false;
@@ -40,13 +38,10 @@ public class ProfileSender {
 	//The Talon's set value
 	private SetValueMotionProfile setValue = SetValueMotionProfile.Disable;
 
-	//Number of points that have to be sent before the profile will start
-	private static final int minPointsSent = 5;
-
 	/**
 	 * Periodically tells the Talon to process sent profile points
 	 */
-	private class PeriodicRunnable implements java.lang.Runnable {
+	private class PeriodicRunnable implements Runnable {
 		public void run() {
 			talon.processMotionProfileBuffer();
 		}
