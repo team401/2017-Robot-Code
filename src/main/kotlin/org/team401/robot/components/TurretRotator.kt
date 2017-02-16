@@ -12,26 +12,32 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.set(0.0)
+        rotator.reverseOutput(true)
+        rotator.configPeakOutputVoltage(2.0, -2.0)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit(maxAngle*187/5040)
         rotator.enableForwardSoftLimit(true)
         rotator.setReverseSoftLimit(0.0)
         rotator.enableReverseSoftLimit(true)
         //TODO: tune pid
-        rotator.p = 0.001
+        rotator.p = 1.0
         rotator.i = 0.0
         rotator.d = 0.0
-        rotator.f = 0.1
+        rotator.f = 0.0
     }
 
     /**
      * Set the position of the turret at a specific angle, must be between 0-360 degrees
      */
-    fun setPosition(angle: Double) = rotator.set((angle*187)/(14*360))
+    fun setPosition(angle: Double) {
+        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
+        rotator.set((angle*187)/(14*360))
+    }
 
-    fun getPosition() = getAngle() * 1
+    fun getPosition() = getAngle()
 
     fun addDegrees(angle: Double) {
+        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         if (angle > 0 && getAngle() + angle > maxAngle)
             setPosition(maxAngle)
         else if (angle < 0 && getAngle() + angle < 0)
@@ -49,10 +55,11 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
         rotator.reset()
     }
 
-    fun rotate(speed: Double) {
-        rotator.setpoint = speed
+    fun rotate(throttle: Double) {
+        rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        rotator.set(throttle)
     }
 
-    private fun getAngle() = (14*(rotator.get()))/187 * 360
+    private fun getAngle() = (14*rotator.get())/187 * 360
 
 }

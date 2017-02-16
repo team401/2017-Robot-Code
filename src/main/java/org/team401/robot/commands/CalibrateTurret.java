@@ -5,9 +5,6 @@ import org.strongback.command.Command;
 import org.team401.robot.components.Turret;
 import org.team401.robot.components.TurretRotator;
 
-/**
- * Created by Neema on 2/4/17.
- */
 public class CalibrateTurret extends Command {
 
     private TurretRotator turretRotator;
@@ -18,21 +15,17 @@ public class CalibrateTurret extends Command {
 
     @Override
     public void initialize() {
-        turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        turretRotator.rotate(0.2);
+        turretRotator.rotate(0.8);
     }
 
     @Override
     public boolean execute() {
-        if (turretRotator.getZeroPoint().isTriggered())
-            return true;
-        return false;
+        return turretRotator.getZeroPoint().isTriggered();
     }
 
     @Override
     public void end() {
         turretRotator.rotate(0);
-        turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.Position);
         turretRotator.zero();
     }
 }
