@@ -14,10 +14,11 @@ public class Turret implements Runnable {
     private VisionData latestData;
     private double sentryState = 0;
 
-    public Turret(VisionDataStream stream, CANTalon turretSpinner, Switch magSensor, Switch trigger) {
+    public Turret(VisionDataStream stream, CANTalon turretSpinner, CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder, Switch magSensor, Switch trigger) {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
         latestData = new VisionData(0, 0, 0);
+        this.magSensor = magSensor;
         this.trigger = trigger;
     }
 
@@ -50,7 +51,7 @@ public class Turret implements Runnable {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
     }
