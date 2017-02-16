@@ -20,7 +20,7 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
         rotator.enableForwardSoftLimit(true)
         rotator.setReverseSoftLimit(0.0)
         rotator.enableReverseSoftLimit(true)
-        rotator.isSafetyEnabled = true
+        rotator.isSafetyEnabled = false
         //TODO: tune pid
         rotator.p = 1.0
         rotator.i = 0.0
