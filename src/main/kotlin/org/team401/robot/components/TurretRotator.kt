@@ -12,13 +12,15 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.set(0.0)
-        rotator.reverseOutput(true)
+        rotator.reverseOutput(false)
+        rotator.reverseSensor(true)
         rotator.configPeakOutputVoltage(2.0, -2.0)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit(maxAngle*187/5040)
         rotator.enableForwardSoftLimit(true)
         rotator.setReverseSoftLimit(0.0)
         rotator.enableReverseSoftLimit(true)
+        rotator.isSafetyEnabled = true
         //TODO: tune pid
         rotator.p = 1.0
         rotator.i = 0.0
@@ -38,12 +40,7 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
 
     fun addDegrees(angle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        if (angle > 0 && getAngle() + angle > maxAngle)
-            setPosition(maxAngle)
-        else if (angle < 0 && getAngle() + angle < 0)
-            setPosition(0.0)
-        else
-            setPosition(getAngle() + angle)
+        setPosition(getAngle() + angle)
     }
 
     fun stop() {
