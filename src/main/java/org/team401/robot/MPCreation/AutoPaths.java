@@ -227,38 +227,6 @@ public class AutoPaths {
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2)
 	});
 
-	//overloaded to accept a single value for b
-	private static double[] concat(double[] a, double b){
-		return concat(a, new double[]{b});
-	}
-
-	/**
-	 * Concatenates one array onto the end of another.
-	 * Not currently used, but I have a feeling we may need it.
-	 *
-	 * @param a Original array
-	 * @param b The array to append
-	 * @return Arrays combined end-to-end
-	 */
-	private static double[] concat(double[] a, double[] b) {
-		//Make space for the result
-		double[] result = new double[a.length + b.length];
-
-		//Fill in data from first array, keeping track of location in result
-		int index = 0;
-		for (double u : a){
-			result[index] = u;
-			index++;
-		}
-
-		//Same for the second loop
-		for(double u : b){
-			result[index] = u;
-			index++;
-		}
-		return result;
-	}
-
 	//factor defaults to 1.0
 	private static double[] perpendicular(double[] coords) {
 		return perpendicular(coords, 1.0);

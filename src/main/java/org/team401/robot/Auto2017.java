@@ -199,6 +199,12 @@ public class Auto2017 {
 			case 4:
 				//auto should be done by now
 				System.out.println("Autonomous finished!");
+				fl.reset();
+				fr.reset();
+				if(mecanum) {
+					rl.reset();
+					rr.reset();
+				}
 				state++;
 				break;
 			default:
