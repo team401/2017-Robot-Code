@@ -51,6 +51,7 @@ public class Robot extends IterativeRobot {
         collectionExtender.set(false);
         Solenoid turretExtender = new Solenoid(Constants.TURRET_SHIFTER);
         turretExtender.set(false);
+        Solenoid gearScoring = new Solenoid(Constants.GEAR_HOLDER);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -73,6 +74,17 @@ public class Robot extends IterativeRobot {
                     else
                         collectionGearbox.setSpeed(1);
                     SmartDashboard.putBoolean("Collection Enabled", collectionGearbox.isRunning());
+                });
+        // gears
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearScoring.set(true);
+                    SmartDashboard.putBoolean("Gear Holder Open", true);
+                });
+        switchReactor.onUntriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearScoring.set(false);
+                    SmartDashboard.putBoolean("Gear Holder Open", false);
                 });
         // turret
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TURRET),
