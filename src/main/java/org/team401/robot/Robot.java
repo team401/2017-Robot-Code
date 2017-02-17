@@ -64,7 +64,7 @@ public class Robot extends IterativeRobot {
         turret = new Turret(visionDataStream, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
                 new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood,
                 Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
-                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle(), 5);
+                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
         turretThread = new Thread(turret);
         turretThread.start();
 
@@ -111,6 +111,20 @@ public class Robot extends IterativeRobot {
                 () -> {
                     turret.extendHood(!turret.isHoodExtended());
                     SmartDashboard.putBoolean("Hood Extended", turret.isHoodExtended());
+                });
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_AUTO),
+                () -> {
+                    turret.enableAutoShooting(!turret.isAutoShootingEnabled());
+                    if (turret.isAutoShootingEnabled()) {
+                        turret.enableSentry(true);
+                        SmartDashboard.putBoolean("Sentry Mode Enabled", turret.isSentryEnabled());
+                    }
+                    SmartDashboard.putBoolean("Auto Shooting Enabled", turret.isAutoShootingEnabled());
+                });
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
+                () -> {
+                    turret.enableSentry(!turret.isSentryEnabled());
+                    SmartDashboard.putBoolean("Sentry Mode Enabled", turret.isSentryEnabled());
                 });
     }
 

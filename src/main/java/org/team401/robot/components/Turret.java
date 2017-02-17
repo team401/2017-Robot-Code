@@ -20,13 +20,11 @@ public class Turret implements Runnable {
     private CANTalon flywheel, feeder;
 
     private ContinuousRange yaw, throttle;
-    private double sensitivity;
-    private double sentryState = 0;
-    private boolean isSentryEnabled;
+    private boolean isSentryEnabled, autoShootingEnabled;
 
     public Turret(VisionDataStream stream, CANTalon turretSpinner, CANTalon flyWheelMotor1, CANTalon flyWheelMotor2,
                   CANTalon turretFeeder, Solenoid turretHood, Switch magSensor, Switch trigger,
-                  ContinuousRange yaw, ContinuousRange throttle, double sensitivity) {
+                  ContinuousRange yaw, ContinuousRange throttle) {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
         latestData = new VisionData(0, 0, 0);
@@ -35,7 +33,6 @@ public class Turret implements Runnable {
         this.isSentryEnabled = true;
         this.yaw = yaw;
         this.throttle = throttle;
-        this.sensitivity = sensitivity;
 
         flywheel = flyWheelMotor2;
 
@@ -77,10 +74,9 @@ public class Turret implements Runnable {
 
     private void sentryMode() {
         if (turretRotator.getPosition() >= turretRotator.getMaxAngle())
-            sentryState = 0;
+            turretRotator.setPosition(-1);
         else if (turretRotator.getPosition() <= 0)
-            sentryState = turretRotator.getMaxAngle();
-        turretRotator.setPosition(sentryState);
+            turretRotator.setPosition(turretRotator.getMaxAngle()+1);
     }
 
     @Override
@@ -88,7 +84,7 @@ public class Turret implements Runnable {
         while (!Thread.interrupted()) {
             latestData = stream.getLatestGoalData();
             double speed = 0.0;
-            if (isSentryEnabled) {
+            if (isSentryEnabled) { // auto turret control
                 if (latestData.isValid()) {
                     flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                     if (track())
@@ -110,15 +106,18 @@ public class Turret implements Runnable {
                                 .set(-MathUtils.INSTANCE.toRange(Math.abs(turnSpeed), .1, 1, .25, .75));
                 speed = MathUtils.INSTANCE.toRange(throttle.read()*-1, -1, 1, 1000, 4500);
             }
-            //TODO: auto shooting
-            // manual shooting
-            if (trigger.isTriggered()) {
+            // auto shooting
+            if (autoShootingEnabled && speed != 0) {
                 flywheel.set(speed);
-
+                feeder.set(.75);
+            }
+            // manual shooting
+            else if (!autoShootingEnabled && trigger.isTriggered()) {
+                flywheel.set(speed);
+                feeder.set(.75);
             } else {
                 flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
                 flywheel.set(0);
-                feeder.set(.75);
             }
             try {
                 Thread.sleep(10);
@@ -126,6 +125,14 @@ public class Turret implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    public void enableAutoShooting(boolean enabled) {
+        autoShootingEnabled = enabled;
+    }
+
+    public boolean isAutoShootingEnabled() {
+        return autoShootingEnabled;
     }
 
     public void enableSentry(boolean enabled) {
