@@ -2,6 +2,7 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.components.Motor;
@@ -36,7 +37,13 @@ public class Robot extends IterativeRobot {
         visionDataStream = new VisionDataStream("10.4.1.17", 5801);
         visionDataStream.start();
 
-        turret = new Turret(visionDataStream, new CANTalon(0), Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH), joysticky.getTrigger());
+        Solenoid turretHood = new Solenoid(0);
+        turretHood.set(false);
+
+        turret = new Turret(visionDataStream, new CANTalon(0), new CANTalon(1),
+                new CANTalon(2), new CANTalon(3), turretHood,
+                Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
+                joysticky.getTrigger(), joysticky.getYaw());
         turretThread = new Thread(turret);
         turretThread.start();
 

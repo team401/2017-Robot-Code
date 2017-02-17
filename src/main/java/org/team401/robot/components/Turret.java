@@ -1,7 +1,9 @@
 package org.team401.robot.components;
 
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.components.Switch;
+import org.strongback.components.ui.ContinuousRange;
 import org.team401.vision.VisionDataStream.VisionData;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
@@ -9,27 +11,28 @@ public class Turret implements Runnable {
 
     private TurretRotator turretRotator;
     private Switch trigger;
-    private Switch magSensor;
+    private Solenoid turretHood;
     private VisionDataStream stream;
     private VisionData latestData;
     private double sentryState = 0;
 
-    public Turret(VisionDataStream stream, CANTalon turretSpinner, CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder, Switch magSensor, Switch trigger) {
+    public Turret(VisionDataStream stream, CANTalon turretSpinner, CANTalon flyWheelMotor1, CANTalon flyWheelMotor2,
+                  CANTalon turretFeeder, Solenoid turretHood, Switch magSensor, Switch trigger, ContinuousRange yaw) {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
         latestData = new VisionData(0, 0, 0);
-        this.magSensor = magSensor;
         this.trigger = trigger;
+        this.turretHood = turretHood;
     }
 
-    public void track() {
+    private void track() {
         if (!trigger.isTriggered())
             turretRotator.addDegrees(-latestData.getYaw());
         else
             turretRotator.stop();
     }
 
-    public void sentryMode() {
+    private void sentryMode() {
         if (turretRotator.getPosition() >= turretRotator.getMaxAngle())
             sentryState = 0;
         else if (turretRotator.getPosition() <= 0)
@@ -42,10 +45,7 @@ public class Turret implements Runnable {
         while (!Thread.interrupted()) {
             latestData = stream.getLatestGoalData();
             if (latestData.isValid()) {
-                if (!trigger.isTriggered())
-                    track();
-                else
-                    turretRotator.stop();
+                track();
             } else
                 sentryMode();
             try {
@@ -54,6 +54,14 @@ public class Turret implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    public void extendHood(boolean extended) {
+        turretHood.set(extended);
+    }
+
+    public boolean isHoodExtended() {
+        return turretHood.get();
     }
 
     public TurretRotator getTurretRotator() {
