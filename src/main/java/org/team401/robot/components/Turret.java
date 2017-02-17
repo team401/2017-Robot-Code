@@ -2,6 +2,7 @@ package org.team401.robot.components;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.MathUtils;
@@ -72,7 +73,7 @@ public class Turret implements Runnable {
     }
 
     private double getSpeedForDistance() {
-        //TODO: Lidar shit
+        double distance = distanceSensor.getDistance();
         return 0.0;
     }
 
@@ -87,18 +88,17 @@ public class Turret implements Runnable {
     public void run() {
         while (!Thread.interrupted()) {
             latestData = stream.getLatestGoalData();
+            SmartDashboard.putBoolean("Can See Goal", latestData.isValid());
+            SmartDashboard.putNumber("Distance to High Goal", distanceSensor.getDistance());
             double speed = 0.0;
             if (isSentryEnabled) { // auto turret control
                 if (latestData.isValid()) {
-                    flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                     if (track())
                         speed = getSpeedForDistance();
                 } else {
-                    flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
                     sentryMode();
                 }
             } else { // manual turret control
-                flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                 turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
                 double turnSpeed = yaw.read();
                 if (Math.abs(turnSpeed) > .1)
@@ -107,16 +107,18 @@ public class Turret implements Runnable {
                                 .set(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .25, .75));
                     else
                         turretRotator.getRotator()
-                                .set(-MathUtils.INSTANCE.toRange(Math.abs(turnSpeed), .1, 1, .25, .75));
+                                .set(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .25, .75));
                 speed = MathUtils.INSTANCE.toRange(throttle.read()*-1, -1, 1, 1000, 4500);
             }
             // auto shooting
             if (autoShootingEnabled && speed != 0) {
+                flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                 flywheel.set(speed);
                 feeder.set(.75);
             }
             // manual shooting
             else if (!autoShootingEnabled && trigger.isTriggered()) {
+                flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                 flywheel.set(speed);
                 feeder.set(.75);
             } else {
