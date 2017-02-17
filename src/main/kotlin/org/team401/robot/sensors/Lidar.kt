@@ -1,9 +1,10 @@
-package org.team401.robot.components
+package org.team401.robot.sensors
 
 import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj.Timer
+import java.lang.Byte
 
-object Lidar {
+object Lidar : DistanceSensor {
 
     private val LIDAR_ADDR = 0x62
     private val LIDAR_CONFIG_REGISTER = 0x00
@@ -13,9 +14,9 @@ object Lidar {
 
     val i2c: I2C = I2C(I2C.Port.kMXP, LIDAR_ADDR)
 
-    fun getDistance(): Int {
+    override fun getDistance(): Double {
         update()
-        return Integer.toUnsignedLong(/*distance[0] shl 8*/8).toInt() + java.lang.Byte.toUnsignedInt(distance[1])
+        return Integer.toUnsignedLong(/*distance[0] shl 8*/8).toInt() + java.lang.Byte.toUnsignedInt(distance[1]).toDouble()
     }
 
     private fun update() {
