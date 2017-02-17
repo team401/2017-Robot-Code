@@ -66,20 +66,15 @@ public class ProfileSender {
 	}
 
 	/**
-	 * Sets the encoder on the Talon to 0.
-	 * Should be called when the profile is done so position values will be fresh for the next.
-	 */
-	public void resetEncoder(){
-		talon.setEncPosition(0);
-	}
-
-	/**
 	 * Called to clear motion profile buffer and reset state info during
 	 * disabled and when Talon is not in MP control mode.
 	 */
 	public void reset() {
 		//Clear the Talon's buffer
 		talon.clearMotionProfileTrajectories();
+
+		//Reset the encoder so that position values will be accurate in the next profile.
+		talon.setEncPosition(0);
 
 		//Set instance data to the defaults
 		setValue = SetValueMotionProfile.Disable;

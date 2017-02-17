@@ -146,11 +146,11 @@ public class Auto2017 {
 			startTimeout = Timer.getFPGATimestamp();
 
 			//Reset encoders so position feed-forward doesn't get confused
-			fl.resetEncoder();
-			fr.resetEncoder();
+			fl.reset();
+			fr.reset();
 			if(mecanum) {
-				rl.resetEncoder();
-				rr.resetEncoder();
+				rl.reset();
+				rr.reset();
 			}
 
 			//Get next path
@@ -199,12 +199,6 @@ public class Auto2017 {
 			case 4:
 				//auto should be done by now
 				System.out.println("Autonomous finished!");
-				fl.reset();
-				fr.reset();
-				if(mecanum) {
-					rl.reset();
-					rr.reset();
-				}
 				state++;
 				break;
 			default:
