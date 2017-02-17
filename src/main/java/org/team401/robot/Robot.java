@@ -11,17 +11,20 @@ import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
+import org.team401.robot.commands.CalibrateTurret;
 import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.OctocanumGearbox;
+import org.team401.robot.components.Turret;
+import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class Robot extends IterativeRobot {
 
-    private Motor turretSpinner;
-    private FlightStick joysticky;
-    private Switch switchy;
-    private double sentryState = 1;
+    private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
     private VisionDataStream visionDataStream;
+    private Camera camera;
+
+    private OctocanumDrive octocanumDrive;
     private Turret turret;
 
     private Thread turretThread;
@@ -32,13 +35,14 @@ public class Robot extends IterativeRobot {
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
-        turretSpinner = Hardware.Motors.talonSRX(0);
-        SmartDashboard.putNumber("allowedRange", 5);
-        joysticky = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
-        switchy = Hardware.Switches.normallyClosed(0);
         visionDataStream = new VisionDataStream("10.4.1.17", 5801);
         visionDataStream.start();
 
+        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
+        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
+        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
+
+        // drive stuff
         OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
@@ -47,19 +51,20 @@ public class Robot extends IterativeRobot {
         g.calibrate();
         octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 
+        // collection stuff
         CollectionGearbox collectionGearbox = new CollectionGearbox(
                 Hardware.Motors.victorSP(Constants.COL_PRO_1),
                 Hardware.Motors.victorSP(Constants.COL_PRO_2),
                 Hardware.Motors.victorSP(Constants.COL_PRO_3)
         );
 
-        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
-        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
-        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
+        // turret stuff
+        Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
+        turretHood.set(false);
         turret = new Turret(visionDataStream, new CANTalon(0), new CANTalon(1),
                 new CANTalon(2), new CANTalon(3), turretHood,
                 Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
-                joysticky.getTrigger(), joysticky.getYaw());
+                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw());
         turretThread = new Thread(turret);
         turretThread.start();
 
@@ -98,7 +103,11 @@ public class Robot extends IterativeRobot {
                     turretExtender.set(!turretExtender.get());
                     SmartDashboard.putBoolean("Turret Extended", turretExtender.get());
                 });
-        //switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD));
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD),
+                () -> {
+                    turret.extendHood(!turret.isHoodExtended());
+                    SmartDashboard.putBoolean("Hood Extended", turret.isHoodExtended());
+                });
     }
 
     @Override
