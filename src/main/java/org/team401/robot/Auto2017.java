@@ -59,17 +59,17 @@ public class Auto2017 {
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
 		for(OctocanumGearbox box:boxes)
 			box.getCimMotor().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
-		boxes.get(0).setControlMode(TalonControlMode.MotionProfile);
-		boxes.get(1).setControlMode(TalonControlMode.MotionProfile);
+		boxes.get(0).changeControlMode(TalonControlMode.MotionProfile);
+		boxes.get(1).changeControlMode(TalonControlMode.MotionProfile);
 
 		//Make the rear Talons followers if in Traction mode
 		if(mecanum) {
-			boxes.get(2).setControlMode(TalonControlMode.MotionProfile);
-			boxes.get(3).setControlMode(TalonControlMode.MotionProfile);
+			boxes.get(2).changeControlMode(TalonControlMode.MotionProfile);
+			boxes.get(3).changeControlMode(TalonControlMode.MotionProfile);
 		}else {
-			boxes.get(2).setControlMode(TalonControlMode.Follower);
+			boxes.get(2).changeControlMode(TalonControlMode.Follower);
 			boxes.get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
-			boxes.get(3).setControlMode(TalonControlMode.Follower);
+			boxes.get(3).changeControlMode(TalonControlMode.Follower);
 			boxes.get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
 		}
 

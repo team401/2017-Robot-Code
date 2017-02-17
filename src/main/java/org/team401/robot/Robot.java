@@ -15,7 +15,7 @@ import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 
 import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.commands.ToggleDriveMode;
+import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.OctocanumGearbox;
 
 /**
@@ -64,7 +64,7 @@ public class Robot extends IterativeRobot {
 
         // shift drive modes
         switchReactor.onTriggeredSubmit(joy0.getTrigger(),
-                () -> new ToggleDriveMode(drive));
+                () -> new ShiftDriveMode(drive));
         // camera switching
         //switchReactor.onTriggered(joy1.getButton(Constants.BUTTON_SWITCH_CAMERA),
         //        () -> camera.switchCamera());
@@ -119,7 +119,7 @@ public class Robot extends IterativeRobot {
 	public void teleopInit(){
 		//reset Talon control modes from autonomous
 		for (OctocanumGearbox x: drive.getGearboxes())
-			x.setControlMode(CANTalon.TalonControlMode.PercentVbus);
+			x.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 
 		//reset Strongback/gyro
 		Strongback.restart();
