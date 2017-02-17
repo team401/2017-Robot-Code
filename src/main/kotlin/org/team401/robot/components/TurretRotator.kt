@@ -14,7 +14,7 @@ class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
         rotator.set(0.0)
         rotator.reverseOutput(false)
         rotator.reverseSensor(true)
-        rotator.configPeakOutputVoltage(2.0, -2.0)
+        rotator.configPeakOutputVoltage(1.5, -1.5)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit(maxAngle*187/5040)
         rotator.enableForwardSoftLimit(true)

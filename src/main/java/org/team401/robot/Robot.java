@@ -61,10 +61,10 @@ public class Robot extends IterativeRobot {
         // turret stuff
         Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
         turretHood.set(false);
-        turret = new Turret(visionDataStream, new CANTalon(0), new CANTalon(1),
-                new CANTalon(2), new CANTalon(3), turretHood,
+        turret = new Turret(visionDataStream, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
+                new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood,
                 Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
-                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw());
+                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle(), 5);
         turretThread = new Thread(turret);
         turretThread.start();
 
