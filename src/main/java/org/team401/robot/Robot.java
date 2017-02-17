@@ -91,9 +91,13 @@ public class Robot extends IterativeRobot {
                 });
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
                 () -> {
-                    if (collectionGearbox.isRunning())
+                    if (collectionGearbox.isRunning()) {
                         collectionGearbox.setSpeed(0);
-                    else
+                    } else if (!collectionGearbox.isRunning() && !collectionExtender.get()) {
+                        collectionExtender.set(true);
+                        SmartDashboard.putBoolean("Collection Down", collectionExtender.get());
+                        collectionGearbox.setSpeed(1);
+                    } else
                         collectionGearbox.setSpeed(1);
                     SmartDashboard.putBoolean("Collection Enabled", collectionGearbox.isRunning());
                 });
