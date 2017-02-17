@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.MathUtils;
+import org.team401.robot.sensors.DistanceSensor;
 import org.team401.vision.VisionDataStream.VisionData;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
@@ -15,6 +16,7 @@ public class Turret implements Runnable {
 
     private VisionDataStream stream;
     private VisionData latestData;
+    private DistanceSensor distanceSensor;
     private Switch trigger;
 
     private CANTalon flywheel, feeder;
@@ -22,8 +24,9 @@ public class Turret implements Runnable {
     private ContinuousRange yaw, throttle;
     private boolean isSentryEnabled, autoShootingEnabled;
 
-    public Turret(VisionDataStream stream, CANTalon turretSpinner, CANTalon flyWheelMotor1, CANTalon flyWheelMotor2,
-                  CANTalon turretFeeder, Solenoid turretHood, Switch magSensor, Switch trigger,
+    public Turret(VisionDataStream stream, DistanceSensor distanceSensor, CANTalon turretSpinner,
+                  CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder,
+                  Solenoid turretHood, Switch magSensor, Switch trigger,
                   ContinuousRange yaw, ContinuousRange throttle) {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
@@ -33,6 +36,7 @@ public class Turret implements Runnable {
         this.isSentryEnabled = true;
         this.yaw = yaw;
         this.throttle = throttle;
+        this.distanceSensor = distanceSensor;
 
         flywheel = flyWheelMotor2;
 

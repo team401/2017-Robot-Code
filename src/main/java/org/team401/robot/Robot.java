@@ -2,6 +2,7 @@ package org.team401.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,7 @@ import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.OctocanumGearbox;
 import org.team401.robot.components.Turret;
+import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class Robot extends IterativeRobot {
@@ -61,7 +63,9 @@ public class Robot extends IterativeRobot {
         // turret stuff
         Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
         turretHood.set(false);
-        turret = new Turret(visionDataStream, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
+        Lidar lidar = new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3);
+        lidar.start();
+        turret = new Turret(visionDataStream, lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
                 new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood,
                 Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
                 masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
