@@ -4,7 +4,7 @@ import edu.wpi.cscore.UsbCamera
 import edu.wpi.first.wpilibj.CameraServer
 import org.team401.robot.Constants
 
-class Camera(val width: Int, val height: Int, val fps: Int) {
+class Camera(width: Int, height: Int, fps: Int) {
 
     val cameraServer = CameraServer.getInstance()!!
 
