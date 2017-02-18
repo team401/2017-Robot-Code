@@ -25,8 +25,8 @@ object Constants {
     const val FRONT_RIGHT_SLAVE     = 4
     const val REAR_LEFT_MASTER      = 6
     const val REAR_LEFT_SLAVE       = 5
-    const val REAR_RIGHT_MASTER     = 8
-    const val REAR_RIGHT_SLAVE      = 7
+    const val REAR_RIGHT_MASTER     = 7
+    const val REAR_RIGHT_SLAVE      = 8
     // can device ids for the turret
     const val TURRET_SHOOTER_LEFT   = 9
     const val TURRET_SHOOTER_RIGHT  = 10

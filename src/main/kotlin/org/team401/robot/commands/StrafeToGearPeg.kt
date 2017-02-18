@@ -12,8 +12,8 @@ class StrafeToGearPeg(octocanumDrive: OctocanumDrive, stream: VisionDataStream) 
     val controller: PIDController
 
     init {
-        controller = PIDController(1, 0, 0, StrafeError(stream))
-        stream.latestGearData.strafe.
+        controller = PIDController(1.0, 0.0, 0.0, StrafeError(stream)) {}
+
     }
 
     override fun initialize() {
