@@ -4,6 +4,7 @@ import com.analog.adis16448.frc.ADIS16448_IMU;
 
 import com.ctre.CANTalon;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,12 +43,11 @@ public class Robot extends IterativeRobot {
 
 		//init drive
 		drive = new OctocanumDrive(
-				new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT)),
-				new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT)),
-				new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT)),
-				new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT)),
-				new Solenoid(Constants.GEARBOX_SHIFTER),
-				new ADIS16448_IMU());
+				new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE)),
+				new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE)),
+				new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE)),
+				new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE)),
+				new Solenoid(Constants.GEARBOX_SHIFTER), new ADXRS450_Gyro());
 
 		//Switch to tank drive default
 		drive.shift(OctocanumDrive.DriveMode.TRACTION);
@@ -135,10 +135,10 @@ public class Robot extends IterativeRobot {
 		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
 
 		//Get encoder data
-		double fls = drive.getGearboxes().get(0).getCimMotor().getEncVelocity(),
-				frs = drive.getGearboxes().get(1).getCimMotor().getEncVelocity(),
-				rls = drive.getGearboxes().get(2).getCimMotor().getEncVelocity(),
-				rrs = drive.getGearboxes().get(3).getCimMotor().getEncVelocity();
+		double fls = drive.getGearboxes().get(0).getMaster().getEncVelocity(),
+				frs = drive.getGearboxes().get(1).getMaster().getEncVelocity(),
+				rls = drive.getGearboxes().get(2).getMaster().getEncVelocity(),
+				rrs = drive.getGearboxes().get(3).getMaster().getEncVelocity();
 
 		//Send encoder data to SD to manually calculate F-Gain if desired
 		SmartDashboard.putNumber("Front Left Speed", fls);
@@ -166,7 +166,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {//Called when the robot is on but inactive
 		drive.drive(0, 0, 0, 0);
 		for(OctocanumGearbox box:drive.getGearboxes())
-			box.getCimMotor().setPID(
+			box.getMaster().setPID(
 				SmartDashboard.getNumber("P", 0),
 				SmartDashboard.getNumber("I", 0),
 				SmartDashboard.getNumber("D", 0));
