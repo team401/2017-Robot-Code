@@ -2,6 +2,7 @@ package org.team401.robot.commands
 
 import com.ctre.CANTalon
 import org.strongback.command.Command
+import org.team401.robot.Constants
 import org.team401.robot.chassis.OctocanumDrive
 import java.security.InvalidParameterException
 
@@ -20,7 +21,7 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
             throw InvalidParameterException("Invalid array size of ${rotations.size} (expected 4)")
         octocanumDrive.shift(mode)
         octocanumDrive.changeControlMode(CANTalon.TalonControlMode.Position,
-                {// config left gearboxes pidf values
+                {// config left gearbox pidf values
                     // it references a CANTalon object
                     it.p = 1.0
                     it.i = 0.0
@@ -29,7 +30,7 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
                     it.position = 0.0
                     it.set(0.0)
                 },
-                {// config right gearboxes pidf values
+                {// config right gearbox pidf values
                     // it references a CANTalon object
                     it.p = 1.0
                     it.i = 0.0
@@ -37,6 +38,14 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
                     it.f = 0.0
                     it.position = 0.0
                     it.set(0.0)
+                },
+                {
+                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
+                    it.set(Constants.CIM_FRONT_LEFT.toDouble())
+                },
+                {
+                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
+                    it.set(Constants.CIM_FRONT_RIGHT.toDouble())
                 })
     }
 
@@ -53,6 +62,7 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
     }
 
     override fun end() {
-        octocanumDrive.changeControlMode(CANTalon.TalonControlMode.PercentVbus, { it.set(0.0) }, { it.set(0.0) })
+        octocanumDrive.changeControlMode(CANTalon.TalonControlMode.PercentVbus,
+                { it.set(0.0) }, { it.set(0.0) }, { it.set(0.0) }, { it.set(0.0) })
     }
 }
