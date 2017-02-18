@@ -58,7 +58,7 @@ public class Auto2017 {
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
 		for(OctocanumGearbox box:boxes)
-			box.getCimMotor().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
+			box.getProMotor().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
 		boxes.get(0).changeControlMode(TalonControlMode.MotionProfile);
 		boxes.get(1).changeControlMode(TalonControlMode.MotionProfile);
 
@@ -68,9 +68,9 @@ public class Auto2017 {
 			boxes.get(3).changeControlMode(TalonControlMode.MotionProfile);
 		}else {
 			boxes.get(2).changeControlMode(TalonControlMode.Follower);
-			boxes.get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
+			boxes.get(2).getProMotor().set(Constants.CIM_FRONT_LEFT);
 			boxes.get(3).changeControlMode(TalonControlMode.Follower);
-			boxes.get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
+			boxes.get(3).getProMotor().set(Constants.CIM_FRONT_RIGHT);
 		}
 
 		//Read profiles from correct spreadsheet
@@ -89,13 +89,13 @@ public class Auto2017 {
 	private void startProfile(){
 		//Start up the ProfileSenders
 
-		fl = new ProfileSender(drive.getGearboxes().get(0).getCimMotor(), profiles[0]);
-		fr = new ProfileSender(drive.getGearboxes().get(1).getCimMotor(), profiles[1]);
+		fl = new ProfileSender(drive.getGearboxes().get(0).getProMotor(), profiles[0]);
+		fr = new ProfileSender(drive.getGearboxes().get(1).getProMotor(), profiles[1]);
 
 		//Only need 2 if in traction mode
 		if(mecanum) {
-			rl = new ProfileSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
-			rr = new ProfileSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
+			rl = new ProfileSender(drive.getGearboxes().get(2).getProMotor(), profiles[2]);
+			rr = new ProfileSender(drive.getGearboxes().get(3).getProMotor(), profiles[3]);
 		}
 
 		//Start sending the profiles
@@ -123,10 +123,10 @@ public class Auto2017 {
 			fl.getTalon().getEncVelocity()+":"+
 			fr.getTalon().getEncVelocity()+
 			(mecanum ?
-				rl.getTalon().getSpeed()+":"+
+				":"+rl.getTalon().getSpeed()+":"+
 				rr.getTalon().getSpeed()+":"+
 				rl.getTalon().getEncVelocity()+":"+
-				rr.getTalon().getEncVelocity()+":"
+				rr.getTalon().getEncVelocity()
 			: ""));
 
 		//Keep the MP loops going

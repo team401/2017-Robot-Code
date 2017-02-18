@@ -158,8 +158,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
 		SmartDashboard.putNumber("I", SmartDashboard.getNumber("I", 0));
 		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));
-		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 0));
-		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 0));
+		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 1));
+		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 1));
 	}
 
 	@Override
