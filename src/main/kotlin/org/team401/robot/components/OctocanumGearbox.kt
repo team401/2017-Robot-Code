@@ -4,6 +4,7 @@ import com.ctre.CANTalon
 
 /**
  * Wrapper class for the octocanum gearbox
+ * Motor default mode is PercentVbus
  *
  * @param cimMotor CANTalon reference
  * @param proMotor CANTalon reference
@@ -30,11 +31,11 @@ class OctocanumGearbox(val cimMotor: CANTalon, val proMotor: CANTalon) {
     }
 
     /**
-     * Sets the setpoint of the TalonSRX to the specified speed (percent vbus)
+     * Sets the setpoint of the TalonSRX to the specified output
      *
-     * @param throttle % power for the motors
+     * @param output for the motor controller
      */
-    fun setSpeed(throttle: Double) {
-        cimMotor.setpoint = throttle
+    fun setOutput(output: Double) {
+        cimMotor.set(output)
     }
 }

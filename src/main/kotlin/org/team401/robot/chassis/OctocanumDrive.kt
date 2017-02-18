@@ -64,7 +64,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
      * @param rightXThrottle Right joystick's getPitch() value
      * @param rightYThrottle Right joysticks getRoll() value
      */
-    fun drive(leftYThrottle: Double, leftXThrottle: Double, rightYThrottle: Double, rightXThrottle: Double) {
+    fun drive(leftYThrottle: Double, leftXThrottle: Double, rightXThrottle: Double) {
         // map the input speeds to match the driver's orientation to the field
         SmartDashboard.putNumber("Gyro Angle", gyro.angle)
         val speed = MathUtils.rotateVector(
@@ -92,12 +92,22 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         SmartDashboard.putNumber("Gyro Error", gyroError.output)
 
         MathUtils.normalize(wheelSpeeds)
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setSpeed(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setSpeed(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
 
         SmartDashboard.putData("Gyro Stuff", gyro)
+    }
+
+    /**
+     * Directly set the output of each gearbox
+     */
+    fun drive(leftFront: Double, rightFront: Double, leftRear: Double, rightRear: Double) {
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(leftFront)
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(leftRear)
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(rightFront)
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(rightRear)
     }
 
     /**
@@ -127,15 +137,16 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
     }
 
     /**
-     * Changes the drive mode of each gearbox, and runs the lambdas (left) and (right)
-     * on the CANTalon objects for their respective sides on the robot.
+     * Changes the drive mode of each gearbox, and runs the lambdas on the
+     * master CANTalon objects for their respective sides on the robot.
      */
-    fun changeControlMode(mode: CANTalon.TalonControlMode, left: (CANTalon) -> Unit, right: (CANTalon) -> Unit) {
+    fun changeControlMode(mode: CANTalon.TalonControlMode, leftFront: (CANTalon) -> Unit, rightFront: (CANTalon) -> Unit,
+                          leftRear: (CANTalon) -> Unit, rightRear: (CANTalon) -> Unit) {
         gearboxes.forEach { it.changeControlMode(mode) }
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].config(left)
-        gearboxes[Constants.GEARBOX_REAR_LEFT].config(left)
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].config(right)
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].config(right)
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].config(leftFront)
+        gearboxes[Constants.GEARBOX_REAR_LEFT].config(leftRear)
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].config(rightFront)
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].config(rightRear)
     }
 
     /**
