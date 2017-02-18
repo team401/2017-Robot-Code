@@ -1,4 +1,4 @@
-package org.team401.robot
+package org.team401.robot.math
 
 object MathUtils {
 

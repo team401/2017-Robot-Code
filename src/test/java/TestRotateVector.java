@@ -1,5 +1,5 @@
 import org.junit.Test;
-import org.team401.robot.MathUtils;
+import org.team401.robot.math.MathUtils;
 
 import java.text.DecimalFormat;
 

@@ -19,15 +19,14 @@ object Constants {
     const val PDP                   = 0
     const val PCM                   = 12
     // can device ids for the motor controllers
-    // CIM is master, PRO is slave
-    const val CIM_FRONT_LEFT        = 5
-    const val PRO_FRONT_LEFT        = 6
-    const val CIM_FRONT_RIGHT       = 1
-    const val PRO_FRONT_RIGHT       = 2
-    const val CIM_REAR_LEFT         = 7
-    const val PRO_REAR_LEFT         = 8
-    const val CIM_REAR_RIGHT        = 3
-    const val PRO_REAR_RIGHT        = 4
+    const val FRONT_LEFT_MASTER     = 1
+    const val FRONT_LEFT_SLAVE      = 2
+    const val FRONT_RIGHT_MASTER    = 3
+    const val FRONT_RIGHT_SLAVE     = 4
+    const val REAR_LEFT_MASTER      = 6
+    const val REAR_LEFT_SLAVE       = 5
+    const val REAR_RIGHT_MASTER     = 8
+    const val REAR_RIGHT_SLAVE      = 7
     // can device ids for the turret
     const val TURRET_SHOOTER_LEFT   = 9
     const val TURRET_SHOOTER_RIGHT  = 10
@@ -45,9 +44,10 @@ object Constants {
     const val MASHER_JOYSTICK       = 2
 
     // left drive joystick
-    const val BUTTON_SHIFT          = 2
-    const val BUTTON_SWITCH_CAMERA  = 1
+    const val BUTTON_SHIFT          = 0
+    const val BUTTON_TOGGLE_GYRO    = 2
     // right drive joystick
+    const val BUTTON_SWITCH_CAMERA  = 1
     const val BUTTON_COL_DROP       = 2
     const val BUTTON_COL_TOGGLE     = 3
     const val BUTTON_GEAR           = 0
