@@ -118,16 +118,16 @@ public class Auto2017 {
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
 		SmartDashboard.putString("GRAPH", ""+
-			fl.getTalon().getSpeed()*
-				fr.getTalon().getSpeed()/2*
-				(mecanum?
-					rl.getTalon().getSpeed()*
-					rr.getTalon().getSpeed()/2:1)+":"+
-			fl.getTalon().getEncVelocity()*
-				fr.getTalon().getEncVelocity()/2*
-				(mecanum?
-					rl.getTalon().getEncVelocity()*
-					rr.getTalon().getEncVelocity()/2:1)+":");
+			fl.getTalon().getSpeed()+":"+
+			fr.getTalon().getSpeed()+":"+
+			fl.getTalon().getEncVelocity()+":"+
+			fr.getTalon().getEncVelocity()+
+			(mecanum ?
+				rl.getTalon().getSpeed()+":"+
+				rr.getTalon().getSpeed()+":"+
+				rl.getTalon().getEncVelocity()+":"+
+				rr.getTalon().getEncVelocity()+":"
+			: ""));
 
 		//Keep the MP loops going
 		fl.control();
