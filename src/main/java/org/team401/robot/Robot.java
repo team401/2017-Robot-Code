@@ -2,8 +2,7 @@ package org.team401.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
@@ -31,7 +30,7 @@ public class Robot extends IterativeRobot {
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
         OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
-        ADIS16448_IMU g = new ADIS16448_IMU();
+        ADXRS450_Gyro g = new ADXRS450_Gyro();
         g.calibrate();
         octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 

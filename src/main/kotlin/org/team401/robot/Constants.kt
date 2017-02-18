@@ -20,14 +20,14 @@ object Constants {
     const val PCM                   = 12
     // can device ids for the motor controllers
     // CIM is master, PRO is slave
-    const val CIM_FRONT_LEFT        = 5
-    const val PRO_FRONT_LEFT        = 6
-    const val CIM_FRONT_RIGHT       = 1
-    const val PRO_FRONT_RIGHT       = 2
-    const val CIM_REAR_LEFT         = 7
-    const val PRO_REAR_LEFT         = 8
-    const val CIM_REAR_RIGHT        = 3
-    const val PRO_REAR_RIGHT        = 4
+    const val CIM_FRONT_LEFT        = 2
+    const val PRO_FRONT_LEFT        = 1
+    const val CIM_FRONT_RIGHT       = 4
+    const val PRO_FRONT_RIGHT       = 3
+    const val CIM_REAR_LEFT         = 6
+    const val PRO_REAR_LEFT         = 5
+    const val CIM_REAR_RIGHT        = 8
+    const val PRO_REAR_RIGHT        = 7
     // can device ids for the turret
     const val TURRET_SHOOTER_LEFT   = 9
     const val TURRET_SHOOTER_RIGHT  = 10

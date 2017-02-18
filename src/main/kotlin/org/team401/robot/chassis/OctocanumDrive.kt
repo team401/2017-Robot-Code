@@ -2,6 +2,7 @@ package org.team401.robot.chassis
 
 import com.analog.adis16448.frc.ADIS16448_IMU
 import com.ctre.CANTalon
+import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.PIDController
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.interfaces.Gyro
@@ -26,7 +27,7 @@ import java.util.*
  */
 class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: OctocanumGearbox,
                      rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox,
-                     val shifter: Solenoid, val gyro: ADIS16448_IMU) {
+                     val shifter: Solenoid, val gyro: ADXRS450_Gyro) {
     /**
      * Immutable list of gearboxes, will always have a size of 4
      */
