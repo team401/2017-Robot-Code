@@ -24,6 +24,9 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
+        // turn compressor fan on
+        new Solenoid(Constants.COMPRESSOR_FAN).set(true);
+
         OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE));
         OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE));
         OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE));

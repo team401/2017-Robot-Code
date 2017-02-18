@@ -13,6 +13,8 @@ object Constants {
     const val COL_EXTENDER          = 2
     const val GEAR_HOLDER           = 3
     const val TURRET_SHIFTER        = 4
+    const val COMPRESSOR_FAN        = 5
+    const val TURRET_LED_RING       = 6
     // solenoid ids (module 2)
 
     // can device ids
