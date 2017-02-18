@@ -62,11 +62,11 @@ public class Robot extends IterativeRobot {
 
         // turret stuff
         Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
-        turretHood.set(false);
+        Solenoid ledRing = new Solenoid(Constants.TURRET_LED_RING);
         Lidar lidar = new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3);
         lidar.start();
         turret = new Turret(visionDataStream, lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
-                new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood,
+                new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing,
                 Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
                 masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
         turretThread = new Thread(turret);

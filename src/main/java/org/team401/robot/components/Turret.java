@@ -14,6 +14,7 @@ public class Turret implements Runnable {
 
     private TurretRotator turretRotator;
     private Solenoid turretHood;
+    private Solenoid ledRing;
 
     private VisionDataStream stream;
     private VisionData latestData;
@@ -27,7 +28,7 @@ public class Turret implements Runnable {
 
     public Turret(VisionDataStream stream, DistanceSensor distanceSensor, CANTalon turretSpinner,
                   CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder,
-                  Solenoid turretHood, Switch magSensor, Switch trigger,
+                  Solenoid turretHood, Solenoid ledRing, Switch magSensor, Switch trigger,
                   ContinuousRange yaw, ContinuousRange throttle) {
         this.stream = stream;
         turretRotator = new TurretRotator(turretSpinner, magSensor);
@@ -38,6 +39,9 @@ public class Turret implements Runnable {
         this.yaw = yaw;
         this.throttle = throttle;
         this.distanceSensor = distanceSensor;
+
+        turretHood.set(false);
+        ledRing.set(false);
 
         flywheel = flyWheelMotor2;
 
@@ -143,6 +147,8 @@ public class Turret implements Runnable {
 
     public void enableSentry(boolean enabled) {
         isSentryEnabled = enabled;
+        ledRing.set(isSentryEnabled);
+
     }
 
     public boolean isSentryEnabled() {
