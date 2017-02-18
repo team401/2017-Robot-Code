@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.robot.GyroOutput
-import org.team401.robot.MathUtils
+import org.team401.robot.math.MathUtils
 import org.team401.robot.components.OctocanumGearbox
 import java.util.*
 
@@ -71,7 +71,7 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         val speed = MathUtils.rotateVector(
                 leftXThrottle,
                 -leftYThrottle,
-                if (driveMode == DriveMode.MECANUM && SmartDashboard.getBoolean("Gyro Enabled", true))
+                if (driveMode == DriveMode.MECANUM && SmartDashboard.getBoolean("Field-Centric", false))
                     gyro.angle*SmartDashboard.getNumber("Gyro Multiplier", 1.0) else 0.0)
 
         val x: Double
@@ -87,9 +87,9 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
         wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
         wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
-        MathUtils.scale(wheelSpeeds, 0.8)
+        /*MathUtils.scale(wheelSpeeds, 0.8)
         for (it in wheelSpeeds.indices)
-            wheelSpeeds[it] += gyroError.output
+            wheelSpeeds[it] += gyroError.output*/
         SmartDashboard.putNumber("Gyro Error", gyroError.output)
 
         MathUtils.normalize(wheelSpeeds)

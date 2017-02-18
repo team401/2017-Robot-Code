@@ -41,18 +41,18 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
                 },
                 {
                     it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.CIM_FRONT_LEFT.toDouble())
+                    it.set(Constants.FRONT_LEFT_MASTER.toDouble())
                 },
                 {
                     it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.CIM_FRONT_RIGHT.toDouble())
+                    it.set(Constants.FRONT_RIGHT_MASTER.toDouble())
                 })
     }
 
     override fun execute(): Boolean {
         return octocanumDrive.gearboxes.indices.filter {
             // check if each motor has traveled the right distance
-            Math.abs(octocanumDrive.gearboxes[it].cimMotor.get() - rotations[it]) < tolarance
+            Math.abs(octocanumDrive.gearboxes[it].master.get() - rotations[it]) < tolarance
         }.size == 4
         // ^^^^^ return if all 4 are finished
     }

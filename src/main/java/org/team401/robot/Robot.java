@@ -1,6 +1,5 @@
 package org.team401.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +10,6 @@ import org.strongback.hardware.Hardware;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ShiftDriveMode;
-import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.OctocanumGearbox;
 
 public class Robot extends IterativeRobot {
@@ -26,19 +24,19 @@ public class Robot extends IterativeRobot {
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
 
-        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_LEFT), new CANTalon(Constants.PRO_FRONT_LEFT));
-        OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.CIM_FRONT_RIGHT), new CANTalon(Constants.PRO_FRONT_RIGHT));
-        OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_LEFT), new CANTalon(Constants.PRO_REAR_LEFT));
-        OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.CIM_REAR_RIGHT), new CANTalon(Constants.PRO_REAR_RIGHT));
+        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE));
+        OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE));
+        OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE));
+        OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE));
         ADXRS450_Gyro g = new ADXRS450_Gyro();
         g.calibrate();
         octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 
-        CollectionGearbox collectionGearbox = new CollectionGearbox(
+        /*CollectionGearbox collectionGearbox = new CollectionGearbox(
                 Hardware.Motors.victorSP(Constants.COL_PRO_1),
                 Hardware.Motors.victorSP(Constants.COL_PRO_2),
                 Hardware.Motors.victorSP(Constants.COL_PRO_3)
-        );
+        );*/
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
@@ -46,22 +44,24 @@ public class Robot extends IterativeRobot {
 
         camera = new Camera(640, 480, 10);
 
-        Solenoid collectionExtender = new Solenoid(Constants.COL_EXTENDER);
+        /*Solenoid collectionExtender = new Solenoid(Constants.COL_EXTENDER);
         collectionExtender.set(false);
         Solenoid turretExtender = new Solenoid(Constants.TURRET_SHIFTER);
         turretExtender.set(false);
-        Solenoid gearScoring = new Solenoid(Constants.GEAR_HOLDER);
+        Solenoid gearScoring = new Solenoid(Constants.GEAR_HOLDER);*/
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggeredSubmit(driveJoystickLeft.getTrigger(),
+        switchReactor.onTriggeredSubmit(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
                 () -> new ShiftDriveMode(octocanumDrive));
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_TOGGLE_GYRO),
+                () -> SmartDashboard.putBoolean("Field-Centric", !SmartDashboard.getBoolean("Field-Centric", true)));
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
         // collection
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
                 () -> {
                     collectionExtender.set(!collectionExtender.get());
                     SmartDashboard.putBoolean("Collection Down", collectionExtender.get());
@@ -91,7 +91,7 @@ public class Robot extends IterativeRobot {
                     turretExtender.set(!turretExtender.get());
                     SmartDashboard.putBoolean("Turret Extended", turretExtender.get());
                 });
-        //switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD));
+        //switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD));*/
     }
 
     @Override
@@ -118,7 +118,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
         octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
+                driveJoystickRight.getRoll().read());
     }
 
     @Override
