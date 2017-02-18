@@ -159,6 +159,13 @@ public class Auto2017 {
 	}
 
 	/**
+	 * Aligns the robot with the gear peg
+	 */
+	private void strafe(){
+		//drive.changeControlMode(TalonControlMode.Position);
+	}
+
+	/**
 	 * Determines if we are finished with the current path
 	 *
 	 * @return True if all the ProfileSenders are finished.
@@ -183,6 +190,8 @@ public class Auto2017 {
 				move();
 				break;
 			case 1:
+				if(tgt.endsWith("H"))
+					strafe();
 				//Wait for a specified time for balls to fall in the robot or a pilot to lift the gear
 				if(startTimeout+(tgt.endsWith("H") ? HOPPER_TIMEOUT : PEG_TIMEOUT) <= Timer.getFPGATimestamp())
 					state++;
