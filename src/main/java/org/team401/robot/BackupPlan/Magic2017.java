@@ -57,14 +57,14 @@ public class Magic2017 {
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
 		for(OctocanumGearbox box:boxes)
-			box.getCimMotor().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
+			box.getMaster().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
 
 		//Make the rear Talons followers if in Traction mode
 		if(!mecanum) {
 			boxes.get(2).changeControlMode(TalonControlMode.Follower);
-			boxes.get(2).getCimMotor().set(Constants.CIM_FRONT_LEFT);
+			boxes.get(2).getMaster().set(Constants.FRONT_LEFT_MASTER);
 			boxes.get(3).changeControlMode(TalonControlMode.Follower);
-			boxes.get(3).getCimMotor().set(Constants.CIM_FRONT_RIGHT);
+			boxes.get(3).getMaster().set(Constants.FRONT_RIGHT_MASTER);
 		}
 
 		//Read profiles from correct spreadsheet
@@ -82,13 +82,13 @@ public class Magic2017 {
 	 */
 	private void startProfile(){
 		//Start up the ProfileSenders
-		fl = new MagicSender(drive.getGearboxes().get(0).getCimMotor(), profiles[0]);
-		fr = new MagicSender(drive.getGearboxes().get(1).getCimMotor(), profiles[1]);
+		fl = new MagicSender(drive.getGearboxes().get(0).getMaster(), profiles[0]);
+		fr = new MagicSender(drive.getGearboxes().get(1).getMaster(), profiles[1]);
 
 		//Only need 2 if in traction mode
 		if(mecanum) {
-			rl = new MagicSender(drive.getGearboxes().get(2).getCimMotor(), profiles[2]);
-			rr = new MagicSender(drive.getGearboxes().get(3).getCimMotor(), profiles[3]);
+			rl = new MagicSender(drive.getGearboxes().get(2).getMaster(), profiles[2]);
+			rr = new MagicSender(drive.getGearboxes().get(3).getMaster(), profiles[3]);
 		}
 	}
 
