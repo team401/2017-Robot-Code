@@ -1,193 +1,131 @@
 package org.team401.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-
 import com.ctre.CANTalon;
-
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
-
+import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.OctocanumGearbox;
 
-/**
- * FRC Team 401 2017 Autonomous Test Project
- * Auto: Select from 28 possible autonomous modes.  These are stored in .csv files which should be uploaded to the robot's filesystem.
- * Teleop: Drive with 2 joysticks.  The encoders' velocities are sent to SmartDashboard for F-Gain calculation.
- */
-
 public class Robot extends IterativeRobot {
-	//SendableChoosers allow selection from a list at runtime
-	private SendableChooser autoStart, autoTgt;
 
-	//Autonomous mode is abstracted with another class
-	private Auto2017 autonomous;
+    private OctocanumDrive octocanumDrive;
+    private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
+    private Camera camera;
 
-	private OctocanumDrive drive;
-	private FlightStick joy0, joy1;
+    @Override
+    public void robotInit() {
+        Strongback.configure()
+                .recordDataToFile("/home/lvuser/")
+                .recordEventsToFile("/home/lvuser/", 2097152);
 
-	@Override
-	public void robotInit() {//Called on startup
-		//Joysticks
-		joy0 = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
-		joy1 = Hardware.HumanInterfaceDevices.logitechAttack3D(1);
+        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE));
+        OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE));
+        OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE));
+        OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE));
+        ADXRS450_Gyro g = new ADXRS450_Gyro();
+        g.calibrate();
+        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
 
-		//init drive
-		drive = new OctocanumDrive(
-				new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE)),
-				new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE)),
-				new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE)),
-				new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE)),
-				new Solenoid(Constants.GEARBOX_SHIFTER), new ADXRS450_Gyro());
+        /*CollectionGearbox collectionGearbox = new CollectionGearbox(
+                Hardware.Motors.victorSP(Constants.COL_PRO_1),
+                Hardware.Motors.victorSP(Constants.COL_PRO_2),
+                Hardware.Motors.victorSP(Constants.COL_PRO_3)
+        );*/
 
-		//Switch to tank drive default
-		drive.shift(OctocanumDrive.DriveMode.TRACTION);
+        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
+        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
+        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
 
-		//Reminder that a couple options aren't planned for and won't do anything
-		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
+        camera = new Camera(640, 480, 10);
 
-		//defaults in traction mode until all encoders are done
-		drive.setDriveMode(OctocanumDrive.DriveMode.TRACTION);
+        /*Solenoid collectionExtender = new Solenoid(Constants.COL_EXTENDER);
+        collectionExtender.set(false);
+        Solenoid turretExtender = new Solenoid(Constants.TURRET_SHIFTER);
+        turretExtender.set(false);
+        Solenoid gearScoring = new Solenoid(Constants.GEAR_HOLDER);*/
 
-		SwitchReactor switchReactor = Strongback.switchReactor();
-
-		//Camera camera = new Camera(640, 480, 10);//Camera commented out because it ruins println's.
+        SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggeredSubmit(joy0.getTrigger(),
-                () -> new ShiftDriveMode(drive));
+        switchReactor.onTriggeredSubmit(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
+                () -> new ShiftDriveMode(octocanumDrive));
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_TOGGLE_GYRO),
+                () -> SmartDashboard.putBoolean("Field-Centric", !SmartDashboard.getBoolean("Field-Centric", true)));
         // camera switching
-        //switchReactor.onTriggered(joy1.getButton(Constants.BUTTON_SWITCH_CAMERA),
-        //        () -> camera.switchCamera());
-        switchReactor.onTriggered(joy1.getButton(2), () -> {
-            drive.getGyro().reset();
-            System.out.println("calibrated");
-        });
-        switchReactor.onTriggered(joy0.getButton(4), () -> {
-            SmartDashboard.putBoolean("Gyro Enabled", !SmartDashboard.getBoolean("Gyro Enabled", true));
-            System.out.println(SmartDashboard.getBoolean("Gyro Enabled", true));
-        });
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());
+        // collection
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
+                () -> {
+                    collectionExtender.set(!collectionExtender.get());
+                    SmartDashboard.putBoolean("Collection Down", collectionExtender.get());
+                });
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
+                () -> {
+                    if (collectionGearbox.isRunning())
+                        collectionGearbox.setSpeed(0);
+                    else
+                        collectionGearbox.setSpeed(1);
+                    SmartDashboard.putBoolean("Collection Enabled", collectionGearbox.isRunning());
+                });
+        // gears
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearScoring.set(true);
+                    SmartDashboard.putBoolean("Gear Holder Open", true);
+                });
+        switchReactor.onUntriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearScoring.set(false);
+                    SmartDashboard.putBoolean("Gear Holder Open", false);
+                });
+        // turret
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TURRET),
+                () -> {
+                    turretExtender.set(!turretExtender.get());
+                    SmartDashboard.putBoolean("Turret Extended", turretExtender.get());
+                });
+        //switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD));*/
+    }
 
-		//Reminder that a couple options aren't planned for and won't do anything
-		SmartDashboard.putString("", "DO NOT SELECT STARTING POSITIONS AND HOPPERS OF OPPOSITE DIRECTIONS!!!");
+    @Override
+    public void robotPeriodic() {
 
-		//Create radio buttons for selecting the robot's starting position
-		autoStart = new SendableChooser();
-		autoStart.addDefault("Center", "C");
-		autoStart.addObject("Left", "L");
-		autoStart.addObject("Right", "R");
-		SmartDashboard.putData("Starting Position", autoStart);
+    }
 
-		//Create radio buttons for selecting the robot's destination
-		autoTgt = new SendableChooser();
-		autoTgt.addDefault("Center Lift", "CL");
-		autoTgt.addObject("Left Lift", "LL");
-		autoTgt.addObject("Right Lift", "RL");
-		autoTgt.addObject("Left Hopper", "LH");
-		autoTgt.addObject("Right Hopper", "RH");
-		SmartDashboard.putData("Auto Destination", autoTgt);
+    @Override
+    public void autonomousInit() {
+        Strongback.start();
+    }
 
-		//Button to select starting drive mode
-		SmartDashboard.putBoolean("Mecanum Drive", false);
-	}
+    @Override
+    public void autonomousPeriodic() {
 
-	@Override
-	public void autonomousInit() {//Called on match start
-		//Start autonomous, passing through data from here
-		System.out.println("Auto started!");
-		autonomous = new Auto2017((String)autoStart.getSelected(),
-			(String)autoTgt.getSelected(),
-			SmartDashboard.getBoolean("Mecanum Drive", false),
-			drive);
-	}
+    }
 
-	@Override
-	public void autonomousPeriodic(){//Called every 20ms during first 15s of match
-		//See Auto2017.java
-		autonomous.periodic();
-	}
-	@Override
-	public void teleopInit(){
-		//reset Talon control modes from autonomous
-		for (OctocanumGearbox x: drive.getGearboxes())
-			x.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    @Override
+    public void teleopInit() {
+        Strongback.restart();
+    }
 
-		//reset Strongback/gyro
-		Strongback.restart();
-		drive.getGyro().reset();
+    @Override
+    public void teleopPeriodic() {
+        // drive the robot, mode specific drive code is in the OctocanumDrive class
+        octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
+                driveJoystickRight.getRoll().read());
+    }
 
-		//Mecanum mode because the test bot doesn't have traction right now
-		drive.shift(OctocanumDrive.DriveMode.MECANUM);
-	}
+    @Override
+    public void disabledInit() {
+        Strongback.disable();
+    }
 
-	@Override
-	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
-		//Drive according to joysticks
-		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
-
-		//Get encoder data
-		double fls = drive.getGearboxes().get(0).getMaster().getEncVelocity(),
-				frs = drive.getGearboxes().get(1).getMaster().getEncVelocity(),
-				rls = drive.getGearboxes().get(2).getMaster().getEncVelocity(),
-				rrs = drive.getGearboxes().get(3).getMaster().getEncVelocity();
-
-		//Send encoder data to SD to manually calculate F-Gain if desired
-		SmartDashboard.putNumber("Front Left Speed", fls);
-		SmartDashboard.putNumber("Front Right Speed", frs);
-		SmartDashboard.putNumber("Rear Left Speed", rls);
-		SmartDashboard.putNumber("Rear Right Speed", rrs);
-
-		//Send auto-calculated F-gain because mashing calculator buttons is boring
-		SmartDashboard.putNumber("Front Left F-Gain", fGain(fls));
-		SmartDashboard.putNumber("Front Right F-Gain", fGain(frs));
-		SmartDashboard.putNumber("Rear Left F-Gain", fGain(rls));
-		SmartDashboard.putNumber("Rear Right F-Gain", fGain(rrs));
-	}
-
-	@Override
-	public void disabledInit(){
-		SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
-		SmartDashboard.putNumber("I", SmartDashboard.getNumber("I", 0));
-		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));
-		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 1));
-		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 1));
-	}
-
-	@Override
-	public void disabledPeriodic() {//Called when the robot is on but inactive
-		drive.drive(0, 0, 0, 0);
-		for(OctocanumGearbox box:drive.getGearboxes())
-			box.getMaster().setPID(
-				SmartDashboard.getNumber("P", 0),
-				SmartDashboard.getNumber("I", 0),
-				SmartDashboard.getNumber("D", 0));
-		ProfileSender.posMult = SmartDashboard.getNumber("PM", 1);
-		ProfileSender.velMult = SmartDashboard.getNumber("VM", 1);
-	}
-
-	//percentNeeded defaults to 100
-	private static double fGain(double maxSpeed){
-		return fGain(maxSpeed, 100);
-	}
-
-	/**
-	 * Calculates the Talons' F-gain based on Page 85 of:
-	 * http://www.ctr-electronics.com/downloads/pdf/Talon%20SRX%20Software%20Reference%20Manual.pdf
-	 *
-	 * @param maxSpeed Maximum speed reachable by the Talon's output, in encoder units/100ms.
-	 * @param percentNeeded 1 to 100, inclusive.  This should be the percentage of power the Talon needs to reach maxSpeed.
-	 * @return Correct F-gain(positive) to send to the Talon for motion profiling.  -1 if maxSpeed is 0.
-	 */
-	private static double fGain(double maxSpeed, double percentNeeded){
-		return maxSpeed == 0 ? -1 : percentNeeded / 100 * 1023 / Math.abs(maxSpeed);
-	}
+    @Override
+    public void disabledPeriodic() {}
 }
