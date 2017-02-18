@@ -91,6 +91,7 @@ public class Turret implements Runnable {
             SmartDashboard.putBoolean("Can See Goal", latestData.isValid());
             SmartDashboard.putNumber("Distance to High Goal", distanceSensor.getDistance());
             double speed = 0.0;
+            // rotation code
             if (isSentryEnabled) { // auto turret control
                 if (latestData.isValid()) {
                     if (track())
@@ -110,18 +111,17 @@ public class Turret implements Runnable {
                                 .set(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .25, .75));
                 speed = MathUtils.INSTANCE.toRange(throttle.read()*-1, -1, 1, 1000, 4500);
             }
-            // auto shooting
-            if (autoShootingEnabled && speed != 0) {
+            // shooting code
+            if (autoShootingEnabled && speed != 0) { // auto shooting
                 flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                 flywheel.set(speed);
                 feeder.set(.75);
             }
-            // manual shooting
-            else if (!autoShootingEnabled && trigger.isTriggered()) {
+            else if (!autoShootingEnabled && trigger.isTriggered()) { // manual shooting
                 flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
                 flywheel.set(speed);
                 feeder.set(.75);
-            } else {
+            } else { // dont shoot
                 flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
                 flywheel.set(0);
             }

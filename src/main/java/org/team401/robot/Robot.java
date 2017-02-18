@@ -128,6 +128,10 @@ public class Robot extends IterativeRobot {
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
                 () -> {
                     turret.enableSentry(!turret.isSentryEnabled());
+                    if (turret.isSentryEnabled()) {
+                        turret.enableSentry(false);
+                        SmartDashboard.putBoolean("Auto Shooting Enabled", turret.isAutoShootingEnabled());
+                    }
                     SmartDashboard.putBoolean("Sentry Mode Enabled", turret.isSentryEnabled());
                 });
     }

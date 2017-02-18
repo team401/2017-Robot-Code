@@ -129,6 +129,7 @@ public class Lidar implements DistanceSensor {
         return task.latestData.get();
     }
 
+    @Override
     public double getDistance() {
         return getLatestData().getDistance();
     }
