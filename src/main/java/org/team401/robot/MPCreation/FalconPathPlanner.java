@@ -516,8 +516,8 @@ public class FalconPathPlanner {
 	 */
 	private double getRatio(){
 		double[] ratios = new double[]{
-				3.0 / Math.PI,//Reciprocal of wheel circumference(feet)
-				mecanum ? 1.0 : 0.5//Divide by 2 if in traction drive
+				84/(4*Math.PI),
+				mecanum?1.0:0.5
 		};
 		double result = 1;
 		for (double x:ratios)
