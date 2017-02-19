@@ -57,8 +57,10 @@ public class Auto2017 {
 
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
-		for(OctocanumGearbox box:boxes)
+		for(OctocanumGearbox box:boxes) {
 			box.getMaster().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
+			box.getMaster().reverseSensor(true);
+		}
 		boxes.get(0).changeControlMode(TalonControlMode.MotionProfile);
 		boxes.get(1).changeControlMode(TalonControlMode.MotionProfile);
 
@@ -81,6 +83,7 @@ public class Auto2017 {
 
 		//Start traveling along the first profile
 		startProfile();
+
 	}
 
 	/**
@@ -107,27 +110,30 @@ public class Auto2017 {
 			rl.startMotionProfile();
 			rr.startMotionProfile();
 		}
-	}
 
+	}
+	private int index = 0;
 	/**
 	 * Called every iteration if we're moving along a path.
 	 * Prepares for next path if we are finished moving.
 	 */
 	private void move(){
 		//SmartDashboard puts to make sure the code is working and tune PID
+		SmartDashboard.putString("Profile Lengths:", profiles[0].length+","+profiles[1].length+","+profiles[2].length+","+profiles[3].length);
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
-		SmartDashboard.putString("GRAPH", ""+
-			fl.getTalon().getSpeed()+":"+
-			fr.getTalon().getSpeed()+":"+
-			fl.getTalon().getEncVelocity()+":"+
-			fr.getTalon().getEncVelocity()+
-			(mecanum ?
-				":"+rl.getTalon().getSpeed()+":"+
-				rr.getTalon().getSpeed()+":"+
-				rl.getTalon().getEncVelocity()+":"+
-				rr.getTalon().getEncVelocity()
-			: ""));
+		if(index<profiles[0].length)SmartDashboard.putString("GRAPH0",fl.getTalon().getEncVelocity()*-600/4096+":"+profiles[0][index][1]+":"+index);
+		if(index<profiles[1].length)SmartDashboard.putString("GRAPH1",fr.getTalon().getEncVelocity()*600/4096+":"+profiles[1][index][1]+":"+index);
+		if(mecanum) {
+			if(index<profiles[2].length)SmartDashboard.putString("GRAPH2", rl.getTalon().getEncVelocity()*600/4096 + ":" + profiles[2][index][1]+":"+index);
+			if(index<profiles[3].length)SmartDashboard.putString("GRAPH3", rr.getTalon().getEncVelocity()*600/4096 + ":" + profiles[3][index][1]+":"+index);
+		}
+		index++;
+		//SmartDashboard.putString("GRAPH", fl.getTalon().getEncVelocity()+":"+fl.getTalon().getSetpoint());
+		//SmartDashboard.putString("GRAPH", fr.getTalon().getEncVelocity()+":"+fr.getTalon().getSetpoint());
+		//fr.getTalon().get();
+		//SmartDashboard.putString("GRAPH", rl.getTalon().getEncVelocity()+":"+rl.getTalon().getSetpoint());
+		//SmartDashboard.putString("GRAPH", rr.getTalon().getEncVelocity()+":"+rr.getTalon().getSetpoint());
 
 		//Keep the MP loops going
 		fl.control();
@@ -155,6 +161,7 @@ public class Auto2017 {
 
 			//Get next path
 			profiles = MotionProfiles.get("", tgt, mecanum, true);
+			index = 0;
 		}
 	}
 

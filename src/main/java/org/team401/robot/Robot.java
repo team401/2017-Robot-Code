@@ -1,7 +1,5 @@
 package org.team401.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -97,7 +95,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
 		//Button to select starting drive mode
-		SmartDashboard.putBoolean("Mecanum Drive", false);
+		SmartDashboard.putBoolean("Mecanum Drive", true);
 	}
 
 	@Override
@@ -106,7 +104,7 @@ public class Robot extends IterativeRobot {
 		System.out.println("Auto started!");
 		autonomous = new Auto2017((String)autoStart.getSelected(),
 			(String)autoTgt.getSelected(),
-			SmartDashboard.getBoolean("Mecanum Drive", false),
+			SmartDashboard.getBoolean("Mecanum Drive", true),
 			drive);
 	}
 
@@ -132,7 +130,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
 		//Drive according to joysticks
-		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
+		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getRoll().read());
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getMaster().getEncVelocity(),
@@ -155,23 +153,23 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit(){
-		SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
+		/*SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
 		SmartDashboard.putNumber("I", SmartDashboard.getNumber("I", 0));
-		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));
-		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 1));
-		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 1));
+		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));*/
+		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 0.2));
+		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 0.2));
 	}
 
 	@Override
 	public void disabledPeriodic() {//Called when the robot is on but inactive
 		drive.drive(0, 0, 0, 0);
-		for(OctocanumGearbox box:drive.getGearboxes())
+		/*for(OctocanumGearbox box:drive.getGearboxes())
 			box.getMaster().setPID(
-				SmartDashboard.getNumber("P", 0),
+				SmartDashboard.getNumber("P", 1),
 				SmartDashboard.getNumber("I", 0),
-				SmartDashboard.getNumber("D", 0));
-		ProfileSender.posMult = SmartDashboard.getNumber("PM", 1);
-		ProfileSender.velMult = SmartDashboard.getNumber("VM", 1);
+				SmartDashboard.getNumber("D", 0));*/
+		ProfileSender.posMult = SmartDashboard.getNumber("PM", 0.2);
+		ProfileSender.velMult = SmartDashboard.getNumber("VM", 0.2);
 	}
 
 	//percentNeeded defaults to 100

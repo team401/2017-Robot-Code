@@ -142,8 +142,10 @@ public class ProfileSender {
 
 					//Stop everything if the profile is over.
 					if (status.activePointValid && status.activePoint.isLastPoint) {
-						//Hold mode keeps motor in place and can be used as an external signal
+						//Hold mode keeps motor in place if the profile ended correctly and can be used as an external signal
 						setValue = SetValueMotionProfile.Hold;
+
+						System.out.println("Reached the end of the profile with "+status.activePoint.velocity+" velocity and "+status.activePoint.position+" position.");
 
 						//Reset to beginning state in machine.
 						state = 0;
@@ -185,9 +187,10 @@ public class ProfileSender {
 
 		// This is fast since it's just into our top buffer
 		for (int i = 0; i < totalCount; i++) {
+			System.out.println(i);
 			//Fill up the point since the constructor is empty
-			point.position = profile[i][0]*posMult;
-			point.velocity = profile[i][1]*velMult;
+			point.position = Math.abs(profile[i][0]*posMult);
+			point.velocity = Math.abs(profile[i][1]*velMult);
 			point.timeDurMs = (int) profile[i][2];
 
 			//Talon supports multiple saved PID profiles.  Just use the first.
@@ -204,6 +207,7 @@ public class ProfileSender {
 
 			//Push to the Talon
 			talon.pushMotionProfileTrajectory(point);
+			talon.getMotionProfileTopLevelBufferCount();
 			System.out.println("Buffer Count: "+talon.getMotionProfileTopLevelBufferCount());
 		}
 
