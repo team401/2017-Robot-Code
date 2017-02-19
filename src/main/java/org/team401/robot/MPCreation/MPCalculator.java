@@ -180,11 +180,11 @@ public class MPCalculator {
 			String name = u.getName();
 
 			//creates the object and does the calculations
-			FalconPathPlanner falconPathPlanner = new FalconPathPlanner(u.getArr());
-			falconPathPlanner.calculate(15, 0.02, robotWidth);
+			FalconPathPlanner falcon = new FalconPathPlanner(u.getArr());
+			falcon.calculate(u.getTime(), 0.02, robotWidth);
 
 			//makes the graph for the motion profile
-			FalconLinePlot fig = new FalconLinePlot(falconPathPlanner.smoothCenterVelocity, null, Color.green);
+			FalconLinePlot fig = new FalconLinePlot(falcon.smoothCenterVelocity, null, Color.green);
 			fig.xGridOn();
 			fig.yGridOn();
 			fig.setTitle("Velocities (" + name + ") \n Center = blue, Left = red, Right = magenta");
@@ -192,9 +192,9 @@ public class MPCalculator {
 			fig.setYLabel("Velocity (ft/sec)");
 
 			//adds the data to the graph
-			fig.addData(falconPathPlanner.smoothCenterVelocity, Color.red, Color.blue);
-			fig.addData(falconPathPlanner.smoothLeftVelocity, Color.red);
-			fig.addData(falconPathPlanner.smoothRightVelocity, Color.magenta);
+			fig.addData(falcon.smoothCenterVelocity, Color.red, Color.blue);
+			fig.addData(falcon.smoothLeftVelocity, Color.red);
+			fig.addData(falcon.smoothRightVelocity, Color.magenta);
 		}
 	}
 

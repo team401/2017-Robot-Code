@@ -130,8 +130,12 @@ public class FalconPathPlanner {
 		//Copy last point in original and return
 		morePoints[index][0] = orig[orig.length - 1][0];
 		morePoints[index][1] = orig[orig.length - 1][1];
-		if (mecanum)
+		if (mecanum) {
 			morePoints[index][2] = orig[orig.length - 1][2];
+			double[][] origs = doubleArrayCopy(morePoints);
+			for(int i = 1; i < origs.length; i++)
+				morePoints[i][2] -= origs[i-1][2];
+		}
 		return morePoints;
 	}
 
@@ -448,16 +452,6 @@ public class FalconPathPlanner {
 		//smoothCenterVelocity = cullVelocity(smoothCenterVelocity);
 	}
 
-	//Should remove any points at the start that have 0 velocity
-	private double[][] cullVelocity(double[][] vel){
-		int x = 0;
-		while(vel[x][2]==0)
-				x++;
-		double[][] result = new double[vel.length-x][3];
-		System.arraycopy(vel, x, result, 0, vel.length-x);
-		return result;
-	}
-
 	/**
 	 * Inverts the velocities of a path so that the robot will know to go backwards in it
 	 *
@@ -589,7 +583,7 @@ public class FalconPathPlanner {
 		double dirInRad = Math.toRadians(dir + 45.0);
 		double cosD = Math.cos(dirInRad);
 		double sinD = Math.sin(dirInRad);
-
+		
 		//Return the vectors for each wheel
 		return new double[]{
 				(sinD * mag + rot),//LEFT FRONT
