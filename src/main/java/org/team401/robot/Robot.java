@@ -1,22 +1,23 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
+import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ShiftDriveMode;
-import org.team401.robot.components.OctocanumGearbox;
 
 public class Robot extends IterativeRobot {
 
-    private OctocanumDrive octocanumDrive;
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
     private Camera camera;
+
+    private AutoModeExecuter autoExecutor;
 
     @Override
     public void robotInit() {
@@ -27,13 +28,7 @@ public class Robot extends IterativeRobot {
         // turn compressor fan on
         new Solenoid(Constants.COMPRESSOR_FAN).set(true);
 
-        OctocanumGearbox frontLeft = new OctocanumGearbox(new CANTalon(Constants.FRONT_LEFT_MASTER), new CANTalon(Constants.FRONT_LEFT_SLAVE));
-        OctocanumGearbox frontRight = new OctocanumGearbox(new CANTalon(Constants.FRONT_RIGHT_MASTER), new CANTalon(Constants.FRONT_RIGHT_SLAVE));
-        OctocanumGearbox rearLeft = new OctocanumGearbox(new CANTalon(Constants.REAR_LEFT_MASTER), new CANTalon(Constants.REAR_LEFT_SLAVE));
-        OctocanumGearbox rearRight = new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE));
-        ADXRS450_Gyro g = new ADXRS450_Gyro();
-        g.calibrate();
-        octocanumDrive = new OctocanumDrive(frontLeft, frontRight, rearLeft, rearRight, new Solenoid(Constants.GEARBOX_SHIFTER), g);
+        OctocanumDrive.INSTANCE.getGyro().calibrate();
 
         /*CollectionGearbox collectionGearbox = new CollectionGearbox(
                 Hardware.Motors.victorSP(Constants.COL_PRO_1),
@@ -57,7 +52,7 @@ public class Robot extends IterativeRobot {
 
         // shift drive modes
         switchReactor.onTriggeredSubmit(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
-                () -> new ShiftDriveMode(octocanumDrive));
+                () -> new ShiftDriveMode());
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_TOGGLE_GYRO),
                 () -> SmartDashboard.putBoolean("Field-Centric", !SmartDashboard.getBoolean("Field-Centric", true)));
         // camera switching
@@ -105,6 +100,9 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousInit() {
         Strongback.start();
+
+        autoExecutor = new AutoModeExecuter(new AutoTestMode());
+        autoExecutor.start();
     }
 
     @Override
@@ -120,7 +118,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
-        octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
+        OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getRoll().read());
     }
 

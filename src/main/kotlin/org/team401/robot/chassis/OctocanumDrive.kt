@@ -1,17 +1,14 @@
 package org.team401.robot.chassis
 
-import com.analog.adis16448.frc.ADIS16448_IMU
 import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.PIDController
 import edu.wpi.first.wpilibj.Solenoid
-import edu.wpi.first.wpilibj.interfaces.Gyro
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.robot.GyroOutput
 import org.team401.robot.math.MathUtils
 import org.team401.robot.components.OctocanumGearbox
-import java.util.*
 
 /**
  * Drivetrain wrapper class for the octocanum chassis, supports shifting
@@ -25,35 +22,27 @@ import java.util.*
  * @author Zach Kozar
  * @version 1/15/17
  */
-class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: OctocanumGearbox,
-                     rearLeftGearbox: OctocanumGearbox, rearRightGearbox: OctocanumGearbox,
-                     val shifter: Solenoid, val gyro: ADXRS450_Gyro) {
+object OctocanumDrive {
+
     /**
      * Immutable list of gearboxes, will always have a size of 4
      */
-    val gearboxes: List<OctocanumGearbox> = ArrayList()
+    val gearboxes: Array<OctocanumGearbox> = arrayOf(
+            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE)),
+            OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE)),
+            OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE)),
+            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE))
+    )
 
-    val gyroPID: PIDController
-    val gyroError: GyroOutput
+    val gyro = ADXRS450_Gyro()
+    val gyroError: GyroOutput = GyroOutput()
+    val gyroPID: PIDController = PIDController(1.0, 0.0, 0.0, gyro, gyroError)
+    val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     /**
      * The current drive mode of the chassis
      */
     var driveMode = DriveMode.TRACTION
-
-    init {
-        // add gearbox references to an array to make it easier to iterate through them
-        // cast to a mutable array so we can actually add objects
-        gearboxes as MutableList<OctocanumGearbox>
-        gearboxes.add(frontLeftGearbox)
-        gearboxes.add(frontRightGearbox)
-        gearboxes.add(rearLeftGearbox)
-        gearboxes.add(rearRightGearbox)
-
-        gyroError = GyroOutput()
-        gyroPID = PIDController(1.0, 0.0, 0.0, gyro, gyroError)
-        gyroPID.enable()
-    }
 
     /**
      * Takes in joystick inputs from two joysticks and sets the speed of the talon controllers

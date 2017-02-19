@@ -9,9 +9,9 @@ import org.team401.robot.chassis.OctocanumDrive
  * @param octocanumDrive Reference to the robot's chassis object
  * @param driveMode The drive mode to switch to
  */
-class ShiftDriveMode(val octocanumDrive: OctocanumDrive) : Command() {
+class ShiftDriveMode : Command() {
 
-    override fun initialize() = octocanumDrive.shift()
+    override fun initialize() = OctocanumDrive.shift()
 
     override fun execute() = true
 }
