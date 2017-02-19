@@ -113,7 +113,7 @@ public class ProfileSender {
 					if (startSignal) {
 						//Reset for next time
 						startSignal = false;
-
+						//talon.changeControlMode(TalonControlMode.MotionProfile);
 						//Disable the profile until we have enough points in
 						setValue = SetValueMotionProfile.Disable;
 
@@ -142,9 +142,19 @@ public class ProfileSender {
 
 					//Stop everything if the profile is over.
 					if (status.activePointValid && status.activePoint.isLastPoint) {
+						//Stop the motor
+						/*TrajectoryPoint x = new TrajectoryPoint();
+						x.position = status.activePoint.position;
+						x.velocity = 0;
+						x.isLastPoint = true;
+						talon.pushMotionProfileTrajectory(x);
+						talon.processMotionProfileBuffer();*/
+						//status.activePoint.velocity = 0;
+
+
 						//Hold mode keeps motor in place if the profile ended correctly and can be used as an external signal
 						setValue = SetValueMotionProfile.Hold;
-
+						talon.changeControlMode(TalonControlMode.Disabled);
 						System.out.println("Reached the end of the profile with "+status.activePoint.velocity+" velocity and "+status.activePoint.position+" position.");
 
 						//Reset to beginning state in machine.
@@ -158,6 +168,7 @@ public class ProfileSender {
 					break;
 			}
 		}
+		System.out.println("Current Point:"+status.activePoint.position+", "+status.activePoint.velocity+","+setValue.value);
 		talon.set(setValue.value);
 	}
 
@@ -187,7 +198,6 @@ public class ProfileSender {
 
 		// This is fast since it's just into our top buffer
 		for (int i = 0; i < totalCount; i++) {
-			System.out.println(i);
 			//Fill up the point since the constructor is empty
 			point.position = Math.abs(profile[i][0]*posMult);
 			point.velocity = Math.abs(profile[i][1]*velMult);
@@ -208,7 +218,8 @@ public class ProfileSender {
 			//Push to the Talon
 			talon.pushMotionProfileTrajectory(point);
 			//System.out.println("Buffer Count: "+talon.getMotionProfileTopLevelBufferCount());
-			System.out.print("Low:" + status.btmBufferCnt + " Top:" + status.topBufferCnt + " Rem:" + status.topBufferRem);
+			talon.getMotionProfileStatus(status);
+			System.out.println("Iteration:"+i+" Talon:"+talon.getMotionProfileTopLevelBufferCount()+" Low:" + status.btmBufferCnt + " Top:" + status.topBufferCnt + " Rem:" + status.topBufferRem);
 		}
 
 		//Print our success at the end

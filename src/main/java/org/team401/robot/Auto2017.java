@@ -55,6 +55,21 @@ public class Auto2017 {
 		this.mecanum = mecanum;
 		this.drive = drive;
 
+		//Read profiles from correct spreadsheet
+		profiles = MotionProfiles.get(start, tgt, mecanum);
+
+		//Shifts to either mecanum or traction wheels
+		drive.shift(mecanum ? OctocanumDrive.DriveMode.MECANUM : OctocanumDrive.DriveMode.TRACTION);
+
+		//Start traveling along the first profile
+		startProfile();
+
+	}
+
+	/**
+	 * Instantiates the ProfileSenders and engages them to run the current Motion Profile.
+	 */
+	private void startProfile(){
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
 		for(OctocanumGearbox box:boxes) {
@@ -75,30 +90,14 @@ public class Auto2017 {
 			boxes.get(3).getMaster().set(Constants.FRONT_LEFT_SLAVE);
 		}
 
-		//Read profiles from correct spreadsheet
-		profiles = MotionProfiles.get(start, tgt, mecanum);
-
-		//Shifts to either mecanum or traction wheels
-		drive.shift(mecanum ? OctocanumDrive.DriveMode.MECANUM : OctocanumDrive.DriveMode.TRACTION);
-
-		//Start traveling along the first profile
-		startProfile();
-
-	}
-
-	/**
-	 * Instantiates the ProfileSenders and engages them to run the current Motion Profile.
-	 */
-	private void startProfile(){
 		//Start up the ProfileSenders
-
-		fl = new ProfileSender(drive.getGearboxes().get(0).getMaster(), profiles[0]);
-		fr = new ProfileSender(drive.getGearboxes().get(1).getMaster(), profiles[1]);
+		fl = new ProfileSender(boxes.get(0).getMaster(), profiles[0]);
+		fr = new ProfileSender(boxes.get(1).getMaster(), profiles[1]);
 
 		//Only need 2 if in traction mode
 		if(mecanum) {
-			rl = new ProfileSender(drive.getGearboxes().get(2).getMaster(), profiles[2]);
-			rr = new ProfileSender(drive.getGearboxes().get(3).getMaster(), profiles[3]);
+			rl = new ProfileSender(boxes.get(2).getMaster(), profiles[2]);
+			rr = new ProfileSender(boxes.get(3).getMaster(), profiles[3]);
 		}
 
 		//Start sending the profiles
