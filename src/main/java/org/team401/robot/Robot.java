@@ -117,13 +117,8 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopInit(){
-		//reset Talon control modes from autonomous
-		for (OctocanumGearbox x: drive.getGearboxes())
-			x.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-
 		//reset Strongback/gyro
 		Strongback.restart();
-		drive.getGyro().reset();
 
 		//Mecanum mode because the test bot doesn't have traction right now
 		drive.shift(OctocanumDrive.DriveMode.MECANUM);
@@ -132,7 +127,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
 		//Drive according to joysticks
-		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getPitch().read(), joy1.getRoll().read());
+		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getRoll().read());
 
 		//Get encoder data
 		double fls = drive.getGearboxes().get(0).getMaster().getEncVelocity(),

@@ -204,7 +204,8 @@ public class ProfileSender {
 
 			//Push to the Talon
 			talon.pushMotionProfileTrajectory(point);
-			System.out.println("Buffer Count: "+talon.getMotionProfileTopLevelBufferCount());
+			//System.out.println("Buffer Count: "+talon.getMotionProfileTopLevelBufferCount());
+			System.out.print("Low:" + status.btmBufferCnt + " Top:" + status.topBufferCnt + " Rem:" + status.topBufferRem);
 		}
 
 		//Print our success at the end
