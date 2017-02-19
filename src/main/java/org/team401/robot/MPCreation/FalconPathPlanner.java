@@ -535,6 +535,11 @@ public class FalconPathPlanner {
 		double[][][] result = new double[4][(int) numFinalPoints][3];
 		double[][] path = doubleArrayCopy(smoothPath),
 			vel = doubleArrayCopy(smoothCenterVelocity);
+		for(double[] x:vel) {
+			for (double y : x)
+				System.out.print(y+",");
+			System.out.println();
+		}
 
 		for (int h = 0; h < 4; h++) {
 			//For each wheel, zero distance traveled, first point data, time interval, and final velocity.

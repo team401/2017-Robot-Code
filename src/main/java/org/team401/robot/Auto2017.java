@@ -70,12 +70,14 @@ public class Auto2017 {
 	 * Instantiates the ProfileSenders and engages them to run the current Motion Profile.
 	 */
 	private void startProfile(){
+
 		//Tell all Talon SRXs to get ready for Motion Profile
 		List<OctocanumGearbox> boxes = drive.getGearboxes();
 		for(OctocanumGearbox box:boxes) {
 			box.getMaster().setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Absolute);
 			box.getMaster().reverseSensor(true);
 		}
+
 		boxes.get(0).changeControlMode(TalonControlMode.MotionProfile);
 		boxes.get(1).changeControlMode(TalonControlMode.MotionProfile);
 
@@ -111,7 +113,7 @@ public class Auto2017 {
 		}
 
 	}
-	private int index = 0;
+
 	/**
 	 * Called every iteration if we're moving along a path.
 	 * Prepares for next path if we are finished moving.
@@ -121,13 +123,12 @@ public class Auto2017 {
 		SmartDashboard.putString("Profile Lengths:", profiles[0].length+","+profiles[1].length+","+profiles[2].length+","+profiles[3].length);
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
-		if(index<profiles[0].length)SmartDashboard.putString("GRAPH0",fl.getTalon().getEncVelocity()*-600/4096+":"+profiles[0][index][1]+":"+index);
-		if(index<profiles[1].length)SmartDashboard.putString("GRAPH1",fr.getTalon().getEncVelocity()*600/4096+":"+profiles[1][index][1]+":"+index);
+		if(profiles[0].length-fl.getStatus().btmBufferCnt<profiles[0].length)SmartDashboard.putString("GRAPH0",fl.getTalon().getEncPosition()/4096+":"+profiles[0][profiles[0].length-fl.getStatus().btmBufferCnt][0]);
+		if(profiles[1].length-fr.getStatus().btmBufferCnt<profiles[1].length)SmartDashboard.putString("GRAPH1",fr.getTalon().getEncPosition()/4096+":"+profiles[1][profiles[1].length-fr.getStatus().btmBufferCnt][0]);
 		if(mecanum) {
-			if(index<profiles[2].length)SmartDashboard.putString("GRAPH2", rl.getTalon().getEncVelocity()*600/4096 + ":" + profiles[2][index][1]+":"+index);
-			if(index<profiles[3].length)SmartDashboard.putString("GRAPH3", rr.getTalon().getEncVelocity()*600/4096 + ":" + profiles[3][index][1]+":"+index);
+			if(profiles[2].length-rl.getStatus().btmBufferCnt<profiles[2].length)SmartDashboard.putString("GRAPH2", rl.getTalon().getEncPosition()/4096 + ":" + profiles[2][profiles[2].length-rl.getStatus().btmBufferCnt][0]);
+			if(profiles[3].length-rr.getStatus().btmBufferCnt<profiles[3].length)SmartDashboard.putString("GRAPH3", rr.getTalon().getEncPosition()/4096 + ":" + profiles[3][profiles[3].length-rr.getStatus().btmBufferCnt][0]);
 		}
-		index++;
 		//SmartDashboard.putString("GRAPH", fl.getTalon().getEncVelocity()+":"+fl.getTalon().getSetpoint());
 		//SmartDashboard.putString("GRAPH", fr.getTalon().getEncVelocity()+":"+fr.getTalon().getSetpoint());
 		//fr.getTalon().get();
@@ -160,7 +161,6 @@ public class Auto2017 {
 
 			//Get next path
 			profiles = MotionProfiles.get("", tgt, mecanum, true);
-			index = 0;
 		}
 	}
 

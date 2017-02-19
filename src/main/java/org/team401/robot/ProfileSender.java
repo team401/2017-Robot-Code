@@ -89,6 +89,7 @@ public class ProfileSender {
 	public void control() {
 		//Update the Talon's status
 		talon.getMotionProfileStatus(status);
+		System.out.println(talon.getControlMode().name());
 
 		//Timeout tracker will send a No Progress message if stuff isn't going on fast enough.
 		if (timeoutCount >= 0)
@@ -154,7 +155,6 @@ public class ProfileSender {
 
 						//Hold mode keeps motor in place if the profile ended correctly and can be used as an external signal
 						setValue = SetValueMotionProfile.Hold;
-						talon.changeControlMode(TalonControlMode.Disabled);
 						System.out.println("Reached the end of the profile with "+status.activePoint.velocity+" velocity and "+status.activePoint.position+" position.");
 
 						//Reset to beginning state in machine.
@@ -168,7 +168,7 @@ public class ProfileSender {
 					break;
 			}
 		}
-		System.out.println("Current Point:"+status.activePoint.position+", "+status.activePoint.velocity+","+setValue.value);
+		System.out.println("Current Point:"+status.activePoint.position+", "+status.activePoint.velocity+","+(97-status.btmBufferCnt));
 		talon.set(setValue.value);
 	}
 
@@ -247,5 +247,8 @@ public class ProfileSender {
 	 */
 	public CANTalon getTalon(){
 		return talon;
+	}
+	public MotionProfileStatus getStatus(){
+		return status;
 	}
 }

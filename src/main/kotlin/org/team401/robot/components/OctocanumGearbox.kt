@@ -13,6 +13,7 @@ class OctocanumGearbox(val master: CANTalon, val slave: CANTalon) {
 
     init {
         master.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        master.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         master.isSafetyEnabled = false
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
         slave.isSafetyEnabled = false

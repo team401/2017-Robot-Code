@@ -47,6 +47,7 @@ public class Robot extends IterativeRobot {
 				new OctocanumGearbox(new CANTalon(Constants.REAR_RIGHT_MASTER), new CANTalon(Constants.REAR_RIGHT_SLAVE)),
 				new Solenoid(Constants.GEARBOX_SHIFTER), new ADXRS450_Gyro());
 
+
 		//Switch to tank drive default
 		drive.shift(OctocanumDrive.DriveMode.TRACTION);
 
@@ -101,17 +102,67 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {//Called on match start
 		//Start autonomous, passing through data from here
+
+		/*
 		System.out.println("Auto started!");
 		autonomous = new Auto2017((String)autoStart.getSelected(),
 			(String)autoTgt.getSelected(),
 			SmartDashboard.getBoolean("Mecanum Drive", true),
 			drive);
+
+		*/
+		drive.getGearboxes().get(0).getMaster().reverseOutput(true);
+		drive.getGearboxes().get(2).getMaster().reverseOutput(true);
+
+		drive.getGearboxes().get(0).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
+		drive.getGearboxes().get(1).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
+		drive.getGearboxes().get(2).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
+		drive.getGearboxes().get(3).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
+
+		drive.getGearboxes().get(0).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(0).getMaster().setPosition(0);
+		drive.getGearboxes().get(0).getMaster().set(0);
+		drive.getGearboxes().get(1).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(1).getMaster().setPosition(0);
+		drive.getGearboxes().get(1).getMaster().set(0);
+		drive.getGearboxes().get(2).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(2).getMaster().setPosition(0);
+		drive.getGearboxes().get(2).getMaster().set(0);
+		drive.getGearboxes().get(3).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(3).getMaster().setPosition(0);
+		drive.getGearboxes().get(3).getMaster().set(0);
 	}
 
 	@Override
 	public void autonomousPeriodic(){//Called every 20ms during first 15s of match
 		//See Auto2017.java
-		autonomous.periodic();
+		//autonomous.periodic();
+SmartDashboard.putNumber("Set Point", 50);
+SmartDashboard.putNumber("P", 0.1);
+SmartDashboard.putNumber("D", 0);
+
+		drive.getGearboxes().get(0).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
+		drive.getGearboxes().get(1).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
+		drive.getGearboxes().get(2).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
+		drive.getGearboxes().get(3).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
+
+		drive.getGearboxes().get(0).getMaster().setP(SmartDashboard.getNumber("P", 0));
+		drive.getGearboxes().get(1).getMaster().setP(SmartDashboard.getNumber("P", 0));
+		drive.getGearboxes().get(2).getMaster().setP(SmartDashboard.getNumber("P", 0));
+		drive.getGearboxes().get(3).getMaster().setP(SmartDashboard.getNumber("P", 0));
+
+		drive.getGearboxes().get(0).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(1).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(2).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(3).getMaster().setD(SmartDashboard.getNumber("D", 0));
+
+
+		//SmartDashboard.putNumber("Enc Position",drive.getGearboxes().get(0).getMaster().getPosition());
+		SmartDashboard.putString("PID", drive.getGearboxes().get(0).getMaster().get()+":"+drive.getGearboxes().get(0).getMaster().getPosition()+":"+
+				drive.getGearboxes().get(1).getMaster().get()+":"+drive.getGearboxes().get(1).getMaster().getPosition()+":"+
+				drive.getGearboxes().get(2).getMaster().get()+":"+drive.getGearboxes().get(2).getMaster().getPosition()+":"+
+				drive.getGearboxes().get(3).getMaster().get()+":"+drive.getGearboxes().get(3).getMaster().getPosition());
+
 	}
 	@Override
 	public void teleopInit(){
@@ -120,10 +171,16 @@ public class Robot extends IterativeRobot {
 
 		//Mecanum mode because the test bot doesn't have traction right now
 		drive.shift(OctocanumDrive.DriveMode.MECANUM);
+		for (OctocanumGearbox box:drive.getGearboxes()) {
+			box.getMaster().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+			box.getMaster().set(0);
+			box.getMaster().setEncPosition(0);
+		}
 	}
 
 	@Override
 	public void teleopPeriodic() {//Called every 20ms from 15s to end of match
+
 		//Drive according to joysticks
 		drive.drive(joy0.getPitch().read(), joy0.getRoll().read(), joy1.getRoll().read());
 
