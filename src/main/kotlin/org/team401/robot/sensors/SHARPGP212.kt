@@ -7,11 +7,18 @@ import edu.wpi.first.wpilibj.AnalogInput
  *
  * Reads distance accurately from 10cm - 80cm
  */
-class SHARPGP212(port: Int) : DistanceSensor {
+class SHARPGP212(port: Int, val unit: Unit = SHARPGP212.Unit.CENTIMETERS) : DistanceSensor {
 
     val input = AnalogInput(port)
 
     override fun getDistance(): Double {
-        return 29.318080199969 * Math.pow(input.voltage, -1.146809657983) / 2.54
+        return 29.318080199969 * Math.pow(input.averageVoltage, -1.146809657983) * unit.multiplier
+    }
+
+    enum class Unit constructor(val multiplier: Double) {
+        CENTIMETERS(1.0),
+        METERS(0.01),
+        INCHES(0.39370),
+        FEET(0.032808)
     }
 }

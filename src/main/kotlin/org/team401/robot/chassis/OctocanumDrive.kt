@@ -93,10 +93,11 @@ class OctocanumDrive(frontLeftGearbox: OctocanumGearbox, frontRightGearbox: Octo
         SmartDashboard.putNumber("Gyro Error", gyroError.output)
 
         MathUtils.normalize(wheelSpeeds)
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+        changeControlMode(CANTalon.TalonControlMode.PercentVbus,
+                { it.set(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT]) },
+                { it.set(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT]) },
+                { it.set(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT]) },
+                { it.set(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT]) })
 
         SmartDashboard.putData("Gyro Stuff", gyro)
     }
