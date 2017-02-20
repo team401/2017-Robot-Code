@@ -134,7 +134,7 @@ public class Robot extends IterativeRobot {
 
     //@Override
     public void autonomousPeriodic() {
-        OctocanumDrive.INSTANCE.printToSmartDashboard();
+
     }
 
     //@Override

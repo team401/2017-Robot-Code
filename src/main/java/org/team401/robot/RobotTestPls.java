@@ -47,12 +47,11 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
     //@Override
     public void autonomousPeriodic() {
-        OctocanumDrive.INSTANCE.printToSmartDashboard();
+
     }
 
     //@Override
     public void teleopPeriodic() {
-        OctocanumDrive.INSTANCE.printToSmartDashboard();
         OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getRoll().read());
     }

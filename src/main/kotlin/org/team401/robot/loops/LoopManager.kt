@@ -11,12 +11,11 @@ class LoopManager {
 
     private val lock = Any()
     private val notifier: Notifier
-    private val loops: MutableList<Loop>
+    private val loops: MutableList<Loop> = ArrayList()
 
     init {
-        loops = ArrayList()
         notifier = Notifier {
-            loops.forEach {Loop::onLoop}
+            loops.forEach { it.onLoop() }
         }
     }
 
@@ -31,7 +30,7 @@ class LoopManager {
     fun start() {
         if (!running) {
             println("Starting periodic loops")
-            synchronized(lock) { loops.forEach {Loop::onStart} }
+            synchronized(lock) { loops.forEach { it.onStart()} }
             notifier.startPeriodic(period)
             running = true
         }
@@ -42,7 +41,7 @@ class LoopManager {
         if (running) {
             println("Stopping periodic loops")
             notifier.stop()
-            synchronized(lock) { loops.forEach {Loop::onStop} }
+            synchronized(lock) { loops.forEach { it.onStop() } }
             running = false
         }
     }

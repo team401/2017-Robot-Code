@@ -16,11 +16,6 @@ import org.team401.robot.math.Rotation2d
  * Drivetrain wrapper class for the octocanum chassis, supports shifting
  * between drive modes (DriveMode.TRACTION and DriveMode.MECANUM).
  *
- * @param frontLeftGearbox Reference to the gearbox with talons 2 and 3
- * @param frontRightGearbox Reference to the gearbox with talons 4 and 5
- * @param rearLeftGearbox Reference to the gearbox with talons 6 and 7
- * @param rearRightGearbox Reference to the gearbox with talons 8 and 9
- *
  * @author Zach Kozar
  * @version 1/15/17
  */
@@ -92,6 +87,7 @@ object OctocanumDrive {
                     }
                     else -> System.out.println("Unexpected drive control state: " + controlState)
                 }
+                printToSmartDashboard()
             }
         }
 
@@ -264,7 +260,7 @@ object OctocanumDrive {
         updateVelocitySetpoint(leftInchesPerSec, rightInchesPerSec)
     }
 
-    @Synchronized fun setVelocityHeadingSetpoint(inchesPerSec: Double, headingSetpoint: Rotation2d) {
+    fun setVelocityHeadingSetpoint(inchesPerSec: Double, headingSetpoint: Rotation2d) {
         if (controlState != DriveControlState.VELOCITY_HEADING_CONTROL) {
             configureTalonsForSpeedControl()
             controlState = DriveControlState.VELOCITY_HEADING_CONTROL
