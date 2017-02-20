@@ -7,9 +7,9 @@ class RotateAction(val heading: Double) : Action {
     override fun start() {
         val currentHeading = OctocanumDrive.gyro.angle
         if (currentHeading + heading < currentHeading)
-            OctocanumDrive.drive(0.0, 0.0, -.5)
+            OctocanumDrive.drive(0.0, 0.0, -.4)
         else
-            OctocanumDrive.drive(0.0, 0.0, .5)
+            OctocanumDrive.drive(0.0, 0.0, .4)
     }
 
     override fun update() {

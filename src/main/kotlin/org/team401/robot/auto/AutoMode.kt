@@ -16,6 +16,9 @@ abstract class AutoMode {
 
     fun done() {}
 
+    /**
+     * Run an action, blocks the thread until the action is completed.
+     */
     fun runAction(action: Action) {
         action.start()
         while (!action.isFinished()) {
