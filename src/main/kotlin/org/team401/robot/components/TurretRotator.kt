@@ -3,7 +3,7 @@ package org.team401.robot.components
 import com.ctre.CANTalon
 import org.strongback.components.Switch
 
-class TurretRotator(val rotator: CANTalon, val zeroPoint: Switch) {
+class TurretRotator(val rotator: CANTalon) {
 
 
     val maxAngle = 180.0

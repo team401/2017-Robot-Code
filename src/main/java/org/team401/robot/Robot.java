@@ -10,10 +10,9 @@ import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.AutoTestMode;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.Turret;
 import org.team401.robot.loops.LoopManager;
@@ -23,22 +22,19 @@ import org.team401.vision.VisionDataStream.VisionDataStream;
 public class Robot extends IterativeRobot {
 
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
-    private VisionDataStream visionDataStream;
     private Camera camera;
-
-    private Turret turret;
-    private Thread turretThread;
 
     private AutoModeExecuter autoExecutor;
     private LoopManager loopManager;
 
+    private static VisionDataStream visionDataStream = new VisionDataStream("10.4.1.17", 5801);
+    private static Turret turret;
 
     @Override
     public void robotInit() {
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
-        visionDataStream = new VisionDataStream("10.4.1.17", 5801);
         visionDataStream.start();
 
         CollectionGearbox collectionGearbox = new CollectionGearbox(
@@ -56,12 +52,9 @@ public class Robot extends IterativeRobot {
         Solenoid ledRing = new Solenoid(Constants.TURRET_LED_RING);
         Lidar lidar = new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3);
         lidar.start();
-        turret = new Turret(visionDataStream, lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
+        turret = new Turret(lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_LEFT),
                 new CANTalon(Constants.TURRET_SHOOTER_RIGHT), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing,
-                Hardware.Switches.normallyClosed(Constants.TURRET_LIMIT_SWITCH),
                 masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
-        turretThread = new Thread(turret);
-        turretThread.start();
 
         camera = new Camera(640, 480, 10);
 
@@ -122,6 +115,7 @@ public class Robot extends IterativeRobot {
                 });
         loopManager = new LoopManager();
         loopManager.register(OctocanumDrive.INSTANCE.getDriveLoop());
+        loopManager.register(getTurret().getTurretLoop());
         OctocanumDrive.INSTANCE.init();
     }
 
@@ -134,7 +128,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         loopManager.start();
         Strongback.start();
-        autoExecutor = new AutoModeExecuter(new AutoTestMode());
+        autoExecutor = new AutoModeExecuter(new CalibrateTurretMode());
         autoExecutor.start();
     }
 
@@ -166,4 +160,13 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledPeriodic() {}
+
+    //subsystems
+    public static VisionDataStream getVisionDataStream() {
+        return visionDataStream;
+    }
+
+    public static Turret getTurret() {
+        return turret;
+    }
 }

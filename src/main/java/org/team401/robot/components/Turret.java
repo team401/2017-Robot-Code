@@ -5,36 +5,54 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
-import org.team401.robot.MathUtils;
+import org.team401.robot.Constants;
+import org.team401.robot.Robot;
+import org.team401.robot.loops.Loop;
+import org.team401.robot.math.MathUtils;
 import org.team401.robot.sensors.DistanceSensor;
 import org.team401.vision.VisionDataStream.VisionData;
-import org.team401.vision.VisionDataStream.VisionDataStream;
 
-public class Turret implements Runnable {
+public class Turret {
 
     private TurretRotator turretRotator;
     private Solenoid turretHood;
     private Solenoid ledRing;
 
-    private VisionDataStream stream;
     private VisionData latestData;
     private DistanceSensor distanceSensor;
     private Switch trigger;
 
-    private CANTalon flywheel, feeder;
+    private CANTalon flywheel, flywheelSlave, feeder;
 
     private ContinuousRange yaw, throttle;
     private boolean isSentryEnabled, autoShootingEnabled;
 
-    public Turret(VisionDataStream stream, DistanceSensor distanceSensor, CANTalon turretSpinner,
+    private Loop loop = new Loop() {
+        @Override
+        public void onStart() {
+            enableSentry(true);
+        }
+
+        @Override
+        public void onLoop() {
+            run();
+        }
+
+        @Override
+        public void onStop() {
+            enableSentry(false);
+        }
+    };
+
+    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner,
                   CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder,
-                  Solenoid turretHood, Solenoid ledRing, Switch magSensor, Switch trigger,
+                  Solenoid turretHood, Solenoid ledRing, Switch trigger,
                   ContinuousRange yaw, ContinuousRange throttle) {
-        this.stream = stream;
-        turretRotator = new TurretRotator(turretSpinner, magSensor);
+        turretRotator = new TurretRotator(turretSpinner);
         latestData = new VisionData(0, 0, 0);
         this.trigger = trigger;
         this.turretHood = turretHood;
+        this.ledRing = ledRing;
         this.isSentryEnabled = true;
         this.yaw = yaw;
         this.throttle = throttle;
@@ -45,18 +63,17 @@ public class Turret implements Runnable {
 
         flywheel = flyWheelMotor2;
 
-        flyWheelMotor1.setSafetyEnabled(false);
-        flyWheelMotor1.changeControlMode(CANTalon.TalonControlMode.Follower);
-        flyWheelMotor1.set(flywheel.getDeviceID());
-        flyWheelMotor1.setInverted(true);
-        flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        flywheelSlave = flyWheelMotor1;
+        flywheelSlave.setSafetyEnabled(false);
+        flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
+        flywheelSlave.set(flywheel.getDeviceID());
+        flywheelSlave.setInverted(true);
+        flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
         flywheel.configPeakOutputVoltage(12, 0);
         flywheel.setSafetyEnabled(false);
         flywheel.set(0);
-        flywheel.setP(1);
-        flywheel.setI(0);
-        flywheel.setD(0);
-        flywheel.setF(0);
+        flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
+                Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
 
         feeder = turretFeeder;
         feeder.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
@@ -64,7 +81,6 @@ public class Turret implements Runnable {
     }
 
     /**
-     *
      * @return true if were looking directly at the turret
      */
     private boolean track() {
@@ -85,60 +101,58 @@ public class Turret implements Runnable {
         if (turretRotator.getPosition() >= turretRotator.getMaxAngle())
             turretRotator.setPosition(-1);
         else if (turretRotator.getPosition() <= 0)
-            turretRotator.setPosition(turretRotator.getMaxAngle()+1);
+            turretRotator.setPosition(turretRotator.getMaxAngle() + 1);
     }
 
-    @Override
-    public void run() {
-        while (!Thread.interrupted()) {
-            latestData = stream.getLatestGoalData();
-            SmartDashboard.putBoolean("Can See Goal", latestData.isValid());
-            SmartDashboard.putNumber("Distance to High Goal", distanceSensor.getDistance());
-            double speed = 0.0;
-            // rotation code
-            if (isSentryEnabled) { // auto turret control
-                if (latestData.isValid()) {
-                    if (track())
-                        speed = getSpeedForDistance();
-                } else {
-                    sentryMode();
-                }
-            } else { // manual turret control
-                turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-                double turnSpeed = yaw.read();
-                if (Math.abs(turnSpeed) > .1)
-                    if (turnSpeed > 0)
-                        turretRotator.getRotator()
-                                .set(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .25, .75));
-                    else
-                        turretRotator.getRotator()
-                                .set(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .25, .75));
-                speed = MathUtils.INSTANCE.toRange(throttle.read()*-1, -1, 1, 1000, 4500);
+    private void run() {
+        latestData = Robot.getVisionDataStream().getLatestGoalData();
+        SmartDashboard.putBoolean("Can See Goal", latestData.isValid());
+        SmartDashboard.putNumber("Distance to High Goal", distanceSensor.getDistance());
+        double speed = 0.0;
+        // rotation code
+        if (isSentryEnabled) { // auto turret control
+            if (latestData.isValid()) {
+                if (track())
+                    speed = getSpeedForDistance();
+            } else {
+                sentryMode();
             }
-            // shooting code
-            if (autoShootingEnabled && speed != 0) { // auto shooting
-                flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
-                flywheel.set(speed);
-                feeder.set(.75);
-            }
-            else if (!autoShootingEnabled && trigger.isTriggered()) { // manual shooting
-                flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
-                flywheel.set(speed);
-                feeder.set(.75);
-            } else { // dont shoot
-                flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-                flywheel.set(0);
-            }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        } else { // manual turret control
+            turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+            double turnSpeed = yaw.read();
+            if (Math.abs(turnSpeed) > .1)
+                if (turnSpeed > 0)
+                    turretRotator.getRotator()
+                            .set(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .25, .75));
+                else
+                    turretRotator.getRotator()
+                            .set(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .25, .75));
+            speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
+        }
+        // shooting code
+        if (autoShootingEnabled && speed != 0) { // auto shooting
+            flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+            flywheel.set(speed);
+            feeder.set(.75);
+        } else if (!autoShootingEnabled && trigger.isTriggered()) { // manual shooting
+            flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+            flywheel.set(speed);
+            feeder.set(.75);
+        } else { // dont shoot
+            flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+            flywheel.set(0);
+        }
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
     public void enableAutoShooting(boolean enabled) {
         autoShootingEnabled = enabled;
+        if (enabled && !isSentryEnabled)
+            enableSentry(true);
     }
 
     public boolean isAutoShootingEnabled() {
@@ -147,8 +161,9 @@ public class Turret implements Runnable {
 
     public void enableSentry(boolean enabled) {
         isSentryEnabled = enabled;
-        ledRing.set(isSentryEnabled);
-
+        ledRing.set(enabled);
+        if (!enabled && autoShootingEnabled)
+            enableAutoShooting(false);
     }
 
     public boolean isSentryEnabled() {
@@ -165,6 +180,14 @@ public class Turret implements Runnable {
 
     public TurretRotator getTurretRotator() {
         return turretRotator;
+    }
+
+    public Loop getTurretLoop() {
+        return loop;
+    }
+
+    public Switch atZeroPoint() {
+        return () -> feeder.isFwdLimitSwitchClosed();
     }
 }
 
