@@ -13,7 +13,6 @@ import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
-import org.team401.robot.components.CollectionGearbox;
 import org.team401.robot.components.Turret;
 import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
@@ -37,11 +36,8 @@ public class Robot extends IterativeRobot {
                 .recordEventsToFile("/home/lvuser/", 2097152);
         visionDataStream.start();
 
-        CollectionGearbox collectionGearbox = new CollectionGearbox(
-                Hardware.Motors.victorSP(Constants.COL_PRO_1),
-                Hardware.Motors.victorSP(Constants.COL_PRO_2),
-                Hardware.Motors.victorSP(Constants.COL_PRO_3)
-        );
+        Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
+        compressorFan.set(true);
 
         driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
         driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
@@ -62,11 +58,13 @@ public class Robot extends IterativeRobot {
         collectionExtender.set(false);
         Solenoid turretExtender = new Solenoid(Constants.TURRET_SHIFTER);
         turretExtender.set(false);
+        Solenoid gearHolder = new Solenoid(Constants.GEAR_HOLDER);
+        gearHolder.set(false);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggered(driveJoystickLeft.getTrigger(), OctocanumDrive.INSTANCE::shift);
+        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT), OctocanumDrive.INSTANCE::shift);
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
@@ -74,44 +72,48 @@ public class Robot extends IterativeRobot {
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
                 () -> {
                     collectionExtender.set(!collectionExtender.get());
-                    SmartDashboard.putBoolean("Collection Down", collectionExtender.get());
+                    SmartDashboard.putBoolean("collection_down", collectionExtender.get());
                 });
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
                 () -> {
                     if (collectionGearbox.isRunning())
                         collectionGearbox.setSpeed(0);
                     else
                         collectionGearbox.setSpeed(1);
-                    SmartDashboard.putBoolean("Collection Enabled", collectionGearbox.isRunning());
+                    SmartDashboard.putBoolean("collection_enabled", collectionGearbox.isRunning());
+                });*/
+        // scoring
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearHolder.set(true);
+                    SmartDashboard.putBoolean("gear_holder_open", true);
+                });
+        switchReactor.onUntriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+                () -> {
+                    gearHolder.set(false);
+                    SmartDashboard.putBoolean("gear_holder_open", false);
                 });
         // turret
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TURRET),
                 () -> {
                     turretExtender.set(!turretExtender.get());
-                    SmartDashboard.putBoolean("Turret Extended", turretExtender.get());
+                    SmartDashboard.putBoolean("turret_extended", turretExtender.get());
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD),
                 () -> {
                     turret.extendHood(!turret.isHoodExtended());
-                    SmartDashboard.putBoolean("Hood Extended", turret.isHoodExtended());
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_AUTO),
                 () -> {
                     turret.enableAutoShooting(!turret.isAutoShootingEnabled());
-                    if (turret.isAutoShootingEnabled()) {
+                    if (turret.isAutoShootingEnabled())
                         turret.enableSentry(true);
-                        SmartDashboard.putBoolean("Sentry Mode Enabled", turret.isSentryEnabled());
-                    }
-                    SmartDashboard.putBoolean("Auto Shooting Enabled", turret.isAutoShootingEnabled());
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
                 () -> {
                     turret.enableSentry(!turret.isSentryEnabled());
-                    if (!turret.isSentryEnabled()) {
+                    if (!turret.isSentryEnabled())
                         turret.enableAutoShooting(false);
-                        SmartDashboard.putBoolean("Auto Shooting Enabled", turret.isAutoShootingEnabled());
-                    }
-                    SmartDashboard.putBoolean("Sentry Mode Enabled", turret.isSentryEnabled());
                 });
         loopManager = new LoopManager();
         loopManager.register(OctocanumDrive.INSTANCE.getDriveLoop());
@@ -149,7 +151,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
         OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
+                driveJoystickRight.getRoll().read());
     }
 
     //@Override

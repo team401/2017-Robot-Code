@@ -170,15 +170,7 @@ object OctocanumDrive {
         SmartDashboard.putData("Gyro Stuff", gyro)
     }
 
-    /**
-     * Directly set the output of each gearbox
-     */
-    fun drive(leftFront: Double, rightFront: Double, leftRear: Double, rightRear: Double) {
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(leftFront)
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(leftRear)
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(rightFront)
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(rightRear)
-    }
+
 
     /**
      * Toggle the drive mode
@@ -280,7 +272,7 @@ object OctocanumDrive {
         val actualGyroAngle = getGyroAngle()
 
         lastHeadingErrorDegrees = (velocityHeadingSetpoint as VelocityHeadingSetpoint).heading
-                .rotateBy(actualGyroAngle.inverse()).getDegrees()
+                .rotateBy(actualGyroAngle.inverse()).degrees
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
         updateVelocitySetpoint(((velocityHeadingSetpoint as VelocityHeadingSetpoint).leftSpeed + deltaSpeed) / 2,
@@ -335,7 +327,7 @@ object OctocanumDrive {
     }
 
     @Synchronized fun getGyroAngle(): Rotation2d {
-        return Rotation2d.fromDegrees(gyro.getAngle())
+        return Rotation2d.fromDegrees(gyro.angle)
     }
 
     fun printToSmartDashboard() {
@@ -343,10 +335,10 @@ object OctocanumDrive {
         SmartDashboard.putNumber("right_distance", getRightDistanceInches())
         SmartDashboard.putNumber("left_velocity", inchesPerSecondToRpm(getLeftVelocityInchesPerSec()))
         SmartDashboard.putNumber("right_velocity", inchesPerSecondToRpm(getRightVelocityInchesPerSec()))
-        SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble());
-        SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble());
-        SmartDashboard.putNumber("gyro_angle", gyro.angle);
-        SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees);
+        SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble())
+        SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
+        SmartDashboard.putNumber("gyro_angle", gyro.angle)
+        SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
     }
 
     /**

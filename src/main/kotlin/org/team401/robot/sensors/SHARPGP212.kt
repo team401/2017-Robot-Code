@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.AnalogInput
  * Wrapper class for the SHARP GP2D12 proximity sensor
  *
  * Reads distance accurately from 10cm - 80cm
+ *
+ * Default unit is Centimeters
  */
 class SHARPGP212(port: Int, val unit: Unit = SHARPGP212.Unit.CENTIMETERS) : DistanceSensor {
 

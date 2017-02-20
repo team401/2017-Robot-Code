@@ -36,6 +36,7 @@ public class Turret {
         @Override
         public void onLoop() {
             run();
+            printToSmartDashboard();
         }
 
         @Override
@@ -44,10 +45,9 @@ public class Turret {
         }
     };
 
-    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner,
-                  CANTalon flyWheelMotor1, CANTalon flyWheelMotor2, CANTalon turretFeeder,
-                  Solenoid turretHood, Solenoid ledRing, Switch trigger,
-                  ContinuousRange yaw, ContinuousRange throttle) {
+    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMotor1,
+                  CANTalon flyWheelMotor2, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing,
+                  Switch trigger, ContinuousRange yaw, ContinuousRange throttle) {
         turretRotator = new TurretRotator(turretSpinner);
         latestData = new VisionData(0, 0, 0);
         this.trigger = trigger;
@@ -188,6 +188,17 @@ public class Turret {
 
     public Switch atZeroPoint() {
         return () -> feeder.isFwdLimitSwitchClosed();
+    }
+
+    private void printToSmartDashboard() {
+        SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
+        SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
+        SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
+        SmartDashboard.putNumber("turret_error", turretRotator.getRotator().getClosedLoopError());
+        SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());
+        SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint().isTriggered());
+        SmartDashboard.putBoolean("sentry_enabled", isSentryEnabled());
+        SmartDashboard.putBoolean("auto_shooting_enabled", isAutoShootingEnabled());
     }
 }
 
