@@ -70,9 +70,11 @@ object OctocanumDrive {
         override fun onLoop() {
             synchronized(this) {
                 when (controlState) {
-                    DriveControlState.OPEN_LOOP -> return
+                    DriveControlState.OPEN_LOOP ->
+                        // we dont really care
+                        return
                     DriveControlState.VELOCITY_SETPOINT ->
-                        // Talons are updating the control loop state
+                        // talons are updating the control loop state
                         return
                     DriveControlState.VELOCITY_HEADING_CONTROL -> {
                         updateVelocityHeadingSetpoint()

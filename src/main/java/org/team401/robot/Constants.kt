@@ -19,7 +19,7 @@ object Constants {
 
     // can device ids
     const val PDP                   = 0
-    const val PCM                   = 12
+    const val PCM                   = 13
     // can device ids for the motor controllers
     const val FRONT_LEFT_MASTER     = 1
     const val FRONT_LEFT_SLAVE      = 2
