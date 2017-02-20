@@ -6,7 +6,6 @@ class ShiftAction(val driveMode: OctocanumDrive.DriveMode) : Action {
 
     override fun start() {
         OctocanumDrive.shift(driveMode)
-        println("Shifted to $driveMode")
     }
 
     override fun update() {

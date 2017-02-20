@@ -1,8 +1,5 @@
 package org.team401.robot.auto
 
-import org.strongback.Strongback.stop
-
-
 /**
  * This class selects, runs, and stops (if necessary) a specified autonomous
  * mode.
@@ -19,5 +16,10 @@ class AutoModeExecuter(val autoMode: AutoMode) {
 
     fun start() {
         thread.start()
+    }
+
+    fun stop() {
+        if (thread.isAlive)
+            thread.join()
     }
 }

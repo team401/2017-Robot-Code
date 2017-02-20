@@ -59,9 +59,26 @@ object Constants {
     const val BUTTON_DISABLE_SENTRY = 2
     const val BUTTON_TOGGLE_HOOD    = 3
 
-
     // camera mapping
     const val CAMERA_FRONT          = 0
     const val CAMERA_BACK           = 1
+
+    // measurements
+    const val DRIVE_WHEEL_DIAMETER_IN  = 4
+
+    // pid
+    const val SPEED_CONTROL_PROFILE = 0
+    const val SPEED_P               = 0.25
+    const val SPEED_I               = 0.002
+    const val SPEED_D               = 6.0
+    const val SPEED_F               = 0.183
+    const val SPEED_IZONE           = 100
+    const val SPEED_RAMP_RATE       = 0.0
+
+    const val DRIVE_HEADING_VEL_P   = 4.0 // 6.0;
+    const val DRIVE_HEADING_VEL_I   = 0.0
+    const val DRIVE_HEADING_VEL_D   = 50.0
+
+    const val LOOP_PERIOD           = 0.001
 
 }

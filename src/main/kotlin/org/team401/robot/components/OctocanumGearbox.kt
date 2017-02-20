@@ -6,36 +6,38 @@ import com.ctre.CANTalon
  * Wrapper class for the octocanum gearbox
  * Motor default mode is PercentVbus
  *
- * @param master CANTalon reference
+ * @param motor CANTalon reference
  * @param slave CANTalon reference
  */
-class OctocanumGearbox(val master: CANTalon, val slave: CANTalon) {
+class OctocanumGearbox(val motor: CANTalon, private val slave: CANTalon) {
 
     init {
-        master.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
-        master.isSafetyEnabled = false
+        motor.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        motor.isSafetyEnabled = false
+        motor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
+        motor.enableBrakeMode(false)
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
         slave.isSafetyEnabled = false
-        slave.set(master.deviceID.toDouble())
+        slave.set(motor.deviceID.toDouble())
     }
 
     fun changeControlMode(mode: CANTalon.TalonControlMode) {
-        master.changeControlMode(mode)
+        motor.changeControlMode(mode)
     }
 
     /**
-     * Takes a lambda that can change settings on the master motor
+     * Takes a lambda that can change settings on the motor motor
      */
     fun config(func: (CANTalon) -> Unit) {
-        func(master)
+        func(motor)
     }
 
     /**
-     * Sets the setpoint of the TalonSRX to the specified output
+     * Calls set() on the motor CANTalon object
      *
      * @param output for the motor controller
      */
     fun setOutput(output: Double) {
-        master.set(output)
+        motor.set(output)
     }
 }

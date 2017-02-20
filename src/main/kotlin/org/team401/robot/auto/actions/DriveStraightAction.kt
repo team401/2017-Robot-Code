@@ -1,38 +1,15 @@
 package org.team401.robot.auto.actions
 
-import com.ctre.CANTalon
-import org.team401.robot.Constants
 import org.team401.robot.chassis.OctocanumDrive
+import org.team401.robot.math.Rotation2d
 
-class DriveStraightAction(val rotations: Double) : Action {
+class DriveStraightAction(val speed: Double, val distance: Double, val heading: Double = 0.0) : Action {
 
-    var startingPositon: Double = 0.0
+    var startingDistance: Double = 0.0
 
     override fun start() {
-        startingPositon = getCurrentPosition()
-        OctocanumDrive.changeControlMode(CANTalon.TalonControlMode.Position,
-                {
-                    it.p = 1.0
-                    it.i = 0.0
-                    it.d = 0.0
-                    it.f = 0.0
-                    it.set(startingPositon + rotations)
-                },
-                {
-                    it.p = 1.0
-                    it.i = 0.0
-                    it.d = 0.0
-                    it.f = 0.0
-                    it.set(startingPositon + rotations)
-                },
-                {
-                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.FRONT_LEFT_MASTER.toDouble())
-                },
-                {
-                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.FRONT_RIGHT_MASTER.toDouble())
-                })
+        startingDistance = getCurrentDistance()
+        OctocanumDrive.setVelocityHeadingSetpoint(speed, Rotation2d.fromDegrees(heading))
     }
 
     override fun update() {
@@ -40,16 +17,23 @@ class DriveStraightAction(val rotations: Double) : Action {
     }
 
     override fun isFinished(): Boolean {
-        return Math.abs((startingPositon + rotations) - getCurrentPosition()) < 1
+        var rv: Boolean = false
+        if (distance > 0) {
+            rv = getCurrentDistance() - startingDistance >= distance
+        } else {
+            rv = getCurrentDistance() - startingDistance <= distance
+        }
+        if (rv) {
+            OctocanumDrive.setVelocitySetpoint(0.0, 0.0)
+        }
+        return rv
     }
 
     override fun end() {
-
+        OctocanumDrive.setVelocitySetpoint(0.0, 0.0)
     }
 
-    private fun getCurrentPosition(): Double {
-        val leftPosition = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_LEFT].master.position
-        val rightPosition = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_RIGHT].master.position
-        return (leftPosition + rightPosition) / 2
+    private fun getCurrentDistance(): Double {
+        return (OctocanumDrive.getLeftDistanceInches() + OctocanumDrive.getRightDistanceInches()) / 2;
     }
 }

@@ -52,7 +52,7 @@ class DriveRobot(val octocanumDrive: OctocanumDrive, val mode: OctocanumDrive.Dr
     override fun execute(): Boolean {
         return octocanumDrive.gearboxes.indices.filter {
             // check if each motor has traveled the right distance
-            Math.abs(octocanumDrive.gearboxes[it].master.get() - rotations[it]) < tolarance
+            Math.abs(octocanumDrive.gearboxes[it].motor.get() - rotations[it]) < tolarance
         }.size == 4
         // ^^^^^ return if all 4 are finished
     }
