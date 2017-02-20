@@ -6,7 +6,7 @@ object MathUtils {
      * Normalize all wheel speeds if the magnitude of any wheel is greater than 1.0.
      * @param wheelSpeeds the speed of each motor
      */
-     fun normalize(wheelSpeeds: DoubleArray) {
+    fun normalize(wheelSpeeds: DoubleArray) {
         var maxMagnitude = Math.abs(wheelSpeeds[0])
         for (i in wheelSpeeds.indices) {
             val temp = Math.abs(wheelSpeeds[i])
@@ -25,7 +25,7 @@ object MathUtils {
      * *
      * @param scaleFactor the scale factor to apply to the motor speeds
      */
-     fun scale(wheelSpeeds: DoubleArray, scaleFactor: Double) {
+    fun scale(wheelSpeeds: DoubleArray, scaleFactor: Double) {
         for (i in wheelSpeeds.indices) {
             wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor
         }

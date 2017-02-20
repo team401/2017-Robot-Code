@@ -56,12 +56,16 @@ object Constants {
     // masher joystick
     const val BUTTON_SHOOT_FUEL     = 0
     const val BUTTON_EXTEND_TURRET  = 1
-    const val BUTTON_DISABLE_SENTRY = 2
-    const val BUTTON_TOGGLE_HOOD    = 3
+    const val BUTTON_TOGGLE_SENTRY  = 3
+    const val BUTTON_TOGGLE_AUTO    = 5
+    const val BUTTON_TOGGLE_HOOD    = 2
 
     // camera mapping
     const val CAMERA_FRONT          = 0
     const val CAMERA_BACK           = 1
+
+    // sensor ports
+    const val TURRET_LIMIT_SWITCH   = 0
 
     // measurements
     const val DRIVE_WHEEL_DIAMETER_IN  = 4
