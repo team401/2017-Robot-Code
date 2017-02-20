@@ -1,6 +1,5 @@
 package org.team401.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -11,14 +10,15 @@ import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.chassis.OctocanumDrive;
 import org.team401.robot.commands.ShiftDriveMode;
 import org.team401.robot.components.CollectionGearbox;
-import org.team401.robot.components.OctocanumGearbox;
 import org.team401.robot.components.Turret;
 import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
+import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class Robot extends IterativeRobot {
 
@@ -73,8 +73,7 @@ public class Robot extends IterativeRobot {
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggeredSubmit(driveJoystickLeft.getTrigger(),
-                () -> new ShiftDriveMode(octocanumDrive));
+        switchReactor.onTriggered(driveJoystickLeft.getTrigger(), OctocanumDrive.INSTANCE::shift);
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
@@ -155,7 +154,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
-        octocanumDrive.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
+        OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
     }
 
