@@ -1,6 +1,6 @@
 package org.team401.robot.auto.actions
 
-import org.team401.robot.chassis.OctocanumDrive
+import org.team401.robot.subsystems.OctocanumDrive
 
 class ShiftAction(val driveMode: OctocanumDrive.DriveMode) : Action {
 

@@ -1,4 +1,4 @@
-package org.team401.robot.chassis
+package org.team401.robot.subsystems
 
 import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
@@ -143,7 +143,7 @@ object OctocanumDrive {
                 leftXThrottle,
                 -leftYThrottle,
                 if (driveMode == DriveMode.MECANUM && SmartDashboard.getBoolean("Field-Centric", false))
-                    gyro.angle*SmartDashboard.getNumber("Gyro Multiplier", 1.0) else 0.0)
+                    gyro.angle* SmartDashboard.getNumber("Gyro Multiplier", 1.0) else 0.0)
 
         val x: Double
         if (driveMode == DriveMode.MECANUM)

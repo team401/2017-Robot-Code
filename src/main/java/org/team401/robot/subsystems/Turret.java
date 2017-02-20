@@ -1,4 +1,4 @@
-package org.team401.robot.components;
+package org.team401.robot.subsystems;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -7,6 +7,7 @@ import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.Constants;
 import org.team401.robot.Robot;
+import org.team401.robot.components.TurretRotator;
 import org.team401.robot.loops.Loop;
 import org.team401.robot.math.MathUtils;
 import org.team401.robot.sensors.DistanceSensor;
@@ -195,6 +196,7 @@ public class Turret {
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getRotator().getClosedLoopError());
+        SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget());
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint().isTriggered());
         SmartDashboard.putBoolean("sentry_enabled", isSentryEnabled());

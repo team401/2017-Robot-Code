@@ -1,6 +1,9 @@
 package org.team401.robot
 
 object Constants {
+
+    const val TURRET_GEAR_MULTIPLIER = 18.0/168.0
+
     // gearbox index values for the chassis
     const val GEARBOX_FRONT_LEFT    = 0
     const val GEARBOX_FRONT_RIGHT   = 1

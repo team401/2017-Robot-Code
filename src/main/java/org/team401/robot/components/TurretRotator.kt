@@ -2,11 +2,12 @@ package org.team401.robot.components
 
 import com.ctre.CANTalon
 import org.strongback.components.Switch
+import org.team401.robot.Constants
 
 class TurretRotator(val rotator: CANTalon) {
 
 
-    val maxAngle = 180.0
+    val maxAngle = 166.0
 
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
@@ -14,18 +15,15 @@ class TurretRotator(val rotator: CANTalon) {
         rotator.set(0.0)
         rotator.reverseOutput(false)
         rotator.reverseSensor(true)
-        rotator.configPeakOutputVoltage(1.5, -1.5)
+        rotator.configPeakOutputVoltage(2.0, -2.0)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit(maxAngle*187/5040)
-        rotator.enableForwardSoftLimit(true)
         rotator.setReverseSoftLimit(0.0)
-        rotator.enableReverseSoftLimit(true)
+        enableSoftLimits(false)
         rotator.isSafetyEnabled = false
         //TODO: tune pid
-        rotator.p = 1.0
-        rotator.i = 0.0
-        rotator.d = 0.0
-        rotator.f = 0.0
+        rotator.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
+                Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
     }
 
     /**
@@ -33,14 +31,20 @@ class TurretRotator(val rotator: CANTalon) {
      */
     fun setPosition(angle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        rotator.set((angle*187)/(14*360))
+        rotator.set((angle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
     }
 
-    fun getPosition() = getAngle()
+    fun getPosition() = rotator.position * Constants.TURRET_GEAR_MULTIPLIER * 360
+
+    fun getSetpoint() = rotator.setpoint * Constants.TURRET_GEAR_MULTIPLIER * 360
+
+    fun getError() = getSetpoint() - getPosition()
+
+    fun onTarget() = getError() < 2
 
     fun addDegrees(angle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        setPosition(getAngle() + angle)
+        setPosition(getPosition() + angle)
     }
 
     fun stop() {
@@ -50,6 +54,7 @@ class TurretRotator(val rotator: CANTalon) {
 
     fun zero() {
         rotator.reset()
+        enableSoftLimits(true)
     }
 
     fun rotate(throttle: Double) {
@@ -57,5 +62,8 @@ class TurretRotator(val rotator: CANTalon) {
         rotator.set(throttle)
     }
 
-    private fun getAngle() = (14*rotator.get())/187 * 360
+    fun enableSoftLimits(enabled: Boolean) {
+        rotator.enableForwardSoftLimit(enabled)
+        rotator.enableReverseSoftLimit(enabled)
+    }
 }

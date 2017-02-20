@@ -1,7 +1,7 @@
 package org.team401.robot.auto.actions
 
 import org.team401.robot.Robot
-import org.team401.robot.components.Turret
+import org.team401.robot.subsystems.Turret
 
 class CalibrateTurretAction : Action {
 
