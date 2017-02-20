@@ -7,8 +7,10 @@ import org.team401.robot.auto.actions.RotateAction
 class AutoTestMode : AutoMode() {
 
     override fun routine() {
-        runAction(DriveStraightAction(50.0, 500.0))
+        runAction(DriveStraightAction(100.0, 400.0))
+        println("hello")
         runAction(RotateAction(90.0))
-        runAction(DriveStraightAction(10.0, 10.0))
+        println("hello2")
+        //runAction(DriveStraightAction(10.0, 10.0))
     }
 }

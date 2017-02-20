@@ -30,7 +30,7 @@ public class Robot extends IterativeRobot {
     private static VisionDataStream visionDataStream = new VisionDataStream("10.4.1.17", 5801);
     private static Turret turret;
 
-    @Override
+    //@Override
     public void robotInit() {
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
@@ -119,12 +119,12 @@ public class Robot extends IterativeRobot {
         OctocanumDrive.INSTANCE.init();
     }
 
-    @Override
+    //@Override
     public void robotPeriodic() {
 
     }
 
-    @Override
+    //@Override
     public void autonomousInit() {
         loopManager.start();
         Strongback.start();
@@ -132,12 +132,12 @@ public class Robot extends IterativeRobot {
         autoExecutor.start();
     }
 
-    @Override
+    //@Override
     public void autonomousPeriodic() {
         OctocanumDrive.INSTANCE.printToSmartDashboard();
     }
 
-    @Override
+    //@Override
     public void teleopInit() {
         if (autoExecutor != null)
             autoExecutor.stop();
@@ -145,20 +145,20 @@ public class Robot extends IterativeRobot {
         Strongback.restart();
     }
 
-    @Override
+    //@Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
         OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
                 driveJoystickRight.getPitch().read(), driveJoystickRight.getRoll().read());
     }
 
-    @Override
+    //@Override
     public void disabledInit() {
         Strongback.disable();
         loopManager.stop();
     }
 
-    @Override
+    //@Override
     public void disabledPeriodic() {}
 
     //subsystems

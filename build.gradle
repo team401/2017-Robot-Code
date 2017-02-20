@@ -19,7 +19,7 @@ apply plugin: 'kotlin'
 
 frc {
     team = "401"
-    robotClass = "org.team401.robot.Robot"
+    robotClass = "org.team401.robot.RobotTest"
 
     deployTimeout = 5
     rioIP = "10.4.1.2"

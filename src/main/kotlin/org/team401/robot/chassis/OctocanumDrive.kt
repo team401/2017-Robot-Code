@@ -135,8 +135,10 @@ object OctocanumDrive {
      * @param rightYThrottle Right joysticks getRoll() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, rightXThrottle: Double) {
-        if (controlState != DriveControlState.OPEN_LOOP)
-            return
+        if (controlState != DriveControlState.OPEN_LOOP) {
+            controlState = DriveControlState.OPEN_LOOP
+            configureTalonsForOpenLoopControl()
+        }
         // map the input speeds to match the driver's orientation to the field
         SmartDashboard.putNumber("Gyro Angle", gyro.angle)
         val speed = MathUtils.rotateVector(
@@ -249,20 +251,10 @@ object OctocanumDrive {
 
    private fun configureTalonsForOpenLoopControl() {
         changeControlMode(CANTalon.TalonControlMode.PercentVbus,
-                {
-                    it.set(0.0)
-                    it.setVoltageRampRate(0.0)
-                },
-                {
-                    it.set(0.0)
-                    it.setVoltageRampRate(0.0)
-                },
-                {
-                    it.set(0.0)
-                },
-                {
-                    it.set(0.0)
-                })
+                { it.set(0.0) },
+                { it.set(0.0) },
+                { it.set(0.0) },
+                { it.set(0.0) })
         setBrakeMode(false)
     }
 
@@ -295,8 +287,8 @@ object OctocanumDrive {
                 .rotateBy(actualGyroAngle.inverse()).getDegrees()
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
-        updateVelocitySetpoint((velocityHeadingSetpoint as VelocityHeadingSetpoint).leftSpeed + deltaSpeed / 2,
-                (velocityHeadingSetpoint as VelocityHeadingSetpoint).rightSpeed - deltaSpeed / 2)
+        updateVelocitySetpoint(((velocityHeadingSetpoint as VelocityHeadingSetpoint).leftSpeed + deltaSpeed) / 2,
+                ((velocityHeadingSetpoint as VelocityHeadingSetpoint).rightSpeed - deltaSpeed) / 2)
     }
 
     private fun rotationsToInches(rotations: Double): Double {
@@ -353,8 +345,8 @@ object OctocanumDrive {
     fun printToSmartDashboard() {
         SmartDashboard.putNumber("left_distance", getLeftDistanceInches())
         SmartDashboard.putNumber("right_distance", getRightDistanceInches())
-        SmartDashboard.putNumber("left_velocity", getLeftVelocityInchesPerSec())
-        SmartDashboard.putNumber("right_velocity", getRightVelocityInchesPerSec())
+        SmartDashboard.putNumber("left_velocity", inchesPerSecondToRpm(getLeftVelocityInchesPerSec()))
+        SmartDashboard.putNumber("right_velocity", inchesPerSecondToRpm(getRightVelocityInchesPerSec()))
         SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble());
         SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble());
         SmartDashboard.putNumber("gyro_angle", gyro.angle);

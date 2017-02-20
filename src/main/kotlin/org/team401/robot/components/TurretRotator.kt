@@ -29,7 +29,7 @@ class TurretRotator(val rotator: CANTalon) {
     }
 
     /**
-     * Set the position of the turret at a specific angle, must in degrees
+     * Set the position of the turret at a specific angle, in degrees
      */
     fun setPosition(angle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
@@ -58,5 +58,4 @@ class TurretRotator(val rotator: CANTalon) {
     }
 
     private fun getAngle() = (14*rotator.get())/187 * 360
-
 }
