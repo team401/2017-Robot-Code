@@ -3,7 +3,6 @@ package org.team401.robot;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
@@ -63,7 +62,7 @@ public class Robot /*extends IterativeRobot*/ {
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
         // collection
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_DROP),
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
                 () -> {
                     if (Intake.INSTANCE.isArmDown())
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
@@ -87,7 +86,7 @@ public class Robot /*extends IterativeRobot*/ {
                     GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                 });
         // tower
-        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TURRET),
+        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TOWER),
                 () -> {
                     if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                         GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_IN);
