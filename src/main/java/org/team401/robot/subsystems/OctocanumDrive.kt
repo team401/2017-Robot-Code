@@ -19,7 +19,7 @@ import org.team401.robot.math.Rotation2d
  * @author Zach Kozar
  * @version 1/15/17
  */
-object OctocanumDrive {
+object OctocanumDrive : Subsystem() {
 
     enum class DriveControlState {
         OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
@@ -62,7 +62,7 @@ object OctocanumDrive {
      */
     var driveMode = DriveMode.TRACTION
 
-    val driveLoop = object : Loop {
+    private val driveLoop = object : Loop {
         override fun onStart() {
             setBrakeMode(false)
         }
@@ -332,7 +332,7 @@ object OctocanumDrive {
         return Rotation2d.fromDegrees(gyro.angle)
     }
 
-    fun printToSmartDashboard() {
+    override fun printToSmartDashboard() {
         SmartDashboard.putNumber("left_distance", getLeftDistanceInches())
         SmartDashboard.putNumber("right_distance", getRightDistanceInches())
         SmartDashboard.putNumber("left_velocity", inchesPerSecondToRpm(getLeftVelocityInchesPerSec()))
@@ -342,6 +342,8 @@ object OctocanumDrive {
         SmartDashboard.putNumber("gyro_angle", gyro.angle)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
     }
+
+    override fun getSubsystemLoop(): Loop = driveLoop
 
     /**
      * VelocityHeadingSetpoints are used to calculate the robot's path given the

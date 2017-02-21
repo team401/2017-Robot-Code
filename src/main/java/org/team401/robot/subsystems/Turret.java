@@ -13,7 +13,7 @@ import org.team401.robot.math.MathUtils;
 import org.team401.robot.sensors.DistanceSensor;
 import org.team401.vision.VisionDataStream.VisionData;
 
-public class Turret {
+public class Turret extends Subsystem {
 
     private TurretRotator turretRotator;
     private Solenoid turretHood;
@@ -43,11 +43,12 @@ public class Turret {
         @Override
         public void onStop() {
             enableSentry(false);
+            turretRotator.stop();
         }
     };
 
-    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMotor1,
-                  CANTalon flyWheelMotor2, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing,
+    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMaster,
+                  CANTalon flywheelSlave, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing,
                   Switch trigger, ContinuousRange yaw, ContinuousRange throttle) {
         turretRotator = new TurretRotator(turretSpinner);
         latestData = new VisionData(0, 0, 0);
@@ -62,13 +63,12 @@ public class Turret {
         turretHood.set(false);
         ledRing.set(false);
 
-        flywheel = flyWheelMotor2;
-
-        flywheelSlave = flyWheelMotor1;
+        this.flywheelSlave = flywheelSlave;
         flywheelSlave.setSafetyEnabled(false);
         flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
         flywheelSlave.set(flywheel.getDeviceID());
         flywheelSlave.setInverted(true);
+        flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
         flywheel.configPeakOutputVoltage(12, 0);
         flywheel.setSafetyEnabled(false);
@@ -122,7 +122,7 @@ public class Turret {
             if (Math.abs(turnSpeed) > .1)
                 if (turnSpeed > 0)
                     turretRotator
-                            .rotate(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .1, .2));
+                            .rotate(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .05, .15));
                 else
                     turretRotator
                             .rotate(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .1, .2));
@@ -181,15 +181,12 @@ public class Turret {
         return turretRotator;
     }
 
-    public Loop getTurretLoop() {
-        return loop;
-    }
-
     public boolean atZeroPoint() {
         return feeder.isFwdLimitSwitchClosed();
     }
 
-    private void printToSmartDashboard() {
+    @Override
+    public void printToSmartDashboard() {
         SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
@@ -201,6 +198,10 @@ public class Turret {
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint());
         SmartDashboard.putBoolean("sentry_enabled", isSentryEnabled());
         SmartDashboard.putBoolean("auto_shooting_enabled", isAutoShootingEnabled());
+    }
+
+    public Loop getSubsystemLoop() {
+        return loop;
     }
 }
 

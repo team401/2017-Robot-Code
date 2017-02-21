@@ -2,16 +2,8 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.ui.FlightStick;
-import org.strongback.hardware.Hardware;
-import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.AutoTestMode;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
-import org.team401.robot.components.TurretRotator;
-import org.team401.robot.subsystems.OctocanumDrive;
-import org.team401.robot.loops.LoopManager;
 
 public class RobotTestPls extends IterativeRobot {
 
@@ -21,14 +13,14 @@ public class RobotTestPls extends IterativeRobot {
 
     //@Override
     public void robotInit() {
-        flywheel = new CANTalon(Constants.TURRET_SHOOTER_LEFT);
+        flywheel = new CANTalon(Constants.TURRET_SHOOTER_SLAVE);
         flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
         flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
                 Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
-        slave = new CANTalon(Constants.TURRET_SHOOTER_RIGHT);
+        slave = new CANTalon(Constants.TURRET_SHOOTER_MASTER);
         slave.changeControlMode(CANTalon.TalonControlMode.Follower);
-        slave.set(Constants.TURRET_SHOOTER_RIGHT);
+        slave.set(Constants.TURRET_SHOOTER_MASTER);
     }
 
     //@Override
