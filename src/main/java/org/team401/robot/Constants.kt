@@ -35,8 +35,8 @@ object Constants {
     // can device ids for the turret
     const val TURRET_SHOOTER_LEFT   = 9
     const val TURRET_SHOOTER_RIGHT  = 10
-    const val TURRET_ROTATOR        = 11
-    const val TURRET_FEEDER         = 12
+    const val TURRET_FEEDER         = 11
+    const val TURRET_ROTATOR        = 12
 
     // pwm motor ports
     const val COL_PRO_1             = 1
@@ -85,6 +85,13 @@ object Constants {
     const val FLYWHEEL_F            = 0.0
     const val FLYWHEEL_IZONE        = 0
     const val FLYWHEEL_RAMP_RATE    = 0.0
+
+    const val ROTATOR_P            = 0.25
+    const val ROTATOR_I            = 0.0
+    const val ROTATOR_D            = 5.0
+    const val ROTATOR_F            = 0.0
+    const val ROTATOR_IZONE        = 0
+    const val ROTATOR_RAMP_RATE    = 0.0
 
     const val DRIVE_HEADING_VEL_P   = 4.0 // 6.0;
     const val DRIVE_HEADING_VEL_I   = 0.0

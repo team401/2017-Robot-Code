@@ -10,6 +10,7 @@ import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.OctocanumDrive;
@@ -18,7 +19,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
-public class Robot extends IterativeRobot {
+public class Robot /*extends IterativeRobot*/ {
 
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
     private Camera camera;
@@ -130,7 +131,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         loopManager.start();
         Strongback.start();
-        autoExecutor = new AutoModeExecuter(new CalibrateTurretMode());
+        autoExecutor = new AutoModeExecuter(new AutoTestMode());
         autoExecutor.start();
     }
 

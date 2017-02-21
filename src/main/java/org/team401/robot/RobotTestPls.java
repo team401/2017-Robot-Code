@@ -1,47 +1,45 @@
 package org.team401.robot;
 
+import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.AutoTestMode;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
+import org.team401.robot.components.TurretRotator;
 import org.team401.robot.subsystems.OctocanumDrive;
 import org.team401.robot.loops.LoopManager;
 
-public class RobotTestPls /*extends IterativeRobot*/ {
+public class RobotTestPls extends IterativeRobot {
 
-    private AutoModeExecuter autoModeExecuter;
-    private LoopManager loopManager;
+    private TurretRotator turret;
+    private CANTalon feeder;
 
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
 
     //@Override
     public void robotInit() {
-        OctocanumDrive.INSTANCE.init();
+        turret = new TurretRotator(new CANTalon(Constants.TURRET_ROTATOR));
+        feeder = new CANTalon(Constants.TURRET_FEEDER);
 
-        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
-        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
-        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
-
-        loopManager = new LoopManager();
-        loopManager.register(OctocanumDrive.INSTANCE.getDriveLoop());
     }
 
     //@Override
     public void autonomousInit() {
-        autoModeExecuter = new AutoModeExecuter(new AutoTestMode());
-        autoModeExecuter.start();
-        loopManager.start();
+        new AutoModeExecuter(new CalibrateTurretMode()).start();
     }
 
     //@Override
     public void teleopInit() {
-        loopManager.start();
-        OctocanumDrive.INSTANCE.setBrakeMode(true);
+        feeder.enableLimitSwitch(true, true);
     }
 
     //@Override
     public void disabledInit() {
-        loopManager.stop();
+
     }
 
     //@Override
@@ -51,7 +49,11 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
     //@Override
     public void teleopPeriodic() {
-        OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getRoll().read());
+        turret.setPosition(SmartDashboard.getNumber("pos", 0.0));
+        SmartDashboard.putNumber("turret_position", turret.getPosition());
+        SmartDashboard.putNumber("turret_error", turret.getError());
+
+        SmartDashboard.putBoolean("fwd_limit", feeder.isFwdLimitSwitchClosed());
+        SmartDashboard.putBoolean("rev_limit", feeder.isRevLimitSwitchClosed());
     }
 }

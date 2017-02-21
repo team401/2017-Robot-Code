@@ -78,6 +78,7 @@ public class Turret {
 
         feeder = turretFeeder;
         feeder.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        feeder.enableLimitSwitch(true, false);
         feeder.set(0.0);
     }
 
@@ -107,8 +108,6 @@ public class Turret {
 
     private void run() {
         latestData = Robot.getVisionDataStream().getLatestGoalData();
-        SmartDashboard.putBoolean("Can See Goal", latestData.isValid());
-        SmartDashboard.putNumber("Distance to High Goal", distanceSensor.getDistance());
         double speed = 0.0;
         // rotation code
         if (isSentryEnabled) { // auto turret control
@@ -119,15 +118,14 @@ public class Turret {
                 sentryMode();
             }
         } else { // manual turret control
-            turretRotator.getRotator().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             double turnSpeed = yaw.read();
             if (Math.abs(turnSpeed) > .1)
                 if (turnSpeed > 0)
-                    turretRotator.getRotator()
-                            .set(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .25, .75));
+                    turretRotator
+                            .rotate(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .1, .2));
                 else
-                    turretRotator.getRotator()
-                            .set(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .25, .75));
+                    turretRotator
+                            .rotate(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .1, .2));
             speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
         }
         // shooting code
@@ -187,8 +185,8 @@ public class Turret {
         return loop;
     }
 
-    public Switch atZeroPoint() {
-        return () -> feeder.isFwdLimitSwitchClosed();
+    public boolean atZeroPoint() {
+        return feeder.isFwdLimitSwitchClosed();
     }
 
     private void printToSmartDashboard() {
@@ -196,9 +194,11 @@ public class Turret {
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getRotator().getClosedLoopError());
+        SmartDashboard.putNumber("goal_distance", distanceSensor.getDistance());
+        SmartDashboard.putBoolean("valid_vision_data", latestData.isValid());
         SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget());
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());
-        SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint().isTriggered());
+        SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint());
         SmartDashboard.putBoolean("sentry_enabled", isSentryEnabled());
         SmartDashboard.putBoolean("auto_shooting_enabled", isAutoShootingEnabled());
     }

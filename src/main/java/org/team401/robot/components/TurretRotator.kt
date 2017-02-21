@@ -1,11 +1,9 @@
 package org.team401.robot.components
 
 import com.ctre.CANTalon
-import org.strongback.components.Switch
 import org.team401.robot.Constants
 
 class TurretRotator(val rotator: CANTalon) {
-
 
     val maxAngle = 166.0
 
@@ -14,16 +12,18 @@ class TurretRotator(val rotator: CANTalon) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.set(0.0)
         rotator.reverseOutput(false)
-        rotator.reverseSensor(true)
-        rotator.configPeakOutputVoltage(2.0, -2.0)
+        rotator.reverseSensor(false)
+        rotator.configPeakOutputVoltage(1.0, -1.0)
+        rotator.configNominalOutputVoltage(1.0, -1.0)
         rotator.enableBrakeMode(true)
-        rotator.setForwardSoftLimit(maxAngle*187/5040)
+        rotator.setForwardSoftLimit((maxAngle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
         rotator.setReverseSoftLimit(0.0)
         enableSoftLimits(false)
         rotator.isSafetyEnabled = false
         //TODO: tune pid
-        rotator.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
-                Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
+        rotator.setPID(Constants.ROTATOR_P, Constants.ROTATOR_I, Constants.ROTATOR_D, Constants.ROTATOR_F,
+                Constants.ROTATOR_IZONE, Constants.ROTATOR_RAMP_RATE, 0)
+        rotator.enable()
     }
 
     /**
@@ -53,7 +53,8 @@ class TurretRotator(val rotator: CANTalon) {
     }
 
     fun zero() {
-        rotator.reset()
+        rotator.position = 0.0
+        rotator.encPosition = 0
         enableSoftLimits(true)
     }
 
