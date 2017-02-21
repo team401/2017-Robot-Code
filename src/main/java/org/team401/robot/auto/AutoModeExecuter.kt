@@ -21,5 +21,6 @@ class AutoModeExecuter(val autoMode: AutoMode) {
     fun stop() {
         if (thread.isAlive)
             thread.join()
+        autoMode.done()
     }
 }

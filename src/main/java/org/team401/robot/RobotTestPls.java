@@ -15,26 +15,30 @@ import org.team401.robot.loops.LoopManager;
 
 public class RobotTestPls extends IterativeRobot {
 
-    private TurretRotator turret;
-    private CANTalon feeder;
+    private CANTalon flywheel, slave;
 
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
 
     //@Override
     public void robotInit() {
-        turret = new TurretRotator(new CANTalon(Constants.TURRET_ROTATOR));
-        feeder = new CANTalon(Constants.TURRET_FEEDER);
-
+        flywheel = new CANTalon(Constants.TURRET_SHOOTER_LEFT);
+        flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+        flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
+                Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
+        slave = new CANTalon(Constants.TURRET_SHOOTER_RIGHT);
+        slave.changeControlMode(CANTalon.TalonControlMode.Follower);
+        slave.set(Constants.TURRET_SHOOTER_RIGHT);
     }
 
     //@Override
     public void autonomousInit() {
-        new AutoModeExecuter(new CalibrateTurretMode()).start();
+
     }
 
     //@Override
     public void teleopInit() {
-        feeder.enableLimitSwitch(true, true);
+
     }
 
     //@Override
@@ -49,11 +53,8 @@ public class RobotTestPls extends IterativeRobot {
 
     //@Override
     public void teleopPeriodic() {
-        turret.setPosition(SmartDashboard.getNumber("pos", 0.0));
-        SmartDashboard.putNumber("turret_position", turret.getPosition());
-        SmartDashboard.putNumber("turret_error", turret.getError());
-
-        SmartDashboard.putBoolean("fwd_limit", feeder.isFwdLimitSwitchClosed());
-        SmartDashboard.putBoolean("rev_limit", feeder.isRevLimitSwitchClosed());
+        flywheel.set(SmartDashboard.getNumber("flywheel_setpoint", 0));
+        SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
+        SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
     }
 }

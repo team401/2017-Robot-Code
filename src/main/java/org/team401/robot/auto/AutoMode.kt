@@ -14,7 +14,7 @@ abstract class AutoMode {
         println("Auto Finished!")
     }
 
-    fun done() {}
+    open fun done() {}
 
     /**
      * Run an action, blocks the thread until the action is completed.

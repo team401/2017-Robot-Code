@@ -13,9 +13,9 @@ object Constants {
     // solenoid ids (module 1)
     const val GEARBOX_SHIFTER       = 0
     const val TURRET_HOOD           = 1
-    const val COL_EXTENDER          = 2
-    const val GEAR_HOLDER           = 3
-    const val TURRET_SHIFTER        = 4
+    const val COL_EXTENDER          = 3
+    const val GEAR_HOLDER           = 4
+    const val TURRET_SHIFTER        = 2
     const val COMPRESSOR_FAN        = 5
     const val TURRET_LED_RING       = 6
     // solenoid ids (module 2)

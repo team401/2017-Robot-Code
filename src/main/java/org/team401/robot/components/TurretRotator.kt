@@ -23,7 +23,6 @@ class TurretRotator(val rotator: CANTalon) {
         //TODO: tune pid
         rotator.setPID(Constants.ROTATOR_P, Constants.ROTATOR_I, Constants.ROTATOR_D, Constants.ROTATOR_F,
                 Constants.ROTATOR_IZONE, Constants.ROTATOR_RAMP_RATE, 0)
-        rotator.enable()
     }
 
     /**
