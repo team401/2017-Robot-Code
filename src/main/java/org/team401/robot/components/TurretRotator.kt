@@ -3,7 +3,7 @@ package org.team401.robot.components
 import com.ctre.CANTalon
 import org.team401.robot.Constants
 
-class TurretRotator(val rotator: CANTalon) {
+class TurretRotator(private val rotator: CANTalon) {
 
     val maxAngle = 166.0
 

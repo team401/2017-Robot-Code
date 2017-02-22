@@ -2,6 +2,7 @@ package org.team401.robot;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
@@ -18,7 +19,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
-public class Robot /*extends IterativeRobot*/ {
+public class Robot extends IterativeRobot {
 
     private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
     private Camera camera;
@@ -57,12 +58,13 @@ public class Robot /*extends IterativeRobot*/ {
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // shift drive modes
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT), OctocanumDrive.INSTANCE::shift);
+        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
+                () -> OctocanumDrive.INSTANCE.shift());
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
         // collection
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
                 () -> {
                     if (Intake.INSTANCE.isArmDown())
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
@@ -75,7 +77,7 @@ public class Robot /*extends IterativeRobot*/ {
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
                     else
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
-                });
+                });*/
         // scoring
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
                 () -> {
@@ -100,19 +102,21 @@ public class Robot /*extends IterativeRobot*/ {
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_AUTO),
                 () -> {
-                    turret.enableAutoShooting(!turret.isAutoShootingEnabled());
-                    if (turret.isAutoShootingEnabled())
-                        turret.enableSentry(true);
+                    if (turret.getCurrentState() != Turret.TurretState.AUTO)
+                        turret.setWantedState(Turret.TurretState.AUTO);
+                    else
+                        turret.setWantedState(Turret.TurretState.SENTRY);
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
                 () -> {
-                    turret.enableSentry(!turret.isSentryEnabled());
-                    if (!turret.isSentryEnabled())
-                        turret.enableAutoShooting(false);
+                    if (turret.getCurrentState() != Turret.TurretState.SENTRY)
+                        turret.setWantedState(Turret.TurretState.SENTRY);
+                    else
+                        turret.setWantedState(Turret.TurretState.MANUAL);
                 });
         loopManager = new LoopManager();
         loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
-        loopManager.register(Intake.INSTANCE.getSubsystemLoop());
+        //loopManager.register(Intake.INSTANCE.getSubsystemLoop());
         loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
         loopManager.register(getTurret().getSubsystemLoop());
         OctocanumDrive.INSTANCE.init();

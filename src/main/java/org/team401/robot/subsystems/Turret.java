@@ -3,6 +3,7 @@ package org.team401.robot.subsystems;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.jetbrains.annotations.NotNull;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.Constants;
@@ -15,6 +16,12 @@ import org.team401.vision.VisionDataStream.VisionData;
 
 public class Turret extends Subsystem {
 
+    public enum TurretState {
+        DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
+    }
+
+    private TurretState state = TurretState.DISABLED;
+
     private TurretRotator turretRotator;
     private Solenoid turretHood;
     private Solenoid ledRing;
@@ -26,12 +33,11 @@ public class Turret extends Subsystem {
     private CANTalon flywheel, flywheelSlave, feeder;
 
     private ContinuousRange yaw, throttle;
-    private boolean isSentryEnabled, autoShootingEnabled;
 
     private Loop loop = new Loop() {
         @Override
         public void onStart() {
-            enableSentry(true);
+            setWantedState(TurretState.SENTRY);
         }
 
         @Override
@@ -42,7 +48,7 @@ public class Turret extends Subsystem {
 
         @Override
         public void onStop() {
-            enableSentry(false);
+            setWantedState(TurretState.MANUAL);
             turretRotator.stop();
         }
     };
@@ -55,7 +61,6 @@ public class Turret extends Subsystem {
         this.trigger = trigger;
         this.turretHood = turretHood;
         this.ledRing = ledRing;
-        this.isSentryEnabled = true;
         this.yaw = yaw;
         this.throttle = throttle;
         this.distanceSensor = distanceSensor;
@@ -66,7 +71,7 @@ public class Turret extends Subsystem {
         this.flywheelSlave = flywheelSlave;
         flywheelSlave.setSafetyEnabled(false);
         flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
-        flywheelSlave.set(flywheel.getDeviceID());
+        flywheelSlave.set(flyWheelMaster.getDeviceID());
         flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
@@ -90,7 +95,7 @@ public class Turret extends Subsystem {
             turretRotator.stop();
             return true;
         }
-        turretRotator.addDegrees(-latestData.getYaw());
+        turretRotator.addDegrees(-latestData.getYaw()*.75);
         return false;
     }
 
@@ -110,14 +115,14 @@ public class Turret extends Subsystem {
         latestData = Robot.getVisionDataStream().getLatestGoalData();
         double speed = 0.0;
         // rotation code
-        if (isSentryEnabled) { // auto turret control
+        if (state.compareTo(TurretState.SENTRY) >= 0) { // auto turret control
             if (latestData.isValid()) {
                 if (track())
                     speed = getSpeedForDistance();
             } else {
                 sentryMode();
             }
-        } else { // manual turret control
+        } else if (state == TurretState.MANUAL) { // manual turret control
             double turnSpeed = yaw.read();
             if (Math.abs(turnSpeed) > .1)
                 if (turnSpeed > 0)
@@ -129,17 +134,20 @@ public class Turret extends Subsystem {
             speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
         }
         // shooting code
-        if (autoShootingEnabled && speed != 0) { // auto shooting
+        if (state == TurretState.AUTO && speed != 0) { // auto shooting
             flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
             flywheel.set(speed);
-            feeder.set(.75);
-        } else if (!autoShootingEnabled && trigger.isTriggered()) { // manual shooting
+            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
+                feeder.set(.50);
+        } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && trigger.isTriggered()) { // manual shooting
             flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
             flywheel.set(speed);
-            feeder.set(.75);
+            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
+                feeder.set(.50);
         } else { // dont shoot
             flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             flywheel.set(0);
+            feeder.set(0);
         }
         try {
             Thread.sleep(10);
@@ -148,25 +156,12 @@ public class Turret extends Subsystem {
         }
     }
 
-    public void enableAutoShooting(boolean enabled) {
-        autoShootingEnabled = enabled;
-        if (enabled && !isSentryEnabled)
-            enableSentry(true);
+    public void setWantedState(TurretState state) {
+        this.state = state;
     }
 
-    public boolean isAutoShootingEnabled() {
-        return autoShootingEnabled;
-    }
-
-    public void enableSentry(boolean enabled) {
-        isSentryEnabled = enabled;
-        ledRing.set(enabled);
-        if (!enabled && autoShootingEnabled)
-            enableAutoShooting(false);
-    }
-
-    public boolean isSentryEnabled() {
-        return isSentryEnabled;
+    public TurretState getCurrentState() {
+        return state;
     }
 
     public void extendHood(boolean extended) {
@@ -190,14 +185,14 @@ public class Turret extends Subsystem {
         SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
-        SmartDashboard.putNumber("turret_error", turretRotator.getRotator().getClosedLoopError());
+        SmartDashboard.putNumber("turret_error", turretRotator.getError());
         SmartDashboard.putNumber("goal_distance", distanceSensor.getDistance());
         SmartDashboard.putBoolean("valid_vision_data", latestData.isValid());
         SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget());
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint());
-        SmartDashboard.putBoolean("sentry_enabled", isSentryEnabled());
-        SmartDashboard.putBoolean("auto_shooting_enabled", isAutoShootingEnabled());
+        SmartDashboard.putBoolean("sentry_enabled", state.compareTo(TurretState.SENTRY) >= 0);
+        SmartDashboard.putBoolean("auto_shooting_enabled", state == TurretState.AUTO);
     }
 
     public Loop getSubsystemLoop() {

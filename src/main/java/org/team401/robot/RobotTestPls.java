@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.ui.FlightStick;
 
-public class RobotTestPls extends IterativeRobot {
+public class RobotTestPls /*extends IterativeRobot*/ {
 
     private CANTalon flywheel, slave;
 

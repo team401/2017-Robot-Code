@@ -2,6 +2,8 @@ package org.team401.robot
 
 object Constants {
 
+    // measurements
+    const val DRIVE_WHEEL_DIAMETER_IN  = 4
     const val TURRET_GEAR_MULTIPLIER = 18.0/168.0
 
     // gearbox index values for the chassis
@@ -18,7 +20,6 @@ object Constants {
     const val TOWER_SHIFTER         = 2
     const val COMPRESSOR_FAN        = 5
     const val TURRET_LED_RING       = 6
-    // solenoid ids (module 2)
 
     // can device ids
     const val PDP                   = 0
@@ -28,8 +29,8 @@ object Constants {
     const val FRONT_LEFT_SLAVE      = 2
     const val FRONT_RIGHT_MASTER    = 3
     const val FRONT_RIGHT_SLAVE     = 4
-    const val REAR_LEFT_MASTER      = 6
-    const val REAR_LEFT_SLAVE       = 5
+    const val REAR_LEFT_MASTER      = 5
+    const val REAR_LEFT_SLAVE       = 6
     const val REAR_RIGHT_MASTER     = 7
     const val REAR_RIGHT_SLAVE      = 8
     // can device ids for the turret
@@ -49,26 +50,23 @@ object Constants {
     const val MASHER_JOYSTICK       = 2
 
     // left drive joystick
-    const val BUTTON_SHIFT          = 0
-    const val BUTTON_TOGGLE_GYRO    = 2
+    const val BUTTON_SHIFT          = 1
+    const val BUTTON_TOGGLE_GYRO    = 3
     // right drive joystick
-    const val BUTTON_SWITCH_CAMERA  = 1
-    const val BUTTON_ARM_DROP = 2
-    const val BUTTON_COL_TOGGLE     = 3
-    const val BUTTON_GEAR           = 0
+    const val BUTTON_SWITCH_CAMERA  = 2
+    const val BUTTON_ARM_DROP       = 3
+    const val BUTTON_COL_TOGGLE     = 4
+    const val BUTTON_GEAR           = 1
     // masher joystick
-    const val BUTTON_SHOOT_FUEL     = 0
-    const val BUTTON_EXTEND_TOWER = 1
-    const val BUTTON_TOGGLE_SENTRY  = 3
-    const val BUTTON_TOGGLE_AUTO    = 5
-    const val BUTTON_TOGGLE_HOOD    = 2
+    const val BUTTON_SHOOT_FUEL     = 1
+    const val BUTTON_EXTEND_TOWER   = 2
+    const val BUTTON_TOGGLE_SENTRY  = 4
+    const val BUTTON_TOGGLE_AUTO    = 6
+    const val BUTTON_TOGGLE_HOOD    = 3
 
     // camera mapping
     const val CAMERA_FRONT          = 0
     const val CAMERA_BACK           = 1
-
-    // measurements
-    const val DRIVE_WHEEL_DIAMETER_IN  = 4
 
     // pid
     const val SPEED_CONTROL_PROFILE = 0
