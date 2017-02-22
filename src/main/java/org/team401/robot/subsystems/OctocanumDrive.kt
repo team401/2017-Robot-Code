@@ -2,11 +2,9 @@ package org.team401.robot.subsystems
 
 import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
-import edu.wpi.first.wpilibj.PIDController
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
-import org.team401.robot.GyroOutput
 import org.team401.robot.math.*
 import org.team401.robot.components.OctocanumGearbox
 import org.team401.robot.loops.Loop
@@ -47,13 +45,14 @@ object OctocanumDrive : Subsystem() {
     )
 
     val gyro = ADXRS450_Gyro()
-    val gyroError: GyroOutput = GyroOutput()
-    val gyroPID: PIDController = PIDController(1.0, 0.0, 0.0, gyro, gyroError)
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
+    val pidGyroHeading = SynchronousPID()
     private var velocityHeadingSetpoint: VelocityHeadingSetpoint? = null
     private var lastHeadingErrorDegrees = 0.0
+
+    private var lastSetGyroHeading: Rotation2d? = null
 
     var brakeModeOn: Boolean = false
 
@@ -116,6 +115,10 @@ object OctocanumDrive : Subsystem() {
                 Constants.DRIVE_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-30.0, 30.0)
 
+        pidGyroHeading.setPID(Constants.GYRO_HEADING_VEL_P, Constants.GYRO_HEADING_VEL_I,
+                Constants.GYRO_HEADING_VEL_D)
+        pidVelocityHeading.setOutputRange(-0.2, 0.2)
+
         gyro.calibrate()
         zeroSensors()
     }
@@ -156,10 +159,15 @@ object OctocanumDrive : Subsystem() {
         wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
         wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
         wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
-        /*MathUtils.scale(wheelSpeeds, 0.8)
-        for (it in wheelSpeeds.indices)
-            wheelSpeeds[it] += gyroError.output*/
-        SmartDashboard.putNumber("Gyro Error", gyroError.output)
+        MathUtils.scale(wheelSpeeds, 0.8)
+
+        // try to fix rotation when we dont want it
+        if (lastSetGyroHeading != null) {
+            lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
+            if (Math.abs(rot) > .05)
+                for (it in wheelSpeeds.indices)
+                    wheelSpeeds[it] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
+        }
 
         MathUtils.normalize(wheelSpeeds)
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
@@ -169,8 +177,6 @@ object OctocanumDrive : Subsystem() {
 
         SmartDashboard.putData("Gyro Stuff", gyro)
     }
-
-
 
     /**
      * Toggle the drive mode
@@ -265,12 +271,25 @@ object OctocanumDrive : Subsystem() {
 
     private fun updateVelocityHeadingSetpoint() {
         val actualGyroAngle = getGyroAngle()
-        val setpoint = velocityHeadingSetpoint as VelocityHeadingSetpoint
+        val setpoint = velocityHeadingSetpoint!!
 
         lastHeadingErrorDegrees = setpoint.heading.rotateBy(actualGyroAngle.inverse()).degrees
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
         updateVelocitySetpoint((setpoint.leftSpeed + deltaSpeed) / 2, (setpoint.rightSpeed - deltaSpeed) / 2)
+    }
+
+    fun setNewHeadingSetpoint() {
+        if (controlState != DriveControlState.OPEN_LOOP) {
+            configureTalonsForOpenLoopControl()
+            controlState = DriveControlState.OPEN_LOOP
+            pidGyroHeading.reset()
+        }
+        lastSetGyroHeading = getGyroAngle()
+    }
+
+    fun resetHeadingSetpoint() {
+        lastSetGyroHeading = null
     }
 
     private fun rotationsToInches(rotations: Double): Double {

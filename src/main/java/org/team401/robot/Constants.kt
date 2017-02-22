@@ -95,6 +95,10 @@ object Constants {
     const val DRIVE_HEADING_VEL_I   = 0.0
     const val DRIVE_HEADING_VEL_D   = 50.0
 
+    const val GYRO_HEADING_VEL_P    = 4.0 // 6.0;
+    const val GYRO_HEADING_VEL_I    = 0.0
+    const val GYRO_HEADING_VEL_D    = 50.0
+
     const val LOOP_PERIOD           = 0.001
 
 }

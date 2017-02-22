@@ -57,9 +57,10 @@ public class Robot extends IterativeRobot {
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
-        // shift drive modes
+        // drive
         switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
                 () -> OctocanumDrive.INSTANCE.shift());
+
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
