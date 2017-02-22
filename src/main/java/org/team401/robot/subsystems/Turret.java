@@ -16,7 +16,7 @@ import org.team401.vision.VisionDataStream.VisionData;
 
 public class Turret extends Subsystem {
 
-    public enum TurretState {
+    public static enum TurretState {
         DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
     }
 
@@ -170,7 +170,8 @@ public class Turret extends Subsystem {
     }
 
     public void extendHood(boolean extended) {
-        turretHood.set(extended);
+        if (state == TurretState.MANUAL || state == TurretState.SENTRY)
+            turretHood.set(extended);
     }
 
     public boolean isHoodExtended() {

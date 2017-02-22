@@ -13,8 +13,9 @@ class TurretRotator(private val rotator: CANTalon) {
         rotator.set(0.0)
         rotator.reverseOutput(false)
         rotator.reverseSensor(false)
-        rotator.configPeakOutputVoltage(1.0, -1.0)
-        rotator.configNominalOutputVoltage(1.0, -1.0)
+        rotator.configPeakOutputVoltage(1.25, -1.25)
+        rotator.configNominalOutputVoltage(1.25, -1.25)
+        rotator.setAllowableClosedLoopErr(1)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit((maxAngle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
         rotator.setReverseSoftLimit(0.0)
@@ -39,7 +40,7 @@ class TurretRotator(private val rotator: CANTalon) {
 
     fun getError() = getSetpoint() - getPosition()
 
-    fun onTarget() = getError() < 2
+    fun onTarget() = getError() < 1.0
 
     fun addDegrees(angle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)

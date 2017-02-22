@@ -64,7 +64,7 @@ public class Robot extends IterativeRobot {
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
         // collection
-        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
                 () -> {
                     if (Intake.INSTANCE.isArmDown())
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
@@ -77,7 +77,7 @@ public class Robot extends IterativeRobot {
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
                     else
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
-                });*/
+                });
         // scoring
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
                 () -> {
@@ -109,14 +109,14 @@ public class Robot extends IterativeRobot {
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
                 () -> {
-                    if (turret.getCurrentState() != Turret.TurretState.SENTRY)
+                    if (turret.getCurrentState() == Turret.TurretState.MANUAL)
                         turret.setWantedState(Turret.TurretState.SENTRY);
-                    else
+                    else if (turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0)
                         turret.setWantedState(Turret.TurretState.MANUAL);
                 });
         loopManager = new LoopManager();
         loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
-        //loopManager.register(Intake.INSTANCE.getSubsystemLoop());
+        loopManager.register(Intake.INSTANCE.getSubsystemLoop());
         loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
         loopManager.register(getTurret().getSubsystemLoop());
         OctocanumDrive.INSTANCE.init();

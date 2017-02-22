@@ -76,10 +76,8 @@ object OctocanumDrive : Subsystem() {
                     DriveControlState.VELOCITY_SETPOINT ->
                         // talons are updating the control loop state
                         return
-                    DriveControlState.VELOCITY_HEADING_CONTROL -> {
+                    DriveControlState.VELOCITY_HEADING_CONTROL ->
                         updateVelocityHeadingSetpoint()
-                        return
-                    }
                     DriveControlState.PATH_FOLLOWING_CONTROL -> {
                         println("we shouldn't be in path following mode!!!")
                         /*updatePathFollower()
@@ -222,12 +220,8 @@ object OctocanumDrive : Subsystem() {
         if (controlState == DriveControlState.VELOCITY_SETPOINT || controlState == DriveControlState.VELOCITY_HEADING_CONTROL)
             return
         changeControlMode(CANTalon.TalonControlMode.Speed,
-                {
-                    it.setProfile(Constants.SPEED_CONTROL_PROFILE)
-                },
-                {
-                    it.setProfile(Constants.SPEED_CONTROL_PROFILE)
-                },
+                { it.setProfile(Constants.SPEED_CONTROL_PROFILE) },
+                { it.setProfile(Constants.SPEED_CONTROL_PROFILE) },
                 {
                     it.changeControlMode(CANTalon.TalonControlMode.Follower)
                     it.set(Constants.FRONT_LEFT_MASTER.toDouble())
@@ -260,8 +254,7 @@ object OctocanumDrive : Subsystem() {
             controlState = DriveControlState.VELOCITY_HEADING_CONTROL
             pidVelocityHeading.reset()
         }
-        velocityHeadingSetpoint = VelocityHeadingSetpoint(inchesPerSec, inchesPerSec,
-                headingSetpoint)
+        velocityHeadingSetpoint = VelocityHeadingSetpoint(inchesPerSec, inchesPerSec, headingSetpoint)
         updateVelocityHeadingSetpoint()
     }
 
@@ -272,13 +265,12 @@ object OctocanumDrive : Subsystem() {
 
     private fun updateVelocityHeadingSetpoint() {
         val actualGyroAngle = getGyroAngle()
+        val setpoint = velocityHeadingSetpoint as VelocityHeadingSetpoint
 
-        lastHeadingErrorDegrees = (velocityHeadingSetpoint as VelocityHeadingSetpoint).heading
-                .rotateBy(actualGyroAngle.inverse()).degrees
+        lastHeadingErrorDegrees = setpoint.heading.rotateBy(actualGyroAngle.inverse()).degrees
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
-        updateVelocitySetpoint(((velocityHeadingSetpoint as VelocityHeadingSetpoint).leftSpeed + deltaSpeed) / 2,
-                ((velocityHeadingSetpoint as VelocityHeadingSetpoint).rightSpeed - deltaSpeed) / 2)
+        updateVelocitySetpoint((setpoint.leftSpeed + deltaSpeed) / 2, (setpoint.rightSpeed - deltaSpeed) / 2)
     }
 
     private fun rotationsToInches(rotations: Double): Double {
@@ -339,7 +331,7 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("right_velocity", inchesPerSecondToRpm(getRightVelocityInchesPerSec()))
         SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble())
         SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
-        SmartDashboard.putNumber("gyro_angle", gyro.angle)
+        SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
     }
 
