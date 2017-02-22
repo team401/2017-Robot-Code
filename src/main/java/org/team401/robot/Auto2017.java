@@ -120,7 +120,7 @@ public class Auto2017 {
 	 */
 	private void move(){
 		//SmartDashboard puts to make sure the code is working and tune PID
-		SmartDashboard.putString("Profile Lengths:", profiles[0].length+","+profiles[1].length+","+profiles[2].length+","+profiles[3].length);
+		//SmartDashboard.putString("Profile Lengths:", profiles[0].length+","+profiles[1].length+","+profiles[2].length+","+profiles[3].length);
 		SmartDashboard.putBoolean("Mecanum Drive", mecanum);
 		SmartDashboard.putString("Actual Drive Mode", drive.getDriveMode().name());
 		if(profiles[0].length-fl.getStatus().btmBufferCnt<profiles[0].length)SmartDashboard.putString("GRAPH0",fl.getTalon().getEncPosition()/4096+":"+profiles[0][profiles[0].length-fl.getStatus().btmBufferCnt][0]);

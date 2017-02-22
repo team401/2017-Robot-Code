@@ -96,21 +96,28 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Destination", autoTgt);
 
 		//Button to select starting drive mode
-		SmartDashboard.putBoolean("Mecanum Drive", true);
+		SmartDashboard.putBoolean("Mecanum Drive", false);
+
+		SmartDashboard.putNumber("Set Point", 20);
+
+		//SmartDashboard.putNumber("P", 0.01);
+		//SmartDashboard.putNumber("D", 0);
 	}
 
 	@Override
 	public void autonomousInit() {//Called on match start
 		//Start autonomous, passing through data from here
 
-		/*
+		//drive.getGearboxes().get(1).getMaster().reverseOutput(true);
+		//drive.getGearboxes().get(3).getMaster().reverseOutput(true);
+
 		System.out.println("Auto started!");
 		autonomous = new Auto2017((String)autoStart.getSelected(),
 			(String)autoTgt.getSelected(),
-			SmartDashboard.getBoolean("Mecanum Drive", true),
+			SmartDashboard.getBoolean("Mecanum Drive", false),
 			drive);
 
-		*/
+
 		drive.getGearboxes().get(0).getMaster().reverseOutput(true);
 		drive.getGearboxes().get(2).getMaster().reverseOutput(true);
 
@@ -119,49 +126,84 @@ public class Robot extends IterativeRobot {
 		drive.getGearboxes().get(2).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
 		drive.getGearboxes().get(3).getMaster().changeControlMode(CANTalon.TalonControlMode.Position);
 
-		drive.getGearboxes().get(0).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(0).getMaster().reverseSensor(false);
+		drive.getGearboxes().get(0).getMaster().setEncPosition(0);
 		drive.getGearboxes().get(0).getMaster().setPosition(0);
 		drive.getGearboxes().get(0).getMaster().set(0);
 		drive.getGearboxes().get(1).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(1).getMaster().setEncPosition(0);
 		drive.getGearboxes().get(1).getMaster().setPosition(0);
 		drive.getGearboxes().get(1).getMaster().set(0);
-		drive.getGearboxes().get(2).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(2).getMaster().reverseSensor(false);
+		drive.getGearboxes().get(2).getMaster().setEncPosition(0);
 		drive.getGearboxes().get(2).getMaster().setPosition(0);
 		drive.getGearboxes().get(2).getMaster().set(0);
 		drive.getGearboxes().get(3).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(3).getMaster().setEncPosition(0);
 		drive.getGearboxes().get(3).getMaster().setPosition(0);
 		drive.getGearboxes().get(3).getMaster().set(0);
+/*
+		drive.getGearboxes().get(0).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(1).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(2).getMaster().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(3).getMaster().setD(SmartDashboard.getNumber("D", 0));
+
+		drive.getGearboxes().get(0).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(1).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(2).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(3).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+
+		drive.getGearboxes().get(0).getSlave().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(1).getSlave().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(2).getSlave().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(3).getSlave().setP(SmartDashboard.getNumber("P", 0.1));
+
+		drive.getGearboxes().get(0).getSlave().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(1).getSlave().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(2).getSlave().setD(SmartDashboard.getNumber("D", 0));
+		drive.getGearboxes().get(3).getSlave().setD(SmartDashboard.getNumber("D", 0));
+
+
+*/
+		drive.getGearboxes().get(1).getMaster().configPeakOutputVoltage(6.0, -4.0);
+		drive.getGearboxes().get(0).getMaster().configPeakOutputVoltage(4.0, -6.0);
+		drive.getGearboxes().get(3).getMaster().configPeakOutputVoltage(6.0, 4.0);
+		drive.getGearboxes().get(2).getMaster().configPeakOutputVoltage(4.0, -6.0);
 	}
 
 	@Override
 	public void autonomousPeriodic(){//Called every 20ms during first 15s of match
 		//See Auto2017.java
 		//autonomous.periodic();
-SmartDashboard.putNumber("Set Point", 50);
-SmartDashboard.putNumber("P", 0.1);
-SmartDashboard.putNumber("D", 0);
 
-		drive.getGearboxes().get(0).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
-		drive.getGearboxes().get(1).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
-		drive.getGearboxes().get(2).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
-		drive.getGearboxes().get(3).getMaster().set(SmartDashboard.getNumber("Set Point", 50));
 
-		drive.getGearboxes().get(0).getMaster().setP(SmartDashboard.getNumber("P", 0));
-		drive.getGearboxes().get(1).getMaster().setP(SmartDashboard.getNumber("P", 0));
-		drive.getGearboxes().get(2).getMaster().setP(SmartDashboard.getNumber("P", 0));
-		drive.getGearboxes().get(3).getMaster().setP(SmartDashboard.getNumber("P", 0));
+
+		drive.getGearboxes().get(0).getMaster().set(SmartDashboard.getNumber("Set Point", 20));
+		drive.getGearboxes().get(1).getMaster().set(SmartDashboard.getNumber("Set Point", 20));
+		drive.getGearboxes().get(2).getMaster().set(SmartDashboard.getNumber("Set Point", 20));
+		drive.getGearboxes().get(3).getMaster().set(SmartDashboard.getNumber("Set Point", 20));
+
+		System.out.println(SmartDashboard.getNumber("Set Point", 20));
+
+/*
+		drive.getGearboxes().get(0).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(1).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(2).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
+		drive.getGearboxes().get(3).getMaster().setP(SmartDashboard.getNumber("P", 0.1));
 
 		drive.getGearboxes().get(0).getMaster().setD(SmartDashboard.getNumber("D", 0));
 		drive.getGearboxes().get(1).getMaster().setD(SmartDashboard.getNumber("D", 0));
 		drive.getGearboxes().get(2).getMaster().setD(SmartDashboard.getNumber("D", 0));
 		drive.getGearboxes().get(3).getMaster().setD(SmartDashboard.getNumber("D", 0));
-
+*/
 
 		//SmartDashboard.putNumber("Enc Position",drive.getGearboxes().get(0).getMaster().getPosition());
 		SmartDashboard.putString("PID", drive.getGearboxes().get(0).getMaster().get()+":"+drive.getGearboxes().get(0).getMaster().getPosition()+":"+
 				drive.getGearboxes().get(1).getMaster().get()+":"+drive.getGearboxes().get(1).getMaster().getPosition()+":"+
 				drive.getGearboxes().get(2).getMaster().get()+":"+drive.getGearboxes().get(2).getMaster().getPosition()+":"+
 				drive.getGearboxes().get(3).getMaster().get()+":"+drive.getGearboxes().get(3).getMaster().getPosition());
+
+
 
 	}
 	@Override
@@ -208,8 +250,8 @@ SmartDashboard.putNumber("D", 0);
 		/*SmartDashboard.putNumber("P", SmartDashboard.getNumber("P", 0));
 		SmartDashboard.putNumber("I", SmartDashboard.getNumber("I", 0));
 		SmartDashboard.putNumber("D", SmartDashboard.getNumber("D", 0));*/
-		SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 0.2));
-		SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 0.2));
+		//SmartDashboard.putNumber("PM", SmartDashboard.getNumber("PM", 0.2));
+		//SmartDashboard.putNumber("VM", SmartDashboard.getNumber("VM", 0.2));
 	}
 
 	@Override
@@ -222,8 +264,25 @@ SmartDashboard.putNumber("D", 0);
 				SmartDashboard.getNumber("D", 0));*/
 		ProfileSender.posMult = SmartDashboard.getNumber("PM", 0.2);
 		ProfileSender.velMult = SmartDashboard.getNumber("VM", 0.2);
-	}
 
+		drive.getGearboxes().get(0).getMaster().reverseSensor(false);
+		drive.getGearboxes().get(0).getMaster().setEncPosition(0);
+		drive.getGearboxes().get(0).getMaster().setPosition(0);
+		drive.getGearboxes().get(0).getMaster().set(0);
+		drive.getGearboxes().get(1).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(1).getMaster().setEncPosition(0);
+		drive.getGearboxes().get(1).getMaster().setPosition(0);
+		drive.getGearboxes().get(1).getMaster().set(0);
+		drive.getGearboxes().get(2).getMaster().reverseSensor(false);
+		drive.getGearboxes().get(2).getMaster().setEncPosition(0);
+		drive.getGearboxes().get(2).getMaster().setPosition(0);
+		drive.getGearboxes().get(2).getMaster().set(0);
+		drive.getGearboxes().get(3).getMaster().reverseSensor(true);
+		drive.getGearboxes().get(3).getMaster().setEncPosition(0);
+		drive.getGearboxes().get(3).getMaster().setPosition(0);
+		drive.getGearboxes().get(3).getMaster().set(0);
+	}
+ 
 	//percentNeeded defaults to 100
 	private static double fGain(double maxSpeed){
 		return fGain(maxSpeed, 100);
