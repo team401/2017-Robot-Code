@@ -156,6 +156,11 @@ public class Turret extends Subsystem {
         }
     }
 
+    public void zeroSensors() {
+        turretRotator.stop();
+        turretRotator.zero();
+    }
+
     public void setWantedState(TurretState state) {
         this.state = state;
     }

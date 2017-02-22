@@ -8,7 +8,7 @@ class CalibrateTurretAction : Action {
     val turret: Turret = Robot.getTurret()
 
     override fun start() {
-        turret.enableSentry(false)
+        turret.setWantedState(Turret.TurretState.CALIBRATING)
         turret.turretRotator.setPosition(-turret.turretRotator.maxAngle)
     }
 
@@ -21,8 +21,7 @@ class CalibrateTurretAction : Action {
     }
 
     override fun end() {
-        turret.turretRotator.stop()
-        turret.turretRotator.zero()
-        turret.enableSentry(true)
+        turret.zeroSensors()
+        turret.setWantedState(Turret.TurretState.SENTRY)
     }
 }
