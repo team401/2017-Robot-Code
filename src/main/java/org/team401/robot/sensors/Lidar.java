@@ -30,9 +30,9 @@ public class Lidar implements DistanceSensor {
 
 	public enum Unit {
 		CENTIMETERS(1),
-		METERS(0.01),
-		INCHES(0.39370),
-		FEET(0.032808);
+		METERS(1.0/100.0),
+		INCHES(1.0/2.54),
+		FEET((1.0/2.54)/12.0);
 
 		public final double multiplier;
 
