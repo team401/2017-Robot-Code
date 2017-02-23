@@ -22,14 +22,13 @@ public class Turret extends Subsystem {
 	private TurretState state = TurretState.DISABLED;
 
 	private TurretRotator turretRotator;
-	private Solenoid turretHood;
-	private Solenoid ledRing;
+	private Solenoid turretHood, ledRing;
 
 	private VisionData latestData;
 	private DistanceSensor distanceSensor;
 	private Switch trigger;
 
-	private CANTalon flywheel, flywheelSlave, feeder;
+	private CANTalon flywheel, feeder;
 
 	private ContinuousRange yaw, throttle;
 
@@ -67,7 +66,6 @@ public class Turret extends Subsystem {
 		turretHood.set(false);
 		ledRing.set(false);
 
-		this.flywheelSlave = flywheelSlave;
 		flywheelSlave.setSafetyEnabled(false);
 		flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
 		flywheelSlave.set(flyWheelMaster.getDeviceID());
