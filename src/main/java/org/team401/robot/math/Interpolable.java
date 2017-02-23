@@ -22,5 +22,5 @@ public interface Interpolable<T> {
      * @return Interpolable<T> The estimated average between the surrounding
      *         data
      */
-    public T interpolate(T other, double x);
+    T interpolate(T other, double x);
 }
