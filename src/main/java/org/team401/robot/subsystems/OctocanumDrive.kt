@@ -140,11 +140,7 @@ object OctocanumDrive : Subsystem() {
         }
         // map the input speeds to match the driver's orientation to the field
         SmartDashboard.putNumber("Gyro Angle", gyro.angle)
-        val speed = MathUtils.rotateVector(
-                leftXThrottle,
-                -leftYThrottle,
-                if (driveMode == DriveMode.MECANUM && SmartDashboard.getBoolean("Field-Centric", false))
-                    gyro.angle* SmartDashboard.getNumber("Gyro Multiplier", 1.0) else 0.0)
+        val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
 
         val x: Double
         if (driveMode == DriveMode.MECANUM)
@@ -164,9 +160,13 @@ object OctocanumDrive : Subsystem() {
         // try to fix rotation when we dont want it
         if (lastSetGyroHeading != null) {
             lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
-            if (Math.abs(rot) > .05)
-                for (it in wheelSpeeds.indices)
-                    wheelSpeeds[it] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
+            if (Math.abs(rot) < .1) {
+                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] -= pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] -= pidGyroHeading.calculate(lastHeadingErrorDegrees)
+            } else
+                resetHeadingSetpoint()
         }
 
         MathUtils.normalize(wheelSpeeds)

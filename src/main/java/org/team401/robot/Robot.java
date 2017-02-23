@@ -60,7 +60,10 @@ public class Robot extends IterativeRobot {
         // drive
         switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
                 () -> OctocanumDrive.INSTANCE.shift());
-
+        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_TOGGLE_GYRO),
+                () -> OctocanumDrive.INSTANCE.setNewHeadingSetpoint());
+        switchReactor.onUntriggered(driveJoystickLeft.getButton(Constants.BUTTON_TOGGLE_GYRO),
+                () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
         // camera switching
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
                 () -> camera.switchCamera());
