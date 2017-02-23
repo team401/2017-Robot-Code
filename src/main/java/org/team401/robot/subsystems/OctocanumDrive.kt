@@ -161,10 +161,11 @@ object OctocanumDrive : Subsystem() {
         if (lastSetGyroHeading != null) {
             lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
             if (Math.abs(rot) < .1) {
-                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
-                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] += pidGyroHeading.calculate(lastHeadingErrorDegrees)
-                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] -= pidGyroHeading.calculate(lastHeadingErrorDegrees)
-                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] -= pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                val delta = pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] += delta
+                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] += delta
+                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] -= delta
+                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] -= delta
             } else
                 resetHeadingSetpoint()
         }
