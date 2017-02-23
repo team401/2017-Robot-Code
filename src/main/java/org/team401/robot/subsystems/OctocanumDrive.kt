@@ -19,17 +19,17 @@ import org.team401.robot.math.Rotation2d
  */
 object OctocanumDrive : Subsystem() {
 
-    enum class DriveControlState {
-        OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
-    }
+	enum class DriveControlState {
+		OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
+	}
 
-    /**
-     * An enum object to represent different drive modes.
-     */
-    enum class DriveMode {
-        TRACTION,
-        MECANUM
-    }
+	/**
+	 * An enum object to represent different drive modes.
+	 */
+	enum class DriveMode {
+		TRACTION,
+		MECANUM
+	}
 
     var controlState = DriveControlState.OPEN_LOOP
 

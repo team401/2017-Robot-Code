@@ -4,7 +4,7 @@ import org.team401.robot.loops.Loop
 
 abstract class Subsystem {
 
-    abstract fun getSubsystemLoop(): Loop
+	abstract fun getSubsystemLoop(): Loop
 
-    abstract fun printToSmartDashboard()
+	abstract fun printToSmartDashboard()
 }
