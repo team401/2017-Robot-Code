@@ -56,7 +56,7 @@ object Constants {
     // right drive joystick
     const val BUTTON_SWITCH_CAMERA  = 2
     const val BUTTON_ARM_DROP       = 3
-    const val BUTTON_COL_TOGGLE     = 4
+    const val BUTTON_TOGGLE_COL = 4
     const val BUTTON_GEAR           = 1
     // masher joystick
     const val BUTTON_SHOOT_FUEL     = 1

@@ -59,7 +59,7 @@ public class Lidar implements DistanceSensor {
 
 		@Override
 		public void run() {
-			bus.write(0x00, 0x04); //Tell the Lidar to read
+			bus.write(hardware.mainRegister, hardware.vRead); //Tell the Lidar to read
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException ignored) {}

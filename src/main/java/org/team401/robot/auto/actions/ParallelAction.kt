@@ -3,11 +3,13 @@ package org.team401.robot.auto.actions
 class ParallelAction(val actions: List<Action>) : Action {
 
     override fun start() {
-        actions.forEach(Action::start)
+        actions.forEach { it.start() }
     }
 
     override fun update() {
-        actions.forEach(Action::update)
+        actions
+                .filter { !it.isFinished() }
+                .forEach { it.update() }
     }
 
     override fun isFinished(): Boolean {
@@ -21,6 +23,6 @@ class ParallelAction(val actions: List<Action>) : Action {
     }
 
     override fun end() {
-        actions.forEach(Action::end)
+        actions.forEach { it.end() }
     }
 }

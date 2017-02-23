@@ -75,7 +75,7 @@ public class Robot extends IterativeRobot {
                     else
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
                 });
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_COL_TOGGLE),
+        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_TOGGLE_COL),
                 () -> {
                     if (Intake.INSTANCE.getCurrentState() != Intake.IntakeState.ENABLED)
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
