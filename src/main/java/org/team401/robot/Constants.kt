@@ -23,7 +23,7 @@ object Constants {
 
     // can device ids
     const val PDP                   = 0
-    const val PCM                   = 13
+    const val PCM                   = 0
     // can device ids for the motor controllers
     const val FRONT_LEFT_MASTER     = 1
     const val FRONT_LEFT_SLAVE      = 2
@@ -40,9 +40,9 @@ object Constants {
     const val TURRET_ROTATOR        = 12
 
     // pwm motor ports
-    const val COLLECTION_1          = 1
-    const val COLLECTION_2          = 2
-    const val COLLECTION_3          = 3
+    const val COLLECTION_1          = 8
+    const val COLLECTION_2          = 9
+    const val HOPPER_BOTTOM         = 7
 
     // joystick ids
     const val DRIVE_JOYSTICK_LEFT   = 0

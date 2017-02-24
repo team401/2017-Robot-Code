@@ -16,7 +16,7 @@ import org.team401.vision.VisionDataStream.VisionData;
 
 public class Turret extends Subsystem {
 
-    public static enum TurretState {
+    public enum TurretState {
         DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
     }
 
@@ -75,7 +75,7 @@ public class Turret extends Subsystem {
         flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
-        flywheel.configPeakOutputVoltage(12, 0);
+        flywheel.reverseOutput(true);
         flywheel.setSafetyEnabled(false);
         flywheel.set(0);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
@@ -130,7 +130,7 @@ public class Turret extends Subsystem {
                             .rotate(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .05, .15));
                 else
                     turretRotator
-                            .rotate(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .1, .2));
+                            .rotate(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .05, .15));
             speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
         }
         // shooting code
@@ -148,11 +148,6 @@ public class Turret extends Subsystem {
             flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             flywheel.set(0);
             feeder.set(0);
-        }
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
         }
     }
 
