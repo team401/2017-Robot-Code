@@ -4,7 +4,6 @@ package org.team401.robot.auto.modes;
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.auto.actions.DriveStraightAction;
-import org.team401.robot.auto.actions.FollowPathAction;
 import org.team401.robot.auto.actions.RotateAction;
 
 /**
