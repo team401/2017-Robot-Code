@@ -1,10 +1,12 @@
 package org.team401.robot.auto.modes;
 
-
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.auto.actions.DriveStraightAction;
 import org.team401.robot.auto.actions.RotateAction;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * This is early code. Replace all numbers in the class, as they are zeroed right now!
@@ -14,10 +16,10 @@ public class CompetitionAuto extends AutoMode {
 		MIDGEAR, LEFTGEAR, RIGHTGEAR, LEFTHOPPER, RIGHTHOPPER
 	}
 	private Destination destination;
-	private boolean team;
-	public CompetitionAuto(Destination destination, boolean team){
+	private Alliance team;
+	public CompetitionAuto(Destination destination){
 		this.destination = destination;
-		this.team = team;
+		team = DriverStation.getInstance().getAlliance();
 	}
 	public void routine() {
 		runAction(new CalibrateTurretAction());
@@ -41,12 +43,12 @@ public class CompetitionAuto extends AutoMode {
 				break;
 			case LEFTHOPPER:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive to the hopper area
-				runAction(new DriveStraightAction(0, team?0:0, team?0:0));//Drive into the hopper
+				runAction(new DriveStraightAction(0, team.equals(Alliance.Blue)?0:0, team.equals(Alliance.Blue)?0:0));//Drive into the hopper
 				//add code to shoot after hopper
 				break;
 			case RIGHTHOPPER:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive to the hopper area
-				runAction(new DriveStraightAction(0, team?0:0, team?0:0));//Drive into the hopper
+				runAction(new DriveStraightAction(0, team.equals(Alliance.Blue)?0:0, team.equals(Alliance.Blue)?0:0));//Drive into the hopper
 				//add code to shoot after hopper
 				break;
 		}
