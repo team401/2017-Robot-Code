@@ -14,8 +14,8 @@ object Intake : Subsystem() {
 	}
 
 	private var state: IntakeState = IntakeState.ARM_UP
-	private val motor = Motor.compose(Hardware.Motors.victorSP(Constants.COLLECTION_1),
-			Hardware.Motors.victorSP(Constants.COLLECTION_2))
+	private val motor = Motor.compose(Hardware.Motors.victorSP(Constants.INTAKE_1),
+			Hardware.Motors.victorSP(Constants.INTAKE_2))
 	private val solenoid = Solenoid(Constants.ARM_EXTENDER)
 
 	private val loop = object : Loop {

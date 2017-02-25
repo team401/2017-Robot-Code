@@ -74,10 +74,10 @@ public class Turret extends Subsystem {
         flywheelSlave.set(flyWheelMaster.getDeviceID());
         flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
-        flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+        flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        flywheel.set(0);
         flywheel.reverseOutput(true);
         flywheel.setSafetyEnabled(false);
-        flywheel.set(0);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
                 Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
 
@@ -91,7 +91,7 @@ public class Turret extends Subsystem {
      * @return true if were looking directly at the turret
      */
     private boolean track() {
-        if (Math.abs(latestData.getYaw()) < 2) {
+        if (Math.abs(latestData.getYaw()) < 1) {
             turretRotator.stop();
             return true;
         }

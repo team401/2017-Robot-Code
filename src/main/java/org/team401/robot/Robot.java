@@ -108,8 +108,10 @@ public class Robot extends IterativeRobot {
                 () -> {
                     if (turret.getCurrentState() != Turret.TurretState.AUTO)
                         turret.setWantedState(Turret.TurretState.AUTO);
-                    else
+                    else {
                         turret.setWantedState(Turret.TurretState.SENTRY);
+                        turret.extendHood(true);
+                    }
                 });
         switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
                 () -> {

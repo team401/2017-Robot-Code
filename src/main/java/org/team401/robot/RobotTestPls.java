@@ -7,20 +7,22 @@ import org.strongback.components.ui.FlightStick;
 
 public class RobotTestPls /*extends IterativeRobot*/ {
 
-	private CANTalon flywheel, slave;
+	private CANTalon flywheel;
 
 	private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
 
 	//@Override
 	public void robotInit() {
-		flywheel = new CANTalon(Constants.TURRET_SHOOTER_SLAVE);
+		SmartDashboard.putNumber("flywheel_setpoint", 0.0);
+
+		flywheel = new CANTalon(Constants.TURRET_SHOOTER_MASTER);
 		flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+		flywheel.reverseOutput(true);
 		flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
 		flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
-		slave = new CANTalon(Constants.TURRET_SHOOTER_MASTER);
-		slave.changeControlMode(CANTalon.TalonControlMode.Follower);
-		slave.set(Constants.TURRET_SHOOTER_MASTER);
+
+
 	}
 
 	//@Override

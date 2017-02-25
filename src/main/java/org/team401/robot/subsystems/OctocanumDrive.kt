@@ -117,7 +117,7 @@ object OctocanumDrive : Subsystem() {
 
         pidGyroHeading.setPID(Constants.GYRO_HEADING_VEL_P, Constants.GYRO_HEADING_VEL_I,
                 Constants.GYRO_HEADING_VEL_D)
-        pidVelocityHeading.setOutputRange(-0.2, 0.2)
+        pidVelocityHeading.setOutputRange(-0.1, 0.1)
 
         gyro.calibrate()
         zeroSensors()
@@ -139,7 +139,6 @@ object OctocanumDrive : Subsystem() {
             configureTalonsForOpenLoopControl()
         }
         // map the input speeds to match the driver's orientation to the field
-        SmartDashboard.putNumber("Gyro Angle", gyro.angle)
         val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
 
         val x: Double
@@ -155,7 +154,7 @@ object OctocanumDrive : Subsystem() {
         wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
         wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
         wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
-        MathUtils.scale(wheelSpeeds, 0.8)
+        MathUtils.scale(wheelSpeeds, 0.9)
 
         // try to fix rotation when we dont want it
         if (lastSetGyroHeading != null) {
@@ -175,8 +174,6 @@ object OctocanumDrive : Subsystem() {
         gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
         gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
         gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
-
-        SmartDashboard.putData("Gyro Stuff", gyro)
     }
 
     /**
@@ -353,6 +350,7 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
         SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
+        SmartDashboard.putData("gyro_diagram", gyro)
     }
 
     override fun getSubsystemLoop(): Loop = driveLoop

@@ -40,8 +40,8 @@ object Constants {
     const val TURRET_ROTATOR        = 12
 
     // pwm motor ports
-    const val COLLECTION_1          = 8
-    const val COLLECTION_2          = 9
+    const val INTAKE_1              = 8
+    const val INTAKE_2              = 9
     const val HOPPER_BOTTOM         = 7
 
     // joystick ids
@@ -78,10 +78,10 @@ object Constants {
     const val SPEED_IZONE           = 0
     const val SPEED_RAMP_RATE       = 0.0
 
-    const val FLYWHEEL_P            = 1.0
+    const val FLYWHEEL_P            = 0.075
     const val FLYWHEEL_I            = 0.0
-    const val FLYWHEEL_D            = 0.0
-    const val FLYWHEEL_F            = 0.0
+    const val FLYWHEEL_D            = 0.75
+    const val FLYWHEEL_F            = 0.1096933305
     const val FLYWHEEL_IZONE        = 0
     const val FLYWHEEL_RAMP_RATE    = 0.0
 
