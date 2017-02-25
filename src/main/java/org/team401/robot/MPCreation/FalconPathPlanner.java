@@ -175,7 +175,7 @@ public class FalconPathPlanner {
 	 * @param path Path to simplify
 	 * @return Simplified path
 	 */
-	public double[][] nodeOnlyWayPoints(double[][] path) {
+	private double[][] nodeOnlyWayPoints(double[][] path) {
 		//Don't do anything in Mecanum mode, as the robot may rotate no matter what direction it's moving in.
 		if(mecanum)
 			return path;
