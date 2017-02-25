@@ -16,10 +16,10 @@ public class CompetitionAuto extends AutoMode {
 		MIDGEAR, LEFTGEAR, RIGHTGEAR, LEFTHOPPER, RIGHTHOPPER
 	}
 	private Destination destination;
-	private Alliance team;
+	private boolean team;
 	public CompetitionAuto(Destination destination){
 		this.destination = destination;
-		team = DriverStation.getInstance().getAlliance();
+		team = DriverStation.getInstance().getAlliance().equals(Alliance.Blue);
 	}
 	public void routine() {
 		runAction(new CalibrateTurretAction());
@@ -43,12 +43,12 @@ public class CompetitionAuto extends AutoMode {
 				break;
 			case LEFTHOPPER:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive to the hopper area
-				runAction(new DriveStraightAction(0, team.equals(Alliance.Blue)?0:0, team.equals(Alliance.Blue)?0:0));//Drive into the hopper
+				runAction(new DriveStraightAction(0, team?0:0, team?0:0));//Drive into the hopper
 				//add code to shoot after hopper
 				break;
 			case RIGHTHOPPER:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive to the hopper area
-				runAction(new DriveStraightAction(0, team.equals(Alliance.Blue)?0:0, team.equals(Alliance.Blue)?0:0));//Drive into the hopper
+				runAction(new DriveStraightAction(0, team?0:0, team?0:0));//Drive into the hopper
 				//add code to shoot after hopper
 				break;
 		}
