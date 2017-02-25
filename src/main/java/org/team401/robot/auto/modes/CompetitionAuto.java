@@ -54,4 +54,27 @@ public class CompetitionAuto extends AutoMode {
 	public void done(){
 
 	}
+
+	/**
+	 * Method for translating the autopaths waypoints into Zachs methods.
+	 * @param path the autopath being used
+	 * @param time the time it takes to run it (should be part of the autopath)
+	 */
+
+	private void findPath(double[][] path, double time){
+		double speed = time/path.length;
+		for(int i = 0;i<path.length;i++){
+			if(Math.atan2(path[i][1], path[i][0]) != Math.atan2(path[i+1][1], path[i+1][0])){//a turn is required
+				runAction(new RotateAction(Math.toDegrees(Math.atan2(path[i+1][1], path[i+1][0]))));
+			}
+			//no turn needed
+			runAction(new DriveStraightAction(speed, findDistance(path[i], path[i+1]),Math.atan2(path[i][1], path[i][0])));
+		}
+
+	}
+
+	private double findDistance(double[] point1, double[] point2){
+		return Math.sqrt(Math.pow(point1[0] + point2[0],2) + Math.pow(point1[1] + point2[1],2));
+
+	}
 }
