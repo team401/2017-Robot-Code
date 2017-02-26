@@ -10,6 +10,7 @@ import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.AutoTestMode;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.GearHolder;
 import org.team401.robot.subsystems.Intake;
@@ -132,7 +133,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         loopManager.start();
         Strongback.start();
-        autoExecutor = new AutoModeExecuter(new AutoTestMode());
+        autoExecutor = new AutoModeExecuter(new CalibrateTurretMode());
         autoExecutor.start();
     }
 

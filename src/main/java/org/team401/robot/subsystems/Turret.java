@@ -75,8 +75,10 @@ public class Turret extends Subsystem {
         flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         flywheel.set(0);
         flywheel.reverseOutput(true);
+        flywheel.reverseSensor(true);
         flywheel.setSafetyEnabled(false);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
                 Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
@@ -105,13 +107,16 @@ public class Turret extends Subsystem {
     }
 
     private void sentryMode() {
-        if (turretRotator.getPosition() >= turretRotator.getMaxAngle())
-            turretRotator.setPosition(-1);
-        else if (turretRotator.getPosition() <= 0)
-            turretRotator.setPosition(turretRotator.getMaxAngle() + 1);
+        if (turretRotator.getPosition() >= turretRotator.getMaxAngle()-1)
+            turretRotator.setPosition(0);
+        else if (turretRotator.getPosition() <= 1)
+            turretRotator.setPosition(turretRotator.getMaxAngle());
     }
 
     private void run() {
+        System.out.println(state.toString());
+        if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
+            return;
         latestData = Robot.getVisionDataStream().getLatestGoalData();
         double speed = 0.0;
         // rotation code
@@ -124,31 +129,36 @@ public class Turret extends Subsystem {
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
             double turnSpeed = yaw.read();
-            if (Math.abs(turnSpeed) > .1)
+            if (Math.abs(turnSpeed) > .2)
                 if (turnSpeed > 0)
                     turretRotator
-                            .rotate(MathUtils.INSTANCE.toRange(turnSpeed, .1, 1, .05, .15));
+                            .rotate(-MathUtils.INSTANCE.toRange(turnSpeed, .2, 1, .05, .15));
                 else
                     turretRotator
-                            .rotate(-MathUtils.INSTANCE.toRange(-turnSpeed, .1, 1, .05, .15));
+                            .rotate(MathUtils.INSTANCE.toRange(-turnSpeed, .2, 1, .05, .15));
             speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
         }
         // shooting code
         if (state == TurretState.AUTO && speed != 0) { // auto shooting
-            flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+            configTalonsForSpeedControl();
             flywheel.set(speed);
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-                feeder.set(.50);
+                feeder.set(1);
         } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && trigger.isTriggered()) { // manual shooting
-            flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+            configTalonsForSpeedControl();
             flywheel.set(speed);
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-                feeder.set(.50);
+                feeder.set(1);
         } else { // dont shoot
             flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             flywheel.set(0);
             feeder.set(0);
         }
+    }
+
+    private void configTalonsForSpeedControl() {
+        flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+        flywheel.setProfile(0);
     }
 
     public void zeroSensors() {
@@ -178,16 +188,17 @@ public class Turret extends Subsystem {
     }
 
     public boolean atZeroPoint() {
-        return feeder.isFwdLimitSwitchClosed();
+        return feeder.isRevLimitSwitchClosed();
     }
 
     @Override
     public void printToSmartDashboard() {
-        SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
+
+        SmartDashboard.putNumber("flywheel_rpm", (int) flywheel.getSpeed());
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
-        SmartDashboard.putNumber("turret_position", turretRotator.getPosition());
+        SmartDashboard.putNumber("turret_position", (int) turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getError());
-        SmartDashboard.putNumber("goal_distance", distanceSensor.getDistance());
+        SmartDashboard.putNumber("goal_distance", (int) distanceSensor.getDistance());
         SmartDashboard.putBoolean("valid_vision_data", latestData.isValid());
         SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget());
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());

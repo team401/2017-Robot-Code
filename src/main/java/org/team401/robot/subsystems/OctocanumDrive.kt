@@ -59,7 +59,7 @@ object OctocanumDrive : Subsystem() {
     /**
      * The current drive mode of the chassis
      */
-    var driveMode = DriveMode.TRACTION
+    var driveMode = DriveMode.MECANUM
 
     private val driveLoop = object : Loop {
         override fun onStart() {
@@ -188,16 +188,16 @@ object OctocanumDrive : Subsystem() {
 
     /**
      * Set the drive mode to the passed mode. This method does nothing if
-     * the passed drive mode is the currently config drive mode.
+     * the passed drive mode is the currently set drive mode.
      *
      * @param driveMode The DriveMode to switch to
      */
     fun shift(driveMode: DriveMode) {
         if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECANUM) {
-            shifter.set(false)
+            shifter.set(true)
             this.driveMode = DriveMode.TRACTION
         } else if (driveMode == DriveMode.MECANUM && this.driveMode == DriveMode.TRACTION) {
-            shifter.set(true)
+            shifter.set(false)
             this.driveMode = DriveMode.MECANUM
         }
     }
