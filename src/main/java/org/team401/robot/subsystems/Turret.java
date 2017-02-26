@@ -65,7 +65,7 @@ public class Turret extends Subsystem {
         this.throttle = throttle;
         this.distanceSensor = distanceSensor;
 
-        turretHood.set(false);
+        turretHood.set(true);
         ledRing.set(false);
 
         this.flywheelSlave = flywheelSlave;
@@ -175,8 +175,9 @@ public class Turret extends Subsystem {
     }
 
     public void extendHood(boolean extended) {
+        System.out.println("Turret is always extended!");
         if (state == TurretState.MANUAL || state == TurretState.SENTRY)
-            turretHood.set(extended);
+            turretHood.set(true);
     }
 
     public boolean isHoodExtended() {
