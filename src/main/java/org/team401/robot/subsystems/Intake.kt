@@ -18,6 +18,10 @@ object Intake : Subsystem() {
 			Hardware.Motors.victorSP(Constants.INTAKE_2))
 	private val solenoid = Solenoid(Constants.ARM_EXTENDER)
 
+	private var currentVoltage = 0.0
+	private var targetVoltage = 0.0
+	private val rampRate = 4 / 50
+
 	private val loop = object : Loop {
 		override fun onStart() {
 
@@ -26,19 +30,19 @@ object Intake : Subsystem() {
 		override fun onLoop() {
 			when (state) {
 				IntakeState.ARM_UP -> {
-					motor.speed = 0.0
+					targetVoltage = 0.0
 					solenoid.set(false)
 				}
 				IntakeState.ARM_DOWN -> {
-					motor.speed = 0.0
+					targetVoltage = 0.0
 					solenoid.set(true)
 				}
 				IntakeState.ENABLED -> {
-					motor.speed = .5
+					targetVoltage = 0.5
 					solenoid.set(true)
 				}
 				IntakeState.CLIMBING -> {
-					motor.speed = .5
+					targetVoltage = 0.8
 					solenoid.set(false)
 				}
 				else -> {
@@ -46,6 +50,8 @@ object Intake : Subsystem() {
 					state = IntakeState.ARM_UP
 				}
 			}
+			updateVoltageRamping()
+			motor.speed = currentVoltage
 			printToSmartDashboard()
 		}
 
@@ -61,6 +67,13 @@ object Intake : Subsystem() {
 	fun getCurrentState() = state
 
 	fun isArmDown() = state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN
+
+	private fun updateVoltageRamping() {
+		if (targetVoltage > currentVoltage)
+			currentVoltage += rampRate
+		else
+			currentVoltage -= rampRate
+	}
 
 	override fun getSubsystemLoop(): Loop = loop
 
