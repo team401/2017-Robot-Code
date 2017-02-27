@@ -12,10 +12,7 @@ import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
-import org.team401.robot.subsystems.GearHolder;
-import org.team401.robot.subsystems.Intake;
-import org.team401.robot.subsystems.OctocanumDrive;
-import org.team401.robot.subsystems.Turret;
+import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
@@ -83,6 +80,7 @@ public class Robot extends IterativeRobot {
                     else
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
                 });
+        // climbing
         // scoring
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
                 () -> {
@@ -121,11 +119,13 @@ public class Robot extends IterativeRobot {
                     else if (turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0)
                         turret.setWantedState(Turret.TurretState.MANUAL);
                 });
+        // hopper
         loopManager = new LoopManager();
         loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
         loopManager.register(Intake.INSTANCE.getSubsystemLoop());
         loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
         loopManager.register(getTurret().getSubsystemLoop());
+        loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
         OctocanumDrive.INSTANCE.init();
     }
 

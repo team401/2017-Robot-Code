@@ -33,6 +33,7 @@ public class Turret extends Subsystem {
     private CANTalon flywheel, flywheelSlave, feeder;
 
     private ContinuousRange yaw, throttle;
+    private boolean isFiring = false;
 
     private Loop loop = new Loop() {
         @Override
@@ -140,16 +141,19 @@ public class Turret extends Subsystem {
         }
         // shooting code
         if (state == TurretState.AUTO && speed != 0) { // auto shooting
+            isFiring = true;
             configTalonsForSpeedControl();
             flywheel.set(speed);
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                 feeder.set(1);
         } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && trigger.isTriggered()) { // manual shooting
+            isFiring = true;
             configTalonsForSpeedControl();
             flywheel.set(speed);
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                 feeder.set(1);
         } else { // dont shoot
+            isFiring = false;
             flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             flywheel.set(0);
             feeder.set(0);
@@ -192,9 +196,12 @@ public class Turret extends Subsystem {
         return feeder.isRevLimitSwitchClosed();
     }
 
+    public boolean isFiring() {
+        return isFiring;
+    }
+
     @Override
     public void printToSmartDashboard() {
-
         SmartDashboard.putNumber("flywheel_rpm", (int) flywheel.getSpeed());
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", (int) turretRotator.getPosition());
