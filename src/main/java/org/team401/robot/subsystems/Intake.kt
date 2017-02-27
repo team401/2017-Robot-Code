@@ -56,7 +56,7 @@ object Intake : Subsystem() {
 		}
 
 		override fun onStop() {
-
+			currentVoltage = 0.0
 		}
 	}
 
@@ -79,6 +79,7 @@ object Intake : Subsystem() {
 
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN)
-		SmartDashboard.putNumber("collection_speed", motor.speed)
+		SmartDashboard.putNumber("current_voltage", motor.speed)
+		SmartDashboard.putNumber("target_voltage", targetVoltage)
 	}
 }

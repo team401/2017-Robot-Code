@@ -32,7 +32,7 @@ object Hopper : Subsystem() {
                 HopperState.ON ->
                     motor.speed = 0.5
                 else ->
-                    println("Hopper is in an invalid state!")
+                    println("Invalid hopper state $state")
             }
         }
 
