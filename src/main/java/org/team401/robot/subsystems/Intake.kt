@@ -20,7 +20,7 @@ object Intake : Subsystem() {
 
 	private var currentVoltage = 0.0
 	private var targetVoltage = 0.0
-	private val rampRate = 4 / 50
+	private val rampRate = 2.0 * Constants.LOOP_PERIOD
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -73,13 +73,15 @@ object Intake : Subsystem() {
 			currentVoltage += rampRate
 		else
 			currentVoltage -= rampRate
+		if (Math.abs(targetVoltage-currentVoltage)<rampRate)
+			currentVoltage = targetVoltage
 	}
 
 	override fun getSubsystemLoop(): Loop = loop
 
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN)
-		SmartDashboard.putNumber("current_voltage", motor.speed)
-		SmartDashboard.putNumber("target_voltage", targetVoltage)
+		SmartDashboard.putNumber("intake_current_voltage", motor.speed)
+		SmartDashboard.putNumber("intake_target_voltage", targetVoltage)
 	}
 }

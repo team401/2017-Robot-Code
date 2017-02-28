@@ -13,7 +13,10 @@ object Hopper : Subsystem() {
     }
     private var state = HopperState.OFF
 
-    private val motor = Hardware.Motors.victorSP(Constants.HOPPER_BOTTOM)
+    private val motor = Hardware.Motors.victorSP(Constants.HOPPER_BOTTOM).invert()
+    private var currentVoltage = 0.0
+    private var targetVoltage = 0.0
+    private val rampRate = 2.0 * Constants.LOOP_PERIOD
 
     private val loop = object : Loop {
         override fun onStart() {
@@ -28,12 +31,16 @@ object Hopper : Subsystem() {
 
             when (state) {
                 HopperState.OFF ->
-                    motor.speed = 0.0
+                    targetVoltage = 0.0
                 HopperState.ON ->
-                    motor.speed = 0.5
+                    targetVoltage = 0.6
                 else ->
                     println("Invalid hopper state $state")
             }
+
+            updateVoltageRamping()
+            motor.speed = currentVoltage
+            printToSmartDashboard()
         }
 
         override fun onStop() {
@@ -45,10 +52,21 @@ object Hopper : Subsystem() {
         this.state = state
     }
 
+    private fun updateVoltageRamping() {
+        if (targetVoltage > currentVoltage)
+            currentVoltage += rampRate
+        else
+            currentVoltage -= rampRate
+        if (Math.abs(targetVoltage-currentVoltage)<rampRate)
+            currentVoltage = targetVoltage
+    }
+
     override fun getSubsystemLoop(): Loop = loop
 
     override fun printToSmartDashboard() {
         SmartDashboard.putBoolean("hopper_on", state == HopperState.ON)
+        SmartDashboard.putNumber("hopper_current_voltage", motor.speed)
+        SmartDashboard.putNumber("hopper_target_voltage", targetVoltage)
     }
 
 }

@@ -115,7 +115,6 @@ public class Turret extends Subsystem {
     }
 
     private void run() {
-        System.out.println(state.toString());
         if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
             return;
         latestData = Robot.getVisionDataStream().getLatestGoalData();

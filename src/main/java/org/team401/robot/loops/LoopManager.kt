@@ -15,7 +15,13 @@ class LoopManager {
 
 	init {
 		notifier = Notifier {
-			loops.forEach { it.onLoop() }
+			loops.forEach {
+				try {
+					it.onLoop()
+				} catch (e: Exception) {
+					println("Error in loop: $it")
+				}
+			}
 		}
 	}
 

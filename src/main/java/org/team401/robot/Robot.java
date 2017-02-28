@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
                 new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing,
                 masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
 
-        camera = new Camera(640, 480, 10);
+        //camera = new Camera(640, 480, 10);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -63,8 +63,8 @@ public class Robot extends IterativeRobot {
         switchReactor.onUntriggered(driveJoystickLeft.getButton(Constants.BUTTON_TOGGLE_GYRO),
                 () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
         // camera switching
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
-                () -> camera.switchCamera());
+        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+                () -> camera.switchCamera());*/
         // collection
         switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
                 () -> {

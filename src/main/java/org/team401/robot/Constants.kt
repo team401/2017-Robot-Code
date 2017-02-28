@@ -13,10 +13,10 @@ object Constants {
     const val GEARBOX_REAR_RIGHT    = 3
 
     // solenoid ids (module 1)
-    const val GEARBOX_SHIFTER       = 0
-    const val TURRET_HOOD           = 1
-    const val ARM_EXTENDER          = 3
-    const val GEAR_HOLDER           = 4
+    const val GEARBOX_SHIFTER       = 4 // 0
+    const val TURRET_HOOD           = 3 // 1
+    const val ARM_EXTENDER          = 1 // 3
+    const val GEAR_HOLDER           = 0 // 4
     const val TOWER_SHIFTER         = 2
     const val COMPRESSOR_FAN        = 5
     const val TURRET_LED_RING       = 6
@@ -40,9 +40,9 @@ object Constants {
     const val TURRET_ROTATOR        = 12
 
     // pwm motor ports
-    const val INTAKE_1              = 8
-    const val INTAKE_2              = 9
-    const val HOPPER_BOTTOM         = 7
+    const val INTAKE_1              = 1
+    const val INTAKE_2              = 2
+    const val HOPPER_BOTTOM         = 0
 
     // joystick ids
     const val DRIVE_JOYSTICK_LEFT   = 0
@@ -56,7 +56,7 @@ object Constants {
     // right drive joystick
     const val BUTTON_SWITCH_CAMERA  = 2
     const val BUTTON_ARM_DROP       = 3
-    const val BUTTON_TOGGLE_COL = 4
+    const val BUTTON_TOGGLE_COL     = 4
     const val BUTTON_GEAR           = 1
     // masher joystick
     const val BUTTON_SHOOT_FUEL     = 1
