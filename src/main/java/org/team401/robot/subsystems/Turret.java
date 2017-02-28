@@ -38,7 +38,7 @@ public class Turret extends Subsystem {
     private Loop loop = new Loop() {
         @Override
         public void onStart() {
-            setWantedState(TurretState.SENTRY);
+
         }
 
         @Override

@@ -44,7 +44,7 @@ object OctocanumDrive : Subsystem() {
             OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
     )
 
-    val gyro = ADXRS450_Gyro()
+    val gyro: ADXRS450_Gyro? = ADXRS450_Gyro()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
@@ -119,7 +119,7 @@ object OctocanumDrive : Subsystem() {
                 Constants.GYRO_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-0.1, 0.1)
 
-        gyro.calibrate()
+        gyro?.calibrate()
         zeroSensors()
     }
 
@@ -217,7 +217,7 @@ object OctocanumDrive : Subsystem() {
 
     fun zeroSensors() {
         resetEncoders()
-        gyro.reset()
+        gyro?.reset()
     }
 
     private fun configureTalonsForSpeedControl() {
@@ -338,7 +338,7 @@ object OctocanumDrive : Subsystem() {
     }
 
     @Synchronized fun getGyroAngle(): Rotation2d {
-        return Rotation2d.fromDegrees(gyro.angle)
+        return Rotation2d.fromDegrees(gyro?.angle ?: 0.0)
     }
 
     override fun printToSmartDashboard() {
