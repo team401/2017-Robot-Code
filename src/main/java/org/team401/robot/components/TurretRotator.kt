@@ -5,17 +5,16 @@ import org.team401.robot.Constants
 
 class TurretRotator(private val rotator: CANTalon) {
 
-    val maxAngle = 166.0
+    val maxAngle = 164.0
 
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.set(0.0)
-        rotator.reverseOutput(false)
         rotator.reverseSensor(false)
-        rotator.configPeakOutputVoltage(1.25, -1.25)
-        rotator.configNominalOutputVoltage(1.25, -1.25)
-        rotator.setAllowableClosedLoopErr(2)
+        rotator.configPeakOutputVoltage(1.5, -1.5)
+        //rotator.configNominalOutputVoltage(1.25, -1.25)
+        rotator.setAllowableClosedLoopErr(1)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit((maxAngle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
         rotator.setReverseSoftLimit(0.0)
@@ -60,7 +59,7 @@ class TurretRotator(private val rotator: CANTalon) {
 
     fun rotate(throttle: Double) {
         rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
-        rotator.set(throttle)
+        rotator.set(-throttle)
     }
 
     fun enableSoftLimits(enabled: Boolean) {

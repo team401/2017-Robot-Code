@@ -7,7 +7,7 @@ import org.strongback.components.ui.FlightStick;
 
 public class RobotTestPls /*extends IterativeRobot*/ {
 
-	private CANTalon flywheel;
+	private CANTalon flywheel, feeder;
 
 	private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
 
@@ -15,12 +15,21 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	public void robotInit() {
 		SmartDashboard.putNumber("flywheel_setpoint", 0.0);
 
+		feeder = new CANTalon(Constants.TURRET_FEEDER);
+
 		flywheel = new CANTalon(Constants.TURRET_SHOOTER_MASTER);
 		flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
+		flywheel.reverseSensor(true);
 		flywheel.reverseOutput(true);
+		flywheel.configPeakOutputVoltage(0, -12);
 		flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
 		flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
+
+		CANTalon slave = new CANTalon(Constants.TURRET_SHOOTER_SLAVE);
+		slave.setInverted(true);
+		slave.changeControlMode(CANTalon.TalonControlMode.Follower);
+		slave.set(Constants.TURRET_SHOOTER_MASTER);
 
 
 	}
@@ -48,7 +57,11 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	//@Override
 	public void teleopPeriodic() {
 		flywheel.set(SmartDashboard.getNumber("flywheel_setpoint", 0));
-		SmartDashboard.putNumber("flywheel_velocity", flywheel.getSpeed());
+		if (SmartDashboard.getNumber("flywheel_setpoint", 0) > 0)
+			feeder.set(1);
+		else
+			feeder.set(0);
+		SmartDashboard.putNumber("flywheel_velocity", (int) flywheel.getSpeed());
 		SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
 	}
 }
