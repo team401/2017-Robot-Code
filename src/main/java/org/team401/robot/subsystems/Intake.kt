@@ -20,7 +20,7 @@ object Intake : Subsystem() {
 
 	private var currentVoltage = 0.0
 	private var targetVoltage = 0.0
-	private val rampRate = 2.0 * Constants.LOOP_PERIOD
+	private val rampRate = Constants.INTAKE_RAMP_RATE * Constants.LOOP_PERIOD
 
 	private val loop = object : Loop {
 		override fun onStart() {

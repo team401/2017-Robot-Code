@@ -16,7 +16,7 @@ object Hopper : Subsystem() {
     private val motor = Hardware.Motors.victorSP(Constants.HOPPER_BOTTOM).invert()
     private var currentVoltage = 0.0
     private var targetVoltage = 0.0
-    private val rampRate = 2.0 * Constants.LOOP_PERIOD
+    private val rampRate = Constants.HOPPER_RAMP_RATE * Constants.LOOP_PERIOD
 
     private val loop = object : Loop {
         override fun onStart() {
@@ -57,7 +57,7 @@ object Hopper : Subsystem() {
             currentVoltage += rampRate
         else
             currentVoltage -= rampRate
-        if (Math.abs(targetVoltage-currentVoltage)<rampRate)
+        if (Math.abs(targetVoltage-currentVoltage) < rampRate)
             currentVoltage = targetVoltage
     }
 
