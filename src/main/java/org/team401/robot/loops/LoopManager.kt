@@ -1,6 +1,7 @@
 package org.team401.robot.loops
 
 import edu.wpi.first.wpilibj.Notifier
+import org.team401.lib.CrashTracker
 import org.team401.robot.Constants
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ class LoopManager {
 				try {
 					it.onLoop()
 				} catch (e: Exception) {
+					CrashTracker.logThrowableCrash(e)
 					println("Error in loop: $it")
 				}
 			}
@@ -36,7 +38,16 @@ class LoopManager {
 	fun start() {
 		if (!running) {
 			println("Starting periodic loops")
-			synchronized(lock) { loops.forEach { it.onStart()} }
+			synchronized(lock) {
+				loops.forEach {
+					try {
+						it.onStart()
+					} catch (e: Exception) {
+						CrashTracker.logThrowableCrash(e)
+						println("Error starting loop: $it")
+					}
+				}
+			}
 			notifier.startPeriodic(period)
 			running = true
 		}
@@ -47,7 +58,16 @@ class LoopManager {
 		if (running) {
 			println("Stopping periodic loops")
 			notifier.stop()
-			synchronized(lock) { loops.forEach { it.onStop() } }
+			synchronized(lock) {
+				loops.forEach {
+					try {
+						it.onStop()
+					} catch (e: Exception) {
+						CrashTracker.logThrowableCrash(e)
+						println("Error stopping loop: $it")
+					}
+				}
+			}
 			running = false
 		}
 	}

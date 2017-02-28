@@ -1,5 +1,6 @@
 package org.team401.robot.auto
 
+import org.team401.lib.CrashTracker
 import org.team401.robot.auto.actions.Action
 
 abstract class AutoMode {
@@ -9,9 +10,14 @@ abstract class AutoMode {
     abstract fun routine()
 
     fun run() {
-        routine()
-        done()
-        println("Auto Finished!")
+        try {
+            routine()
+            done()
+            println("Auto Finished!")
+        } catch (e: Throwable) {
+            CrashTracker.logThrowableCrash(e)
+            println("Auto ended early due to crash!")
+        }
     }
 
     open fun done() {}
@@ -22,11 +28,11 @@ abstract class AutoMode {
     fun runAction(action: Action) {
         action.start()
         while (!action.isFinished()) {
-            action.update()
             try {
+                action.update()
                 Thread.sleep((updateRate * 1000.0).toLong())
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
+            } catch (e: Throwable) {
+                CrashTracker.logThrowableCrash(e)
             }
         }
         action.end()

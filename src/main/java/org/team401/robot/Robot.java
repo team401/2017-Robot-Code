@@ -8,6 +8,7 @@ import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.hardware.Hardware;
+import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
@@ -30,6 +31,7 @@ public class Robot extends IterativeRobot {
 
     //@Override
     public void robotInit() {
+        CrashTracker.INSTANCE.logRobotInit();
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
@@ -131,6 +133,7 @@ public class Robot extends IterativeRobot {
 
     //@Override
     public void autonomousInit() {
+        CrashTracker.INSTANCE.logAutoInit();
         loopManager.start();
         Strongback.start();
         autoExecutor = new AutoModeExecuter(new CalibrateTurretMode());
@@ -139,6 +142,7 @@ public class Robot extends IterativeRobot {
 
     //@Override
     public void teleopInit() {
+        CrashTracker.INSTANCE.logTeleopInit();
         if (autoExecutor != null)
             autoExecutor.stop();
         loopManager.start();
@@ -159,6 +163,7 @@ public class Robot extends IterativeRobot {
 
     //@Override
     public void disabledInit() {
+        CrashTracker.INSTANCE.logDisabledInit();
         Strongback.disable();
         loopManager.stop();
     }

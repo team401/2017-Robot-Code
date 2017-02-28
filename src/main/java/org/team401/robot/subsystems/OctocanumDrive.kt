@@ -351,6 +351,7 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
         SmartDashboard.putData("gyro_diagram", gyro)
+        SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
     }
 
     override fun getSubsystemLoop(): Loop = driveLoop
