@@ -26,6 +26,7 @@ public class CompetitionAuto extends AutoMode {
 		switch(destination) {
 			case MIDGEAR:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive onto the peg
+				findPath(AutoPaths.START_MID_TO_LIFT.getArr(), AutoPaths.START_MID_TO_LIFT.getTime());
 				break;
 			case LEFTGEAR:
 				runAction(new DriveStraightAction(0, 0, 0));//Drive in front of the peg
