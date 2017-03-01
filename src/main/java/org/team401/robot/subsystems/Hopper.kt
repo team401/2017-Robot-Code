@@ -33,7 +33,7 @@ object Hopper : Subsystem() {
                 HopperState.OFF ->
                     targetVoltage = 0.0
                 HopperState.ON ->
-                    targetVoltage = 0.6
+                    targetVoltage = 0.7
                 else ->
                     println("Invalid hopper state $state")
             }

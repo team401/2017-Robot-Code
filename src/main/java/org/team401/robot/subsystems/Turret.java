@@ -207,6 +207,7 @@ public class Turret extends Subsystem {
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint());
         SmartDashboard.putBoolean("sentry_enabled", state.compareTo(TurretState.SENTRY) >= 0);
         SmartDashboard.putBoolean("auto_shooting_enabled", state == TurretState.AUTO);
+        SmartDashboard.putBoolean("turret_disabled", state == TurretState.DISABLED);
     }
 
     public Loop getSubsystemLoop() {

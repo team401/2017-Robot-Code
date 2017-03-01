@@ -28,7 +28,6 @@ public class Robot extends IterativeRobot {
     //@Override
     public void robotInit() {
         CrashTracker.INSTANCE.logRobotInit();
-        CrashTracker.INSTANCE.logThrowableCrash(new Exception("test"));
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
@@ -97,8 +96,10 @@ public class Robot extends IterativeRobot {
                 () -> {
                     turret.extendHood(!turret.isHoodExtended());
                 });
-        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleSentry(),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleAuto(),
                 () -> {
+                    if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
+                        return;
                     if (turret.getCurrentState() != Turret.TurretState.AUTO)
                         turret.setWantedState(Turret.TurretState.AUTO);
                     else {
@@ -106,11 +107,13 @@ public class Robot extends IterativeRobot {
                         turret.extendHood(true);
                     }
                 });
-        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleAuto(),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleSentry(),
                 () -> {
+                    if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
+                        return;
                     if (turret.getCurrentState() == Turret.TurretState.MANUAL)
                         turret.setWantedState(Turret.TurretState.SENTRY);
-                    else if (turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0)
+                    else
                         turret.setWantedState(Turret.TurretState.MANUAL);
                 });
         // hopper
@@ -149,8 +152,12 @@ public class Robot extends IterativeRobot {
     //@Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
-        OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
+        if (!ControlBoard.INSTANCE.getLeftDriveJoystick().getButton(5).isTriggered())
+            OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
                 ControlBoard.INSTANCE.getDriveRotate());
+        else
+            OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
+                    -ControlBoard.INSTANCE.getDriveRotate());
     }
 
     //@Override
