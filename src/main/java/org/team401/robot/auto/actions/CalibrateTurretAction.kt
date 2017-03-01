@@ -9,7 +9,7 @@ class CalibrateTurretAction : Action {
 
     override fun start() {
         turret.setWantedState(Turret.TurretState.CALIBRATING)
-        turret.turretRotator.setPosition(-turret.turretRotator.maxAngle)
+        turret.turretRotator.rotate(.15)
     }
 
     override fun update() {

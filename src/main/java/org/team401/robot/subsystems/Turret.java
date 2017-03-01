@@ -124,13 +124,18 @@ public class Turret extends Subsystem {
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
-            if (Math.abs(turnSpeed) > .2)
-                if (turnSpeed > 0)
-                    turretRotator
-                            .rotate(-MathUtils.INSTANCE.toRange(turnSpeed, .2, 1, .05, .15));
-                else
-                    turretRotator
-                            .rotate(MathUtils.INSTANCE.toRange(-turnSpeed, .2, 1, .05, .15));
+            if (Math.abs(turnSpeed) > .5)
+                if (turnSpeed > 0) {
+                    if (turnSpeed > .8)
+                        turretRotator.addDegrees(3);
+                    else
+                        turretRotator.addDegrees(1);
+                } else {
+                    if (turnSpeed < -.8)
+                        turretRotator.addDegrees(-3);
+                    else
+                        turretRotator.addDegrees(-1);
+                }
             speed = MathUtils.INSTANCE.toRange(ControlBoard.INSTANCE.getTurretThrottle(), -1, 1, 1000, 4600);
         }
         // shooting code

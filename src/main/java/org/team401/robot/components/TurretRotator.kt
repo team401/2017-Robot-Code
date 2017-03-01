@@ -5,14 +5,14 @@ import org.team401.robot.Constants
 
 class TurretRotator(private val rotator: CANTalon) {
 
-    val maxAngle = 164.0
+    val maxAngle = 155.0
 
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.Position)
         rotator.set(0.0)
         rotator.reverseSensor(false)
-        rotator.configPeakOutputVoltage(1.5, -1.5)
+        rotator.configPeakOutputVoltage(1.75, -1.75)
         //rotator.configNominalOutputVoltage(1.25, -1.25)
         rotator.setAllowableClosedLoopErr(1)
         rotator.enableBrakeMode(true)
