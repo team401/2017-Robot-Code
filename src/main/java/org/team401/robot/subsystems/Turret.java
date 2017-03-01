@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.strongback.components.Switch;
 import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.Constants;
+import org.team401.robot.ControlBoard;
 import org.team401.robot.Robot;
 import org.team401.robot.components.TurretRotator;
 import org.team401.robot.loops.Loop;
@@ -28,11 +29,9 @@ public class Turret extends Subsystem {
 
     private VisionData latestData;
     private DistanceSensor distanceSensor;
-    private Switch trigger;
 
     private CANTalon flywheel, flywheelSlave, feeder;
 
-    private ContinuousRange yaw, throttle;
     private boolean isFiring = false;
 
     private Loop loop = new Loop() {
@@ -55,15 +54,11 @@ public class Turret extends Subsystem {
     };
 
     public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMaster,
-                  CANTalon flywheelSlave, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing,
-                  Switch trigger, ContinuousRange yaw, ContinuousRange throttle) {
+                  CANTalon flywheelSlave, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing) {
         turretRotator = new TurretRotator(turretSpinner);
         latestData = new VisionData(0, 0, 0);
-        this.trigger = trigger;
         this.turretHood = turretHood;
         this.ledRing = ledRing;
-        this.yaw = yaw;
-        this.throttle = throttle;
         this.distanceSensor = distanceSensor;
 
         turretHood.set(true);
@@ -128,7 +123,7 @@ public class Turret extends Subsystem {
                 sentryMode();
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
-            double turnSpeed = yaw.read();
+            double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
             if (Math.abs(turnSpeed) > .2)
                 if (turnSpeed > 0)
                     turretRotator
@@ -136,7 +131,7 @@ public class Turret extends Subsystem {
                 else
                     turretRotator
                             .rotate(MathUtils.INSTANCE.toRange(-turnSpeed, .2, 1, .05, .15));
-            speed = MathUtils.INSTANCE.toRange(throttle.read() * -1, -1, 1, 1000, 4500);
+            speed = MathUtils.INSTANCE.toRange(ControlBoard.INSTANCE.getTurretThrottle(), -1, 1, 1000, 4600);
         }
         // shooting code
         if (state == TurretState.AUTO && speed != 0) { // auto shooting
@@ -145,7 +140,7 @@ public class Turret extends Subsystem {
             flywheel.set(speed);
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                 feeder.set(1);
-        } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && trigger.isTriggered()) { // manual shooting
+        } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && ControlBoard.INSTANCE.getShootFuel().isTriggered()) { // manual shooting
             isFiring = true;
             configTalonsForSpeedControl();
             flywheel.set(speed);

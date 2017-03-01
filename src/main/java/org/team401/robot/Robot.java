@@ -6,11 +6,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
-import org.strongback.components.ui.FlightStick;
-import org.strongback.hardware.Hardware;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.AutoTestMode;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
@@ -20,7 +17,6 @@ import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class Robot extends IterativeRobot {
 
-    private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
     private Camera camera;
 
     private AutoModeExecuter autoExecutor;
@@ -32,6 +28,7 @@ public class Robot extends IterativeRobot {
     //@Override
     public void robotInit() {
         CrashTracker.INSTANCE.logRobotInit();
+        CrashTracker.INSTANCE.logThrowableCrash(new Exception("test"));
         Strongback.configure()
                 .recordDataToFile("/home/lvuser/")
                 .recordEventsToFile("/home/lvuser/", 2097152);
@@ -40,42 +37,37 @@ public class Robot extends IterativeRobot {
         Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
         compressorFan.set(true);
 
-        driveJoystickLeft = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT);
-        driveJoystickRight = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT);
-        masherJoystick = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.MASHER_JOYSTICK);
-
         // turret stuff
         Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
         Solenoid ledRing = new Solenoid(Constants.TURRET_LED_RING);
         Lidar lidar = new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3);
         lidar.start();
         turret = new Turret(lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_MASTER),
-                new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing,
-                masherJoystick.getButton(Constants.BUTTON_SHOOT_FUEL), masherJoystick.getYaw(), masherJoystick.getThrottle());
+                new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing);
 
         //camera = new Camera(640, 480, 10);
 
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         // drive
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_SHIFT),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getShift(),
                 () -> OctocanumDrive.INSTANCE.shift());
-        switchReactor.onTriggered(driveJoystickLeft.getButton(Constants.BUTTON_TOGGLE_GYRO),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHeading(),
                 () -> OctocanumDrive.INSTANCE.setNewHeadingSetpoint());
-        switchReactor.onUntriggered(driveJoystickLeft.getButton(Constants.BUTTON_TOGGLE_GYRO),
+        switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                 () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
         // camera switching
-        /*switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_SWITCH_CAMERA),
+        /*switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
                 () -> camera.switchCamera());*/
         // collection
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_ARM_DROP),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
                 () -> {
                     if (Intake.INSTANCE.isArmDown())
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
                     else
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
                 });
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_TOGGLE_COL),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleIntake(),
                 () -> {
                     if (Intake.INSTANCE.getCurrentState() != Intake.IntakeState.ENABLED)
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
@@ -84,16 +76,16 @@ public class Robot extends IterativeRobot {
                 });
         // climbing
         // scoring
-        switchReactor.onTriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleGear(),
                 () -> {
                     GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.OPEN);
                 });
-        switchReactor.onUntriggered(driveJoystickRight.getButton(Constants.BUTTON_GEAR),
+        switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleGear(),
                 () -> {
                     GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                 });
         // tower
-        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_EXTEND_TOWER),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleTower(),
                 () -> {
                     if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                         GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_IN);
@@ -101,11 +93,11 @@ public class Robot extends IterativeRobot {
                         GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                 });
         // turret
-        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_HOOD),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHood(),
                 () -> {
                     turret.extendHood(!turret.isHoodExtended());
                 });
-        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_AUTO),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleSentry(),
                 () -> {
                     if (turret.getCurrentState() != Turret.TurretState.AUTO)
                         turret.setWantedState(Turret.TurretState.AUTO);
@@ -114,7 +106,7 @@ public class Robot extends IterativeRobot {
                         turret.extendHood(true);
                     }
                 });
-        switchReactor.onTriggered(masherJoystick.getButton(Constants.BUTTON_TOGGLE_SENTRY),
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleAuto(),
                 () -> {
                     if (turret.getCurrentState() == Turret.TurretState.MANUAL)
                         turret.setWantedState(Turret.TurretState.SENTRY);
@@ -157,8 +149,8 @@ public class Robot extends IterativeRobot {
     //@Override
     public void teleopPeriodic() {
         // drive the robot, mode specific drive code is in the OctocanumDrive class
-        OctocanumDrive.INSTANCE.drive(driveJoystickLeft.getPitch().read(), driveJoystickLeft.getRoll().read(),
-                driveJoystickRight.getRoll().read());
+        OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
+                ControlBoard.INSTANCE.getDriveRotate());
     }
 
     //@Override

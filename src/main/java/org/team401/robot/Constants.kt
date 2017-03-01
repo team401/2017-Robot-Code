@@ -54,12 +54,12 @@ object Constants {
 
     // left drive joystick
     const val BUTTON_SHIFT          = 1
-    const val BUTTON_TOGGLE_GYRO    = 2
+    const val BUTTON_TOGGLE_HEADING = 2
     const val BUTTON_ENABLE_GYRO    = 3
     // right drive joystick
     const val BUTTON_SWITCH_CAMERA  = 2
     const val BUTTON_ARM_DROP       = 3
-    const val BUTTON_TOGGLE_COL     = 4
+    const val BUTTON_TOGGLE_INTAKE  = 4
     const val BUTTON_GEAR           = 1
     // masher joystick
     const val BUTTON_SHOOT_FUEL     = 1
@@ -67,6 +67,7 @@ object Constants {
     const val BUTTON_TOGGLE_SENTRY  = 4
     const val BUTTON_TOGGLE_AUTO    = 6
     const val BUTTON_TOGGLE_HOOD    = 3
+    const val BUTTON_CALIBRATE_TURRET = 5
 
     // camera mapping
     const val CAMERA_FRONT          = 0
@@ -81,11 +82,11 @@ object Constants {
     const val SPEED_IZONE           = 0
     const val SPEED_RAMP_RATE       = 0.0
 
-    const val FLYWHEEL_P            = 0.10
-    const val FLYWHEEL_I            = 0.0015
+    const val FLYWHEEL_P            = 0.12007
+    const val FLYWHEEL_I            = 0.0
     const val FLYWHEEL_D            = 6.0
-    const val FLYWHEEL_F            = 0.036549
-    const val FLYWHEEL_IZONE        = 100
+    const val FLYWHEEL_F            = 0.03222
+    const val FLYWHEEL_IZONE        = 0
     const val FLYWHEEL_RAMP_RATE    = 0.0
 
     const val ROTATOR_P             = 0.25

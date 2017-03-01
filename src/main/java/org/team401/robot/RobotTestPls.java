@@ -9,8 +9,6 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
 	private CANTalon flywheel, feeder;
 
-	private FlightStick driveJoystickLeft, driveJoystickRight, masherJoystick;
-
 	//@Override
 	public void robotInit() {
 		SmartDashboard.putNumber("flywheel_setpoint", 0.0);
