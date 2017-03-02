@@ -72,7 +72,7 @@ object Intake : Subsystem() {
 		if (targetVoltage > currentVoltage)
 			currentVoltage += rampRate
 		else
-			currentVoltage -= rampRate
+			currentVoltage = targetVoltage
 		if (Math.abs(targetVoltage-currentVoltage) < 4*rampRate)
 			currentVoltage = targetVoltage
 	}

@@ -29,6 +29,7 @@ object ControlBoard {
     fun getToggleAuto() = mash.getButton(Constants.BUTTON_TOGGLE_AUTO)
     fun getToggleHood() = mash.getButton(Constants.BUTTON_TOGGLE_HOOD)
     fun getToggleTower() = mash.getButton(Constants.BUTTON_EXTEND_TOWER)
+    fun getClimb() = right.getButton(Constants.BUTTON_CLIMB)
 
     fun getTurretYaw() = mash.yaw.read()
     fun getTurretThrottle() = mash.throttle.invert().read()

@@ -74,6 +74,14 @@ public class Robot extends IterativeRobot {
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
                 });
         // climbing
+        switchReactor.onTriggered(ControlBoard.INSTANCE.getClimb(),
+                () -> {
+                    Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
+                });
+        switchReactor.onUntriggered(ControlBoard.INSTANCE.getClimb(),
+                () -> {
+                    Intake.INSTANCE.setWantedState(Intake.IntakeState.CLIMBING);
+                });
         // scoring
         switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleGear(),
                 () -> {

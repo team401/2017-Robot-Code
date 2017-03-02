@@ -40,11 +40,11 @@ object Constants {
     const val TURRET_ROTATOR        = 12
 
     // pwm motor ports
-    const val INTAKE_1              = 1
-    const val INTAKE_2              = 2
-    const val HOPPER_BOTTOM         = 0
+    const val INTAKE_1              = 9
+    const val INTAKE_2              = 7
+    const val HOPPER_BOTTOM         = 8
 
-    const val HOPPER_RAMP_RATE      = 5
+    const val HOPPER_RAMP_RATE      = 8
     const val INTAKE_RAMP_RATE      = 2
 
     // joystick ids
@@ -68,6 +68,7 @@ object Constants {
     const val BUTTON_TOGGLE_AUTO    = 6
     const val BUTTON_TOGGLE_HOOD    = 3
     const val BUTTON_CALIBRATE_TURRET = 5
+    const val BUTTON_CLIMB          = 11
 
     // camera mapping
     const val CAMERA_FRONT          = 0

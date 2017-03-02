@@ -33,6 +33,7 @@ public class Turret extends Subsystem {
     private CANTalon flywheel, flywheelSlave, feeder;
 
     private boolean isFiring = false;
+    private boolean sentryRight = false;
 
     private Loop loop = new Loop() {
         @Override
@@ -103,10 +104,15 @@ public class Turret extends Subsystem {
     }
 
     private void sentryMode() {
-        if (turretRotator.getPosition() >= turretRotator.getMaxAngle()-1)
+        if (sentryRight) {
             turretRotator.setPosition(0);
-        else if (turretRotator.getPosition() <= 1)
+            if (turretRotator.getPosition() < 5)
+                sentryRight = false;
+        } else {
             turretRotator.setPosition(turretRotator.getMaxAngle());
+            if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
+                sentryRight = true;
+        }
     }
 
     private void run() {

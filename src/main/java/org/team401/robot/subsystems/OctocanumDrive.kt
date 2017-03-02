@@ -176,6 +176,11 @@ object OctocanumDrive : Subsystem() {
         gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
     }
 
+    fun drive(left: Double, right: Double) {
+        gearboxes[Constants.FRONT_LEFT_MASTER].setOutput(-left)
+        gearboxes[Constants.FRONT_RIGHT_MASTER].setOutput(right)
+    }
+
     /**
      * Toggle the drive mode
      */
@@ -320,6 +325,14 @@ object OctocanumDrive : Subsystem() {
 
     fun getRightVelocityInchesPerSec(): Double {
         return rpmToInchesPerSecond(gearboxes[Constants.GEARBOX_FRONT_RIGHT].motor.speed)
+    }
+
+    fun getLeftEncPosition(): Int {
+        return gearboxes[Constants.GEARBOX_FRONT_LEFT].motor.encPosition
+    }
+
+    fun getRightEncPosition(): Int {
+        return gearboxes[Constants.GEARBOX_FRONT_RIGHT].motor.encPosition
     }
 
     fun setBrakeMode(on: Boolean) {
