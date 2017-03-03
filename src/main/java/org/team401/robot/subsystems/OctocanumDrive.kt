@@ -19,17 +19,17 @@ import org.team401.robot.math.Rotation2d
  */
 object OctocanumDrive : Subsystem() {
 
-	enum class DriveControlState {
-		OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
-	}
+    enum class DriveControlState {
+        OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
+    }
 
-	/**
-	 * An enum object to represent different drive modes.
-	 */
-	enum class DriveMode {
-		TRACTION,
-		MECANUM
-	}
+    /**
+     * An enum object to represent different drive modes.
+     */
+    enum class DriveMode {
+        TRACTION,
+        MECANUM
+    }
 
     var controlState = DriveControlState.OPEN_LOOP
 
@@ -67,27 +67,25 @@ object OctocanumDrive : Subsystem() {
         }
 
         override fun onLoop() {
-            synchronized(this) {
-                when (controlState) {
-                    DriveControlState.OPEN_LOOP ->
-                        // we dont really care
-                        return
-                    DriveControlState.VELOCITY_SETPOINT ->
-                        // talons are updating the control loop state
-                        return
-                    DriveControlState.VELOCITY_HEADING_CONTROL ->
-                        updateVelocityHeadingSetpoint()
-                    DriveControlState.PATH_FOLLOWING_CONTROL -> {
-                        println("we shouldn't be in path following mode!!!")
-                        /*updatePathFollower()
-                        if (isFinishedPath()) {
-                            stop()
-                        }*/
-                    }
-                    else -> System.out.println("Unexpected drive control state: " + controlState)
+            when (controlState) {
+                DriveControlState.OPEN_LOOP ->
+                    // we dont really care
+                    return
+                DriveControlState.VELOCITY_SETPOINT ->
+                    // talons are updating the control loop state
+                    return
+                DriveControlState.VELOCITY_HEADING_CONTROL ->
+                    updateVelocityHeadingSetpoint()
+                DriveControlState.PATH_FOLLOWING_CONTROL -> {
+                    println("we shouldn't be in path following mode!!!")
+                    /*updatePathFollower()
+                    if (isFinishedPath()) {
+                        stop()
+                    }*/
                 }
-                printToSmartDashboard()
+                else -> System.out.println("Unexpected drive control state: " + controlState)
             }
+            printToSmartDashboard()
         }
 
         override fun onStop() {
@@ -177,8 +175,12 @@ object OctocanumDrive : Subsystem() {
     }
 
     fun drive(left: Double, right: Double) {
-        gearboxes[Constants.FRONT_LEFT_MASTER].setOutput(-left)
-        gearboxes[Constants.FRONT_RIGHT_MASTER].setOutput(right)
+        if (controlState != DriveControlState.OPEN_LOOP)
+            configureTalonsForOpenLoopControl()
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-left)
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-left)
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(right)
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(right)
     }
 
     /**
@@ -242,7 +244,7 @@ object OctocanumDrive : Subsystem() {
         setBrakeMode(true)
     }
 
-   private fun configureTalonsForOpenLoopControl() {
+    private fun configureTalonsForOpenLoopControl() {
         changeControlMode(CANTalon.TalonControlMode.PercentVbus,
                 { it.set(0.0) },
                 { it.set(0.0) },
@@ -357,14 +359,15 @@ object OctocanumDrive : Subsystem() {
     override fun printToSmartDashboard() {
         SmartDashboard.putNumber("left_distance", getLeftDistanceInches())
         SmartDashboard.putNumber("right_distance", getRightDistanceInches())
-        SmartDashboard.putNumber("left_velocity", inchesPerSecondToRpm(getLeftVelocityInchesPerSec()))
-        SmartDashboard.putNumber("right_velocity", inchesPerSecondToRpm(getRightVelocityInchesPerSec()))
+        SmartDashboard.putNumber("left_velocity", getLeftVelocityInchesPerSec())
+        SmartDashboard.putNumber("right_velocity", getRightVelocityInchesPerSec())
         SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble())
         SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
         SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
         SmartDashboard.putData("gyro_diagram", gyro)
         SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
+        println("help me")
     }
 
     override fun getSubsystemLoop(): Loop = driveLoop

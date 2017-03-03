@@ -3,7 +3,7 @@ package org.team401.robot.auto.actions
 import org.team401.robot.Robot
 import org.team401.robot.subsystems.Turret
 
-class CalibrateTurretAction : Action {
+class CalibrateTurretAction(val state: Turret.TurretState) : Action {
 
     val turret: Turret = Robot.getTurret()
 
@@ -22,6 +22,6 @@ class CalibrateTurretAction : Action {
 
     override fun end() {
         turret.zeroSensors()
-        turret.setWantedState(Turret.TurretState.SENTRY)
+        turret.setWantedState(state)
     }
 }

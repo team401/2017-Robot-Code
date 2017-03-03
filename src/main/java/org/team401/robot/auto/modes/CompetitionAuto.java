@@ -8,6 +8,7 @@ import org.team401.robot.auto.actions.RotateAction;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import org.team401.robot.subsystems.Turret;
 
 /**
  * This is early code. Replace all numbers in the class, as they are zeroed right now!
@@ -23,7 +24,7 @@ public class CompetitionAuto extends AutoMode {
 		team = DriverStation.getInstance().getAlliance().equals(Alliance.Blue);
 	}
 	public void routine() {
-		runAction(new CalibrateTurretAction());
+		runAction(new CalibrateTurretAction(Turret.TurretState.SENTRY));
 		switch(destination) {
 			case MIDGEAR:
 				runAction(new FollowPathAction(AutoPaths.START_MID_TO_LIFT.getArr(), AutoPaths.START_MID_TO_LIFT.getTime()));

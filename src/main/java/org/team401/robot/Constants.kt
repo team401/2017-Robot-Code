@@ -42,7 +42,7 @@ object Constants {
     // pwm motor ports
     const val INTAKE_1              = 9
     const val INTAKE_2              = 7
-    const val HOPPER_BOTTOM         = 8
+    const val HOPPER_BOTTOM         = 0
 
     const val HOPPER_RAMP_RATE      = 8
     const val INTAKE_RAMP_RATE      = 2

@@ -1,15 +1,16 @@
 package org.team401.robot.auto.modes
 
 import org.team401.robot.auto.AutoMode
-import org.team401.robot.auto.actions.DriveStraightAction
-import org.team401.robot.auto.actions.RotateAction
+import org.team401.robot.auto.actions.CalibrateTurretAction
+import org.team401.robot.auto.actions.DriveDistanceAction
+import org.team401.robot.auto.actions.ParallelAction
+import org.team401.robot.subsystems.Turret
 
 class AutoTestMode : AutoMode() {
 
     override fun routine() {
-        runAction(DriveStraightAction(100.0, 400.0))
-        runAction(RotateAction(90.0))
-        //runAction(DriveStraightAction(10.0, 10.0))
+        val actions = arrayOf(CalibrateTurretAction(Turret.TurretState.DISABLED), DriveDistanceAction(4*12.0)).toList()
+        runAction(ParallelAction(actions))
     }
 
     override fun done() {
