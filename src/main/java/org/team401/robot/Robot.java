@@ -113,7 +113,6 @@ public class Robot extends IterativeRobot {
                             turret.setWantedState(Turret.TurretState.AUTO);
                         else {
                             turret.setWantedState(Turret.TurretState.SENTRY);
-                            turret.extendHood(true);
                         }
                     });
             switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleSentry(),

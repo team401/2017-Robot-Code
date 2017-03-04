@@ -188,9 +188,8 @@ public class Turret extends Subsystem {
     }
 
     public void extendHood(boolean extended) {
-        System.out.println("Turret is always extended!");
         if (state == TurretState.MANUAL || state == TurretState.SENTRY)
-            turretHood.set(true);
+            turretHood.set(extended);
     }
 
     public boolean isHoodExtended() {
