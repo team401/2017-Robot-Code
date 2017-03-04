@@ -19,8 +19,8 @@ class LoopManager {
 			loops.forEach {
 				try {
 					it.onLoop()
-				} catch (e: Exception) {
-					CrashTracker.logThrowableCrash(e)
+				} catch (t: Throwable) {
+					CrashTracker.logThrowableCrash(t)
 					println("Error in loop: $it")
 				}
 			}
@@ -42,8 +42,8 @@ class LoopManager {
 				loops.forEach {
 					try {
 						it.onStart()
-					} catch (e: Exception) {
-						CrashTracker.logThrowableCrash(e)
+					} catch (t: Throwable) {
+						CrashTracker.logThrowableCrash(t)
 						println("Error starting loop: $it")
 					}
 				}
@@ -62,8 +62,8 @@ class LoopManager {
 				loops.forEach {
 					try {
 						it.onStop()
-					} catch (e: Exception) {
-						CrashTracker.logThrowableCrash(e)
+					} catch (t: Throwable) {
+						CrashTracker.logThrowableCrash(t)
 						println("Error stopping loop: $it")
 					}
 				}

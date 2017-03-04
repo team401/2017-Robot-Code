@@ -61,19 +61,17 @@ object OctocanumDrive : Subsystem() {
      */
     var driveMode = DriveMode.MECANUM
 
-    private val driveLoop = object : Loop {
+    private val loop = object : Loop {
         override fun onStart() {
             setBrakeMode(false)
         }
 
         override fun onLoop() {
             when (controlState) {
-                DriveControlState.OPEN_LOOP ->
+                DriveControlState.OPEN_LOOP -> {}
                     // we dont really care
-                    return
-                DriveControlState.VELOCITY_SETPOINT ->
+                DriveControlState.VELOCITY_SETPOINT -> {}
                     // talons are updating the control loop state
-                    return
                 DriveControlState.VELOCITY_HEADING_CONTROL ->
                     updateVelocityHeadingSetpoint()
                 DriveControlState.PATH_FOLLOWING_CONTROL -> {
@@ -367,10 +365,9 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
         SmartDashboard.putData("gyro_diagram", gyro)
         SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
-        println("help me")
     }
 
-    override fun getSubsystemLoop(): Loop = driveLoop
+    override fun getSubsystemLoop(): Loop = loop
 
     /**
      * VelocityHeadingSetpoints are used to calculate the robot's path given the

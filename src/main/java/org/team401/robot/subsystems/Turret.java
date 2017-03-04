@@ -43,6 +43,10 @@ public class Turret extends Subsystem {
 
         @Override
         public void onLoop() {
+            if (state.compareTo(TurretState.MANUAL) > 0)
+                ledRing.set(true);
+            else
+                ledRing.set(false);
             run();
             printToSmartDashboard();
         }

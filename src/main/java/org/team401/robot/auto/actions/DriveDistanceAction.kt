@@ -11,7 +11,10 @@ class DriveDistanceAction(val distance: Double) : Action {
         leftDistance = OctocanumDrive.getLeftDistanceInches()
         rightDistance = OctocanumDrive.getRightDistanceInches()
 
-        OctocanumDrive.drive(.5, .5)
+        if (distance > 0)
+            OctocanumDrive.drive(.5, .5)
+        else
+            OctocanumDrive.drive(-.5, -.5)
     }
 
     override fun update() {
@@ -20,9 +23,9 @@ class DriveDistanceAction(val distance: Double) : Action {
 
     override fun isFinished(): Boolean {
         if (distance > 0)
-            return OctocanumDrive.getLeftDistanceInches() - leftDistance > distance || OctocanumDrive.getRightDistanceInches() - rightDistance > distance
+            return OctocanumDrive.getLeftDistanceInches() - leftDistance > distance && OctocanumDrive.getRightDistanceInches() - rightDistance > distance
         else
-            return OctocanumDrive.getLeftDistanceInches() - leftDistance < distance || OctocanumDrive.getRightDistanceInches() - rightDistance < distance
+            return OctocanumDrive.getLeftDistanceInches() - leftDistance < distance && OctocanumDrive.getRightDistanceInches() - rightDistance < distance
     }
 
     override fun end() {

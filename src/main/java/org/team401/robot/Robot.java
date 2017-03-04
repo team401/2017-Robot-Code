@@ -8,14 +8,13 @@ import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.AutoTestMode;
+import org.team401.robot.auto.modes.ForwardGearAuto;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
-import org.team401.vision.controller.preset.StreamOperations;
 
 public class Robot extends IterativeRobot {
 
@@ -58,7 +57,7 @@ public class Robot extends IterativeRobot {
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
-        /*switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
+            /*switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
                 () -> camera.switchCamera());*/
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
@@ -121,18 +120,19 @@ public class Robot extends IterativeRobot {
                     () -> {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
-                        if (turret.getCurrentState() == Turret.TurretState.MANUAL)
+                        if (turret.getCurrentState() == Turret.TurretState.AUTO ||
+                                turret.getCurrentState() == Turret.TurretState.MANUAL)
                             turret.setWantedState(Turret.TurretState.SENTRY);
                         else
                             turret.setWantedState(Turret.TurretState.MANUAL);
                     });
             // hopper
             loopManager = new LoopManager();
-            loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
             loopManager.register(Intake.INSTANCE.getSubsystemLoop());
             loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
             loopManager.register(getTurret().getSubsystemLoop());
             loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
+            loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
             OctocanumDrive.INSTANCE.init();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
@@ -145,7 +145,7 @@ public class Robot extends IterativeRobot {
             CrashTracker.INSTANCE.logAutoInit();
             loopManager.start();
             Strongback.restart();
-            autoExecutor = new AutoModeExecuter(new AutoTestMode());
+            autoExecutor = new AutoModeExecuter(new ForwardGearAuto());
             autoExecutor.start();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
@@ -182,8 +182,8 @@ public class Robot extends IterativeRobot {
                 OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
                         ControlBoard.INSTANCE.getDriveRotate());
             else
-                OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
-                        -ControlBoard.INSTANCE.getDriveRotate());
+                OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
+                        ControlBoard.INSTANCE.getDriveRotate());
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
@@ -195,6 +195,7 @@ public class Robot extends IterativeRobot {
             CrashTracker.INSTANCE.logDisabledInit();
             Strongback.disable();
             loopManager.stop();
+
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
