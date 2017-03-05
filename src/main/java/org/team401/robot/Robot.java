@@ -5,11 +5,14 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
+import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
+import org.team401.robot.auto.modes.DriveForwardMode;
 import org.team401.robot.auto.modes.ForwardGearAuto;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
@@ -22,6 +25,7 @@ import org.team401.vision.controller.preset.StreamOperations;
 public class Robot extends IterativeRobot {
 
     private Camera camera;
+    private SendableChooser<Auto> autoChooser;
 
     private AutoModeExecuter autoExecutor;
     private LoopManager loopManager;
@@ -29,6 +33,10 @@ public class Robot extends IterativeRobot {
     private static VisionDataStream visionDataStream = new VisionDataStream("10.4.1.17", 5801);
     private static VisionController visionController = new VisionController("10.4.1.17", 5803);
     private static Turret turret;
+
+    private enum Auto {
+        LEFT, CENTER, RIGHT
+    }
 
     //@Override
     public void robotInit() {
@@ -62,8 +70,6 @@ public class Robot extends IterativeRobot {
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
-                () -> StreamOperations.setGoalCameraStream(visionController));
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
                     () -> {
@@ -138,6 +144,14 @@ public class Robot extends IterativeRobot {
             loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
             loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
             OctocanumDrive.INSTANCE.init();
+
+            autoChooser = new SendableChooser<>();
+            autoChooser.addObject("Left Gear", Auto.LEFT);
+            autoChooser.addObject("Center Gear", Auto.CENTER);
+            autoChooser.addObject("Right Gear", Auto.RIGHT);
+            SmartDashboard.putData("Auto Chooser", autoChooser);
+
+            StreamOperations.setGoalCameraStream(visionController);
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
@@ -149,8 +163,20 @@ public class Robot extends IterativeRobot {
             CrashTracker.INSTANCE.logAutoInit();
             loopManager.start();
             Strongback.restart();
-            autoExecutor = new AutoModeExecuter(new ForwardGearAuto());
-            autoExecutor.start();
+            AutoMode mode;
+            switch (autoChooser.getSelected()) {
+                case LEFT:
+                    mode = new DriveForwardMode();
+                case CENTER:
+                    mode = new ForwardGearAuto();
+                case RIGHT:
+                    mode = new DriveForwardMode();
+                default: mode = null;
+            }
+            if (mode != null) {
+                autoExecutor = new AutoModeExecuter(mode);
+                autoExecutor.start();
+            }
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
