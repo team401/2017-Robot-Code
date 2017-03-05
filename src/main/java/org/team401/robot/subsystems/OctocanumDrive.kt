@@ -59,7 +59,7 @@ object OctocanumDrive : Subsystem() {
     /**
      * The current drive mode of the chassis
      */
-    var driveMode = DriveMode.MECANUM
+    var driveMode = DriveMode.TRACTION
 
     private val loop = object : Loop {
         override fun onStart() {
@@ -199,10 +199,10 @@ object OctocanumDrive : Subsystem() {
      */
     fun shift(driveMode: DriveMode) {
         if (driveMode == DriveMode.TRACTION && this.driveMode == DriveMode.MECANUM) {
-            shifter.set(true)
+            shifter.set(false)
             this.driveMode = DriveMode.TRACTION
         } else if (driveMode == DriveMode.MECANUM && this.driveMode == DriveMode.TRACTION) {
-            shifter.set(false)
+            shifter.set(true)
             this.driveMode = DriveMode.MECANUM
         }
     }

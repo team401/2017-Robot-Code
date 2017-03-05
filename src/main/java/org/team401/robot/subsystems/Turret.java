@@ -73,13 +73,13 @@ public class Turret extends Subsystem {
         flywheelSlave.setSafetyEnabled(false);
         flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
         flywheelSlave.set(flyWheelMaster.getDeviceID());
-        flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         flywheel.set(0);
         flywheel.reverseOutput(true);
         flywheel.reverseSensor(true);
+        flywheel.setInverted(true);
         flywheel.setSafetyEnabled(false);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
                 Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);

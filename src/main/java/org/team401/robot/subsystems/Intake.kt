@@ -38,11 +38,11 @@ object Intake : Subsystem() {
 					solenoid.set(true)
 				}
 				IntakeState.ENABLED -> {
-					targetVoltage = 0.5
+					targetVoltage = 1.0
 					solenoid.set(true)
 				}
 				IntakeState.CLIMBING -> {
-					targetVoltage = 0.8
+					targetVoltage = 1.0
 					solenoid.set(false)
 				}
 				else -> {

@@ -4,17 +4,13 @@ import org.team401.robot.subsystems.OctocanumDrive
 
 class DriveDistanceAction(val distance: Double) : Action {
 
-    var leftDistance = 0.0
-    var rightDistance = 0.0
-
     override fun start() {
-        leftDistance = OctocanumDrive.getLeftDistanceInches()
-        rightDistance = OctocanumDrive.getRightDistanceInches()
+        OctocanumDrive.resetEncoders()
 
         if (distance > 0)
-            OctocanumDrive.drive(.5, .5)
+            OctocanumDrive.drive(.6, .6)
         else
-            OctocanumDrive.drive(-.5, -.5)
+            OctocanumDrive.drive(-.6, -.7)
     }
 
     override fun update() {
@@ -23,9 +19,9 @@ class DriveDistanceAction(val distance: Double) : Action {
 
     override fun isFinished(): Boolean {
         if (distance > 0)
-            return OctocanumDrive.getLeftDistanceInches() - leftDistance > distance && OctocanumDrive.getRightDistanceInches() - rightDistance > distance
+            return OctocanumDrive.getLeftDistanceInches() > distance || OctocanumDrive.getRightDistanceInches() > distance
         else
-            return OctocanumDrive.getLeftDistanceInches() - leftDistance < distance && OctocanumDrive.getRightDistanceInches() - rightDistance < distance
+            return OctocanumDrive.getLeftDistanceInches() < distance || OctocanumDrive.getRightDistanceInches() < distance
     }
 
     override fun end() {

@@ -21,7 +21,7 @@ object ControlBoard {
     fun getToggleCamera() = right.getButton(Constants.BUTTON_SWITCH_CAMERA)
     fun getToggleGear() = right.getButton(Constants.BUTTON_GEAR)
     fun getIntakeDrop() = right.getButton(Constants.BUTTON_ARM_DROP)
-    fun getToggleIntake() = right.getButton(Constants.BUTTON_TOGGLE_INTAKE)
+    fun getToggleIntake() = mash.getButton(12)
 
     // controls turret
     fun getShootFuel() = mash.getButton(Constants.BUTTON_SHOOT_FUEL)
@@ -29,7 +29,7 @@ object ControlBoard {
     fun getToggleAuto() = mash.getButton(Constants.BUTTON_TOGGLE_AUTO)
     fun getToggleHood() = mash.getButton(Constants.BUTTON_TOGGLE_HOOD)
     fun getToggleTower() = mash.getButton(Constants.BUTTON_EXTEND_TOWER)
-    fun getClimb() = right.getButton(Constants.BUTTON_CLIMB)
+    fun getClimb() = mash.getButton(Constants.BUTTON_CLIMB)
 
     fun getTurretYaw() = mash.yaw.read()
     fun getTurretThrottle() = mash.throttle.invert().read()

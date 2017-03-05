@@ -13,13 +13,13 @@ object Constants {
     const val GEARBOX_REAR_RIGHT    = 3
 
     // solenoid ids (module 1)
-    const val GEARBOX_SHIFTER       = 4 // 0
-    const val TURRET_HOOD           = 3 // 1
-    const val ARM_EXTENDER          = 1 // 3
-    const val GEAR_HOLDER           = 0 // 4
-    const val TOWER_SHIFTER         = 2
+    const val GEARBOX_SHIFTER       = 0
+    const val TURRET_HOOD           = 1
+    const val ARM_EXTENDER          = 2
+    const val GEAR_HOLDER           = 4
+    const val TOWER_SHIFTER         = 3
     const val COMPRESSOR_FAN        = 5
-    const val TURRET_LED_RING       = 6
+    const val TURRET_LED_RING       = 7
 
     // can device ids
     const val PDP                   = 0
@@ -42,10 +42,10 @@ object Constants {
     // pwm motor ports
     const val INTAKE_1              = 9
     const val INTAKE_2              = 7
-    const val HOPPER_BOTTOM         = 0
+    const val HOPPER_BOTTOM         = 8
 
     const val HOPPER_RAMP_RATE      = 8
-    const val INTAKE_RAMP_RATE      = 2
+    const val INTAKE_RAMP_RATE      = 8
 
     // joystick ids
     const val DRIVE_JOYSTICK_LEFT   = 0

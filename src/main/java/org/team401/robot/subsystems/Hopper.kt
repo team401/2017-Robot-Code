@@ -13,7 +13,7 @@ object Hopper : Subsystem() {
     }
     private var state = HopperState.OFF
 
-    private val motor = Hardware.Motors.victorSP(Constants.HOPPER_BOTTOM).invert()
+    private val motor = Hardware.Motors.victorSP(Constants.HOPPER_BOTTOM)
     private var currentVoltage = 0.0
     private var targetVoltage = 0.0
     private val rampRate = Constants.HOPPER_RAMP_RATE * Constants.LOOP_PERIOD

@@ -1,6 +1,7 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -8,6 +9,7 @@ import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.auto.modes.ForwardGearAuto;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
@@ -15,6 +17,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
+import org.team401.vision.controller.preset.StreamOperations;
 
 public class Robot extends IterativeRobot {
 
@@ -46,6 +49,7 @@ public class Robot extends IterativeRobot {
                     new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing);
 
             //camera = new Camera(640, 480, 10);
+            CameraServer.getInstance().startAutomaticCapture();
 
             SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -53,12 +57,13 @@ public class Robot extends IterativeRobot {
             switchReactor.onTriggered(ControlBoard.INSTANCE.getShift(),
                     () -> OctocanumDrive.INSTANCE.shift());
             switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHeading(),
+
                     () -> OctocanumDrive.INSTANCE.setNewHeadingSetpoint());
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
-            /*switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
-                () -> camera.switchCamera());*/
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
+                () -> StreamOperations.setGoalCameraStream(visionController));
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
                     () -> {
@@ -75,11 +80,11 @@ public class Robot extends IterativeRobot {
                             Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
                     });
             // climbing
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getClimb(),
+            switchReactor.onUntriggered(ControlBoard.INSTANCE.getClimb(),
                     () -> {
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
                     });
-            switchReactor.onUntriggered(ControlBoard.INSTANCE.getClimb(),
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getClimb(),
                     () -> {
                         Intake.INSTANCE.setWantedState(Intake.IntakeState.CLIMBING);
                     });
