@@ -12,6 +12,7 @@ import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.auto.modes.DriveForwardMode;
 import org.team401.robot.auto.modes.ForwardGearAuto;
 import org.team401.robot.camera.Camera;
@@ -35,7 +36,7 @@ public class Robot extends IterativeRobot {
     private static Turret turret;
 
     private enum Auto {
-        LEFT, CENTER, RIGHT
+        LEFT, CENTER, RIGHT, NONE
     }
 
     //@Override
@@ -171,7 +172,10 @@ public class Robot extends IterativeRobot {
                     mode = new ForwardGearAuto();
                 case RIGHT:
                     mode = new DriveForwardMode();
-                default: mode = null;
+                case NONE:
+                    mode = new CalibrateTurretMode();
+                default:
+                    mode = new DriveForwardMode();
             }
             if (mode != null) {
                 autoExecutor = new AutoModeExecuter(mode);
@@ -212,7 +216,7 @@ public class Robot extends IterativeRobot {
                 OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
                         ControlBoard.INSTANCE.getDriveRotate());
             else
-                OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
+                OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
                         ControlBoard.INSTANCE.getDriveRotate());
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);

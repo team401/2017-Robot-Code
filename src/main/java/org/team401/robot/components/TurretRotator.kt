@@ -11,7 +11,7 @@ class TurretRotator(private val rotator: CANTalon) {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
         rotator.set(0.0)
-        rotator.reverseSensor(false)
+        rotator.reverseOutput(true)
         rotator.configPeakOutputVoltage(2.0, -2.0)
         //rotator.configNominalOutputVoltage(1.25, -1.25)
         rotator.setAllowableClosedLoopErr(1)

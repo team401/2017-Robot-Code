@@ -1,27 +1,36 @@
 package org.team401.robot.auto.actions
 
+import org.team401.robot.auto.AutoMode
 import org.team401.robot.subsystems.OctocanumDrive
 
 class DriveDistanceAction(val distance: Double) : Action {
+
+    var timer = 0.0
+    val power = 0.6
 
     override fun start() {
         OctocanumDrive.resetEncoders()
 
         if (distance > 0)
-            OctocanumDrive.drive(.6, .6)
+            OctocanumDrive.drive(power, power)
         else
-            OctocanumDrive.drive(-.6, -.7)
+            OctocanumDrive.drive(-power, -power)
     }
 
     override fun update() {
-
+        timer+=1/50.0
+        val angle = OctocanumDrive.getGyroAngle().degrees
+        if (distance > 0)
+            OctocanumDrive.drive(power - angle*.005, power + angle*.005)
+        else
+            OctocanumDrive.drive(-(power + angle*.005), -(power - angle*.005))
     }
 
     override fun isFinished(): Boolean {
         if (distance > 0)
-            return OctocanumDrive.getLeftDistanceInches() > distance || OctocanumDrive.getRightDistanceInches() > distance
+            return OctocanumDrive.getLeftDistanceInches() > distance || OctocanumDrive.getRightDistanceInches() > distance || timer > 6.0
         else
-            return OctocanumDrive.getLeftDistanceInches() < distance || OctocanumDrive.getRightDistanceInches() < distance
+            return OctocanumDrive.getLeftDistanceInches() < distance || OctocanumDrive.getRightDistanceInches() < distance || timer > 6.0
     }
 
     override fun end() {
