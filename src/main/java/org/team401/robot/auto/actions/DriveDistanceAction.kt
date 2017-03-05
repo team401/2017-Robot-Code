@@ -1,12 +1,10 @@
 package org.team401.robot.auto.actions
 
-import org.team401.robot.auto.AutoMode
 import org.team401.robot.subsystems.OctocanumDrive
 
-class DriveDistanceAction(val distance: Double) : Action {
+class DriveDistanceAction(val distance: Double, val power: Double = 0.5) : Action {
 
     var timer = 0.0
-    val power = 0.6
 
     override fun start() {
         OctocanumDrive.resetEncoders()

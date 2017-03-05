@@ -13,6 +13,7 @@ import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.modes.CalibrateTurretMode;
+import org.team401.robot.auto.modes.DoNothingMode;
 import org.team401.robot.auto.modes.DriveForwardMode;
 import org.team401.robot.auto.modes.ForwardGearAuto;
 import org.team401.robot.camera.Camera;
@@ -150,6 +151,7 @@ public class Robot extends IterativeRobot {
             autoChooser.addObject("Left Gear", Auto.LEFT);
             autoChooser.addObject("Center Gear", Auto.CENTER);
             autoChooser.addObject("Right Gear", Auto.RIGHT);
+            autoChooser.addObject("None", Auto.NONE);
             SmartDashboard.putData("Auto Chooser", autoChooser);
 
             StreamOperations.setGoalCameraStream(visionController);
@@ -168,19 +170,21 @@ public class Robot extends IterativeRobot {
             switch (autoChooser.getSelected()) {
                 case LEFT:
                     mode = new DriveForwardMode();
+                    break;
                 case CENTER:
                     mode = new ForwardGearAuto();
+                    break;
                 case RIGHT:
                     mode = new DriveForwardMode();
+                    break;
                 case NONE:
-                    mode = new CalibrateTurretMode();
+                    mode = new DoNothingMode();
+                    break;
                 default:
-                    mode = new DriveForwardMode();
+                    mode = new DoNothingMode();
             }
-            if (mode != null) {
-                autoExecutor = new AutoModeExecuter(mode);
-                autoExecutor.start();
-            }
+            autoExecutor = new AutoModeExecuter(mode);
+            autoExecutor.start();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

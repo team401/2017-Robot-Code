@@ -5,11 +5,11 @@ import org.team401.robot.subsystems.OctocanumDrive
 class RotateAction(val heading: Double) : Action {
 
     override fun start() {
-        val currentHeading = OctocanumDrive.gyro?.angle ?: 0.0
-        if (currentHeading + heading < currentHeading)
-            OctocanumDrive.drive(0.0, 0.0, -.4)
+        OctocanumDrive.gyro?.reset()
+        if (heading > 0)
+            OctocanumDrive.drive(0.0, 0.0, .2)
         else
-            OctocanumDrive.drive(0.0, 0.0, .4)
+            OctocanumDrive.drive(0.0, 0.0, -.2)
     }
 
     override fun update() {
@@ -17,7 +17,7 @@ class RotateAction(val heading: Double) : Action {
     }
 
     override fun isFinished(): Boolean {
-        return Math.abs(OctocanumDrive.gyro?.angle ?: 0.0 - heading) < 5
+        return Math.abs(OctocanumDrive.getGyroAngle().degrees - heading) < 1
     }
 
     override fun end() {

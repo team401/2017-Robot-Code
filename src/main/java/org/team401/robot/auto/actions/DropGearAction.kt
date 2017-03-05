@@ -8,6 +8,15 @@ class DropGearAction(val duration: Double) : Action {
 
     override fun start() {
         GearHolder.setWantedState(GearHolder.GearHolderState.OPEN)
+        Thread {
+            while (true) {
+                update()
+                if (timer > duration) {
+                    GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
+                    break
+                }
+            }
+        }
     }
 
     override fun update() {
@@ -15,10 +24,10 @@ class DropGearAction(val duration: Double) : Action {
     }
 
     override fun isFinished(): Boolean {
-        return timer >= duration
+        return true
     }
 
     override fun end() {
-        GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
+
     }
 }
