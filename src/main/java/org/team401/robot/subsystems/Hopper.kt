@@ -9,7 +9,7 @@ import org.team401.robot.loops.Loop
 object Hopper : Subsystem() {
 
     enum class HopperState {
-        OFF, ON
+        OFF, ON, INVERTED
     }
     private var state = HopperState.OFF
 
@@ -26,7 +26,7 @@ object Hopper : Subsystem() {
         override fun onLoop() {
             if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Robot.getTurret().isFiring)
                 setWantedState(HopperState.ON)
-            else
+            else if (state != HopperState.INVERTED)
                 setWantedState(HopperState.OFF)
 
             when (state) {
@@ -34,6 +34,8 @@ object Hopper : Subsystem() {
                     targetVoltage = 0.0
                 HopperState.ON ->
                     targetVoltage = 0.7
+                HopperState.INVERTED ->
+                    targetVoltage = -0.7
                 else ->
                     println("Invalid hopper state $state")
             }
@@ -60,6 +62,8 @@ object Hopper : Subsystem() {
         if (Math.abs(targetVoltage-currentVoltage) < 4*rampRate)
             currentVoltage = targetVoltage
     }
+
+    fun getCurrentState() = state
 
     override fun getSubsystemLoop(): Loop = loop
 

@@ -45,7 +45,7 @@ public class Robot extends IterativeRobot {
         CrashTracker.INSTANCE.logRobotInit();
         try {
             visionDataStream.start();
-            visionController.start();
+            //visionController.start();
 
             Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
             compressorFan.set(true);
@@ -59,7 +59,6 @@ public class Robot extends IterativeRobot {
                     new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing);
 
             //camera = new Camera(640, 480, 10);
-            CameraServer.getInstance().startAutomaticCapture();
 
             SwitchReactor switchReactor = Strongback.switchReactor();
 
@@ -72,6 +71,10 @@ public class Robot extends IterativeRobot {
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
+            /*switchReactor.onTriggered(ControlBoard.INSTANCE.getGoalCamera(),
+                    () -> StreamOperations.setActiveCameraGoal(visionController));
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getGearCamera(),
+                    () -> StreamOperations.setActiveCameraGear(visionController));*/
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
                     () -> {
@@ -86,6 +89,13 @@ public class Robot extends IterativeRobot {
                             Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
                         else
                             Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
+                    });
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getInverseHopper(),
+                    () -> {
+                        if (Hopper.INSTANCE.getCurrentState() != Hopper.HopperState.INVERTED)
+                            Hopper.INSTANCE.setWantedState(Hopper.HopperState.INVERTED);
+                        else
+                            Hopper.INSTANCE.setWantedState(Hopper.HopperState.OFF);
                     });
             // climbing
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getClimb(),
@@ -154,7 +164,8 @@ public class Robot extends IterativeRobot {
             autoChooser.addObject("None", Auto.NONE);
             SmartDashboard.putData("Auto Chooser", autoChooser);
 
-            StreamOperations.setGoalCameraStream(visionController);
+            //StreamOperations.setGearCameraStream(visionController);
+            //StreamOperations.setGoalCameraStream(visionController);
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

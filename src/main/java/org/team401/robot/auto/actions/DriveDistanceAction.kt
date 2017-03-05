@@ -19,9 +19,9 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5) : Actio
         timer+=1/50.0
         val angle = OctocanumDrive.getGyroAngle().degrees
         if (distance > 0)
-            OctocanumDrive.drive(power - angle*.005, power + angle*.005)
+            OctocanumDrive.drive(power - angle*.008, power + angle*.008)
         else
-            OctocanumDrive.drive(-(power + angle*.005), -(power - angle*.005))
+            OctocanumDrive.drive(-(power + angle*.008), -(power - angle*.008))
     }
 
     override fun isFinished(): Boolean {

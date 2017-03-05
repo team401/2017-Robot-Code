@@ -16,9 +16,11 @@ object ControlBoard {
     // controls left
     fun getShift() = left.getButton(Constants.BUTTON_SHIFT)
     fun getToggleHeading() = left.getButton(Constants.BUTTON_TOGGLE_HEADING)
+    fun getGoalCamera() = left.getButton(4)
+    fun getGearCamera() = right.getButton(4)
 
     // controls right
-    fun getToggleCamera() = right.getButton(Constants.BUTTON_SWITCH_CAMERA)
+    fun getInverseHopper() = right.getButton(Constants.BUTTON_INVERSE_HOPPER)
     fun getToggleGear() = right.getButton(Constants.BUTTON_GEAR)
     fun getIntakeDrop() = right.getButton(Constants.BUTTON_ARM_DROP)
     fun getToggleIntake() = mash.getButton(12)

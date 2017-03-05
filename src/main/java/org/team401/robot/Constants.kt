@@ -57,7 +57,7 @@ object Constants {
     const val BUTTON_TOGGLE_HEADING = 2
     const val BUTTON_ENABLE_GYRO    = 3
     // right drive joystick
-    const val BUTTON_SWITCH_CAMERA  = 2
+    const val BUTTON_INVERSE_HOPPER = 2
     const val BUTTON_ARM_DROP       = 3
     const val BUTTON_TOGGLE_INTAKE  = 4
     const val BUTTON_GEAR           = 1
