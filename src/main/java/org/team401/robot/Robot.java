@@ -12,7 +12,6 @@ import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.auto.modes.DoNothingMode;
 import org.team401.robot.auto.modes.DriveForwardMode;
 import org.team401.robot.auto.modes.ForwardGearAuto;
@@ -22,7 +21,6 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
-import org.team401.vision.controller.preset.StreamOperations;
 
 public class Robot extends IterativeRobot {
 
@@ -45,7 +43,7 @@ public class Robot extends IterativeRobot {
         CrashTracker.INSTANCE.logRobotInit();
         try {
             visionDataStream.start();
-            //visionController.start();
+            visionController.start();
 
             Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
             compressorFan.set(true);
@@ -71,10 +69,8 @@ public class Robot extends IterativeRobot {
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
-            /*switchReactor.onTriggered(ControlBoard.INSTANCE.getGoalCamera(),
-                    () -> StreamOperations.setActiveCameraGoal(visionController));
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getGearCamera(),
-                    () -> StreamOperations.setActiveCameraGear(visionController));*/
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getGoalCamera(),
+                    () -> visionController.toggleActiveCamera());
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
                     () -> {
@@ -132,9 +128,10 @@ public class Robot extends IterativeRobot {
                     () -> {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
-                        if (turret.getCurrentState() != Turret.TurretState.AUTO)
+                        if (turret.getCurrentState() != Turret.TurretState.AUTO) {
+                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
                             turret.setWantedState(Turret.TurretState.AUTO);
-                        else {
+                        } else {
                             turret.setWantedState(Turret.TurretState.SENTRY);
                         }
                     });
@@ -143,10 +140,13 @@ public class Robot extends IterativeRobot {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
                         if (turret.getCurrentState() == Turret.TurretState.AUTO ||
-                                turret.getCurrentState() == Turret.TurretState.MANUAL)
+                                turret.getCurrentState() == Turret.TurretState.MANUAL) {
+                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
                             turret.setWantedState(Turret.TurretState.SENTRY);
-                        else
+                        } else {
+                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
                             turret.setWantedState(Turret.TurretState.MANUAL);
+                        }
                     });
             // hopper
             loopManager = new LoopManager();
@@ -164,8 +164,8 @@ public class Robot extends IterativeRobot {
             autoChooser.addObject("None", Auto.NONE);
             SmartDashboard.putData("Auto Chooser", autoChooser);
 
-            //StreamOperations.setGearCameraStream(visionController);
-            //StreamOperations.setGoalCameraStream(visionController);
+            visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
+            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
@@ -227,12 +227,8 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         try {
             // drive the robot, mode specific drive code is in the OctocanumDrive class
-            if (!ControlBoard.INSTANCE.getLeftDriveJoystick().getButton(5).isTriggered())
-                OctocanumDrive.INSTANCE.drive(ControlBoard.INSTANCE.getDrivePitch(), ControlBoard.INSTANCE.getDriveStrafe(),
-                        ControlBoard.INSTANCE.getDriveRotate());
-            else
-                OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
-                        ControlBoard.INSTANCE.getDriveRotate());
+            OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
+                    ControlBoard.INSTANCE.getDriveRotate());
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

@@ -28,12 +28,8 @@ abstract class AutoMode {
     fun runAction(action: Action) {
         action.start()
         while (!action.isFinished()) {
-            try {
-                action.update()
-                Thread.sleep((updateRate * 1000.0).toLong())
-            } catch (e: Throwable) {
-                CrashTracker.logThrowableCrash(e)
-            }
+            action.update()
+            Thread.sleep((updateRate * 1000.0).toLong())
         }
         action.end()
     }
