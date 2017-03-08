@@ -10,7 +10,7 @@ import org.team401.robot.Constants
 import org.team401.robot.subsystems.OctocanumDrive
 
 
-class FollowWaypointAction(waypoints: Array<Waypoint>) : Action {
+class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
 
     val left: EncoderFollower
     val right: EncoderFollower

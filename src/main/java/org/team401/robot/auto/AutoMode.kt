@@ -1,11 +1,10 @@
 package org.team401.robot.auto
 
 import org.team401.lib.CrashTracker
+import org.team401.robot.Constants
 import org.team401.robot.auto.actions.Action
 
 abstract class AutoMode {
-
-    val updateRate = 1.0 / 50
 
     abstract fun routine()
 
@@ -29,7 +28,9 @@ abstract class AutoMode {
         action.start()
         while (!action.isFinished()) {
             action.update()
-            Thread.sleep((updateRate * 1000.0).toLong())
+            Thread.sleep((Constants.ACTION_PERIOD * 1000.0).toLong())
+            if (action.isTimedOut())
+                return action.interrupted()
         }
         action.end()
     }

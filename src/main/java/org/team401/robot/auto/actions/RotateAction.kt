@@ -2,7 +2,7 @@ package org.team401.robot.auto.actions
 
 import org.team401.robot.subsystems.OctocanumDrive
 
-class RotateAction(val heading: Double) : Action {
+class RotateAction(val heading: Double, timeout: Double = 5.0) : Action(timeout) {
 
     override fun start() {
         OctocanumDrive.gyro?.reset()

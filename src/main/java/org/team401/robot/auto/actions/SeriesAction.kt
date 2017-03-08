@@ -1,6 +1,6 @@
 package org.team401.robot.auto.actions
 
-class SeriesAction(val actions: MutableList<Action>) : Action {
+class SeriesAction(val actions: MutableList<Action>) : Action() {
 
     var currentAction: Action? = null
 
@@ -12,7 +12,7 @@ class SeriesAction(val actions: MutableList<Action>) : Action {
             currentAction?.start()
         }
         currentAction?.update()
-        if ((currentAction as Action).isFinished()) {
+        if ((currentAction as Action).isFinished() || (currentAction as Action).isTimedOut()) {
             currentAction?.end()
             currentAction = null
         }

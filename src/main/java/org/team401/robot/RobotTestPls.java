@@ -1,9 +1,7 @@
 package org.team401.robot;
 
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.strongback.components.ui.FlightStick;
 
 public class RobotTestPls /*extends IterativeRobot*/ {
 
@@ -15,7 +13,7 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
 		feeder = new CANTalon(Constants.TURRET_FEEDER);
 
-		flywheel = new CANTalon(Constants.TURRET_SHOOTER_MASTER);
+		flywheel = new CANTalon(Constants.TURRET_FLYWHEEL_MASTER);
 		flywheel.changeControlMode(CANTalon.TalonControlMode.Speed);
 		flywheel.reverseSensor(true);
 		flywheel.reverseOutput(true);
@@ -24,10 +22,10 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 		flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
 
-		CANTalon slave = new CANTalon(Constants.TURRET_SHOOTER_SLAVE);
+		CANTalon slave = new CANTalon(Constants.TURRET_FLYWHEEL_SLAVE);
 		slave.setInverted(true);
 		slave.changeControlMode(CANTalon.TalonControlMode.Follower);
-		slave.set(Constants.TURRET_SHOOTER_MASTER);
+		slave.set(Constants.TURRET_FLYWHEEL_MASTER);
 
 
 	}

@@ -1,28 +1,30 @@
 package org.team401.robot.auto.actions
 
-class ParallelAction(val actions: List<Action>) : Action {
+import java.util.*
+
+class ParallelAction(val actions: MutableList<Action>) : Action() {
+
+    private val toRemove = ArrayList<Action>()
 
     override fun start() {
         actions.forEach { it.start() }
     }
 
     override fun update() {
-        actions
-                .filter { !it.isFinished() }
-                .forEach { it.update() }
+        actions.forEach { it.update() }
     }
 
     override fun isFinished(): Boolean {
-        var all_finished = true
-        for (action in actions) {
-            if (!action.isFinished()) {
-                all_finished = false
-            }
-        }
-        return all_finished
-    }
+        actions
+                .filter { it.isFinished() || it.isTimedOut() }
+                .forEach { toRemove.add(it) }
 
-    override fun end() {
-        actions.forEach { it.end() }
+        toRemove.forEach {
+            it.end()
+            actions.remove(it)
+        }
+        toRemove.clear()
+
+        return actions.isEmpty()
     }
 }

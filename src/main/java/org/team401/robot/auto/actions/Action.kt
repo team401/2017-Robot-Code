@@ -1,29 +1,47 @@
 package org.team401.robot.auto.actions
 
+import org.team401.robot.Constants
+
 /**
  * Any kind of one-time action or iterative action that can be preformed
  * during auto. ex. Moving the robot forward, turning the turret...
  */
-interface Action {
+abstract class Action(val timeout: Double = 0.0) {
+
+    var timeoutCounter = 0.0
 
     /**
      * Called once when the action starts, basically setup for the action
      * or for a single action
      */
-    fun start()
+    abstract fun start()
 
     /**
      * Update the action state.
      */
-    fun update()
+    abstract fun update()
 
     /**
      * Check if the action is finished.
      */
-    fun isFinished(): Boolean
+    abstract fun isFinished(): Boolean
 
     /**
      * Preform a one-time cleanup
      */
-    fun end()
+    open fun end() {}
+
+    /**
+     * Called when the action is interrupted
+     */
+    open fun interrupted() {
+        println("Action took too long to finish!")
+    }
+
+    fun isTimedOut(): Boolean {
+        if (timeout <= 0.0)
+            return false
+        timeoutCounter += Constants.ACTION_PERIOD
+        return timeoutCounter > timeout
+    }
 }

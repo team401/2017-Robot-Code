@@ -34,8 +34,8 @@ object Constants {
     const val REAR_RIGHT_MASTER     = 7
     const val REAR_RIGHT_SLAVE      = 8
     // can device ids for the turret
-    const val TURRET_SHOOTER_SLAVE  = 9
-    const val TURRET_SHOOTER_MASTER = 10
+    const val TURRET_FLYWHEEL_SLAVE = 9
+    const val TURRET_FLYWHEEL_MASTER = 10
     const val TURRET_FEEDER         = 11
     const val TURRET_ROTATOR        = 12
 
@@ -44,8 +44,8 @@ object Constants {
     const val INTAKE_2              = 7
     const val HOPPER_BOTTOM         = 8
 
-    const val HOPPER_RAMP_RATE      = 8
-    const val INTAKE_RAMP_RATE      = 8
+    const val HOPPER_RAMP_RATE      = 6
+    const val INTAKE_RAMP_RATE      = 12
 
     // joystick ids
     const val DRIVE_JOYSTICK_LEFT   = 0
@@ -105,6 +105,7 @@ object Constants {
     const val GYRO_HEADING_VEL_I    = 0.0
     const val GYRO_HEADING_VEL_D    = 50.0
 
-    const val LOOP_PERIOD           = 0.001
+    const val LOOP_PERIOD           = 1.0 / 100
+    const val ACTION_PERIOD         = 1.0 / 100
 
 }

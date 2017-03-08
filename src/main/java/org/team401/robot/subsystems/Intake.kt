@@ -31,10 +31,12 @@ object Intake : Subsystem() {
 			when (state) {
 				IntakeState.ARM_UP -> {
 					targetVoltage = 0.0
+					currentVoltage = 0.0
 					solenoid.set(false)
 				}
 				IntakeState.ARM_DOWN -> {
 					targetVoltage = 0.0
+					currentVoltage = 0.0
 					solenoid.set(true)
 				}
 				IntakeState.ENABLED -> {

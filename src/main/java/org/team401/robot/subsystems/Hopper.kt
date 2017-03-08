@@ -24,20 +24,24 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Robot.getTurret().isFiring)
+            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isFiring)
                 setWantedState(HopperState.ON)
             else if (state != HopperState.INVERTED)
                 setWantedState(HopperState.OFF)
 
             when (state) {
-                HopperState.OFF ->
+                HopperState.OFF -> {
                     targetVoltage = 0.0
+                    currentVoltage = 0.0
+                }
                 HopperState.ON ->
-                    targetVoltage = 0.7
+                    targetVoltage = 0.8
                 HopperState.INVERTED ->
-                    targetVoltage = -0.7
-                else ->
+                    targetVoltage = -0.8
+                else -> {
                     println("Invalid hopper state $state")
+                    state = HopperState.OFF
+                }
             }
 
             updateVoltageRamping()
@@ -58,7 +62,7 @@ object Hopper : Subsystem() {
         if (targetVoltage > currentVoltage)
             currentVoltage += rampRate
         else
-            currentVoltage = targetVoltage
+            currentVoltage -= rampRate
         if (Math.abs(targetVoltage-currentVoltage) < 4*rampRate)
             currentVoltage = targetVoltage
     }

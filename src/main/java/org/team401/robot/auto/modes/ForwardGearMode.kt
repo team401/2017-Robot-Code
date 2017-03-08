@@ -7,7 +7,7 @@ import org.team401.robot.subsystems.GearHolder
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
-class ForwardGearAuto : AutoMode() {
+class ForwardGearMode : AutoMode() {
 
     override fun routine() {
         runAction(CalibrateTurretAction(Turret.TurretState.AUTO))

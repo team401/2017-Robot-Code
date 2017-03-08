@@ -11,6 +11,6 @@ class CalibrateTurretMode : AutoMode() {
     override fun routine() {
         GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        runAction(CalibrateTurretAction(Turret.TurretState.AUTO))
+        runAction(CalibrateTurretAction(Turret.TurretState.MANUAL))
     }
 }

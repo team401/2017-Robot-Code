@@ -1,11 +1,9 @@
 package org.team401.robot.subsystems;
 
 import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.jetbrains.annotations.NotNull;
-import org.strongback.components.Switch;
-import org.strongback.components.ui.ContinuousRange;
 import org.team401.robot.Constants;
 import org.team401.robot.ControlBoard;
 import org.team401.robot.Robot;
@@ -13,6 +11,7 @@ import org.team401.robot.components.TurretRotator;
 import org.team401.robot.loops.Loop;
 import org.team401.robot.math.MathUtils;
 import org.team401.robot.sensors.DistanceSensor;
+import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionData;
 
 public class Turret extends Subsystem {
@@ -20,6 +19,11 @@ public class Turret extends Subsystem {
     public enum TurretState {
         DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
     }
+
+    private static Turret instance = new Turret(new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3),
+            new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_FLYWHEEL_MASTER),
+            new CANTalon(Constants.TURRET_FLYWHEEL_SLAVE), new CANTalon(Constants.TURRET_FEEDER),
+            new Solenoid(Constants.TURRET_HOOD), new Solenoid(Constants.TURRET_LED_RING));
 
     private TurretState state = TurretState.DISABLED;
 
@@ -58,7 +62,7 @@ public class Turret extends Subsystem {
         }
     };
 
-    public Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMaster,
+    private Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon flyWheelMaster,
                   CANTalon flywheelSlave, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing) {
         turretRotator = new TurretRotator(turretSpinner);
         latestData = new VisionData(0, 0, 0);
@@ -68,6 +72,8 @@ public class Turret extends Subsystem {
 
         turretHood.set(true);
         ledRing.set(false);
+        if (distanceSensor instanceof Lidar)
+            ((Lidar) distanceSensor).start();
 
         this.flywheelSlave = flywheelSlave;
         flywheelSlave.setSafetyEnabled(false);
@@ -94,11 +100,11 @@ public class Turret extends Subsystem {
      * @return true if were looking directly at the turret
      */
     private boolean track() {
-        if (Math.abs(latestData.getYaw()) < 1) {
+        if (Math.abs(latestData.getYaw()) < 2) {
             turretRotator.stop();
             return true;
         }
-        turretRotator.addDegrees(-latestData.getYaw()*.75);
+        turretRotator.addDegrees(-latestData.getYaw()*.85);
         return false;
     }
 
@@ -136,13 +142,13 @@ public class Turret extends Subsystem {
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
             if (Math.abs(turnSpeed) > .5)
                 if (turnSpeed > 0) {
-                    if (turnSpeed > .8)
-                        turretRotator.addDegrees(3);
+                    if (turnSpeed > .95)
+                        turretRotator.addDegrees(4);
                     else
                         turretRotator.addDegrees(1);
                 } else {
-                    if (turnSpeed < -.8)
-                        turretRotator.addDegrees(-3);
+                    if (turnSpeed < -.95)
+                        turretRotator.addDegrees(-4);
                     else
                         turretRotator.addDegrees(-1);
                 }
@@ -214,7 +220,9 @@ public class Turret extends Subsystem {
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", (int) turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getError());
-        SmartDashboard.putNumber("goal_distance", (int) distanceSensor.getDistance());
+        SmartDashboard.putNumber("vision_distance", latestData.getDistance());
+        SmartDashboard.putNumber("vision_error", latestData.getYaw());
+        SmartDashboard.putNumber("lidar_distance", (int) distanceSensor.getDistance());
         SmartDashboard.putBoolean("valid_vision_data", latestData.isValid());
         SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget());
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get());
@@ -226,6 +234,10 @@ public class Turret extends Subsystem {
 
     public Loop getSubsystemLoop() {
         return loop;
+    }
+
+    public static Turret getInstance() {
+        return instance;
     }
 }
 

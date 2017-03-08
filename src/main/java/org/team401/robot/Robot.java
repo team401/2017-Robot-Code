@@ -1,8 +1,5 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,13 +9,13 @@ import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.DoNothingMode;
-import org.team401.robot.auto.modes.DriveForwardMode;
-import org.team401.robot.auto.modes.ForwardGearAuto;
+import org.team401.robot.auto.modes.CalibrateTurretMode;
+import org.team401.robot.auto.modes.ForwardGearMode;
+import org.team401.robot.auto.modes.LeftGearMode;
+import org.team401.robot.auto.modes.RightGearMode;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
-import org.team401.robot.sensors.Lidar;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
@@ -48,14 +45,7 @@ public class Robot extends IterativeRobot {
             Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
             compressorFan.set(true);
 
-            // turret stuff
-            Solenoid turretHood = new Solenoid(Constants.TURRET_HOOD);
-            Solenoid ledRing = new Solenoid(Constants.TURRET_LED_RING);
-            Lidar lidar = new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3);
-            lidar.start();
-            turret = new Turret(lidar, new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_SHOOTER_MASTER),
-                    new CANTalon(Constants.TURRET_SHOOTER_SLAVE), new CANTalon(Constants.TURRET_FEEDER), turretHood, ledRing);
-
+            turret = Turret.getInstance();
             //camera = new Camera(640, 480, 10);
 
             SwitchReactor switchReactor = Strongback.switchReactor();
@@ -152,7 +142,7 @@ public class Robot extends IterativeRobot {
             loopManager = new LoopManager();
             loopManager.register(Intake.INSTANCE.getSubsystemLoop());
             loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
-            loopManager.register(getTurret().getSubsystemLoop());
+            loopManager.register(turret.getSubsystemLoop());
             loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
             loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
             OctocanumDrive.INSTANCE.init();
@@ -180,19 +170,19 @@ public class Robot extends IterativeRobot {
             AutoMode mode;
             switch (autoChooser.getSelected()) {
                 case LEFT:
-                    mode = new DriveForwardMode();
+                    mode = new LeftGearMode();
                     break;
                 case CENTER:
-                    mode = new ForwardGearAuto();
+                    mode = new ForwardGearMode();
                     break;
                 case RIGHT:
-                    mode = new DriveForwardMode();
+                    mode = new RightGearMode();
                     break;
                 case NONE:
-                    mode = new DoNothingMode();
+                    mode = new CalibrateTurretMode();
                     break;
                 default:
-                    mode = new DoNothingMode();
+                    mode = new CalibrateTurretMode();
             }
             autoExecutor = new AutoModeExecuter(mode);
             autoExecutor.start();
@@ -256,9 +246,5 @@ public class Robot extends IterativeRobot {
 
     public static VisionController getVisionController() {
         return visionController;
-    }
-
-    public static Turret getTurret() {
-        return turret;
     }
 }

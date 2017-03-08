@@ -13,7 +13,6 @@ class TurretRotator(private val rotator: CANTalon) {
         rotator.set(0.0)
         rotator.reverseOutput(true)
         rotator.configPeakOutputVoltage(2.0, -2.0)
-        //rotator.configNominalOutputVoltage(1.25, -1.25)
         rotator.setAllowableClosedLoopErr(1)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit((maxAngle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
