@@ -27,8 +27,8 @@ public class Robot extends IterativeRobot {
     private AutoModeExecuter autoExecutor;
     private LoopManager loopManager;
 
-    private static VisionDataStream visionDataStream = new VisionDataStream("10.4.1.17", 5801);
-    private static VisionController visionController = new VisionController("10.4.1.17", 5803);
+    private static VisionDataStream visionDataStream;
+    private static VisionController visionController;
     private static Turret turret;
 
     private enum Auto {
@@ -39,15 +39,28 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         CrashTracker.INSTANCE.logRobotInit();
         try {
+            System.out.println("Vision network starting...");
+            visionDataStream = new VisionDataStream("10.4.1.17", 5801);
             visionDataStream.start();
+            visionController = new VisionController("10.4.1.17", 5803);
             visionController.start();
 
+            System.out.println("Done! Initializing subsystems...");
             Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
             compressorFan.set(true);
 
             turret = Turret.getInstance();
             //camera = new Camera(640, 480, 10);
 
+            loopManager = new LoopManager();
+            loopManager.register(Intake.INSTANCE.getSubsystemLoop());
+            loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
+            loopManager.register(turret.getSubsystemLoop());
+            loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
+            loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
+            OctocanumDrive.INSTANCE.init();
+
+            System.out.println("Done! Linking controls to code...");
             SwitchReactor switchReactor = Strongback.switchReactor();
 
             // drive
@@ -138,15 +151,8 @@ public class Robot extends IterativeRobot {
                             turret.setWantedState(Turret.TurretState.MANUAL);
                         }
                     });
-            // hopper
-            loopManager = new LoopManager();
-            loopManager.register(Intake.INSTANCE.getSubsystemLoop());
-            loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
-            loopManager.register(turret.getSubsystemLoop());
-            loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
-            loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
-            OctocanumDrive.INSTANCE.init();
 
+            System.out.println("Done! Creating SmartDashboard interactions...");
             autoChooser = new SendableChooser<>();
             autoChooser.addObject("Left Gear", Auto.LEFT);
             autoChooser.addObject("Center Gear", Auto.CENTER);
@@ -154,8 +160,10 @@ public class Robot extends IterativeRobot {
             autoChooser.addObject("None", Auto.NONE);
             SmartDashboard.putData("Auto Chooser", autoChooser);
 
+            System.out.println("Done! Setting cameras to stream mode...");
             visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
             visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
+            System.out.println("Done! Robot is ready for match!");
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
