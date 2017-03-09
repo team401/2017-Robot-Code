@@ -1,4 +1,4 @@
-package org.team401.robot.sensors;
+package org.team401.lib;
 
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) FIRST 2015-2017. All Rights Reserved.                        */

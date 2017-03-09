@@ -4,11 +4,13 @@ import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import org.team401.lib.FixedGyro
+import org.team401.lib.MathUtils
+import org.team401.lib.SynchronousPID
 import org.team401.robot.Constants
-import org.team401.robot.math.*
 import org.team401.robot.components.OctocanumGearbox
 import org.team401.robot.loops.Loop
-import org.team401.robot.math.Rotation2d
+import org.team401.lib.Rotation2d
 
 /**
  * Drivetrain wrapper class for the octocanum chassis, supports shifting
@@ -44,7 +46,7 @@ object OctocanumDrive : Subsystem() {
             OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
     )
 
-    val gyro: ADXRS450_Gyro? = ADXRS450_Gyro()
+    val gyro = FixedGyro()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
@@ -115,7 +117,7 @@ object OctocanumDrive : Subsystem() {
                 Constants.GYRO_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-0.1, 0.1)
 
-        gyro?.calibrate()
+        Thread { gyro.calibrate() }.start()
         zeroSensors()
     }
 
@@ -157,10 +159,10 @@ object OctocanumDrive : Subsystem() {
             lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
             if (Math.abs(rot) < .1) {
                 val delta = pidGyroHeading.calculate(lastHeadingErrorDegrees)
-                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] += delta
-                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] += delta
-                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] -= delta
-                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] -= delta
+                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] -= delta
+                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] -= delta
+                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] += delta
+                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] += delta
             } else
                 resetHeadingSetpoint()
         }
@@ -222,7 +224,7 @@ object OctocanumDrive : Subsystem() {
 
     fun zeroSensors() {
         resetEncoders()
-        gyro?.reset()
+        gyro.reset()
     }
 
     private fun configureTalonsForSpeedControl() {
@@ -351,7 +353,7 @@ object OctocanumDrive : Subsystem() {
     }
 
     @Synchronized fun getGyroAngle(): Rotation2d {
-        return Rotation2d.fromDegrees(gyro?.angle ?: 0.0)
+        return Rotation2d.fromDegrees(gyro.angle)
     }
 
     override fun printToSmartDashboard() {

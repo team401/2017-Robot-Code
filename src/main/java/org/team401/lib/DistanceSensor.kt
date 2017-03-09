@@ -1,4 +1,4 @@
-package org.team401.robot.sensors
+package org.team401.lib
 
 /**
  * An object that can read or output a distance

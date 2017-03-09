@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.PIDSourceType
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.strongback.command.Command
 import org.team401.robot.subsystems.OctocanumDrive
-import org.team401.robot.sensors.DistanceSensor
+import org.team401.lib.DistanceSensor
 import org.team401.vision.VisionDataStream.VisionData
 import org.team401.vision.VisionDataStream.VisionDataStream
 

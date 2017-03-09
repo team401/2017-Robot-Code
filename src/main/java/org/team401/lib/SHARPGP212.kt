@@ -1,4 +1,4 @@
-package org.team401.robot.sensors
+package org.team401.lib
 
 import edu.wpi.first.wpilibj.AnalogInput
 

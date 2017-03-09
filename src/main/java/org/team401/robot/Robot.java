@@ -2,17 +2,11 @@ package org.team401.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
-import org.team401.robot.auto.AutoMode;
 import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
-import org.team401.robot.auto.modes.ForwardGearMode;
-import org.team401.robot.auto.modes.LeftGearMode;
-import org.team401.robot.auto.modes.RightGearMode;
+import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
@@ -22,18 +16,14 @@ import org.team401.vision.controller.VisionController;
 public class Robot extends IterativeRobot {
 
     private Camera camera;
-    private SendableChooser<Auto> autoChooser;
 
     private AutoModeExecuter autoExecutor;
+    private AutoModeSelector autoSelector;
     private LoopManager loopManager;
 
     private static VisionDataStream visionDataStream;
     private static VisionController visionController;
     private static Turret turret;
-
-    private enum Auto {
-        LEFT, CENTER, RIGHT, NONE
-    }
 
     //@Override
     public void robotInit() {
@@ -153,12 +143,7 @@ public class Robot extends IterativeRobot {
                     });
 
             System.out.println("Done! Creating SmartDashboard interactions...");
-            autoChooser = new SendableChooser<>();
-            autoChooser.addObject("Left Gear", Auto.LEFT);
-            autoChooser.addObject("Center Gear", Auto.CENTER);
-            autoChooser.addObject("Right Gear", Auto.RIGHT);
-            autoChooser.addObject("None", Auto.NONE);
-            SmartDashboard.putData("Auto Chooser", autoChooser);
+            autoSelector = new AutoModeSelector();
 
             System.out.println("Done! Setting cameras to stream mode...");
             visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
@@ -175,24 +160,7 @@ public class Robot extends IterativeRobot {
             CrashTracker.INSTANCE.logAutoInit();
             loopManager.start();
             Strongback.restart();
-            AutoMode mode;
-            switch (autoChooser.getSelected()) {
-                case LEFT:
-                    mode = new LeftGearMode();
-                    break;
-                case CENTER:
-                    mode = new ForwardGearMode();
-                    break;
-                case RIGHT:
-                    mode = new RightGearMode();
-                    break;
-                case NONE:
-                    mode = new CalibrateTurretMode();
-                    break;
-                default:
-                    mode = new CalibrateTurretMode();
-            }
-            autoExecutor = new AutoModeExecuter(mode);
+            autoExecutor = new AutoModeExecuter(autoSelector.getAutoMode());
             autoExecutor.start();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
@@ -238,7 +206,6 @@ public class Robot extends IterativeRobot {
             CrashTracker.INSTANCE.logDisabledInit();
             Strongback.disable();
             loopManager.stop();
-
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

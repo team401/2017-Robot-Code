@@ -1,4 +1,4 @@
-package org.team401.robot.math;
+package org.team401.lib;
 
 import edu.wpi.first.wpilibj.util.BoundaryException;
 

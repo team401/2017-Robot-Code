@@ -1,4 +1,4 @@
-package org.team401.robot.math;
+package org.team401.lib;
 
 /**
  * Interpolable is an interface used by an Interpolating Tree as the Value type.
