@@ -1,5 +1,6 @@
 package org.team401.robot.auto.actions
 
+import org.strongback.command.Command
 import org.team401.robot.Constants
 
 /**
@@ -43,5 +44,23 @@ abstract class Action(val timeout: Double = 0.0) {
             return false
         timeoutCounter += Constants.ACTION_PERIOD
         return timeoutCounter > timeout
+    }
+
+    fun asSbCommand(): Command {
+        return object : Command() {
+            override fun initialize() {
+                start()
+            }
+            override fun execute(): Boolean {
+                update()
+                return isFinished() || isTimedOut()
+            }
+            override fun end() {
+                end()
+            }
+            override fun interrupted() {
+                interrupted()
+            }
+        }
     }
 }

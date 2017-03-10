@@ -56,19 +56,23 @@ object Constants {
     const val BUTTON_SHIFT          = 1
     const val BUTTON_TOGGLE_HEADING = 2
     const val BUTTON_ENABLE_GYRO    = 3
+    const val BUTTON_TOGGLE_CAMERA  = 4
     // right drive joystick
-    const val BUTTON_INVERSE_HOPPER = 2
     const val BUTTON_ARM_DROP       = 3
-    const val BUTTON_TOGGLE_INTAKE  = 4
     const val BUTTON_GEAR           = 1
     // masher joystick
+    const val AXIS_TURRET_ROTATE    = 0
+    const val AXIS_TURRET_THROTTLE  = 3
     const val BUTTON_SHOOT_FUEL     = 1
-    const val BUTTON_EXTEND_TOWER   = 2
-    const val BUTTON_TOGGLE_SENTRY  = 4
-    const val BUTTON_TOGGLE_AUTO    = 6
+    const val BUTTON_EXTEND_TOWER   = 5
+    const val BUTTON_TOGGLE_SENTRY  = 2
+    const val BUTTON_TOGGLE_AUTO    = 0
     const val BUTTON_TOGGLE_HOOD    = 3
-    const val BUTTON_CALIBRATE_TURRET = 5
-    const val BUTTON_CLIMB          = 11
+    const val BUTTON_CALIBRATE_TURRET = 9
+    const val BUTTON_HOPPER         = 4
+    const val BUTTON_INVERSE_HOPPER = 6
+    const val BUTTON_TOGGLE_INTAKE  = 8
+    const val BUTTON_CLIMB          = 7
 
     // camera mapping
     const val CAMERA_FRONT          = 0

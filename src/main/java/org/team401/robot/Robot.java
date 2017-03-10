@@ -7,6 +7,7 @@ import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.AutoModeSelector;
+import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.camera.Camera;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
@@ -62,7 +63,7 @@ public class Robot extends IterativeRobot {
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
             // camera switching
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getGoalCamera(),
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
                     () -> visionController.toggleActiveCamera());
             // collection
             switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
@@ -77,7 +78,7 @@ public class Robot extends IterativeRobot {
                         if (Intake.INSTANCE.getCurrentState() != Intake.IntakeState.ENABLED)
                             Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
                         else
-                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
+                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
                     });
             switchReactor.onTriggered(ControlBoard.INSTANCE.getInverseHopper(),
                     () -> {
@@ -113,6 +114,8 @@ public class Robot extends IterativeRobot {
                             GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                     });
             // turret
+            switchReactor.onTriggeredSubmit(ControlBoard.INSTANCE.getCalibrateTurret(),
+                    () -> new CalibrateTurretAction(Turret.TurretState.SENTRY).asSbCommand());
             switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHood(),
                     () -> {
                         turret.extendHood(!turret.isHoodExtended());

@@ -3,6 +3,7 @@ package org.team401.robot.subsystems
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.strongback.hardware.Hardware
 import org.team401.robot.Constants
+import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
 import org.team401.robot.loops.Loop
 
@@ -24,7 +25,8 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isFiring)
+            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isFiring ||
+                    ControlBoard.getHopper().isTriggered)
                 setWantedState(HopperState.ON)
             else if (state != HopperState.INVERTED)
                 setWantedState(HopperState.OFF)

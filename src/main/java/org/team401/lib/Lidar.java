@@ -1,7 +1,6 @@
 package org.team401.lib;
 
 import edu.wpi.first.wpilibj.I2C;
-import org.team401.robot.sensors.DistanceSensor;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

@@ -21,7 +21,7 @@ class LoopManager {
 					it.onLoop()
 				} catch (t: Throwable) {
 					CrashTracker.logThrowableCrash(t)
-					println("Error in loop: $it")
+					println("Error in loop: $t")
 				}
 			}
 		}
