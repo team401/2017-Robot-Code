@@ -5,12 +5,13 @@ import org.team401.robot.subsystems.OctocanumDrive
 
 class RotateAction(val heading: Rotation2d, timeout: Double = 5.0) : Action(timeout) {
 
+    val start = OctocanumDrive.getGyroAngle()
+
     override fun start() {
-        OctocanumDrive.gyro?.reset()
-        if (heading.degrees > 0)
-            OctocanumDrive.drive(0.0, 0.0, .2)
+        if (start.rotateBy(heading.inverse()).degrees < 0)
+            OctocanumDrive.drive(0.0, 0.0, .3)
         else
-            OctocanumDrive.drive(0.0, 0.0, -.2)
+            OctocanumDrive.drive(0.0, 0.0, -.3)
     }
 
     override fun update() {
@@ -22,6 +23,6 @@ class RotateAction(val heading: Rotation2d, timeout: Double = 5.0) : Action(time
     }
 
     override fun end() {
-
+        OctocanumDrive.drive(0.0, 0.0)
     }
 }

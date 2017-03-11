@@ -1,6 +1,7 @@
 package org.team401.robot.auto.actions
 
 import edu.wpi.first.wpilibj.Timer
+import org.team401.robot.Constants
 import org.team401.robot.subsystems.GearHolder
 
 class DropGearAction(val duration: Double) : Action() {
@@ -16,13 +17,13 @@ class DropGearAction(val duration: Double) : Action() {
                     GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
                     break
                 }
-                Timer.delay(1.0/50)
+                Timer.delay(Constants.ACTION_PERIOD)
             }
         }.start()
     }
 
     override fun update() {
-        timer += 1.0/50.0
+        timer += Constants.ACTION_PERIOD
     }
 
     override fun isFinished(): Boolean {
