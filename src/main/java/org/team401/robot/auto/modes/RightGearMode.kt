@@ -21,7 +21,7 @@ class RightGearMode : AutoMode() {
         runAction(DriveDistanceAction(-2.5*12, 0.3))
         //TODO: alignment
         runAction(DropGearAction(3.0))
-        Timer.delay(2.0)
+        Thread.sleep(1000)
         runAction(DriveDistanceAction(4.0*12))
         /*runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
         runAction(DriveDistanceAction(-6.0*12))

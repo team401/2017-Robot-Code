@@ -17,7 +17,7 @@ class DropGearAction(val duration: Double) : Action() {
                     GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
                     break
                 }
-                Timer.delay(Constants.ACTION_PERIOD)
+                Thread.sleep((Constants.ACTION_PERIOD*1000).toLong())
             }
         }.start()
     }

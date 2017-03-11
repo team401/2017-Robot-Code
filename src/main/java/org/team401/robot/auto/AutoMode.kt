@@ -25,13 +25,13 @@ abstract class AutoMode {
      * Run an action, blocks the thread until the action is completed.
      */
     fun runAction(action: Action) {
-        action.start()
-        while (!action.isFinished()) {
+        if (!Thread.interrupted())
+            action.start()
+        while (!action.isFinished() && !Thread.interrupted()) {
             action.update()
             Thread.sleep((Constants.ACTION_PERIOD * 1000.0).toLong())
             if (action.isTimedOut())
                 return action.interrupted()
         }
-        action.end()
     }
 }

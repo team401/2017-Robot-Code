@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class RobotTestPls extends IterativeRobot {
+public class RobotTestPls /*extends IterativeRobot*/ {
 
 	private Servo servo;
 

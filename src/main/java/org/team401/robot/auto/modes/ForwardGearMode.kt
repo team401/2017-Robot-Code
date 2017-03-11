@@ -17,7 +17,7 @@ class ForwardGearMode : AutoMode() {
         runAction(DriveDistanceAction(-4.0*12, 0.6))
         runAction(DriveDistanceAction(-2.0*12, 0.25))
         runAction(DropGearAction(3.0))
-        Timer.delay(1.0)
+        Thread.sleep(1000)
         runAction(DriveDistanceAction(3.0*12, .25))
     }
 }
