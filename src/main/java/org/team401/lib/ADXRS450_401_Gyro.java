@@ -17,15 +17,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.wpilibj.hal.HAL;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
-
 /**
  * Use a rate gyro to return the robots heading relative to a starting position. The Gyro class
  * tracks the robots heading based on the starting position. As the robot rotates the new heading is
@@ -36,9 +27,9 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
  * <p>This class is for the digital ADXRS450 gyro sensor that connects via SPI.
  */
 @SuppressWarnings({"TypeName", "AbbreviationAsWordInName", "PMD.UnusedPrivateField"})
-public class FixedGyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
+public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
     private static final double kSamplePeriod = 0.001;
-    private static final double kCalibrationSampleTime = 5.0;
+    public static final double kCalibrationSampleTime = 5.0;
     private static final double kDegreePerSecondPerLSB = 0.0125;
 
     private static final int kRateRegister = 0x00;
@@ -53,10 +44,13 @@ public class FixedGyro extends GyroBase implements Gyro, PIDSource, LiveWindowSe
 
     private SPI m_spi;
 
+    private boolean m_is_calibrating = false;
+    private double m_last_center;
+
     /**
      * Constructor.  Uses the onboard CS0.
      */
-    public FixedGyro() {
+    public ADXRS450_401_Gyro() {
         this(SPI.Port.kOnboardCS0);
     }
 
@@ -65,7 +59,7 @@ public class FixedGyro extends GyroBase implements Gyro, PIDSource, LiveWindowSe
      *
      * @param port The SPI port that the gyro is connected to
      */
-    public FixedGyro(SPI.Port port) {
+    public ADXRS450_401_Gyro(SPI.Port port) {
         m_spi = new SPI(port);
         m_spi.setClockRate(3000000);
         m_spi.setMSBFirst();
@@ -92,20 +86,48 @@ public class FixedGyro extends GyroBase implements Gyro, PIDSource, LiveWindowSe
     }
 
     @Override
-    public void calibrate() {
+    public synchronized void calibrate() {
         if (m_spi == null) {
             return;
         }
 
-        Timer.delay(0.1);
-
-        m_spi.setAccumulatorCenter(0);
-        m_spi.resetAccumulator();
+        startCalibrate();
 
         Timer.delay(kCalibrationSampleTime);
 
-        m_spi.setAccumulatorCenter((int) m_spi.getAccumulatorAverage());
-        m_spi.resetAccumulator();
+        endCalibrate();
+    }
+
+    public synchronized void startCalibrate() {
+        if (m_spi == null)
+            return;
+
+        if (!m_is_calibrating) {
+            m_is_calibrating = true;
+            m_spi.setAccumulatorCenter(0);
+            m_spi.resetAccumulator();
+        }
+    }
+
+    public synchronized void endCalibrate() {
+        if (m_is_calibrating) {
+            m_is_calibrating = false;
+            m_last_center = m_spi.getAccumulatorAverage();
+            m_spi.setAccumulatorCenter((int) Math.round(m_last_center));
+            m_spi.resetAccumulator();
+        }
+    }
+
+    public synchronized void cancelCalibrate() {
+        if (m_is_calibrating) {
+            m_is_calibrating = false;
+            m_spi.setAccumulatorCenter((int) Math.round(m_last_center));
+            m_spi.resetAccumulator();
+        }
+    }
+
+    public double getCenter() {
+        return m_last_center;
     }
 
     private boolean calcParity(int value) {

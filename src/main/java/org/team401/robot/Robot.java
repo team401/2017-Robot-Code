@@ -8,8 +8,9 @@ import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
 import org.team401.robot.camera.Camera;
+import org.team401.robot.loops.GyroCalibrator;
+import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
@@ -21,7 +22,7 @@ public class Robot extends IterativeRobot {
 
     private AutoModeExecuter autoExecutor;
     private AutoModeSelector autoSelector;
-    private LoopManager loopManager;
+    private LoopManager enabledLoop, disabledLoop;
 
     private static VisionDataStream visionDataStream;
     private static VisionController visionController;
@@ -44,13 +45,17 @@ public class Robot extends IterativeRobot {
             turret = Turret.getInstance();
             //camera = new Camera(640, 480, 10);
 
-            loopManager = new LoopManager();
-            loopManager.register(Intake.INSTANCE.getSubsystemLoop());
-            loopManager.register(GearHolder.INSTANCE.getSubsystemLoop());
-            loopManager.register(turret.getSubsystemLoop());
-            loopManager.register(Hopper.INSTANCE.getSubsystemLoop());
-            loopManager.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
+            enabledLoop = new LoopManager();
+            enabledLoop.register(Intake.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(GearHolder.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(turret.getSubsystemLoop());
+            enabledLoop.register(Hopper.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(new TurretCalibrator());
             OctocanumDrive.INSTANCE.init();
+
+            disabledLoop = new LoopManager();
+            disabledLoop.register(new GyroCalibrator());
 
             System.out.println("Done! Linking controls to code...");
             SwitchReactor switchReactor = Strongback.switchReactor();
@@ -163,7 +168,8 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         try {
             CrashTracker.INSTANCE.logAutoInit();
-            loopManager.start();
+            enabledLoop.start();
+            disabledLoop.stop();
             Strongback.restart();
             autoExecutor = new AutoModeExecuter(autoSelector.getAutoMode());
             autoExecutor.start();
@@ -176,10 +182,11 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         try {
             CrashTracker.INSTANCE.logTeleopInit();
+            enabledLoop.start();
+            disabledLoop.stop();
+            Strongback.restart();
             if (autoExecutor != null)
                 autoExecutor.stop();
-            loopManager.start();
-            Strongback.restart();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }
@@ -210,7 +217,8 @@ public class Robot extends IterativeRobot {
         try {
             CrashTracker.INSTANCE.logDisabledInit();
             Strongback.disable();
-            loopManager.stop();
+            enabledLoop.stop();
+            disabledLoop.start();
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

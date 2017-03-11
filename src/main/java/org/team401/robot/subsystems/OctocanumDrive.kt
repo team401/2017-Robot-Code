@@ -4,7 +4,7 @@ import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import org.team401.lib.FixedGyro
+import org.team401.lib.ADXRS450_401_Gyro
 import org.team401.lib.MathUtils
 import org.team401.lib.SynchronousPID
 import org.team401.robot.Constants
@@ -46,7 +46,7 @@ object OctocanumDrive : Subsystem() {
             OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
     )
 
-    val gyro = FixedGyro()
+    val gyro = ADXRS450_401_Gyro()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
@@ -117,7 +117,11 @@ object OctocanumDrive : Subsystem() {
                 Constants.GYRO_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-0.1, 0.1)
 
-        Thread { gyro.calibrate() }.start()
+        Thread {
+            println("Starting thread to calibrate gyro...")
+            gyro.calibrate()
+            println("Gyro calibrated!")
+        }.start()
         zeroSensors()
     }
 
