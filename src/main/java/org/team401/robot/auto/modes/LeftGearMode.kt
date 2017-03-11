@@ -19,7 +19,7 @@ class LeftGearMode : AutoMode() {
         runAction(DriveDistanceAction(-3.0*12, 0.3))
         //TODO: alignment
         runAction(DropGearAction(3.0))
-        Thread.sleep(1000)
+        runAction(WaitAction(1.5))
         runAction(DriveDistanceAction(3.0*12))
         runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
         runAction(DriveDistanceAction(-6.0))
