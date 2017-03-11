@@ -15,7 +15,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
-public class Robot extends IterativeRobot {
+public class Robot /*extends IterativeRobot*/ {
 
     private Camera camera;
 
@@ -153,6 +153,7 @@ public class Robot extends IterativeRobot {
             visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
             visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
             System.out.println("Done! Robot is ready for match!");
+
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

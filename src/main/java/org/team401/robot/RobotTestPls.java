@@ -1,34 +1,22 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.team401.robot.auto.AutoModeExecuter;
-import org.team401.robot.auto.modes.CalibrateTurretMode;
-import org.team401.robot.loops.LoopManager;
-import org.team401.robot.subsystems.Turret;
 
-public class RobotTestPls /*extends IterativeRobot*/ {
+public class RobotTestPls extends IterativeRobot {
 
-	private Turret turret;
-	private AutoModeExecuter autoExecuter;
-	private LoopManager loop;
+	private Servo servo;
 
 	//@Override
 	public void robotInit() {
-		SmartDashboard.putNumber("flywheel_setpoint", 0.0);
-
-		turret = Turret.getInstance();
-		loop = new LoopManager();
-		loop.register(turret.getSubsystemLoop());
-
+		SmartDashboard.putNumber("servo_setpoint", 0.0);
+		servo = new Servo(0);
 	}
 
 	//@Override
 	public void autonomousInit() {
-		autoExecuter = new AutoModeExecuter(new CalibrateTurretMode());
-		autoExecuter.start();
-		loop.start();
+
 	}
 
 	//@Override
@@ -37,7 +25,7 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
 	//@Override
 	public void disabledInit() {
-		loop.stop();
+
 	}
 
 	//@Override
@@ -47,12 +35,6 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 
 	//@Override
 	public void teleopPeriodic() {
-		/*flywheel.set(SmartDashboard.getNumber("flywheel_setpoint", 0));
-		if (SmartDashboard.getNumber("flywheel_setpoint", 0) > 0)
-			feeder.set(1);
-		else
-			feeder.set(0);
-		SmartDashboard.putNumber("flywheel_velocity", (int) flywheel.getSpeed());
-		SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());*/
+		servo.set(SmartDashboard.getNumber("servo_setpoint", 0.0));
 	}
 }
