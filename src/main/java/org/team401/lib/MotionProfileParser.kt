@@ -14,7 +14,7 @@ object MotionProfileParser {
         val lines = try {
             file.readLines()
         } catch (e: Exception) {
-            println("Could not find motion profile $name")
+            println("Could not find motion profile $path")
             CrashTracker.logThrowableCrash(e)
             return empty
         }

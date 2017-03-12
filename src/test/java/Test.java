@@ -17,8 +17,8 @@ public class Test extends TestCase {
 
     public void testAngles() {
         for (int i = 0; i <= 90; i++) {
-            Rotation2d a = Rotation2d.fromDegrees(i);
-            Rotation2d b = Rotation2d.fromDegrees(90-i);
+            Rotation2d a = Rotation2d.Companion.fromDegrees(i);
+            Rotation2d b = Rotation2d.Companion.fromDegrees(90-i);
             System.out.println(a + " " + b + " " + a.inverse().rotateBy(b));
         }
     }

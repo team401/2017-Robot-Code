@@ -83,7 +83,6 @@ object OctocanumDrive : Subsystem() {
                 }
                 else -> System.out.println("Unexpected drive control state: " + controlState)
             }
-            printToSmartDashboard()
         }
 
         override fun onStop() {

@@ -53,7 +53,6 @@ public class Turret extends Subsystem {
             else
                 ledRing.set(false);
             run();
-            printToSmartDashboard();
         }
 
         @Override

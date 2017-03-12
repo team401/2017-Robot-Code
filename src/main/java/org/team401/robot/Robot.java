@@ -9,6 +9,7 @@ import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.loops.GyroCalibrator;
+import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
 import org.team401.robot.loops.LoopManager;
@@ -24,6 +25,13 @@ public class Robot extends IterativeRobot {
     private static VisionDataStream visionDataStream;
     private static VisionController visionController;
     private static Turret turret;
+
+    private static Intake intake = Intake.INSTANCE;
+    private static GearHolder gearHolder = GearHolder.INSTANCE;
+    private static Hopper hopper = Hopper.INSTANCE;
+    private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
+
+    private static ControlBoard controls = ControlBoard.INSTANCE;
 
     //@Override
     public void robotInit() {
@@ -42,13 +50,13 @@ public class Robot extends IterativeRobot {
             turret = Turret.getInstance();
 
             enabledLoop = new LoopManager();
-            enabledLoop.register(Intake.INSTANCE.getSubsystemLoop());
-            enabledLoop.register(GearHolder.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(intake.getSubsystemLoop());
+            enabledLoop.register(gearHolder.getSubsystemLoop());
             enabledLoop.register(turret.getSubsystemLoop());
-            enabledLoop.register(Hopper.INSTANCE.getSubsystemLoop());
-            enabledLoop.register(OctocanumDrive.INSTANCE.getSubsystemLoop());
+            enabledLoop.register(hopper.getSubsystemLoop());
+            enabledLoop.register(drive.getSubsystemLoop());
             enabledLoop.register(new TurretCalibrator());
-            OctocanumDrive.INSTANCE.init();
+            drive.init();
 
             disabledLoop = new LoopManager();
             disabledLoop.register(new GyroCalibrator());
@@ -57,67 +65,67 @@ public class Robot extends IterativeRobot {
             SwitchReactor switchReactor = Strongback.switchReactor();
 
             // drive
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getShift(),
-                    () -> OctocanumDrive.INSTANCE.shift());
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHeading(),
+            switchReactor.onTriggered(controls.getShift(),
+                    () -> drive.shift());
+            switchReactor.onTriggered(controls.getToggleHeading(),
 
-                    () -> OctocanumDrive.INSTANCE.setNewHeadingSetpoint());
-            switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
-                    () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getResetGyro(),
-                    () -> OctocanumDrive.INSTANCE.getGyro().reset());
+                    () -> drive.setNewHeadingSetpoint());
+            switchReactor.onUntriggered(controls.getToggleHeading(),
+                    () -> drive.resetHeadingSetpoint());
+            switchReactor.onTriggered(controls.getResetGyro(),
+                    () -> drive.getGyro().reset());
             // camera switching
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
+            switchReactor.onTriggered(controls.getToggleCamera(),
                     () -> visionController.toggleActiveCamera());
             // collection
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleIntake(),
+            switchReactor.onTriggered(controls.getToggleIntake(),
                     () -> {
-                        if (Intake.INSTANCE.getCurrentState() != Intake.IntakeState.ENABLED)
-                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ENABLED);
+                        if (intake.getCurrentState() != Intake.IntakeState.ENABLED)
+                            intake.setWantedState(Intake.IntakeState.ENABLED);
                         else
-                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
+                            intake.setWantedState(Intake.IntakeState.ARM_UP);
                     });
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getInverseHopper(),
+            switchReactor.onTriggered(controls.getInverseHopper(),
                     () -> {
-                        if (Hopper.INSTANCE.getCurrentState() != Hopper.HopperState.INVERTED)
-                            Hopper.INSTANCE.setWantedState(Hopper.HopperState.INVERTED);
+                        if (hopper.getCurrentState() != Hopper.HopperState.INVERTED)
+                            hopper.setWantedState(Hopper.HopperState.INVERTED);
                         else
-                            Hopper.INSTANCE.setWantedState(Hopper.HopperState.OFF);
+                            hopper.setWantedState(Hopper.HopperState.OFF);
                     });
             // climbing
-            switchReactor.onUntriggered(ControlBoard.INSTANCE.getClimb(),
+            switchReactor.onUntriggered(controls.getClimb(),
                     () -> {
-                        Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
+                        intake.setWantedState(Intake.IntakeState.ARM_UP);
                     });
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getClimb(),
+            switchReactor.onTriggered(controls.getClimb(),
                     () -> {
-                        Intake.INSTANCE.setWantedState(Intake.IntakeState.CLIMBING);
+                        intake.setWantedState(Intake.IntakeState.CLIMBING);
                     });
             // scoring
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleGear(),
+            switchReactor.onTriggered(controls.getToggleGear(),
                     () -> {
-                        GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.OPEN);
+                        gearHolder.setWantedState(GearHolder.GearHolderState.OPEN);
                     });
-            switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleGear(),
+            switchReactor.onUntriggered(controls.getToggleGear(),
                     () -> {
-                        GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
+                        gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                     });
             // tower
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleTower(),
+            switchReactor.onTriggered(controls.getToggleTower(),
                     () -> {
-                        if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-                            GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_IN);
+                        if (gearHolder.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
+                            gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_IN);
                         else
-                            GearHolder.INSTANCE.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
+                            gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
                     });
             // turret
-            switchReactor.onTriggeredSubmit(ControlBoard.INSTANCE.getCalibrateTurret(),
+            switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),
                     () -> new CalibrateTurretAction(Turret.TurretState.SENTRY).asSbCommand());
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleHood(),
+            switchReactor.onTriggered(controls.getToggleHood(),
                     () -> {
                         turret.extendHood(!turret.isHoodExtended());
                     });
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleAuto(),
+            switchReactor.onTriggered(controls.getToggleAuto(),
                     () -> {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
@@ -127,7 +135,7 @@ public class Robot extends IterativeRobot {
                             turret.setWantedState(Turret.TurretState.SENTRY);
                         }
                     });
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleSentry(),
+            switchReactor.onTriggered(controls.getToggleSentry(),
                     () -> {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
@@ -141,6 +149,15 @@ public class Robot extends IterativeRobot {
 
             System.out.println("Done! Creating SmartDashboard interactions...");
             autoSelector = new AutoModeSelector();
+
+            SmartDashboardData data = new SmartDashboardData();
+            data.register(intake);
+            data.register(gearHolder);
+            data.register(turret);
+            data.register(hopper);
+            data.register(drive);
+            enabledLoop.register(data);
+            disabledLoop.register(data);
 
             System.out.println("Done! Setting cameras to stream mode...");
             visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
@@ -193,8 +210,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         try {
             // drive the robot, mode specific drive code is in the OctocanumDrive class
-            OctocanumDrive.INSTANCE.drive(-ControlBoard.INSTANCE.getDrivePitch(), -ControlBoard.INSTANCE.getDriveStrafe(),
-                    ControlBoard.INSTANCE.getDriveRotate());
+            drive.drive(-controls.getDrivePitch(), -controls.getDriveStrafe(), controls.getDriveRotate());
         } catch (Throwable t) {
             CrashTracker.INSTANCE.logThrowableCrash(t);
         }

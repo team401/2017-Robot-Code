@@ -53,7 +53,6 @@ object Intake : Subsystem() {
 			}
 			updateVoltageRamping()
 			motor.speed = currentVoltage
-			printToSmartDashboard()
 		}
 
 		override fun onStop() {
