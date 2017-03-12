@@ -23,7 +23,7 @@ object ControlBoard {
     fun getShootFuel() = mash.getButton(2)
     fun getToggleSentry() = mash.getButton(3)
     fun getToggleAuto() = mash.getButton(1)
-    fun getToggleHood() = mash.getButton(3)
+    fun getToggleHood() = mash.getButton(11)
     fun getToggleTower() = mash.getButton(6)
     fun getHopper() = mash.getButton(5)
     fun getInverseHopper() = mash.getButton(7)
