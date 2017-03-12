@@ -8,7 +8,6 @@ import org.team401.lib.CrashTracker;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
-import org.team401.robot.camera.Camera;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
@@ -17,8 +16,6 @@ import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
 public class Robot extends IterativeRobot {
-
-    private Camera camera;
 
     private AutoModeExecuter autoExecutor;
     private AutoModeSelector autoSelector;
@@ -43,7 +40,6 @@ public class Robot extends IterativeRobot {
             compressorFan.set(true);
 
             turret = Turret.getInstance();
-            //camera = new Camera(640, 480, 10);
 
             enabledLoop = new LoopManager();
             enabledLoop.register(Intake.INSTANCE.getSubsystemLoop());
@@ -126,7 +122,6 @@ public class Robot extends IterativeRobot {
                         if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
                             return;
                         if (turret.getCurrentState() != Turret.TurretState.AUTO) {
-                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
                             turret.setWantedState(Turret.TurretState.AUTO);
                         } else {
                             turret.setWantedState(Turret.TurretState.SENTRY);
@@ -138,10 +133,8 @@ public class Robot extends IterativeRobot {
                             return;
                         if (turret.getCurrentState() == Turret.TurretState.AUTO ||
                                 turret.getCurrentState() == Turret.TurretState.MANUAL) {
-                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
                             turret.setWantedState(Turret.TurretState.SENTRY);
                         } else {
-                            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
                             turret.setWantedState(Turret.TurretState.MANUAL);
                         }
                     });
@@ -150,8 +143,8 @@ public class Robot extends IterativeRobot {
             autoSelector = new AutoModeSelector();
 
             System.out.println("Done! Setting cameras to stream mode...");
-            visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.PROCESSING);
-            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
+            visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
+            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
             System.out.println("Done! Robot is ready for match!");
 
         } catch (Throwable t) {
