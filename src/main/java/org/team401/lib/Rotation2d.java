@@ -12,22 +12,22 @@ public class Rotation2d implements Interpolable<Rotation2d> {
 
 	private static final double kEpsilon = 1E-9;
 
-	private double cos_angle_, sin_angle_;
+	private double cosAngle, sinAngle;
 
 	public Rotation2d() {
 		this(1, 0, false);
 	}
 
 	public Rotation2d(double x, double y, boolean normalize) {
-		cos_angle_ = x;
-		sin_angle_ = y;
+		cosAngle = x;
+		sinAngle = y;
 		if (normalize)
 			normalize();
 	}
 
 	public Rotation2d(Rotation2d other) {
-		cos_angle_ = other.cos_angle_;
-		sin_angle_ = other.sin_angle_;
+		cosAngle = other.cosAngle;
+		sinAngle = other.sinAngle;
 	}
 
 	public static Rotation2d fromRadians(double angle_radians) {
@@ -44,35 +44,35 @@ public class Rotation2d implements Interpolable<Rotation2d> {
 	 * re-scale the sin and cos to reset rounding errors.
 	 */
 	public void normalize() {
-		double magnitude = Math.hypot(cos_angle_, sin_angle_);
+		double magnitude = Math.hypot(cosAngle, sinAngle);
 		if (magnitude > kEpsilon) {
-			sin_angle_ /= magnitude;
-			cos_angle_ /= magnitude;
+			sinAngle /= magnitude;
+			cosAngle /= magnitude;
 		} else {
-			sin_angle_ = 0;
-			cos_angle_ = 1;
+			sinAngle = 0;
+			cosAngle = 1;
 		}
 	}
 
 	public double cos() {
-		return cos_angle_;
+		return cosAngle;
 	}
 
 	public double sin() {
-		return sin_angle_;
+		return sinAngle;
 	}
 
 	public double tan() {
-		if (cos_angle_ < kEpsilon)
-			if (sin_angle_ >= 0.0)
+		if (cosAngle < kEpsilon)
+			if (sinAngle >= 0.0)
 				return Double.POSITIVE_INFINITY;
 			else
 				return Double.NEGATIVE_INFINITY;
-		return sin_angle_ / cos_angle_;
+		return sinAngle / cosAngle;
 	}
 
 	public double getRadians() {
-		return Math.atan2(sin_angle_, cos_angle_);
+		return Math.atan2(sinAngle, cosAngle);
 	}
 
 	public double getDegrees() {
@@ -89,8 +89,8 @@ public class Rotation2d implements Interpolable<Rotation2d> {
 	 * @return This rotation rotated by other.
 	 */
 	public Rotation2d rotateBy(Rotation2d other) {
-		return new Rotation2d(cos_angle_ * other.cos_angle_ - sin_angle_ * other.sin_angle_,
-				cos_angle_ * other.sin_angle_ + sin_angle_ * other.cos_angle_, true);
+		return new Rotation2d(cosAngle * other.cosAngle - sinAngle * other.sinAngle,
+				cosAngle * other.sinAngle + sinAngle * other.cosAngle, true);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class Rotation2d implements Interpolable<Rotation2d> {
 	 * @return The opposite of this rotation.
 	 */
 	public Rotation2d inverse() {
-		return new Rotation2d(cos_angle_, -sin_angle_, false);
+		return new Rotation2d(cosAngle, -sinAngle, false);
 	}
 
 	@Override
