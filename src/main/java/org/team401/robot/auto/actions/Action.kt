@@ -15,12 +15,12 @@ abstract class Action(val timeout: Double = 0.0) {
      * Called once when the action starts, basically setup for the action
      * or for a single action
      */
-    abstract fun start()
+    abstract fun onStart()
 
     /**
      * Update the action state.
      */
-    abstract fun update()
+    abstract fun onUpdate()
 
     /**
      * Check if the action is finished.
@@ -30,12 +30,12 @@ abstract class Action(val timeout: Double = 0.0) {
     /**
      * Preform a one-time cleanup
      */
-    open fun stop() {}
+    open fun onStop() {}
 
     /**
-     * Called when the action is interrupt
+     * Called when the action is interrupted
      */
-    open fun interrupt() {
+    open fun onInterrupt() {
         println("Action took too long to finish!")
     }
 
@@ -49,17 +49,17 @@ abstract class Action(val timeout: Double = 0.0) {
     fun asSbCommand(): Command {
         return object : Command() {
             override fun initialize() {
-                start()
+                onStart()
             }
             override fun execute(): Boolean {
-                update()
+                onUpdate()
                 return isFinished() || isTimedOut()
             }
             override fun end() {
-                stop()
+                onStop()
             }
             override fun interrupted() {
-                interrupt()
+                onInterrupt()
             }
         }
     }

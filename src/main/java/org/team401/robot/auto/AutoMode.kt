@@ -26,12 +26,12 @@ abstract class AutoMode {
      */
     fun runAction(action: Action) {
         if (!Thread.interrupted())
-            action.start()
+            action.onStart()
         while (!action.isFinished() && !Thread.interrupted()) {
-            action.update()
+            action.onUpdate()
             Thread.sleep((Constants.ACTION_PERIOD * 1000.0).toLong())
             if (action.isTimedOut())
-                return action.interrupt()
+                return action.onInterrupt()
         }
     }
 }

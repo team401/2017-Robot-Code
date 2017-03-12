@@ -6,7 +6,7 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout
 
     val heading = OctocanumDrive.getGyroAngle()
 
-    override fun start() {
+    override fun onStart() {
         OctocanumDrive.resetEncoders()
 
         if (distance > 0)
@@ -15,7 +15,7 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout
             OctocanumDrive.drive(-power, -power)
     }
 
-    override fun update() {
+    override fun onUpdate() {
         val angle = heading.inverse().rotateBy(OctocanumDrive.getGyroAngle()).degrees
         if (distance > 0)
             OctocanumDrive.drive(power - angle*.01, power + angle*.01)
@@ -30,12 +30,12 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout
             return OctocanumDrive.getLeftDistanceInches() < distance && OctocanumDrive.getRightDistanceInches() < distance
     }
 
-    override fun interrupt() {
-        stop()
+    override fun onInterrupt() {
+        onStop()
         println("Couldn't reach distance or encoders are bad!")
     }
 
-    override fun stop() {
+    override fun onStop() {
         OctocanumDrive.drive(0.0, 0.0)
     }
 }

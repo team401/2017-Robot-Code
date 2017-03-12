@@ -6,12 +6,12 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
 
     val turret: Turret = Turret.getInstance()
 
-    override fun start() {
+    override fun onStart() {
         turret.setWantedState(Turret.TurretState.CALIBRATING)
         turret.turretRotator.rotate(.13)
     }
 
-    override fun update() {
+    override fun onUpdate() {
 
     }
 
@@ -19,12 +19,12 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
         return turret.atZeroPoint()
     }
 
-    override fun interrupt() {
+    override fun onInterrupt() {
         turret.turretRotator.rotate(0.0)
         println("Turret couldn't be calibrated!")
     }
 
-    override fun stop() {
+    override fun onStop() {
         turret.zeroSensors()
         turret.setWantedState(state)
         println("Turret calibrated!")

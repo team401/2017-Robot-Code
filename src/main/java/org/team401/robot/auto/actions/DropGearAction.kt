@@ -8,11 +8,11 @@ class DropGearAction(val duration: Double) : Action() {
 
     var timer = 0.0
 
-    override fun start() {
+    override fun onStart() {
         GearHolder.setWantedState(GearHolder.GearHolderState.OPEN)
         Thread {
             while (true) {
-                update()
+                onUpdate()
                 if (timer > duration) {
                     GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
                     break
@@ -22,7 +22,7 @@ class DropGearAction(val duration: Double) : Action() {
         }.start()
     }
 
-    override fun update() {
+    override fun onUpdate() {
         timer += Constants.ACTION_PERIOD
     }
 
@@ -30,7 +30,7 @@ class DropGearAction(val duration: Double) : Action() {
         return true
     }
 
-    override fun stop() {
+    override fun onStop() {
 
     }
 }

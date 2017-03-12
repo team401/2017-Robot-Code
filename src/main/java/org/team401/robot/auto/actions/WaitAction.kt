@@ -6,11 +6,11 @@ class WaitAction(val timeToWait: Double) : Action() {
 
     var startTime = 0.0
 
-    override fun start() {
+    override fun onStart() {
         startTime = Timer.getFPGATimestamp()
     }
 
-    override fun update() {
+    override fun onUpdate() {
 
     }
 

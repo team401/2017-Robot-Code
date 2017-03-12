@@ -7,14 +7,14 @@ class RotateAction(val heading: Rotation2d, val power: Double = 0.3, timeout: Do
 
     val start = OctocanumDrive.getGyroAngle()
 
-    override fun start() {
+    override fun onStart() {
         if (start.rotateBy(heading.inverse()).degrees < 0)
             OctocanumDrive.drive(0.0, 0.0, power)
         else
             OctocanumDrive.drive(0.0, 0.0, -power)
     }
 
-    override fun update() {
+    override fun onUpdate() {
 
     }
 
@@ -22,7 +22,7 @@ class RotateAction(val heading: Rotation2d, val power: Double = 0.3, timeout: Do
         return Math.abs(heading.inverse().rotateBy(OctocanumDrive.getGyroAngle()).degrees) < 2
     }
 
-    override fun stop() {
+    override fun onStop() {
         OctocanumDrive.drive(0.0, 0.0)
     }
 }

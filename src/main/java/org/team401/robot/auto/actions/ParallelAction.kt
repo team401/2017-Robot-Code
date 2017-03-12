@@ -6,12 +6,12 @@ class ParallelAction(val actions: MutableList<Action>) : Action() {
 
     private val toRemove = ArrayList<Action>()
 
-    override fun start() {
-        actions.forEach { it.start() }
+    override fun onStart() {
+        actions.forEach { it.onStart() }
     }
 
-    override fun update() {
-        actions.forEach { it.update() }
+    override fun onUpdate() {
+        actions.forEach { it.onUpdate() }
     }
 
     override fun isFinished(): Boolean {
@@ -20,7 +20,7 @@ class ParallelAction(val actions: MutableList<Action>) : Action() {
                 .forEach { toRemove.add(it) }
 
         toRemove.forEach {
-            it.stop()
+            it.onStop()
             actions.remove(it)
         }
         toRemove.clear()

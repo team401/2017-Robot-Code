@@ -24,7 +24,7 @@ class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
         right = EncoderFollower(modifier.rightTrajectory)
     }
 
-    override fun start() {
+    override fun onStart() {
         left.configureEncoder(OctocanumDrive.getLeftEncPosition(), 4096, 4.0)
         right.configureEncoder(OctocanumDrive.getRightEncPosition(), 4096, 4.0)
         left.configurePIDVA(1.0, 0.0, 0.0, 1 / 1.7, 0.0)
@@ -42,7 +42,7 @@ class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
                 })
     }
 
-    override fun update() {
+    override fun onUpdate() {
         val l = left.calculate(OctocanumDrive.getLeftEncPosition())
         val r = right.calculate(OctocanumDrive.getRightEncPosition())
 
@@ -59,7 +59,7 @@ class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
         return left.isFinished && right.isFinished
     }
 
-    override fun stop() {
+    override fun onStop() {
 
     }
 }

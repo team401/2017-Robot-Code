@@ -3,7 +3,7 @@ package org.team401.robot.loops
 import edu.wpi.first.wpilibj.Timer
 import org.team401.robot.subsystems.OctocanumDrive
 
-import org.team401.lib.ADXRS450_401_Gyro
+import org.team401.lib.ADXRS450_Gyro
 
 
 class GyroCalibrator : Loop {
@@ -18,7 +18,7 @@ class GyroCalibrator : Loop {
     override fun onLoop() {
         val now = Timer.getFPGATimestamp()
         // Keep re-calibrating the gyro every 5 seconds
-        if (now - calibrationStartTime > ADXRS450_401_Gyro.kCalibrationSampleTime) {
+        if (now - calibrationStartTime > ADXRS450_Gyro.kCalibrationSampleTime) {
             gyro.endCalibrate()
             System.out.println("Gyro calibrated, new zero is " + gyro.center)
             calibrationStartTime = now

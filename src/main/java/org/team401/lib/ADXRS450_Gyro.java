@@ -27,7 +27,7 @@ import java.nio.ByteOrder;
  * <p>This class is for the digital ADXRS450 gyro sensor that connects via SPI.
  */
 @SuppressWarnings({"TypeName", "AbbreviationAsWordInName", "PMD.UnusedPrivateField"})
-public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
+public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
     private static final double kSamplePeriod = 0.001;
     public static final double kCalibrationSampleTime = 5.0;
     private static final double kDegreePerSecondPerLSB = 0.0125;
@@ -50,7 +50,7 @@ public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, Live
     /**
      * Constructor.  Uses the onboard CS0.
      */
-    public ADXRS450_401_Gyro() {
+    public ADXRS450_Gyro() {
         this(SPI.Port.kOnboardCS0);
     }
 
@@ -59,7 +59,7 @@ public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, Live
      *
      * @param port The SPI port that the gyro is connected to
      */
-    public ADXRS450_401_Gyro(SPI.Port port) {
+    public ADXRS450_Gyro(SPI.Port port) {
         m_spi = new SPI(port);
         m_spi.setClockRate(3000000);
         m_spi.setMSBFirst();
@@ -166,7 +166,7 @@ public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, Live
     }
 
     /**
-     * Delete (free) the spi port used for the gyro and stop accumulating.
+     * Delete (free) the spi port used for the gyro and onStop accumulating.
      */
     @Override
     public void free() {

@@ -4,7 +4,7 @@ import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import org.team401.lib.ADXRS450_401_Gyro
+import org.team401.lib.ADXRS450_Gyro
 import org.team401.lib.MathUtils
 import org.team401.lib.SynchronousPID
 import org.team401.robot.Constants
@@ -46,7 +46,7 @@ object OctocanumDrive : Subsystem() {
             OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
     )
 
-    val gyro = ADXRS450_401_Gyro()
+    val gyro = org.team401.lib.ADXRS450_Gyro()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
@@ -79,7 +79,7 @@ object OctocanumDrive : Subsystem() {
                     println("we shouldn't be in path following mode!!!")
                     /*updatePathFollower()
                     if (isFinishedPath()) {
-                        stop()
+                        onStop()
                     }*/
                 }
                 else -> System.out.println("Unexpected drive control state: " + controlState)

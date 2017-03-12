@@ -4,16 +4,16 @@ class SeriesAction(val actions: MutableList<Action>) : Action() {
 
     var currentAction: Action? = null
 
-    override fun start() {}
+    override fun onStart() {}
 
-    override fun update() {
+    override fun onUpdate() {
         if (currentAction == null) {
             currentAction = actions.removeAt(0)
-            currentAction?.start()
+            currentAction?.onStart()
         }
-        currentAction?.update()
+        currentAction?.onUpdate()
         if ((currentAction as Action).isFinished() || (currentAction as Action).isTimedOut()) {
-            currentAction?.stop()
+            currentAction?.onStop()
             currentAction = null
         }
     }
@@ -22,5 +22,5 @@ class SeriesAction(val actions: MutableList<Action>) : Action() {
         return actions.isEmpty() && currentAction == null
     }
 
-    override fun stop() {}
+    override fun onStop() {}
 }
