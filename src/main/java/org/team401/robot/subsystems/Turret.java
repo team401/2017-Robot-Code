@@ -143,12 +143,12 @@ public class Turret extends Subsystem {
             if (Math.abs(turnSpeed) > .5)
                 if (turnSpeed > 0) {
                     if (turnSpeed > .95)
-                        turretRotator.addDegrees(4);
+                        turretRotator.addDegrees(20);
                     else
                         turretRotator.addDegrees(1);
                 } else {
                     if (turnSpeed < -.95)
-                        turretRotator.addDegrees(-4);
+                        turretRotator.addDegrees(-20);
                     else
                         turretRotator.addDegrees(-1);
                 }

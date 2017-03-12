@@ -117,11 +117,6 @@ object OctocanumDrive : Subsystem() {
                 Constants.GYRO_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-0.1, 0.1)
 
-        Thread {
-            println("Starting thread to calibrate gyro...")
-            gyro.calibrate()
-            println("Gyro calibrated!")
-        }.start()
         zeroSensors()
     }
 

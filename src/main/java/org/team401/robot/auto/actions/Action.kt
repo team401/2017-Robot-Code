@@ -30,12 +30,12 @@ abstract class Action(val timeout: Double = 0.0) {
     /**
      * Preform a one-time cleanup
      */
-    open fun end() {}
+    open fun stop() {}
 
     /**
-     * Called when the action is interrupted
+     * Called when the action is interrupt
      */
-    open fun interrupted() {
+    open fun interrupt() {
         println("Action took too long to finish!")
     }
 
@@ -56,10 +56,10 @@ abstract class Action(val timeout: Double = 0.0) {
                 return isFinished() || isTimedOut()
             }
             override fun end() {
-                end()
+                stop()
             }
             override fun interrupted() {
-                interrupted()
+                interrupt()
             }
         }
     }

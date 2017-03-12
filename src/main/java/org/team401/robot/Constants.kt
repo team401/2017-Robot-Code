@@ -48,18 +48,9 @@ object Constants {
     const val INTAKE_RAMP_RATE      = 12
 
     // joystick ids
-    const val DRIVE_JOYSTICK_LEFT   = 0
-    const val DRIVE_JOYSTICK_RIGHT  = 1
-    const val MASHER_JOYSTICK       = 2
+    const val DRIVER_GAMEPAD        = 0
+    const val MASHER_GAMEPAD        = 1
 
-    // left drive joystick
-    const val BUTTON_SHIFT          = 1
-    const val BUTTON_TOGGLE_HEADING = 2
-    const val BUTTON_ENABLE_GYRO    = 3
-    const val BUTTON_TOGGLE_CAMERA  = 4
-    // right drive joystick
-    const val BUTTON_ARM_DROP       = 3
-    const val BUTTON_GEAR           = 1
     // masher joystick
     const val AXIS_TURRET_ROTATE    = 0
     const val AXIS_TURRET_THROTTLE  = 3

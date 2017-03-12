@@ -19,12 +19,12 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
         return turret.atZeroPoint()
     }
 
-    override fun interrupted() {
+    override fun interrupt() {
         turret.turretRotator.rotate(0.0)
         println("Turret couldn't be calibrated!")
     }
 
-    override fun end() {
+    override fun stop() {
         turret.zeroSensors()
         turret.setWantedState(state)
         println("Turret calibrated!")

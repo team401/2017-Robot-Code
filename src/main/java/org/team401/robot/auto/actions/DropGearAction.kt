@@ -30,7 +30,7 @@ class DropGearAction(val duration: Double) : Action() {
         return true
     }
 
-    override fun end() {
+    override fun stop() {
 
     }
 }

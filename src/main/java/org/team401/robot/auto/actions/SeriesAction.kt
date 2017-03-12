@@ -13,7 +13,7 @@ class SeriesAction(val actions: MutableList<Action>) : Action() {
         }
         currentAction?.update()
         if ((currentAction as Action).isFinished() || (currentAction as Action).isTimedOut()) {
-            currentAction?.end()
+            currentAction?.stop()
             currentAction = null
         }
     }
@@ -22,5 +22,5 @@ class SeriesAction(val actions: MutableList<Action>) : Action() {
         return actions.isEmpty() && currentAction == null
     }
 
-    override fun end() {}
+    override fun stop() {}
 }

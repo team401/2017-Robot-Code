@@ -31,7 +31,7 @@ abstract class AutoMode {
             action.update()
             Thread.sleep((Constants.ACTION_PERIOD * 1000.0).toLong())
             if (action.isTimedOut())
-                return action.interrupted()
+                return action.interrupt()
         }
     }
 }

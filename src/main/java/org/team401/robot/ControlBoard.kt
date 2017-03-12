@@ -4,23 +4,20 @@ import org.strongback.hardware.Hardware
 
 object ControlBoard {
 
-    private val left = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_LEFT)
-    private val right = Hardware.HumanInterfaceDevices.logitechAttack3D(Constants.DRIVE_JOYSTICK_RIGHT)
-    private val mash = Hardware.HumanInterfaceDevices.logitechDualAction(Constants.MASHER_JOYSTICK)
+    private val drive = Hardware.HumanInterfaceDevices.logitechDualAction(Constants.DRIVER_GAMEPAD)
+    private val mash = Hardware.HumanInterfaceDevices.logitechDualAction(Constants.MASHER_GAMEPAD)
 
     // drive
-    fun getDrivePitch() = left.pitch.read()
-    fun getDriveStrafe() = left.roll.read()
-    fun getDriveRotate() = right.roll.read()
+    fun getDrivePitch() = drive.getAxis(1).read()
+    fun getDriveStrafe() = drive.getAxis(0).read()
+    fun getDriveRotate() = drive.getAxis(2).read()
 
-    // controls left
-    fun getShift() = left.getButton(Constants.BUTTON_SHIFT)
-    fun getToggleHeading() = left.getButton(Constants.BUTTON_TOGGLE_HEADING)
-    fun getToggleCamera() = left.getButton(Constants.BUTTON_TOGGLE_CAMERA)
-
-    // controls right
-    fun getToggleGear() = right.getButton(Constants.BUTTON_GEAR)
-    fun getIntakeDrop() = right.getButton(Constants.BUTTON_ARM_DROP)
+    // controls drive
+    fun getShift() = drive.getButton(6)
+    fun getToggleHeading() = drive.getButton(5)
+    fun getToggleCamera() = drive.getButton(3)
+    fun getToggleGear() = drive.getButton(8)
+    fun getResetGyro() = drive.getButton(9)
 
     // controls turret
     fun getShootFuel() = mash.getButton(Constants.BUTTON_SHOOT_FUEL)
@@ -36,8 +33,4 @@ object ControlBoard {
 
     fun getTurretYaw() = mash.getAxis(Constants.AXIS_TURRET_ROTATE).read()
     fun getTurretThrottle() = mash.getAxis(Constants.AXIS_TURRET_THROTTLE).read()
-
-    fun getLeftDriveJoystick() = left
-    fun getRightDriveJoystick() = right
-    fun getMasherGamepad() = mash
 }

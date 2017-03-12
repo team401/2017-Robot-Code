@@ -20,7 +20,7 @@ class ParallelAction(val actions: MutableList<Action>) : Action() {
                 .forEach { toRemove.add(it) }
 
         toRemove.forEach {
-            it.end()
+            it.stop()
             actions.remove(it)
         }
         toRemove.clear()

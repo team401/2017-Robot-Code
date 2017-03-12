@@ -68,17 +68,12 @@ public class Robot extends IterativeRobot {
                     () -> OctocanumDrive.INSTANCE.setNewHeadingSetpoint());
             switchReactor.onUntriggered(ControlBoard.INSTANCE.getToggleHeading(),
                     () -> OctocanumDrive.INSTANCE.resetHeadingSetpoint());
+            switchReactor.onTriggered(ControlBoard.INSTANCE.getResetGyro(),
+                    () -> OctocanumDrive.INSTANCE.getGyro().reset());
             // camera switching
             switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleCamera(),
                     () -> visionController.toggleActiveCamera());
             // collection
-            switchReactor.onTriggered(ControlBoard.INSTANCE.getIntakeDrop(),
-                    () -> {
-                        if (Intake.INSTANCE.isArmDown())
-                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_UP);
-                        else
-                            Intake.INSTANCE.setWantedState(Intake.IntakeState.ARM_DOWN);
-                    });
             switchReactor.onTriggered(ControlBoard.INSTANCE.getToggleIntake(),
                     () -> {
                         if (Intake.INSTANCE.getCurrentState() != Intake.IntakeState.ENABLED)
@@ -155,8 +150,8 @@ public class Robot extends IterativeRobot {
             autoSelector = new AutoModeSelector();
 
             System.out.println("Done! Setting cameras to stream mode...");
-            visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
-            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
+            visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.PROCESSING);
+            visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
             System.out.println("Done! Robot is ready for match!");
 
         } catch (Throwable t) {

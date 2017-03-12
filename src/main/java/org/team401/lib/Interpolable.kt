@@ -2,7 +2,7 @@ package org.team401.lib
 
 /**
  * Interpolable is an interface used by an Interpolating Tree as the Value type.
- * Given two end points and an interpolation parameter on [0, 1], it calculates
+ * Given two stop points and an interpolation parameter on [0, 1], it calculates
  * a new Interpolable representing the interpolated value.
 
  * @param <T>
