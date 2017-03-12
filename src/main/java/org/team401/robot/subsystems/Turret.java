@@ -13,6 +13,7 @@ import org.team401.lib.MathUtils;
 import org.team401.lib.DistanceSensor;
 import org.team401.lib.Lidar;
 import org.team401.vision.VisionDataStream.VisionData;
+import org.team401.vision.controller.VisionController;
 
 public class Turret extends Subsystem {
 
@@ -186,6 +187,10 @@ public class Turret extends Subsystem {
     }
 
     public void setWantedState(TurretState state) {
+        if (state.compareTo(TurretState.SENTRY) >= 0)
+            Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING);
+        else
+            Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
         this.state = state;
     }
 
