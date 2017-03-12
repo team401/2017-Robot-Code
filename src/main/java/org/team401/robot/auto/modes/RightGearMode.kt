@@ -22,9 +22,6 @@ class RightGearMode : AutoMode() {
         runAction(DropGearAction(3.0))
         runAction(WaitAction(1.5))
         runAction(DriveDistanceAction(3.25*12*2, .7))
-        /*runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
-        runAction(DriveDistanceAction(-6.0*12))
-        OctocanumDrive.setBrakeMode(false)*/
         runAction(RotateAction(Rotation2d.fromDegrees(-90.0)))
         runAction(DriveDistanceAction(2.5*12*2, .7))
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)

@@ -1,7 +1,6 @@
 package org.team401.robot.subsystems
 
 import com.ctre.CANTalon
-import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.lib.ADXRS450_Gyro
@@ -46,7 +45,7 @@ object OctocanumDrive : Subsystem() {
             OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
     )
 
-    val gyro = org.team401.lib.ADXRS450_Gyro()
+    val gyro = ADXRS450_Gyro()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
