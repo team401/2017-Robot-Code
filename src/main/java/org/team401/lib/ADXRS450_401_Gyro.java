@@ -71,15 +71,12 @@ public class ADXRS450_401_Gyro extends GyroBase implements Gyro, PIDSource, Live
         if ((readRegister(kPIDRegister) & 0xff00) != 0x5200) {
             m_spi.free();
             m_spi = null;
-            DriverStation.reportError("could not find ADXRS450 gyro on SPI port " + port.value,
-                    false);
+            DriverStation.reportError("could not find ADXRS450 gyro on SPI port " + port.value, false);
             return;
         }
 
-        m_spi.initAccumulator(kSamplePeriod, 0x20000000, 4, 0x0c00000e, 0x04000000, 10, 16,
-                true, true);
-
-        calibrate();
+        m_spi.initAccumulator(kSamplePeriod, 0x20000000, 4, 0x0c00000e, 0x04000000,
+                10, 16, true, true);
 
         HAL.report(FRCNetComm.tResourceType.kResourceType_ADXRS450, port.value);
         LiveWindow.addSensor("ADXRS450_Gyro", port.value, this);

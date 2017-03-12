@@ -31,7 +31,6 @@ object Intake : Subsystem() {
 			when (state) {
 				IntakeState.ARM_UP -> {
 					targetVoltage = 0.0
-					currentVoltage = 0.0
 					solenoid.set(false)
 				}
 				IntakeState.ARM_DOWN -> {
@@ -75,7 +74,7 @@ object Intake : Subsystem() {
 			currentVoltage += rampRate
 		else
 			currentVoltage = targetVoltage
-		if (Math.abs(targetVoltage-currentVoltage) < 4*rampRate)
+		if (Math.abs(targetVoltage - currentVoltage) < 4*rampRate)
 			currentVoltage = targetVoltage
 	}
 

@@ -104,7 +104,7 @@ public class Turret extends Subsystem {
             turretRotator.stop();
             return true;
         }
-        turretRotator.addDegrees(-latestData.getYaw()*.85);
+        turretRotator.addDegrees(-latestData.getYaw());
         return false;
     }
 

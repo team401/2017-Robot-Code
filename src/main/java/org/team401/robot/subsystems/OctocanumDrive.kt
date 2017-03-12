@@ -50,7 +50,6 @@ object OctocanumDrive : Subsystem() {
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
-    val pidGyroHeading = SynchronousPID()
     private var velocityHeadingSetpoint: VelocityHeadingSetpoint? = null
     private var lastHeadingErrorDegrees = 0.0
 
@@ -113,10 +112,6 @@ object OctocanumDrive : Subsystem() {
                 Constants.DRIVE_HEADING_VEL_D)
         pidVelocityHeading.setOutputRange(-30.0, 30.0)
 
-        pidGyroHeading.setPID(Constants.GYRO_HEADING_VEL_P, Constants.GYRO_HEADING_VEL_I,
-                Constants.GYRO_HEADING_VEL_D)
-        pidVelocityHeading.setOutputRange(-0.1, 0.1)
-
         zeroSensors()
     }
 
@@ -157,7 +152,7 @@ object OctocanumDrive : Subsystem() {
         if (lastSetGyroHeading != null) {
             lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
             if (Math.abs(rot) < .1) {
-                val delta = pidGyroHeading.calculate(lastHeadingErrorDegrees)
+                val delta = lastHeadingErrorDegrees * 0.01
                 wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] -= delta
                 wheelSpeeds[Constants.GEARBOX_REAR_LEFT] -= delta
                 wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] += delta
@@ -287,7 +282,6 @@ object OctocanumDrive : Subsystem() {
         if (controlState != DriveControlState.OPEN_LOOP) {
             configureTalonsForOpenLoopControl()
             controlState = DriveControlState.OPEN_LOOP
-            pidGyroHeading.reset()
         }
         lastSetGyroHeading = getGyroAngle()
     }

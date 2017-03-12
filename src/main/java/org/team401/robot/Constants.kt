@@ -45,7 +45,7 @@ object Constants {
     const val HOPPER_BOTTOM         = 8
 
     const val HOPPER_RAMP_RATE      = 6
-    const val INTAKE_RAMP_RATE      = 12
+    const val INTAKE_RAMP_RATE      = 18
 
     // joystick ids
     const val DRIVER_GAMEPAD        = 0

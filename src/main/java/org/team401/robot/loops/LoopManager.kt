@@ -2,6 +2,7 @@ package org.team401.robot.loops
 
 import edu.wpi.first.wpilibj.Notifier
 import org.team401.lib.CrashTracker
+import org.team401.lib.Unit
 import org.team401.robot.Constants
 import java.util.ArrayList
 
@@ -16,7 +17,7 @@ class LoopManager {
 
     init {
         notifier = Notifier {
-            if (running)
+            if (running) {
                 loops.forEach {
                     try {
                         it.onLoop()
@@ -25,6 +26,7 @@ class LoopManager {
                         println("Error in loop: $t")
                     }
                 }
+            }
         }
     }
 

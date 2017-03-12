@@ -28,19 +28,6 @@ public class Lidar implements DistanceSensor {
 		}
 	}
 
-	public enum Unit {
-		CENTIMETERS(1),
-		METERS(1.0/100.0),
-		INCHES(1.0/2.54),
-		FEET((1.0/2.54)/12.0);
-
-		public final double multiplier;
-
-		Unit(double multiplier) {
-			this.multiplier = multiplier;
-		}
-	}
-
 	private class PollTask implements Runnable {
 		private I2C bus;
 		private Hardware hardware;
@@ -81,7 +68,7 @@ public class Lidar implements DistanceSensor {
 		}
 
 		public double getDistance(Unit unit) {
-			return nativeUnit * unit.multiplier;
+			return nativeUnit * unit.getMultiplier();
 		}
 
 		public double getDistance() {
