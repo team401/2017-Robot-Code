@@ -57,17 +57,10 @@ public class SynchronousPID {
 		lastInput = input;
 		error = setpoint - input;
 		if (continuous)
-			if (Math.abs(error) > (maximumInput - minimumInput) / 2) {
-				if (error > 0)
-					error = error - maximumInput + minimumInput;
-				else
-					error = error + maximumInput - minimumInput;
-			}
+			if (Math.abs(error) > (maximumInput - minimumInput) / 2)
+				error += (maximumInput - minimumInput) * error > 0 ? -1 : 1;
 
-		if ((error * kP < maximumOutput) && (error * kP > minimumOutput))
-			totalError += error;
-		else
-			totalError = 0;
+		totalError += error * kP < maximumOutput && error * kP > minimumOutput ? error : 0;
 
 		// Don't blow away m_error so as to not break derivative
 		double proportionalError = Math.abs(error) < deadband ? 0 : error;

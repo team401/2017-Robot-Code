@@ -12,54 +12,54 @@ import org.team401.robot.subsystems.OctocanumDrive
 
 class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
 
-    val left: EncoderFollower
-    val right: EncoderFollower
+	val left: EncoderFollower
+	val right: EncoderFollower
 
-    init {
-        val config = Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 0.05, 1.7, 2.0, 60.0)
-        val trajectory = Pathfinder.generate(waypoints, config)
-        val modifier = TankModifier(trajectory).modify(0.5842)
+	init {
+		val config = Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 0.05, 1.7, 2.0, 60.0)
+		val trajectory = Pathfinder.generate(waypoints, config)
+		val modifier = TankModifier(trajectory).modify(0.5842)
 
-        left = EncoderFollower(modifier.leftTrajectory)
-        right = EncoderFollower(modifier.rightTrajectory)
-    }
+		left = EncoderFollower(modifier.leftTrajectory)
+		right = EncoderFollower(modifier.rightTrajectory)
+	}
 
-    override fun onStart() {
-        left.configureEncoder(OctocanumDrive.getLeftEncPosition(), 4096, 4.0)
-        right.configureEncoder(OctocanumDrive.getRightEncPosition(), 4096, 4.0)
-        left.configurePIDVA(1.0, 0.0, 0.0, 1 / 1.7, 0.0)
-        right.configurePIDVA(1.0, 0.0, 0.0, 1 / 1.7, 0.0)
-        OctocanumDrive.changeControlMode(CANTalon.TalonControlMode.PercentVbus,
-                { it.set(0.0) },
-                { it.set(0.0) },
-                {
-                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.FRONT_LEFT_MASTER.toDouble())
-                },
-                {
-                    it.changeControlMode(CANTalon.TalonControlMode.Follower)
-                    it.set(Constants.FRONT_RIGHT_MASTER.toDouble())
-                })
-    }
+	override fun onStart() {
+		left.configureEncoder(OctocanumDrive.getLeftEncPosition(), 4096, 4.0)
+		right.configureEncoder(OctocanumDrive.getRightEncPosition(), 4096, 4.0)
+		left.configurePIDVA(1.0, 0.0, 0.0, 1 / 1.7, 0.0)
+		right.configurePIDVA(1.0, 0.0, 0.0, 1 / 1.7, 0.0)
+		OctocanumDrive.changeControlMode(CANTalon.TalonControlMode.PercentVbus,
+				{ it.set(0.0) },
+				{ it.set(0.0) },
+				{
+					it.changeControlMode(CANTalon.TalonControlMode.Follower)
+					it.set(Constants.FRONT_LEFT_MASTER.toDouble())
+				},
+				{
+					it.changeControlMode(CANTalon.TalonControlMode.Follower)
+					it.set(Constants.FRONT_RIGHT_MASTER.toDouble())
+				})
+	}
 
-    override fun onUpdate() {
-        val l = left.calculate(OctocanumDrive.getLeftEncPosition())
-        val r = right.calculate(OctocanumDrive.getRightEncPosition())
+	override fun onUpdate() {
+		val l = left.calculate(OctocanumDrive.getLeftEncPosition())
+		val r = right.calculate(OctocanumDrive.getRightEncPosition())
 
-        val currentHeading = OctocanumDrive.getGyroAngle().degrees
-        val desiredHeading = left.heading
+		val currentHeading = OctocanumDrive.getGyroAngle().degrees
+		val desiredHeading = left.heading
 
-        val error = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading)
-        val turn = 0.8 * (-1.0 / 80.0) * error
+		val error = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading)
+		val turn = 0.8 * (-1.0 / 80.0) * error
 
-        OctocanumDrive.drive(l + turn, r - turn)
-    }
+		OctocanumDrive.drive(l + turn, r - turn)
+	}
 
-    override fun isFinished(): Boolean {
-        return left.isFinished && right.isFinished
-    }
+	override fun isFinished(): Boolean {
+		return left.isFinished && right.isFinished
+	}
 
-    override fun onStop() {
+	override fun onStop() {
 
-    }
+	}
 }

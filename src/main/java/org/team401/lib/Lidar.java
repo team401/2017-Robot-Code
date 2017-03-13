@@ -77,19 +77,13 @@ public class Lidar implements DistanceSensor {
 	}
 
 
-
-	private I2C bus; //The bus to communicate on
-	private Hardware hardware; //The hardware to use
-	private Unit unit; //The unit to use
 	private ScheduledThreadPoolExecutor executor;
 	private PollTask task;
 	private ScheduledFuture<?> future;
 
 	public Lidar(I2C.Port port, Hardware hardware, Unit unit) {
-		bus = new I2C(port, hardware.address);
-		this.hardware = hardware;
-		this.unit = unit;
-		task = new PollTask(this.bus, this.hardware, this.unit); //Initialize the task to be run
+		I2C bus = new I2C(port, hardware.address);
+		task = new PollTask(bus, hardware, unit); //Initialize the task to be run
 		executor = new ScheduledThreadPoolExecutor(1); //We want one task to be run at a time
 		bus.write(0x00, 0x00); //Reset the Lidar
 	}
@@ -107,9 +101,8 @@ public class Lidar implements DistanceSensor {
 	}
 
 	public void stop() {
-		if (future != null) {
+		if (future != null)
 			future.cancel(false); //Stop at the next available break
-		}
 	}
 
 	public Data getLatestData() {
