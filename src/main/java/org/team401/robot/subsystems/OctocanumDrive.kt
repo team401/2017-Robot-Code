@@ -21,7 +21,7 @@ import org.team401.lib.Rotation2d
 object OctocanumDrive : Subsystem() {
 
     enum class DriveControlState {
-        OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
+        OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL, IGNORE_INPUT
     }
 
     /**
@@ -124,7 +124,9 @@ object OctocanumDrive : Subsystem() {
      * @param rightYThrottle Right joysticks getRoll() value
      */
     fun drive(leftYThrottle: Double, leftXThrottle: Double, rightXThrottle: Double) {
-        if (controlState != DriveControlState.OPEN_LOOP) {
+        if (controlState == DriveControlState.IGNORE_INPUT) {
+            return
+        } else if (controlState != DriveControlState.OPEN_LOOP) {
             controlState = DriveControlState.OPEN_LOOP
             configureTalonsForOpenLoopControl()
         }
@@ -286,6 +288,13 @@ object OctocanumDrive : Subsystem() {
 
     fun resetHeadingSetpoint() {
         lastSetGyroHeading = null
+    }
+
+    fun setIgnoreInput(on: Boolean) {
+        if (on)
+            controlState = DriveControlState.IGNORE_INPUT
+        else
+            controlState = DriveControlState.OPEN_LOOP
     }
 
     private fun rotationsToInches(rotations: Double): Double {

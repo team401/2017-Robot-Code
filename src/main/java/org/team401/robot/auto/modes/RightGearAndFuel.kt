@@ -14,7 +14,7 @@ class RightGearAndFuel : AutoMode() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
         OctocanumDrive.setBrakeMode(true)
-        val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8))
+        val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.AUTO), DriveDistanceAction(-dStatToAir * 2, .8))
         runAction(ParallelAction(actions))
         runAction(RotateAction(Rotation2d.fromDegrees(-55.0)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))

@@ -18,6 +18,7 @@ object ControlBoard {
     fun getToggleCamera() = drive.getButton(3)
     fun getToggleGear() = drive.getButton(8)
     fun getResetGyro() = drive.getButton(9)
+    fun getGyroPadAngle() = drive.getDPad(0)
 
     // controls turret
     fun getShootFuel() = mash.getButton(2)

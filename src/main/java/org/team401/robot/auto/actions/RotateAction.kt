@@ -10,10 +10,11 @@ class RotateAction(val heading: Rotation2d, val power: Double = 0.35, timeout: D
 
     override fun onStart() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
+        OctocanumDrive.setIgnoreInput(true)
         if (start.rotateBy(heading.inverse()).degrees < 0)
-            OctocanumDrive.drive(0.0, 0.0, power)
+            OctocanumDrive.drive(power, -power)
         else
-            OctocanumDrive.drive(0.0, 0.0, -power)
+            OctocanumDrive.drive(-power, power)
     }
 
     override fun onUpdate() {
@@ -21,11 +22,12 @@ class RotateAction(val heading: Rotation2d, val power: Double = 0.35, timeout: D
     }
 
     override fun isFinished(): Boolean {
-        return Math.abs(heading.inverse().rotateBy(OctocanumDrive.getGyroAngle()).degrees) < 2
+        return Math.abs(heading.rotateBy(OctocanumDrive.getGyroAngle().inverse()).degrees) < 2
     }
 
     override fun onStop() {
         OctocanumDrive.drive(0.0, 0.0)
         OctocanumDrive.shift(tmpDriveMode)
+        OctocanumDrive.setIgnoreInput(false)
     }
 }
