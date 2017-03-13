@@ -24,8 +24,8 @@ public class Robot extends IterativeRobot {
 
     private static VisionDataStream visionDataStream;
     private static VisionController visionController;
-    private static Turret turret;
 
+    private static Turret turret = Turret.getInstance();
     private static Intake intake = Intake.INSTANCE;
     private static GearHolder gearHolder = GearHolder.INSTANCE;
     private static Hopper hopper = Hopper.INSTANCE;
@@ -47,8 +47,6 @@ public class Robot extends IterativeRobot {
             Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
             compressorFan.set(true);
 
-            turret = Turret.getInstance();
-
             enabledLoop = new LoopManager();
             enabledLoop.register(intake.getSubsystemLoop());
             enabledLoop.register(gearHolder.getSubsystemLoop());
@@ -60,6 +58,7 @@ public class Robot extends IterativeRobot {
 
             disabledLoop = new LoopManager();
             disabledLoop.register(new GyroCalibrator());
+            disabledLoop.register(new TurretCalibrator());
 
             System.out.println("Done! Linking controls to code...");
             SwitchReactor switchReactor = Strongback.switchReactor();

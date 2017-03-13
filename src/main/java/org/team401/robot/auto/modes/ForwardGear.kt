@@ -1,13 +1,12 @@
 package org.team401.robot.auto.modes
 
-import edu.wpi.first.wpilibj.Timer
 import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.actions.*
 import org.team401.robot.subsystems.GearHolder
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
-class ForwardGearMode : AutoMode() {
+class ForwardGear : AutoMode() {
 
     override fun routine() {
         runAction(CalibrateTurretAction(Turret.TurretState.AUTO))

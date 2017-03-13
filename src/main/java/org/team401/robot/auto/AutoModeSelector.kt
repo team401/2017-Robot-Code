@@ -34,28 +34,37 @@ class AutoModeSelector {
         when (strategyChooser.selected) {
             Auto.GEAR -> {
                 when (positionChooser.selected) {
-                    StartingPos.LEFT -> return LeftGearMode()
-                    StartingPos.CENTER -> return ForwardGearMode()
-                    StartingPos.RIGHT -> return RightGearMode()
-                    else -> return CalibrateTurretMode()
+                    StartingPos.LEFT -> return LeftGear()
+                    StartingPos.CENTER -> return ForwardGear()
+                    StartingPos.RIGHT -> return RightGear()
+                    else -> return CalibrateTurret()
                 }
             }
             Auto.FUEL -> {
-                if ((positionChooser.selected != StartingPos.RIGHT && HAL.getAllianceStation().ordinal >= 3) ||
-                        (positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal < 3)) {
+                if ((positionChooser.selected != StartingPos.RIGHT && HAL.getAllianceStation().ordinal < 3) ||
+                        (positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal >= 3)) {
                     println("Bad fuel auto configuration!!!")
-                    return CalibrateTurretMode()
+                    return CalibrateTurret()
                 } else {
                     if (HAL.getAllianceStation().ordinal >= 3)
-                        return RightFuelMode()
+                        return LeftFuel()
                     else
-                        return LeftFuelMode()
+                        return RightFuel()
                 }
             }
             Auto.GEAR_FUEL -> {
-                return CalibrateTurretMode()
+                if ((positionChooser.selected != StartingPos.RIGHT && HAL.getAllianceStation().ordinal < 3) ||
+                        (positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal >= 3)) {
+                    println("Bad fuel auto configuration!!!")
+                    return CalibrateTurret()
+                } else {
+                    if (HAL.getAllianceStation().ordinal >= 3)
+                        return LeftGearAndFuel()
+                    else
+                        return RightGearAndFuel()
+                }
             }
-            else -> return CalibrateTurretMode()
+            else -> return CalibrateTurret()
         }
     }
 }

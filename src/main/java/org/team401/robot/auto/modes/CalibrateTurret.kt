@@ -6,7 +6,7 @@ import org.team401.robot.subsystems.GearHolder
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
-class CalibrateTurretMode : AutoMode() {
+class CalibrateTurret : AutoMode() {
 
     override fun routine() {
         GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)

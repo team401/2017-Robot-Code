@@ -6,12 +6,19 @@ import org.team401.robot.auto.actions.Action
 
 abstract class AutoMode {
 
+    companion object {
+        const val dStatToAir = 4.75*12 // driver station to turning angle to airship
+        const val dAirToGear = 2.75*12 // ^^ to gear peg
+        const val dGearToBaseL = 3.25*12 // ^^ back to base line
+        const val dBaseLToHop = 2.50*12 // ^^ to hopper
+        const val dBaseToReload = 5.0*12 // baseline off to reloading station
+    }
+
     abstract fun routine()
 
     fun run() {
         try {
             routine()
-            done()
             println("Auto Finished!")
         } catch (e: Throwable) {
             CrashTracker.logThrowableCrash(e)
@@ -33,5 +40,6 @@ abstract class AutoMode {
             if (action.isTimedOut())
                 return action.onInterrupt()
         }
+        action.onStop()
     }
 }

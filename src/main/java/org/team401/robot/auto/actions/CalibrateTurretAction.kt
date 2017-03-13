@@ -21,6 +21,7 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
 
     override fun onInterrupt() {
         turret.turretRotator.rotate(0.0)
+        turret.setWantedState(Turret.TurretState.DISABLED)
         println("Turret couldn't be calibrated!")
     }
 

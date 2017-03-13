@@ -113,13 +113,13 @@ public class Turret extends Subsystem {
         return 0.0;
     }
 
-    private void sentryMode() {
+    private void sentry() {
         if (sentryRight) {
-            turretRotator.setPosition(0);
+            turretRotator.rotate(.10);
             if (turretRotator.getPosition() < 5)
                 sentryRight = false;
         } else {
-            turretRotator.setPosition(turretRotator.getMaxAngle());
+            turretRotator.rotate(-.10);
             if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
                 sentryRight = true;
         }
@@ -136,21 +136,21 @@ public class Turret extends Subsystem {
                 if (track())
                     speed = getSpeedForDistance();
             } else {
-                sentryMode();
+                sentry();
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
             if (Math.abs(turnSpeed) > .5)
                 if (turnSpeed > 0) {
                     if (turnSpeed > .95)
-                        turretRotator.addDegrees(20);
+                        turretRotator.rotate(.10);
                     else
-                        turretRotator.addDegrees(1);
+                        turretRotator.addDegrees(.04);
                 } else {
                     if (turnSpeed < -.95)
-                        turretRotator.addDegrees(-20);
+                        turretRotator.rotate(-.10);
                     else
-                        turretRotator.addDegrees(-1);
+                        turretRotator.addDegrees(-.04);
                 }
             speed = MathUtils.INSTANCE.toRange(ControlBoard.INSTANCE.getTurretThrottle(), -1, 1, 1000, 4600);
         }
@@ -181,7 +181,6 @@ public class Turret extends Subsystem {
     }
 
     public void zeroSensors() {
-        turretRotator.stop();
         turretRotator.zero();
     }
 
