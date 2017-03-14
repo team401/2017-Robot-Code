@@ -81,6 +81,7 @@ object Intake : Subsystem() {
 
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN)
+		SmartDashboard.putBoolean("intake_enabled", state == IntakeState.ENABLED)
 		SmartDashboard.putNumber("intake_current_voltage", motor.speed)
 		SmartDashboard.putNumber("intake_target_voltage", targetVoltage)
 	}

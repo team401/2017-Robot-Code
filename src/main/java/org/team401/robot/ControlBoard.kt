@@ -31,7 +31,11 @@ object ControlBoard {
     fun getToggleIntake() = mash.getButton(9)
     fun getClimb() = mash.getButton(8)
     fun getCalibrateTurret() = mash.getButton(10)
+    fun getTurretSnapAngle() = mash.getDPad(0).direction
 
     fun getTurretYaw() = mash.getAxis(0).read()
     fun getTurretThrottle() = mash.getAxis(3).read()
+
+    fun getDriveController() = drive
+    fun getMasherController() = mash
 }

@@ -87,7 +87,7 @@ public class Turret extends Subsystem {
         flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         flywheel.set(0);
         flywheel.reverseOutput(true);
-        flywheel.reverseSensor(true);
+        //flywheel.reverseSensor(true);
         flywheel.setInverted(true);
         flywheel.setSafetyEnabled(false);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
@@ -118,11 +118,11 @@ public class Turret extends Subsystem {
 
     private void sentry() {
         if (sentryRight) {
-            turretRotator.rotate(.8);
+            turretRotator.rotate(.08);
             if (turretRotator.getPosition() < 5)
                 sentryRight = false;
         } else {
-            turretRotator.rotate(-.8);
+            turretRotator.rotate(-.08);
             if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
                 sentryRight = true;
         }
@@ -143,6 +143,7 @@ public class Turret extends Subsystem {
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
+            int angle = ControlBoard.INSTANCE.getTurretSnapAngle();
             if (Math.abs(turnSpeed) > .5) {
                 if (turnSpeed > 0) {
                     if (turnSpeed > .95)
@@ -155,6 +156,13 @@ public class Turret extends Subsystem {
                     else
                         turretRotator.rotate(-.04);
                 }
+            } else if (angle != -1) {
+                if (angle == 270)
+                    turretRotator.setPosition(turretRotator.getMaxAngle());
+                else if (angle == 0)
+                    turretRotator.setPosition(turretRotator.getMaxAngle()/2+5);
+                else if (angle == 90)
+                    turretRotator.setPosition(0);
             } else {
                 turretRotator.rotate(0);
             }
@@ -183,7 +191,7 @@ public class Turret extends Subsystem {
                     rpmOffset -= 100;
                 else
                     rpmOffset -= 10;
-            flywheel.set(normalizeRPM(speed));
+            flywheel.set(normalizeRPM(speed + rpmOffset));
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                 feeder.set(1);
         } else {
@@ -259,7 +267,7 @@ public class Turret extends Subsystem {
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint());
         SmartDashboard.putBoolean("sentry_enabled", state.compareTo(TurretState.SENTRY) >= 0);
         SmartDashboard.putBoolean("auto_shooting_enabled", state == TurretState.AUTO);
-        SmartDashboard.putBoolean("turret_disabled", state == TurretState.DISABLED);
+        SmartDashboard.putBoolean("turret_enabled", state != TurretState.DISABLED);
     }
 
     public Loop getSubsystemLoop() {

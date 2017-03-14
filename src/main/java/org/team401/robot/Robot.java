@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
+import org.team401.lib.Rotation2d;
 import org.team401.robot.auto.AutoModeExecuter;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
+import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
@@ -66,13 +68,20 @@ public class Robot extends IterativeRobot {
 			// drive
 			switchReactor.onTriggered(controls.getShift(),
 					() -> drive.shift());
-			switchReactor.onTriggered(controls.getToggleHeading(),
 
+			switchReactor.onTriggered(controls.getToggleHeading(),
 					() -> drive.setNewHeadingSetpoint());
 			switchReactor.onUntriggered(controls.getToggleHeading(),
 					() -> drive.resetHeadingSetpoint());
 			switchReactor.onTriggered(controls.getResetGyro(),
 					() -> drive.getGyro().reset());
+
+			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0), .35, 5).asSbCommand());
+			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 90,
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-55), .35, 5).asSbCommand());
+			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(55), .35, 5).asSbCommand());
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
@@ -131,17 +140,16 @@ public class Robot extends IterativeRobot {
 						if (turret.getCurrentState() != Turret.TurretState.AUTO)
 							turret.setWantedState(Turret.TurretState.AUTO);
 						else
-							turret.setWantedState(Turret.TurretState.SENTRY);
+							turret.setWantedState(Turret.TurretState.MANUAL);
 					});
 			switchReactor.onTriggered(controls.getToggleSentry(),
 					() -> {
 						if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
 							return;
-						if (turret.getCurrentState() == Turret.TurretState.AUTO ||
-								turret.getCurrentState() == Turret.TurretState.MANUAL)
-							turret.setWantedState(Turret.TurretState.SENTRY);
-						else
+						if (turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0)
 							turret.setWantedState(Turret.TurretState.MANUAL);
+						else
+							turret.setWantedState(Turret.TurretState.SENTRY);
 					});
 
 			System.out.println("Done! Creating SmartDashboard interactions...");
