@@ -21,7 +21,7 @@ object ControlBoard {
     fun getGyroPadAngle() = drive.getDPad(0)
 
     // controls turret
-    fun getShootFuel() = mash.getButton(2)
+    fun getShootFuel() = mash.getButton(12)
     fun getToggleSentry() = mash.getButton(3)
     fun getToggleAuto() = mash.getButton(1)
     fun getToggleHood() = mash.getButton(11)

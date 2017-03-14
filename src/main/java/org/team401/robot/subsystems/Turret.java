@@ -40,6 +40,9 @@ public class Turret extends Subsystem {
     private boolean isFiring = false;
     private boolean sentryRight = false;
 
+    private int minRPM = 1000, maxRPM = 4600;
+    private int rpmOffset = 0;
+
     private Loop loop = new Loop() {
         @Override
         public void onStart() {
@@ -108,18 +111,18 @@ public class Turret extends Subsystem {
         return false;
     }
 
-    private double getSpeedForDistance() {
+    private int getSpeedForDistance() {
         double distance = distanceSensor.getDistance();
-        return 0.0;
+        return 0;
     }
 
     private void sentry() {
         if (sentryRight) {
-            turretRotator.rotate(.10);
+            turretRotator.rotate(.8);
             if (turretRotator.getPosition() < 5)
                 sentryRight = false;
         } else {
-            turretRotator.rotate(-.10);
+            turretRotator.rotate(-.8);
             if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
                 sentryRight = true;
         }
@@ -129,7 +132,7 @@ public class Turret extends Subsystem {
         if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
             return;
         latestData = Robot.getVisionDataStream().getLatestGoalData();
-        double speed = 0.0;
+        int speed = 0;
         // rotation code
         if (state.compareTo(TurretState.SENTRY) >= 0) { // auto turret control
             if (latestData.isValid()) {
@@ -155,23 +158,36 @@ public class Turret extends Subsystem {
             } else {
                 turretRotator.rotate(0);
             }
-            speed = MathUtils.INSTANCE.toRange(ControlBoard.INSTANCE.getTurretThrottle(), -1, 1, 1000, 4600);
         }
         // shooting code
         if (state == TurretState.AUTO && speed != 0) { // auto shooting
             isFiring = true;
-            configTalonsForSpeedControl();
-            flywheel.set(speed);
-            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-                feeder.set(1);
         } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && ControlBoard.INSTANCE.getShootFuel().isTriggered()) { // manual shooting
             isFiring = true;
-            configTalonsForSpeedControl();
-            flywheel.set(speed);
-            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-                feeder.set(1);
         } else { // dont shoot
             isFiring = false;
+        }
+
+        if (isFiring) {
+            configTalonsForSpeedControl();
+            if (speed == 0)
+                speed = (maxRPM - minRPM) / 2;
+            double delta = ControlBoard.INSTANCE.getTurretThrottle();
+            if (delta > 0)
+                if (delta > .95)
+                    rpmOffset += 100;
+                else
+                    rpmOffset += 10;
+            else
+                if (delta < -.95)
+                    rpmOffset -= 100;
+                else
+                    rpmOffset -= 10;
+            flywheel.set(normalizeRPM(speed));
+            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
+                feeder.set(1);
+        } else {
+            rpmOffset = 0;
             flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
             flywheel.set(0);
             feeder.set(0);
@@ -218,6 +234,14 @@ public class Turret extends Subsystem {
 
     public boolean isFiring() {
         return isFiring;
+    }
+
+    private int normalizeRPM(int speed) {
+        if (speed > maxRPM)
+            return maxRPM;
+        if (speed < minRPM)
+            return minRPM;
+        return speed;
     }
 
     @Override
