@@ -10,8 +10,8 @@ import java.text.DecimalFormat
  */
 class Rotation2d : Interpolable<Rotation2d> {
 
-	private var cosAngle: Double = 0.0
-	private var sinAngle: Double = 0.0
+	private var cosAngle = 0.0
+	private var sinAngle = 0.0
 
 	constructor(x: Double = 1.0, y: Double = 0.0, normalize: Boolean = false) {
 		cosAngle = x

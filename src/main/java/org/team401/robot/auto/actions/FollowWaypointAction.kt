@@ -58,8 +58,4 @@ class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
 	override fun isFinished(): Boolean {
 		return left.isFinished && right.isFinished
 	}
-
-	override fun onStop() {
-
-	}
 }

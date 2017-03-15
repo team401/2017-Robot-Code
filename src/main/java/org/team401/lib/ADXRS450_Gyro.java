@@ -28,19 +28,19 @@ import java.nio.ByteOrder;
  */
 @SuppressWarnings({"TypeName", "AbbreviationAsWordInName", "PMD.UnusedPrivateField"})
 public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
-	private static final double kSamplePeriod = 0.001;
+	private static final double kSamplePeriod = 0.001,
+		kDegreePerSecondPerLSB = 0.0125;
 	public static final double kCalibrationSampleTime = 5.0;
-	private static final double kDegreePerSecondPerLSB = 0.0125;
 
-	private static final int kRateRegister = 0x00;
-	private static final int kTemRegister = 0x02;
-	private static final int kLoCSTRegister = 0x04;
-	private static final int kHiCSTRegister = 0x06;
-	private static final int kQuadRegister = 0x08;
-	private static final int kFaultRegister = 0x0A;
-	private static final int kPIDRegister = 0x0C;
-	private static final int kSNHighRegister = 0x0E;
-	private static final int kSNLowRegister = 0x10;
+	private static final int kRateRegister = 0x00,
+		kTemRegister = 0x02,
+		kLoCSTRegister = 0x04,
+		kHiCSTRegister = 0x06,
+		kQuadRegister = 0x08,
+		kFaultRegister = 0x0A,
+		kPIDRegister = 0x0C,
+		kSNHighRegister = 0x0E,
+		kSNLowRegister = 0x10;
 
 	private SPI m_spi;
 

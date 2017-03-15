@@ -10,9 +10,8 @@ object MotionProfileParser {
 	 */
 	fun parse(name: String, path: String): MotionProfile {
 		val empty = MotionProfile(name, DoubleArray(0), DoubleArray(0), IntArray(0))
-		val file = File(path)
 		val lines = try {
-			file.readLines()
+			File(path).readLines()
 		} catch (e: Exception) {
 			println("Could not find motion profile $path")
 			CrashTracker.logThrowableCrash(e)

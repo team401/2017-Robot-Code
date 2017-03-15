@@ -33,8 +33,8 @@ public class Lidar implements DistanceSensor {
 		private Hardware hardware;
 		private Unit unit;
 		private AtomicReference<Data> latestData;
-		private byte[] buffer = {0,0};
-		private byte[] writeBuffer = new byte[1];
+		private byte[] buffer = {0,0},
+			writeBuffer = new byte[1];
 
 		private PollTask(I2C bus, Hardware hardware, Unit unit) {
 			this.bus = bus;

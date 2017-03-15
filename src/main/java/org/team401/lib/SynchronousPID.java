@@ -56,9 +56,8 @@ public class SynchronousPID {
 	public double calculate(double input) {
 		lastInput = input;
 		error = setpoint - input;
-		if (continuous)
-			if (Math.abs(error) > (maximumInput - minimumInput) / 2)
-				error += (maximumInput - minimumInput) * error > 0 ? -1 : 1;
+		if (continuous && Math.abs(error) > (maximumInput - minimumInput) / 2)
+			error += (maximumInput - minimumInput) * error > 0 ? -1 : 1;
 
 		totalError += error * kP < maximumOutput && error * kP > minimumOutput ? error : 0;
 
@@ -176,7 +175,17 @@ public class SynchronousPID {
 	 *            the desired setpoint
 	 */
 	public void setSetpoint(double setpoint) {
-		if (maximumInput > minimumInput)
+		// compound ternary statements
+		this.setpoint = maximumInput > minimumInput ?
+				setpoint > maximumInput ?
+					maximumInput :
+					setpoint < minimumInput ?
+						minimumInput :
+						setpoint :
+				setpoint;
+
+		// if/else statements
+		/*if (maximumInput > minimumInput)
 			if (setpoint > maximumInput)
 				this.setpoint = maximumInput;
 			else if (setpoint < minimumInput)
@@ -184,7 +193,7 @@ public class SynchronousPID {
 			else
 				this.setpoint = setpoint;
 		else
-			this.setpoint = setpoint;
+			this.setpoint = setpoint;*/
 	}
 
 	/**

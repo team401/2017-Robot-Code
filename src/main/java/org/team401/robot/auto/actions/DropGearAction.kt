@@ -28,8 +28,4 @@ class DropGearAction(val duration: Double) : Action() {
 	override fun isFinished(): Boolean {
 		return true
 	}
-
-	override fun onStop() {
-
-	}
 }

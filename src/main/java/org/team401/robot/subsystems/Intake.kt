@@ -22,10 +22,7 @@ object Intake : Subsystem() {
 
 		override fun onLoop() {
 			solenoid.set(enabled)
-			if (enabled)
-				motor.speed = 1.0
-			else
-				motor.speed = 0.0
+			motor.speed = if (enabled) 1.0 else	0.0
 		}
 
 		override fun onStop() {
