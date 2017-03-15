@@ -40,4 +40,9 @@ class OctocanumGearbox(val motor: CANTalon, private val slave: CANTalon) {
     fun setOutput(output: Double) {
         motor.set(output)
     }
+
+    fun setBrakeMode(on: Boolean) {
+        motor.enableBrakeMode(on)
+        slave.enableBrakeMode(on)
+    }
 }

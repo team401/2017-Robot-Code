@@ -339,7 +339,7 @@ object OctocanumDrive : Subsystem() {
 
     fun setBrakeMode(on: Boolean) {
         if (brakeModeOn != on)
-            gearboxes.forEach { it.config { it.enableBrakeMode(on) } }
+            gearboxes.forEach { it.setBrakeMode(on) }
         brakeModeOn = on
     }
 

@@ -39,13 +39,13 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		CrashTracker.INSTANCE.logRobotInit();
 		try {
-			System.out.println("Vision network starting...");
+			System.out.print("Vision network starting... ");
 			visionDataStream = new VisionDataStream("10.4.1.17", 5801);
 			visionDataStream.start();
 			visionController = new VisionController("10.4.1.17", 5803);
 			visionController.start();
 
-			System.out.println("Done! Initializing subsystems...");
+			System.out.print("Done!\nInitializing subsystems... ");
 			Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
 			compressorFan.set(true);
 
@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
 			disabledLoop.register(new GyroCalibrator());
 			disabledLoop.register(new TurretCalibrator());
 
-			System.out.println("Done! Linking controls to code...");
+			System.out.print("Done!\nLinking controls to code... ");
 			SwitchReactor switchReactor = Strongback.switchReactor();
 
 			// drive
@@ -135,7 +135,7 @@ public class Robot extends IterativeRobot {
 							turret.setWantedState(Turret.TurretState.SENTRY);
 					});
 
-			System.out.println("Done! Creating SmartDashboard interactions...");
+			System.out.print("Done!\nCreating SmartDashboard interactions... ");
 			autoSelector = new AutoModeSelector();
 
 			SmartDashboardData data = new SmartDashboardData();
@@ -147,10 +147,10 @@ public class Robot extends IterativeRobot {
 			enabledLoop.register(data);
 			disabledLoop.register(data);
 
-			System.out.println("Done! Setting cameras to stream mode...");
+			System.out.print("Done!\nSetting cameras to stream mode... ");
 			visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
 			visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
-			System.out.println("Done! Robot is ready for match!");
+			System.out.print("Done!\nRobot is ready for match!");
 
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
