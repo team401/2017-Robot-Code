@@ -68,15 +68,11 @@ public class Robot extends IterativeRobot {
 			SwitchReactor switchReactor = Strongback.switchReactor();
 
 			// drive
-			switchReactor.onTriggered(controls.getShift(),
-					() -> drive.shift());
+			switchReactor.onTriggered(controls.getShift(), () -> drive.shift());
 
-			switchReactor.onTriggered(controls.getToggleHeading(),
-					() -> drive.setNewHeadingSetpoint());
-			switchReactor.onUntriggered(controls.getToggleHeading(),
-					() -> drive.resetHeadingSetpoint());
-			switchReactor.onTriggered(controls.getResetGyro(),
-					() -> drive.getGyro().reset());
+			switchReactor.onTriggered(controls.getToggleHeading(), () -> drive.setNewHeadingSetpoint());
+			switchReactor.onUntriggered(controls.getToggleHeading(), () -> drive.resetHeadingSetpoint());
+			switchReactor.onTriggered(controls.getResetGyro(), () -> drive.getGyro().reset());
 
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0), .35, 5).asSbCommand());
@@ -84,57 +80,46 @@ public class Robot extends IterativeRobot {
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-55), .35, 5).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(55), .35, 5).asSbCommand());
+
 			// camera switching
-			switchReactor.onTriggered(controls.getToggleCamera(),
-					() -> visionController.toggleActiveCamera());
+			switchReactor.onTriggered(controls.getToggleCamera(), () -> visionController.toggleActiveCamera());
+
 			// collection
-			switchReactor.onTriggered(controls.getToggleIntake(),
-					() -> intake.setEnabled(true));
-			switchReactor.onUntriggered(controls.getToggleIntake(),
-					() -> intake.setEnabled(false));
+			switchReactor.onTriggered(controls.getToggleIntake(), () -> intake.setEnabled(true));
+			switchReactor.onUntriggered(controls.getToggleIntake(), () -> intake.setEnabled(false));
 
 			switchReactor.onTriggered(controls.getInverseHopper(),
-					() -> {
-						if (hopper.getCurrentState() != Hopper.HopperState.INVERTED)
-							hopper.setWantedState(Hopper.HopperState.INVERTED);
-						else
-							hopper.setWantedState(Hopper.HopperState.OFF);
-					});
+					() -> hopper.setWantedState(hopper.getCurrentState() != Hopper.HopperState.INVERTED ?
+							Hopper.HopperState.INVERTED :
+							Hopper.HopperState.OFF));
 			// climbing
 			// scoring
 
 			// tower
 			switchReactor.onTriggered(controls.getToggleTower(),
-					() -> {
-						if (gearHolder.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-							gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_IN);
-						else
-							gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
-					});
+					() -> gearHolder.setWantedState(gearHolder.getCurrentState() != GearHolder.GearHolderState.TOWER_IN ?
+							GearHolder.GearHolderState.TOWER_IN :
+							GearHolder.GearHolderState.TOWER_OUT));
 			// turret
 			switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),
 					() -> new CalibrateTurretAction(Turret.TurretState.SENTRY).asSbCommand());
 			switchReactor.onTriggered(controls.getToggleHood(),
-					() ->
-						turret.extendHood(!turret.isHoodExtended())
-					);
+					() -> turret.extendHood(!turret.isHoodExtended()));
 			switchReactor.onTriggered(controls.getToggleAuto(),
 					() -> {
 						if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
 							return;
-						if (turret.getCurrentState() != Turret.TurretState.AUTO)
-							turret.setWantedState(Turret.TurretState.AUTO);
-						else
-							turret.setWantedState(Turret.TurretState.MANUAL);
+						turret.setWantedState(turret.getCurrentState() != Turret.TurretState.AUTO ?
+							Turret.TurretState.AUTO :
+							Turret.TurretState.MANUAL);
 					});
 			switchReactor.onTriggered(controls.getToggleSentry(),
 					() -> {
 						if (turret.getCurrentState() == Turret.TurretState.CALIBRATING)
 							return;
-						if (turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0)
-							turret.setWantedState(Turret.TurretState.MANUAL);
-						else
-							turret.setWantedState(Turret.TurretState.SENTRY);
+						turret.setWantedState(turret.getCurrentState().compareTo(Turret.TurretState.MANUAL) > 0 ?
+							Turret.TurretState.MANUAL :
+							Turret.TurretState.SENTRY);
 					});
 
 			System.out.print("Done!\nCreating SmartDashboard interactions...");

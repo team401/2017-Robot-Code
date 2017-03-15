@@ -9,21 +9,12 @@ object MotionProfileParser {
 	 * Parses a motion profile from a .csv file. Returns an empty profile if any error occurs.
 	 */
 	fun parse(name: String, path: String): MotionProfile {
-		val empty = MotionProfile(name, DoubleArray(0), DoubleArray(0), IntArray(0))
-		val lines = try {
-			File(path).readLines()
-		} catch (e: Exception) {
-			println("Could not find motion profile $path")
-			CrashTracker.logThrowableCrash(e)
-			return empty
-		}
-
 		val positions = ArrayList<Double>()
 		val speeds = ArrayList<Double>()
 		val durations = ArrayList<Int>()
 
 		try {
-			lines.forEach {
+			File(path).readLines().forEach {
 				val entries = it.substring(1, it.length - 3).split(",")
 				positions.add(entries[0].toDouble())
 				speeds.add(entries[1].toDouble())
@@ -32,7 +23,7 @@ object MotionProfileParser {
 		} catch (e: Exception) {
 			print("Could not parse motion profile $path")
 			CrashTracker.logThrowableCrash(e)
-			return empty
+			return MotionProfile(name, DoubleArray(0), DoubleArray(0), IntArray(0))
 		}
 
 		return MotionProfile(name, positions.toDoubleArray(), speeds.toDoubleArray(), durations.toIntArray())

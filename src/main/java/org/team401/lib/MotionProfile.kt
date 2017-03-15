@@ -18,9 +18,7 @@ class MotionProfile(val name: String, private val positions: DoubleArray,
         point.position = positions[currentIndex]
         point.velocity = speeds[currentIndex]
         point.timeDurMs = durations[currentIndex]
-        point.isLastPoint = false
-        if (currentIndex+1 == totalPoints)
-            point.isLastPoint = true
+        point.isLastPoint = currentIndex+1 == totalPoints
 
         currentIndex++
         return point

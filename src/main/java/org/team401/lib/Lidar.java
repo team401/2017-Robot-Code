@@ -33,15 +33,15 @@ public class Lidar implements DistanceSensor {
 		private Hardware hardware;
 		private Unit unit;
 		private AtomicReference<Data> latestData;
-		private byte[] buffer = {0,0},
-			writeBuffer = new byte[1];
+		private byte[] buffer = {0,0};
+		private byte writeBuffer = 0;
 
 		private PollTask(I2C bus, Hardware hardware, Unit unit) {
 			this.bus = bus;
 			this.hardware = hardware;
 			this.unit = unit;
 			latestData = new AtomicReference<>(new Data(0, Unit.CENTIMETERS));
-			writeBuffer[0] = (byte) this.hardware.r2ByteRead;
+			writeBuffer = (byte) this.hardware.r2ByteRead;
 		}
 
 		@Override
@@ -50,7 +50,7 @@ public class Lidar implements DistanceSensor {
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException ignored) {}
-			bus.writeBulk(writeBuffer);
+			bus.writeBulk(new byte[]{writeBuffer});
 			bus.readOnly(buffer, 2); //Read the bytes
 			latestData.set(new Data(((buffer[0] << 8) + buffer[1]), unit)); //Write the data to the data holder
 			try {

@@ -24,7 +24,7 @@ import java.nio.ByteOrder;
  * instantiated, it does a short calibration routine where it samples the gyro while at rest to
  * determine the default offset. This is subtracted from each sample to determine the heading.
  *
- * <p>This class is for the digital ADXRS450 gyro sensor that connects via SPI.
+ * This class is for the digital ADXRS450 gyro sensor that connects via SPI.
  */
 @SuppressWarnings({"TypeName", "AbbreviationAsWordInName", "PMD.UnusedPrivateField"})
 public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
@@ -126,32 +126,18 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 		return m_last_center;
 	}
 
-	private boolean calcParity(int value) {
-		boolean parity = false;
-		while (value != 0) {
-			parity = !parity;
-			value = value & (value - 1);
-		}
-		return parity;
-	}
-
 	private int readRegister(int reg) {
 		int cmdhi = 0x8000 | (reg << 1);
-		boolean parity = calcParity(cmdhi);
 
-		ByteBuffer buf = ByteBuffer.allocateDirect(4);
-		buf.order(ByteOrder.BIG_ENDIAN);
-		buf.put(0, (byte) (cmdhi >> 8));
-		buf.put(1, (byte) (cmdhi & 0xff));
-		buf.put(2, (byte) 0);
-		buf.put(3, (byte) (parity ? 0 : 1));
+		byte[] buffer = {
+			(byte)(cmdhi >> 8),
+			(byte)(cmdhi & 0xff),
+			0,
+			(byte)(cmdhi % 2 == 0 ? 0 : 1)};
 
-		m_spi.write(buf, 4);
-		m_spi.read(false, buf, 4);
-
-		return (buf.get(0) & 0xe0) == 0 ?
-			0 : // error, return 0
-			(buf.getInt(0) >> 5) & 0xffff;
+		m_spi.write(buffer, 4);
+		m_spi.read(false, buffer, 4);
+		return (buffer[0] & 0xe0) == 0 ? 0 : (int)buffer[0] >> 5 & 0xffff;
 	}
 
 
