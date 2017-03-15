@@ -6,21 +6,21 @@ package org.team401.robot.auto
  */
 class AutoModeExecuter(val autoMode: AutoMode) {
 
-    private val thread: Thread
+	private val thread: Thread
 
-    init {
-        thread = Thread {
-            autoMode.run()
-        }
-    }
+	init {
+		thread = Thread {
+			autoMode.run()
+		}
+	}
 
-    fun start() {
-        thread.start()
-    }
+	fun start() {
+		thread.start()
+	}
 
-    fun stop() {
-        if (thread.isAlive)
-            thread.interrupt()
-        autoMode.done()
-    }
+	fun stop() {
+		if (thread.isAlive)
+			thread.interrupt()
+		autoMode.done()
+	}
 }

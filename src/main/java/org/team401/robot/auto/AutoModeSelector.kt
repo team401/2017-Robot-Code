@@ -45,20 +45,20 @@ class AutoModeSelector {
 						(positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal >= 3)) {
 					println("Bad fuel auto configuration!!!")
 					return CalibrateTurret()
-				} else if (HAL.getAllianceStation().ordinal >= 3)
-					return LeftFuel()
+				} else return if (HAL.getAllianceStation().ordinal >= 3)
+					LeftFuel()
 				else
-					return RightFuel()
+					RightFuel()
 			}
 			Auto.GEAR_FUEL -> {
 				if ((positionChooser.selected != StartingPos.RIGHT && HAL.getAllianceStation().ordinal < 3) ||
 						(positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal >= 3)) {
 					println("Bad fuel auto configuration!!!")
 					return CalibrateTurret()
-				} else if (HAL.getAllianceStation().ordinal >= 3)
-					return LeftGearAndFuel()
+				} else return if (HAL.getAllianceStation().ordinal >= 3)
+					LeftGearAndFuel()
 				else
-					return RightGearAndFuel()
+					RightGearAndFuel()
 			}
 			else -> return CalibrateTurret()
 		}

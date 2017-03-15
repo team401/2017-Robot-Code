@@ -1,6 +1,6 @@
 package org.team401.robot.auto.actions
 
-import java.util.*
+import java.util.ArrayList
 
 class ParallelAction(val actions: MutableList<Action>) : Action() {
 

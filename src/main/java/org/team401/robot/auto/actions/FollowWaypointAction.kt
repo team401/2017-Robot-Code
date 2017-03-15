@@ -16,9 +16,9 @@ class FollowWaypointAction(waypoints: Array<Waypoint>) : Action() {
 	val right: EncoderFollower
 
 	init {
-		val config = Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 0.05, 1.7, 2.0, 60.0)
-		val trajectory = Pathfinder.generate(waypoints, config)
-		val modifier = TankModifier(trajectory).modify(0.5842)
+		val modifier = TankModifier(
+			Pathfinder.generate(waypoints,
+				Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, 0.05, 1.7, 2.0, 60.0))).modify(0.5842)
 
 		left = EncoderFollower(modifier.leftTrajectory)
 		right = EncoderFollower(modifier.rightTrajectory)
