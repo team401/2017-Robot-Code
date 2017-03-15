@@ -46,7 +46,7 @@ public class Turret extends Subsystem {
     private Loop loop = new Loop() {
         @Override
         public void onStart() {
-
+            SmartDashboard.putNumber("flywheel_setpoint", 0.0);
         }
 
         @Override
@@ -82,13 +82,11 @@ public class Turret extends Subsystem {
         flywheelSlave.setSafetyEnabled(false);
         flywheelSlave.changeControlMode(CANTalon.TalonControlMode.Follower);
         flywheelSlave.set(flyWheelMaster.getDeviceID());
+        flywheelSlave.setInverted(true);
         flywheel = flyWheelMaster;
         flywheel.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         flywheel.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         flywheel.set(0);
-        flywheel.reverseOutput(true);
-        //flywheel.reverseSensor(true);
-        flywheel.setInverted(true);
         flywheel.setSafetyEnabled(false);
         flywheel.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
                 Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0);
@@ -113,6 +111,7 @@ public class Turret extends Subsystem {
 
     private int getSpeedForDistance() {
         double distance = distanceSensor.getDistance();
+        SmartDashboard.putNumber("flywheel_setpoint", 0.0);
         return 0;
     }
 
@@ -142,6 +141,7 @@ public class Turret extends Subsystem {
                 sentry();
             }
         } else if (state == TurretState.MANUAL) { // manual turret control
+            speed = (int) SmartDashboard.getNumber("flywheel_setpoint", 0.0);
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
             int angle = ControlBoard.INSTANCE.getTurretSnapAngle();
             if (Math.abs(turnSpeed) > .5) {

@@ -29,12 +29,12 @@ class LeftGearAndFuel : AutoMode() {
         Thread.sleep(2000)
         runAction(RotateAction(Rotation2d.fromDegrees(70.0)))
 
-        Intake.setWantedState(Intake.IntakeState.ENABLED)
+        Intake.enabled = true
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
     }
 
     override fun done() {
-        Intake.setWantedState(Intake.IntakeState.ARM_UP)
+        Intake.enabled = false
         OctocanumDrive.setBrakeMode(false)
     }
 }

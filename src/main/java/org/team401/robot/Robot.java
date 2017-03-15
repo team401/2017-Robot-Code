@@ -85,7 +85,7 @@ public class Robot extends IterativeRobot {
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
-			// collection/climbing
+			// collection
 			switchReactor.onTriggered(controls.getToggleIntake(),
 					() -> intake.setEnabled(true));
 			switchReactor.onUntriggered(controls.getToggleIntake(),
@@ -98,6 +98,7 @@ public class Robot extends IterativeRobot {
 						else
 							hopper.setWantedState(Hopper.HopperState.OFF);
 					});
+			// climbing
 			// scoring
 
 			// tower

@@ -25,8 +25,7 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isFiring ||
-                    ControlBoard.getHopper().isTriggered)
+            if (Intake.enabled || Turret.getInstance().isFiring)
                 setWantedState(HopperState.ON)
             else if (state != HopperState.INVERTED)
                 setWantedState(HopperState.OFF)
