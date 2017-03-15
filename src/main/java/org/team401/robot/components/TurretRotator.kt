@@ -12,7 +12,7 @@ class TurretRotator(private val rotator: CANTalon) {
         rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
         rotator.set(0.0)
         rotator.reverseOutput(false)
-        rotator.configPeakOutputVoltage(2.0, -2.0)
+        rotator.configPeakOutputVoltage(1.75, -1.75)
         rotator.setAllowableClosedLoopErr(1)
         rotator.enableBrakeMode(true)
         rotator.setForwardSoftLimit((maxAngle/(Constants.TURRET_GEAR_MULTIPLIER*360)))

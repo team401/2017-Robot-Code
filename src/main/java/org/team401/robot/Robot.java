@@ -85,14 +85,12 @@ public class Robot extends IterativeRobot {
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
-			// collection
+			// collection/climbing
 			switchReactor.onTriggered(controls.getToggleIntake(),
-					() -> {
-						if (intake.getCurrentState() != Intake.IntakeState.ENABLED)
-							intake.setWantedState(Intake.IntakeState.ENABLED);
-						else
-							intake.setWantedState(Intake.IntakeState.ARM_UP);
-					});
+					() -> intake.setEnabled(true));
+			switchReactor.onUntriggered(controls.getToggleIntake(),
+					() -> intake.setEnabled(false));
+
 			switchReactor.onTriggered(controls.getInverseHopper(),
 					() -> {
 						if (hopper.getCurrentState() != Hopper.HopperState.INVERTED)
@@ -100,24 +98,8 @@ public class Robot extends IterativeRobot {
 						else
 							hopper.setWantedState(Hopper.HopperState.OFF);
 					});
-			// climbing
-			switchReactor.onUntriggered(controls.getClimb(),
-					() ->
-						intake.setWantedState(Intake.IntakeState.ARM_UP)
-					);
-			switchReactor.onTriggered(controls.getClimb(),
-					() ->
-						intake.setWantedState(Intake.IntakeState.CLIMBING)
-					);
 			// scoring
-			switchReactor.onTriggered(controls.getToggleGear(),
-					() ->
-						gearHolder.setWantedState(GearHolder.GearHolderState.OPEN)
-					);
-			switchReactor.onUntriggered(controls.getToggleGear(),
-					() ->
-						gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
-					);
+
 			// tower
 			switchReactor.onTriggered(controls.getToggleTower(),
 					() -> {

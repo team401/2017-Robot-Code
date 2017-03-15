@@ -9,18 +9,11 @@ import org.team401.robot.loops.Loop
 
 object Intake : Subsystem() {
 
-	enum class IntakeState {
-		ARM_UP, ARM_DOWN, ENABLED, CLIMBING
-	}
-
-	private var state: IntakeState = IntakeState.ARM_UP
 	private val motor = Motor.compose(Hardware.Motors.victorSP(Constants.INTAKE_1),
 			Hardware.Motors.victorSP(Constants.INTAKE_2))
 	private val solenoid = Solenoid(Constants.ARM_EXTENDER)
 
-	private var currentVoltage = 0.0
-	private var targetVoltage = 0.0
-	private val rampRate = Constants.INTAKE_RAMP_RATE * Constants.LOOP_PERIOD
+	var enabled = false
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -28,61 +21,23 @@ object Intake : Subsystem() {
 		}
 
 		override fun onLoop() {
-			when (state) {
-				IntakeState.ARM_UP -> {
-					targetVoltage = 0.0
-					solenoid.set(false)
-				}
-				IntakeState.ARM_DOWN -> {
-					targetVoltage = 0.0
-					solenoid.set(true)
-				}
-				IntakeState.ENABLED -> {
-					targetVoltage = 1.0
-					solenoid.set(true)
-				}
-				IntakeState.CLIMBING -> {
-					targetVoltage = 1.0
-					currentVoltage = 1.0
-					solenoid.set(false)
-				}
-				else -> {
-					println("Invalid intake state $state")
-					state = IntakeState.ARM_UP
-				}
-			}
-			updateVoltageRamping()
-			motor.speed = currentVoltage
+			solenoid.set(enabled)
+			if (enabled)
+				motor.speed = 1.0
+			else
+				motor.speed = 0.0
 		}
 
 		override fun onStop() {
-			currentVoltage = 0.0
+
 		}
-	}
-
-	fun setWantedState(state: IntakeState) {
-		this.state = state
-	}
-
-	fun getCurrentState() = state
-
-	fun isArmDown() = state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN
-
-	private fun updateVoltageRamping() {
-		if (targetVoltage > currentVoltage)
-			currentVoltage += rampRate
-		else
-			currentVoltage = targetVoltage
-		if (Math.abs(targetVoltage - currentVoltage) < 4*rampRate)
-			currentVoltage = targetVoltage
 	}
 
 	override fun getSubsystemLoop(): Loop = loop
 
 	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED || state == IntakeState.ARM_DOWN)
-		SmartDashboard.putBoolean("intake_enabled", state == IntakeState.ENABLED)
+		SmartDashboard.putBoolean("arm_down", enabled)
+		SmartDashboard.putBoolean("intake_enabled", enabled)
 		SmartDashboard.putNumber("intake_current_voltage", motor.speed)
-		SmartDashboard.putNumber("intake_target_voltage", targetVoltage)
 	}
 }
