@@ -181,16 +181,16 @@ public class Turret extends Subsystem {
             if (speed == 0)
                 speed = (maxRPM - minRPM) / 2;
             double delta = ControlBoard.INSTANCE.getTurretThrottle();
-            if (delta > 0)
+            if (delta > 0 && speed + rpmOffset < maxRPM)
                 if (delta > .95)
                     rpmOffset += 100;
                 else
-                    rpmOffset += 10;
-            else
+                    rpmOffset += 5;
+            else if (speed + rpmOffset > minRPM)
                 if (delta < -.95)
                     rpmOffset -= 100;
                 else
-                    rpmOffset -= 10;
+                    rpmOffset -= 5;
             flywheel.set(normalizeRPM(speed + rpmOffset));
             if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
                 feeder.set(1);
@@ -255,6 +255,7 @@ public class Turret extends Subsystem {
     @Override
     public void printToSmartDashboard() {
         SmartDashboard.putNumber("flywheel_rpm", (int) flywheel.getSpeed());
+        SmartDashboard.putNumber("flywheel_setpoint", (int) flywheel.getSetpoint());
         SmartDashboard.putNumber("flywheel_error", flywheel.getClosedLoopError());
         SmartDashboard.putNumber("turret_position", (int) turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getError());
