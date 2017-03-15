@@ -47,10 +47,7 @@ public class Turret extends Subsystem {
 
 		@Override
 		public void onLoop() {
-			if (state.compareTo(TurretState.MANUAL) > 0)
-				ledRing.set(true);
-			else
-				ledRing.set(false);
+			ledRing.set(state.compareTo(TurretState.MANUAL) > 0);
 			run();
 		}
 
@@ -136,7 +133,7 @@ public class Turret extends Subsystem {
 				sentry();
 			}
 		} else if (state == TurretState.MANUAL) { // manual turret control
-			speed = (int) SmartDashboard.getNumber("flywheel_setpoint", 0.0);
+			speed = (int) SmartDashboard.getNumber("flywheel_setpoint", 0);
 			double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
 			int angle = ControlBoard.INSTANCE.getTurretSnapAngle();
 			if (Math.abs(turnSpeed) > .5) {
