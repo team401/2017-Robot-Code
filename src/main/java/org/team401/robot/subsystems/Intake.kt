@@ -1,5 +1,6 @@
 package org.team401.robot.subsystems
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.strongback.components.Motor
@@ -30,6 +31,11 @@ object Intake : Subsystem() {
                 motor.speed = 1.0
             else
                 motor.speed = 0.0
+
+			val pdp = PowerDistributionPanel()
+			val avgCurrent = (pdp.getCurrent(0) + pdp.getCurrent(1))
+			if (avgCurrent > 40)
+				setWantedState(IntakeState.DISABLED)
 		}
 
 		override fun onStop() {
