@@ -150,7 +150,7 @@ public class Robot extends IterativeRobot {
 			System.out.print("Done!\nSetting cameras to stream mode... ");
 			visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
 			visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
-			System.out.print("Done!\nRobot is ready for match!");
+			System.out.println("Done!\nRobot is ready for match!");
 
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
