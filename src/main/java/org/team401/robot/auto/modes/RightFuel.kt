@@ -25,12 +25,12 @@ class RightFuel : AutoMode() {
         runAction(DriveDistanceAction(dBaseLToHop*2, .6))
         Thread.sleep(2000)
         runAction(RotateAction(Rotation2d.fromDegrees(-10.0)))
-        Intake.enabled = true
+        Intake.setWantedState(Intake.IntakeState.ENABLED)
         runAction(DriveDistanceAction(3.5, .35))
     }
 
     override fun done() {
-        Intake.enabled = false
+        Intake.setWantedState(Intake.IntakeState.DISABLED)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
         OctocanumDrive.setBrakeMode(false)
     }

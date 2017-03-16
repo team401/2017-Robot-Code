@@ -87,9 +87,9 @@ public class Robot extends IterativeRobot {
 					() -> visionController.toggleActiveCamera());
 			// collection
 			switchReactor.onTriggered(controls.getToggleIntake(),
-					() -> intake.setEnabled(true));
+					() -> intake.setWantedState(Intake.IntakeState.ENABLED));
 			switchReactor.onUntriggered(controls.getToggleIntake(),
-					() -> intake.setEnabled(false));
+					() -> intake.setWantedState(Intake.IntakeState.DISABLED));
 
 			switchReactor.onTriggered(controls.getInverseHopper(),
 					() -> {

@@ -9,11 +9,15 @@ import org.team401.robot.loops.Loop
 
 object Intake : Subsystem() {
 
+    enum class IntakeState {
+        DISABLED, ENABLED
+    }
+
 	private val motor = Motor.compose(Hardware.Motors.victorSP(Constants.INTAKE_1),
 			Hardware.Motors.victorSP(Constants.INTAKE_2))
 	private val solenoid = Solenoid(Constants.ARM_EXTENDER)
 
-	var enabled = false
+	private var state = IntakeState.DISABLED
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -21,11 +25,11 @@ object Intake : Subsystem() {
 		}
 
 		override fun onLoop() {
-			solenoid.set(enabled)
-			if (enabled)
-				motor.speed = 1.0
-			else
-				motor.speed = 0.0
+			solenoid.set(state == IntakeState.ENABLED)
+            if (state == IntakeState.ENABLED)
+                motor.speed = 1.0
+            else
+                motor.speed = 0.0
 		}
 
 		override fun onStop() {
@@ -33,11 +37,17 @@ object Intake : Subsystem() {
 		}
 	}
 
+    fun setWantedState(state: IntakeState) {
+        this.state = state
+    }
+
+    fun getCurrentState() = state
+
 	override fun getSubsystemLoop(): Loop = loop
 
 	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("arm_down", enabled)
-		SmartDashboard.putBoolean("intake_enabled", enabled)
+		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED)
+		SmartDashboard.putBoolean("intake_enabled", state == IntakeState.ENABLED)
 		SmartDashboard.putNumber("intake_current_voltage", motor.speed)
 	}
 }
