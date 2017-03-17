@@ -92,8 +92,7 @@ public class Turret extends Subsystem {
     }
 
     private int getSpeedForDistance() {
-        double distance = distanceSensor.getDistance();
-        return 0;
+        return (int) (12.348376791542*Robot.getVisionDataStream().getLatestGoalDistance() + 1959.0828756983);
     }
 
     private void sentry() {
@@ -130,20 +129,22 @@ public class Turret extends Subsystem {
                         if (turnSpeed > .95)
                              turretRotator.rotate(.10);
                         else
-                            turretRotator.rotate(.04);
+                            turretRotator.rotate(.05);
                     } else {
                         if (turnSpeed < -.95)
                             turretRotator.rotate(-.10);
                         else
-                            turretRotator.rotate(-.04);
+                            turretRotator.rotate(-.05);
                     }
                 } else if (angle != -1) {
                     if (angle == 270)
                         turretRotator.setPosition(turretRotator.getMaxAngle());
                     else if (angle == 0)
-                        turretRotator.setPosition(turretRotator.getMaxAngle()/2+5);
+                        turretRotator.setPosition(turretRotator.getMaxAngle()/2+4);
                     else if (angle == 90)
                         turretRotator.setPosition(0);
+                } else {
+                    turretRotator.stop();
                 }
             } else {
                 turretRotator.stop();
@@ -154,7 +155,10 @@ public class Turret extends Subsystem {
             Flywheel.INSTANCE.setSpeed(speed);
         } else if ((state == TurretState.SENTRY || state == TurretState.MANUAL) && ControlBoard.INSTANCE.getShootFuel().isTriggered()) { // manual shooting
             if (speed == 0)
-                speed = (maxRPM - minRPM) / 2;
+                if (Robot.getVisionDataStream().isLatestGoalValid())
+                    speed = getSpeedForDistance();
+                else
+                    speed = (maxRPM - minRPM) / 2;
             double delta = ControlBoard.INSTANCE.getTurretThrottle();
             if (delta > 0 && speed + rpmOffset < maxRPM)
                 if (delta > .95)
@@ -229,7 +233,7 @@ public class Turret extends Subsystem {
     public void printToSmartDashboard() {
         SmartDashboard.putNumber("turret_position", (int) turretRotator.getPosition());
         SmartDashboard.putNumber("turret_error", turretRotator.getError());
-        SmartDashboard.putNumber("vision_distance", Robot.getVisionDataStream().getLatestGoalYaw());
+        SmartDashboard.putNumber("vision_distance", Robot.getVisionDataStream().getLatestGoalDistance());
         SmartDashboard.putNumber("vision_error", Robot.getVisionDataStream().getLatestGoalYaw());
         SmartDashboard.putNumber("lidar_distance", (int) distanceSensor.getDistance());
         SmartDashboard.putBoolean("valid_vision_data", Robot.getVisionDataStream().isLatestGoalValid());

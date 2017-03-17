@@ -33,10 +33,10 @@ object Intake : Subsystem() {
             else
                 motor.speed = 0.0
 
-			val pdp = Robot.getPowerDistributionPanel()
+			/*val pdp = Robot.getPowerDistributionPanel()
 			val avgCurrent = (pdp.getCurrent(0) + pdp.getCurrent(1))
 			if (avgCurrent > 40)
-				setWantedState(IntakeState.DISABLED)
+				setWantedState(IntakeState.DISABLED)*/
 		}
 
 		override fun onStop() {
