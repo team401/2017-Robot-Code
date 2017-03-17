@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.strongback.components.Motor
 import org.strongback.hardware.Hardware
 import org.team401.robot.Constants
+import org.team401.robot.Robot
 import org.team401.robot.loops.Loop
 
 object Intake : Subsystem() {
@@ -32,7 +33,7 @@ object Intake : Subsystem() {
             else
                 motor.speed = 0.0
 
-			val pdp = PowerDistributionPanel()
+			val pdp = Robot.getPowerDistributionPanel()
 			val avgCurrent = (pdp.getCurrent(0) + pdp.getCurrent(1))
 			if (avgCurrent > 40)
 				setWantedState(IntakeState.DISABLED)

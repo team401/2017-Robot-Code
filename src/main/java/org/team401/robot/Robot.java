@@ -1,6 +1,8 @@
 package org.team401.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
@@ -32,8 +34,11 @@ public class Robot extends IterativeRobot {
 	private static GearHolder gearHolder = GearHolder.INSTANCE;
 	private static Hopper hopper = Hopper.INSTANCE;
 	private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
-
+	private static Flywheel flywheel = Flywheel.INSTANCE;
 	private static ControlBoard controls = ControlBoard.INSTANCE;
+
+	private static PowerDistributionPanel pdp;
+	private static Compressor compressor;
 
 	//@Override
 	public void robotInit() {
@@ -55,12 +60,16 @@ public class Robot extends IterativeRobot {
 			enabledLoop.register(turret.getSubsystemLoop());
 			enabledLoop.register(hopper.getSubsystemLoop());
 			enabledLoop.register(drive.getSubsystemLoop());
+			enabledLoop.register(flywheel.getSubsystemLoop());
 			enabledLoop.register(new TurretCalibrator());
 			drive.init();
 
 			disabledLoop = new LoopManager();
 			disabledLoop.register(new GyroCalibrator());
 			disabledLoop.register(new TurretCalibrator());
+
+			pdp = new PowerDistributionPanel();
+			compressor = new Compressor();
 
 			System.out.print("Done!\nLinking controls to code... ");
 			SwitchReactor switchReactor = Strongback.switchReactor();
@@ -144,6 +153,7 @@ public class Robot extends IterativeRobot {
 			data.register(turret);
 			data.register(hopper);
 			data.register(drive);
+			data.register(flywheel);
 			enabledLoop.register(data);
 			disabledLoop.register(data);
 
@@ -226,5 +236,13 @@ public class Robot extends IterativeRobot {
 
 	public static VisionController getVisionController() {
 		return visionController;
+	}
+
+	public static PowerDistributionPanel getPowerDistributionPanel() {
+		return pdp;
+	}
+
+	public static Compressor getCompressor() {
+		return compressor;
 	}
 }

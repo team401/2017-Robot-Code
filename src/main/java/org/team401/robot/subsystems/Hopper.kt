@@ -25,7 +25,7 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isFiring)
+            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isKickerRunning)
                 setWantedState(HopperState.ON)
             else if (state != HopperState.INVERTED || GearHolder.getCurrentState() == GearHolder.GearHolderState.TOWER_IN)
                 setWantedState(HopperState.OFF)
@@ -36,9 +36,9 @@ object Hopper : Subsystem() {
                     currentVoltage = 0.0
                 }
                 HopperState.ON ->
-                    targetVoltage = 0.8
+                    targetVoltage = 1.0
                 HopperState.INVERTED ->
-                    targetVoltage = -0.8
+                    targetVoltage = -1.0
                 else -> {
                     println("Invalid hopper state $state")
                     state = HopperState.OFF

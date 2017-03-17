@@ -64,11 +64,11 @@ object Constants {
     const val SPEED_IZONE           = 0
     const val SPEED_RAMP_RATE       = 0.0
 
-    const val FLYWHEEL_P            = 0.08
-    const val FLYWHEEL_I            = 0.0
-    const val FLYWHEEL_D            = 2.0
-    const val FLYWHEEL_F            = 0.029114
-    const val FLYWHEEL_IZONE        = 0
+    const val FLYWHEEL_P            = 0.15
+    const val FLYWHEEL_I            = 0.0015
+    const val FLYWHEEL_D            = 8.0
+    const val FLYWHEEL_F            = 0.034
+    const val FLYWHEEL_IZONE        = 100
     const val FLYWHEEL_RAMP_RATE    = 0.0
 
     const val ROTATOR_P             = 0.25

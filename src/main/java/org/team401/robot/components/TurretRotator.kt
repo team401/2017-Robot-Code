@@ -46,8 +46,8 @@ class TurretRotator(private val rotator: CANTalon) {
     }
 
     fun stop() {
-        rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
-        rotator.setpoint = 0.0
+        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
+        rotator.set(rotator.position)
     }
 
     fun zero() {
