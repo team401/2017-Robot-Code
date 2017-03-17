@@ -46,16 +46,20 @@ object Flywheel : Subsystem() {
 	}
 
 	fun setSpeed(speed: Double) {
-		if (state == FlywheelState.STOPPED)
+		if (state == FlywheelState.STOPPED) {
 			master.changeControlMode(CANTalon.TalonControlMode.Speed)
+			state = FlywheelState.RUNNING
+		}
 		master.set(speed)
 	}
 
 	fun getSpeed() = master.speed
 
 	fun stop() {
-		if (state == FlywheelState.RUNNING)
+		if (state == FlywheelState.RUNNING) {
 			master.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+			state = FlywheelState.STOPPED
+		}
 		master.set(0.0)
 	}
 
