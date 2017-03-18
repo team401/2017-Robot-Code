@@ -7,6 +7,8 @@ class TurretRotator(private val rotator: CANTalon) {
 
     val maxAngle = 155.0
 
+    var target = 0
+
     init {
         rotator.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
@@ -46,8 +48,8 @@ class TurretRotator(private val rotator: CANTalon) {
     }
 
     fun stop() {
-        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        rotator.set(rotator.position)
+        rotator.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
+        rotator.set(0.0)
     }
 
     fun zero() {

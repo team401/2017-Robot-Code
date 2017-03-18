@@ -22,6 +22,8 @@ import org.team401.vision.controller.VisionController;
 
 public class Robot /*extends IterativeRobot*/ {
 
+	// 3020
+
 	private AutoModeExecuter autoExecutor;
 	private AutoModeSelector autoSelector;
 	private LoopManager enabledLoop, disabledLoop;
@@ -31,7 +33,7 @@ public class Robot /*extends IterativeRobot*/ {
 
 	private static Turret turret = Turret.getInstance();
 	private static Intake intake = Intake.INSTANCE;
-	private static GearHolder gearHolder = GearHolder.INSTANCE;
+	private static Tower gearHolder = Tower.INSTANCE;
 	private static Hopper hopper = Hopper.INSTANCE;
 	private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
 	private static Flywheel flywheel = Flywheel.INSTANCE;
@@ -113,10 +115,10 @@ public class Robot /*extends IterativeRobot*/ {
 			// tower
 			switchReactor.onTriggered(controls.getToggleTower(),
 					() -> {
-						if (gearHolder.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
-							gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_IN);
+						if (gearHolder.getCurrentState() != Tower.TowerState.TOWER_IN)
+							gearHolder.setWantedState(Tower.TowerState.TOWER_IN);
 						else
-							gearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT);
+							gearHolder.setWantedState(Tower.TowerState.TOWER_OUT);
 					});
 			// turret
 			switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),

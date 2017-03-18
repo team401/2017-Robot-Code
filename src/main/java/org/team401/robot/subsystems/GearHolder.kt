@@ -1,5 +1,6 @@
 package org.team401.robot.subsystems
 
+import edu.wpi.first.wpilibj.Servo
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
@@ -8,13 +9,19 @@ import org.team401.robot.loops.Loop
 object GearHolder : Subsystem() {
 
 	enum class GearHolderState {
-		TOWER_IN, TOWER_OUT, OPEN
+		CLOSED, PUSH_OUT, INTAKE
 	}
 
-	private var state = GearHolderState.TOWER_IN
+	private var state = GearHolderState.CLOSED
 
-	private val shift = Solenoid(Constants.TOWER_SHIFTER)
-	private val gear = Solenoid(Constants.GEAR_HOLDER)
+	private val leftServo = Servo(Constants.SERVO_LEFT)
+	private val rightServo = Servo(Constants.SERVO_RIGHT)
+	private val solenoid = Solenoid(Constants.GEAR_HOLDER)
+
+	private val leftServoHome = 0.0
+	private val leftServoOut = 0.0
+	private val rightServoHome = 0.0
+	private val rightServoOut = 0.0
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -23,17 +30,23 @@ object GearHolder : Subsystem() {
 
 		override fun onLoop() {
 			when (state) {
-				GearHolderState.TOWER_IN -> {
-					shift.set(false)
-					gear.set(false)
+				GearHolderState.CLOSED -> {
+					solenoid.set(false)
+					leftServo.angle = leftServoHome
+					rightServo.angle = rightServoHome
 				}
-				GearHolderState.TOWER_OUT -> {
-					shift.set(true)
-					gear.set(false)
+				GearHolderState.PUSH_OUT -> {
+					solenoid.set(true)
+					leftServo.angle = leftServoHome
+					rightServo.angle = rightServoHome
 				}
-				GearHolderState.OPEN -> {
-					shift.set(true)
-					gear.set(true)
+				GearHolderState.INTAKE -> {
+					solenoid.set(false)
+					leftServo.angle = leftServoOut
+					rightServo.angle = rightServoOut
+				}
+				else -> {
+
 				}
 			}
 		}
@@ -41,18 +54,13 @@ object GearHolder : Subsystem() {
 		override fun onStop() {
 
 		}
+
 	}
 
-	fun setWantedState(state: GearHolderState) {
-		this.state = state
-	}
-
-	fun getCurrentState() = state
-
-	override fun getSubsystemLoop(): Loop = loop
+	override fun getSubsystemLoop() = loop
 
 	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("tower_extended", state != GearHolderState.TOWER_IN)
-		SmartDashboard.putBoolean("gear_holder_open", state == GearHolderState.OPEN)
+		SmartDashboard.putBoolean("gear_holder_out", state == GearHolderState.PUSH_OUT)
+		SmartDashboard.putBoolean("gear_intake", state == GearHolderState.INTAKE)
 	}
 }
