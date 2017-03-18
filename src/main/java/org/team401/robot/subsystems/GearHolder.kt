@@ -18,10 +18,10 @@ object GearHolder : Subsystem() {
 	private val rightServo = Servo(Constants.SERVO_RIGHT)
 	private val solenoid = Solenoid(Constants.GEAR_HOLDER)
 
-	private val leftServoHome = 0.0
-	private val leftServoOut = 0.0
-	private val rightServoHome = 0.0
-	private val rightServoOut = 0.0
+	private val leftServoHome = 160.0
+	private val leftServoOut = 48.0
+	private val rightServoHome = 35.0
+	private val rightServoOut = 140.0
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -56,6 +56,12 @@ object GearHolder : Subsystem() {
 		}
 
 	}
+
+	fun setWantedState(state: GearHolderState) {
+		this.state = state
+	}
+
+	fun getCurrentState() = state
 
 	override fun getSubsystemLoop() = loop
 

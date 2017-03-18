@@ -95,11 +95,11 @@ public class Turret extends Subsystem {
 
     private void sentry() {
         if (sentryRight) {
-            turretRotator.rotate(.08);
+            turretRotator.rotate(.16);
             if (turretRotator.getPosition() < 5)
                 sentryRight = false;
         } else {
-            turretRotator.rotate(-.08);
+            turretRotator.rotate(-.16);
             if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
                 sentryRight = true;
         }
@@ -125,14 +125,14 @@ public class Turret extends Subsystem {
                 if (Math.abs(turnSpeed) > .5) {
                     if (turnSpeed > 0) {
                         if (turnSpeed > .95)
-                             turretRotator.rotate(.10);
+                             turretRotator.rotate(.20);
                         else
-                            turretRotator.rotate(.05);
+                            turretRotator.rotate(.12);
                     } else {
                         if (turnSpeed < -.95)
-                            turretRotator.rotate(-.10);
+                            turretRotator.rotate(-.20);
                         else
-                            turretRotator.rotate(-.05);
+                            turretRotator.rotate(-.12);
                     }
                 } else if (angle != -1) {
                     if (angle == 270)
@@ -174,7 +174,7 @@ public class Turret extends Subsystem {
         }
 
         if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.RUNNING) {
-            if (Tower.INSTANCE.getCurrentState() != Tower.GearHolderState.TOWER_IN)
+            if (Tower.INSTANCE.getCurrentState() != Tower.TowerState.TOWER_IN)
                 feeder.set(1);
         } else {
             rpmOffset = 0;

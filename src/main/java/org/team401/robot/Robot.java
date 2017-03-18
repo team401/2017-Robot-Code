@@ -20,9 +20,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
-public class Robot /*extends IterativeRobot*/ {
-
-	// 3020
+public class Robot extends IterativeRobot {
 
 	private AutoModeExecuter autoExecutor;
 	private AutoModeSelector autoSelector;
@@ -33,7 +31,8 @@ public class Robot /*extends IterativeRobot*/ {
 
 	private static Turret turret = Turret.getInstance();
 	private static Intake intake = Intake.INSTANCE;
-	private static Tower gearHolder = Tower.INSTANCE;
+	private static Tower tower = Tower.INSTANCE;
+	private static GearHolder gearHolder = GearHolder.INSTANCE;
 	private static Hopper hopper = Hopper.INSTANCE;
 	private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
 	private static Flywheel flywheel = Flywheel.INSTANCE;
@@ -59,6 +58,7 @@ public class Robot /*extends IterativeRobot*/ {
 			enabledLoop = new LoopManager();
 			enabledLoop.register(intake.getSubsystemLoop());
 			enabledLoop.register(gearHolder.getSubsystemLoop());
+			enabledLoop.register(tower.getSubsystemLoop());
 			enabledLoop.register(turret.getSubsystemLoop());
 			enabledLoop.register(hopper.getSubsystemLoop());
 			enabledLoop.register(drive.getSubsystemLoop());
@@ -90,9 +90,9 @@ public class Robot /*extends IterativeRobot*/ {
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0), .35, 5).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 90,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-55), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-45), .35, 5).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(55), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(45), .35, 5).asSbCommand());
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
@@ -111,14 +111,22 @@ public class Robot /*extends IterativeRobot*/ {
 					});
 			// climbing
 			// scoring
+			switchReactor.onTriggered(controls.getGearIntake(),
+					() -> gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE));
+			switchReactor.onUntriggered(controls.getGearIntake(),
+					() -> gearHolder.setWantedState(GearHolder.GearHolderState.CLOSED));
+			switchReactor.onTriggered(controls.getGearOut(),
+					() -> gearHolder.setWantedState(GearHolder.GearHolderState.PUSH_OUT));
+			switchReactor.onUntriggered(controls.getGearOut(),
+					() -> gearHolder.setWantedState(GearHolder.GearHolderState.CLOSED));
 
 			// tower
 			switchReactor.onTriggered(controls.getToggleTower(),
 					() -> {
-						if (gearHolder.getCurrentState() != Tower.TowerState.TOWER_IN)
-							gearHolder.setWantedState(Tower.TowerState.TOWER_IN);
+						if (tower.getCurrentState() != Tower.TowerState.TOWER_IN)
+							tower.setWantedState(Tower.TowerState.TOWER_IN);
 						else
-							gearHolder.setWantedState(Tower.TowerState.TOWER_OUT);
+							tower.setWantedState(Tower.TowerState.TOWER_OUT);
 					});
 			// turret
 			switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),

@@ -9,7 +9,7 @@ import org.team401.robot.subsystems.Turret
 class CalibrateTurret : AutoMode() {
 
     override fun routine() {
-        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
+        Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
         runAction(CalibrateTurretAction(Turret.TurretState.MANUAL))
     }

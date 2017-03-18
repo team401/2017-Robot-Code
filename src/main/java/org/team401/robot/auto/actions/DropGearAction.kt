@@ -1,6 +1,7 @@
 package org.team401.robot.auto.actions
 
 import org.team401.robot.Constants
+import org.team401.robot.subsystems.GearHolder
 import org.team401.robot.subsystems.Tower
 
 class DropGearAction(val duration: Double) : Action() {
@@ -8,12 +9,12 @@ class DropGearAction(val duration: Double) : Action() {
 	var timer = 0.0
 
 	override fun onStart() {
-		Tower.setWantedState(Tower.GearHolderState.OPEN)
+		GearHolder.setWantedState(GearHolder.GearHolderState.PUSH_OUT)
 		Thread {
 			while (true) {
 				onUpdate()
 				if (timer > duration) {
-					Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
+					GearHolder.setWantedState(GearHolder.GearHolderState.CLOSED)
 					break
 				}
 				Thread.sleep((Constants.ACTION_PERIOD*1000).toLong())

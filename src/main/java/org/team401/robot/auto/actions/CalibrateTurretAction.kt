@@ -8,7 +8,7 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
 
     override fun onStart() {
         turret.setWantedState(Turret.TurretState.CALIBRATING)
-        turret.turretRotator.rotate(.13)
+        turret.turretRotator.rotate(.20)
     }
 
     override fun onUpdate() {

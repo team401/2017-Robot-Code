@@ -10,13 +10,18 @@ class ForwardGear : AutoMode() {
 
     override fun routine() {
         runAction(CalibrateTurretAction(Turret.TurretState.AUTO))
-        OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
+        OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
+        Tower.setWantedState(Tower.TowerState.TOWER_IN)
         // drive up slowly
-        runAction(DriveDistanceAction(-4.0*12, 0.6))
-        runAction(DriveDistanceAction(-2.0*12, 0.25))
+        runAction(DriveDistanceAction(-3.5*12*2, 0.9))
+        runAction(DriveDistanceAction(-2.5*12*2, 0.4))
         runAction(DropGearAction(3.0))
         Thread.sleep(1000)
-        runAction(DriveDistanceAction(3.0*12, .25))
+        runAction(DriveDistanceAction(3.0*12*2, .4))
+    }
+
+    override fun done() {
+        Tower.setWantedState(Tower.TowerState.TOWER_OUT)
+        OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
     }
 }

@@ -11,11 +11,11 @@ class RightGear : AutoMode() {
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
-        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
+        Tower.setWantedState(Tower.TowerState.TOWER_IN)
         OctocanumDrive.setBrakeMode(true)
         val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8))
         runAction(ParallelAction(actions))
-        runAction(RotateAction(Rotation2d.fromDegrees(-55.0)))
+        runAction(RotateAction(Rotation2d.fromDegrees(-50.0)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))
         //TODO: alignment
         runAction(DropGearAction(3.0))
@@ -27,6 +27,7 @@ class RightGear : AutoMode() {
     }
 
     override fun done() {
+        Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
         OctocanumDrive.setBrakeMode(false)
     }
