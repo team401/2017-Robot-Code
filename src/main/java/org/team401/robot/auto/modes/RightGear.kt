@@ -3,7 +3,7 @@ package org.team401.robot.auto.modes
 import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.actions.*
 import org.team401.lib.Rotation2d
-import org.team401.robot.subsystems.GearHolder
+import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
@@ -11,7 +11,7 @@ class RightGear : AutoMode() {
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
-        GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
+        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
         OctocanumDrive.setBrakeMode(true)
         val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8))
         runAction(ParallelAction(actions))

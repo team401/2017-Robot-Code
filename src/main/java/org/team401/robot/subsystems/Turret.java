@@ -9,10 +9,8 @@ import org.team401.robot.ControlBoard;
 import org.team401.robot.Robot;
 import org.team401.robot.components.TurretRotator;
 import org.team401.robot.loops.Loop;
-import org.team401.lib.MathUtils;
 import org.team401.lib.DistanceSensor;
 import org.team401.lib.Lidar;
-import org.team401.vision.VisionDataStream.VisionData;
 import org.team401.vision.controller.VisionController;
 
 public class Turret extends Subsystem {
@@ -176,7 +174,7 @@ public class Turret extends Subsystem {
         }
 
         if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.RUNNING) {
-            if (GearHolder.INSTANCE.getCurrentState() != GearHolder.GearHolderState.TOWER_IN)
+            if (Tower.INSTANCE.getCurrentState() != Tower.GearHolderState.TOWER_IN)
                 feeder.set(1);
         } else {
             rpmOffset = 0;

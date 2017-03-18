@@ -44,6 +44,10 @@ object Constants {
     const val INTAKE_2              = 7
     const val HOPPER_BOTTOM         = 8
 
+    // servos
+    const val SERVO_LEFT            = 0
+    const val SERVO_RIGHT           = 1
+
     const val HOPPER_RAMP_RATE      = 6
     const val INTAKE_RAMP_RATE      = 18
 

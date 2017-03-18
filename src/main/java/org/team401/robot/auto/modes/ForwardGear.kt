@@ -2,7 +2,7 @@ package org.team401.robot.auto.modes
 
 import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.actions.*
-import org.team401.robot.subsystems.GearHolder
+import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
@@ -11,7 +11,7 @@ class ForwardGear : AutoMode() {
     override fun routine() {
         runAction(CalibrateTurretAction(Turret.TurretState.AUTO))
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
+        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
         // drive up slowly
         runAction(DriveDistanceAction(-4.0*12, 0.6))
         runAction(DriveDistanceAction(-2.0*12, 0.25))

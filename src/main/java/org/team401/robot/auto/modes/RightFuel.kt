@@ -6,7 +6,7 @@ import org.team401.robot.auto.actions.CalibrateTurretAction
 import org.team401.robot.auto.actions.DriveDistanceAction
 import org.team401.robot.auto.actions.ParallelAction
 import org.team401.robot.auto.actions.RotateAction
-import org.team401.robot.subsystems.GearHolder
+import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.Intake
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
@@ -15,7 +15,7 @@ class RightFuel : AutoMode() {
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
-        GearHolder.setWantedState(GearHolder.GearHolderState.TOWER_OUT)
+        Tower.setWantedState(Tower.GearHolderState.TOWER_OUT)
         OctocanumDrive.setBrakeMode(true)
         val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.AUTO), DriveDistanceAction(dStatToAir*2, .8))
         runAction(ParallelAction(actions))
