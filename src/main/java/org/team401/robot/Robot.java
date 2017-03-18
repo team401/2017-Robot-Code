@@ -20,7 +20,7 @@ import org.team401.robot.loops.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
-public class Robot extends IterativeRobot {
+public class Robot /*extends IterativeRobot*/ {
 
 	private AutoModeExecuter autoExecutor;
 	private AutoModeSelector autoSelector;

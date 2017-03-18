@@ -39,10 +39,10 @@ object Flywheel : Subsystem() {
 		master.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
 
-		slave.isSafetyEnabled = false
+		/*slave.isSafetyEnabled = false
 		slave.inverted = true
 		slave.changeControlMode(CANTalon.TalonControlMode.Follower)
-		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())
+		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())*/
 	}
 
 	fun setSpeed(speed: Double) {
