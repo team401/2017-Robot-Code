@@ -200,7 +200,6 @@ public class Robot extends IterativeRobot {
 			Strongback.restart();
 			if (autoExecutor != null)
 				autoExecutor.stop();
-			Turret.getInstance().setWantedState(Turret.TurretState.DISABLED);
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}

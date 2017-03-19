@@ -4,10 +4,13 @@ import org.team401.robot.subsystems.OctocanumDrive
 
 class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout: Double = 5.0) : Action(timeout) {
 
+	var startPosLeft = 0.0
+	var startPosRight = 0.0
 	val heading = OctocanumDrive.getGyroAngle()
 
 	override fun onStart() {
-		OctocanumDrive.resetEncoders()
+		startPosLeft = OctocanumDrive.getLeftDistanceInches()
+		startPosRight = OctocanumDrive.getRightDistanceInches()
 
 		if (distance > 0)
 			OctocanumDrive.drive(power, power)
@@ -24,10 +27,8 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout
 	}
 
 	override fun isFinished(): Boolean {
-		if (distance > 0)
-			return OctocanumDrive.getLeftDistanceInches() > distance && OctocanumDrive.getRightDistanceInches() > distance
-		else
-			return OctocanumDrive.getLeftDistanceInches() < distance && OctocanumDrive.getRightDistanceInches() < distance
+		return Math.abs(OctocanumDrive.getLeftDistanceInches() - startPosLeft) > Math.abs(distance) &&
+				Math.abs(OctocanumDrive.getRightDistanceInches() - startPosRight) > Math.abs(distance)
 	}
 
 	override fun onInterrupt() {

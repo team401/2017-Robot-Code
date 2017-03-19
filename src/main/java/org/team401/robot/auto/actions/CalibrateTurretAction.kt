@@ -27,7 +27,7 @@ class CalibrateTurretAction(val state: Turret.TurretState) : Action(1.0) {
 
     override fun onStop() {
         turret.zeroSensors()
-        turret.setWantedState(state)
+        turret.setWantedState(Turret.TurretState.MANUAL)//state)
         println("Turret calibrated!")
     }
 }

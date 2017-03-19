@@ -16,15 +16,14 @@ class LeftGear : AutoMode() {
         val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8))
         runAction(ParallelAction(actions))
         runAction(RotateAction(Rotation2d.fromDegrees(50.0)))
-        Thread.sleep(250)
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))
         //TODO: alignment
-        runAction(DropGearAction(3.0))
+        //runAction(DropGearAction(3.0))
         Thread.sleep(1000)
         runAction(DriveDistanceAction(dGearToBaseL * 2, .7))
 
-        runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
-        runAction(DriveDistanceAction(-dBaseToReload * 2, .7))
+        /*runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
+        runAction(DriveDistanceAction(-dBaseToReload * 2, .7))*/
     }
 
     override fun done() {

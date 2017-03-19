@@ -50,7 +50,7 @@ public class Turret extends Subsystem {
                 ledRing.set(true);
             else
                 ledRing.set(false);
-            //run();
+            run();
         }
 
         @Override

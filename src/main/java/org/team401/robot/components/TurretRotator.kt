@@ -30,8 +30,9 @@ class TurretRotator(private val rotator: CANTalon) {
      * Set the position of the turret at a specific angle, in degrees
      */
     fun setPosition(angle: Double) {
-        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        rotator.set((angle/(Constants.TURRET_GEAR_MULTIPLIER*360)))
+        /*rotator.changeControlMode(CANTalon.TalonControlMode.Position)
+        rotator.set((angle/(Constants.TURRET_GEAR_MULTIPLIER*360)))*/
+        rotate(0.0)
     }
 
     fun getPosition() = rotator.position * Constants.TURRET_GEAR_MULTIPLIER * 360
@@ -43,8 +44,9 @@ class TurretRotator(private val rotator: CANTalon) {
     fun onTarget() = getError() < 1.0
 
     fun addDegrees(angle: Double) {
-        rotator.changeControlMode(CANTalon.TalonControlMode.Position)
-        setPosition(getPosition() + angle)
+        /*rotator.changeControlMode(CANTalon.TalonControlMode.Position)
+        setPosition(getPosition() + angle)*/
+        rotate(0.0)
     }
 
     fun stop() {

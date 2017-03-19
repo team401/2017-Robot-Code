@@ -18,12 +18,12 @@ class RightGear : AutoMode() {
         runAction(RotateAction(Rotation2d.fromDegrees(-50.0)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))
         //TODO: alignment
-        runAction(DropGearAction(3.0))
-        runAction(WaitAction(1.5))
-        runAction(DriveDistanceAction(dGearToBaseL * 2, .7))
+        //runAction(DropGearAction(3.0))
+        Thread.sleep(1000)
+        runAction(DriveDistanceAction(dGearToBaseL * 2, .5))
 
-        runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
-        runAction(DriveDistanceAction(-dBaseToReload * 2, .7))
+        /*runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
+        runAction(DriveDistanceAction(-dBaseToReload * 2, .7))*/
     }
 
     override fun done() {
