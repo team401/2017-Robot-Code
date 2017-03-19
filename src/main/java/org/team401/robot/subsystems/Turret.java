@@ -50,7 +50,7 @@ public class Turret extends Subsystem {
                 ledRing.set(true);
             else
                 ledRing.set(false);
-            run();
+            //run();
         }
 
         @Override
@@ -95,11 +95,11 @@ public class Turret extends Subsystem {
 
     private void sentry() {
         if (sentryRight) {
-            turretRotator.rotate(.16);
+            turretRotator.rotate(.20);
             if (turretRotator.getPosition() < 5)
                 sentryRight = false;
         } else {
-            turretRotator.rotate(-.16);
+            turretRotator.rotate(-.20);
             if (turretRotator.getPosition() > turretRotator.getMaxAngle()-5)
                 sentryRight = true;
         }

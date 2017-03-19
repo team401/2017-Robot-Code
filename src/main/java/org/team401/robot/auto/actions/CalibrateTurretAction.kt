@@ -2,13 +2,13 @@ package org.team401.robot.auto.actions
 
 import org.team401.robot.subsystems.Turret
 
-class CalibrateTurretAction(val state: Turret.TurretState) : Action(4.0) {
+class CalibrateTurretAction(val state: Turret.TurretState) : Action(1.0) {
 
     val turret: Turret = Turret.getInstance()
 
     override fun onStart() {
         turret.setWantedState(Turret.TurretState.CALIBRATING)
-        turret.turretRotator.rotate(.20)
+        turret.turretRotator.rotate(.25)
     }
 
     override fun onUpdate() {

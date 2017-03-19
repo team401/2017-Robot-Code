@@ -75,9 +75,9 @@ object Constants {
     const val FLYWHEEL_IZONE        = 0
     const val FLYWHEEL_RAMP_RATE    = 0.0
 
-    const val ROTATOR_P             = 0.25
+    const val ROTATOR_P             = 0.4
     const val ROTATOR_I             = 0.0
-    const val ROTATOR_D             = 10.0
+    const val ROTATOR_D             = 20.0
     const val ROTATOR_F             = 0.0
     const val ROTATOR_IZONE         = 0
     const val ROTATOR_RAMP_RATE     = 0.0
