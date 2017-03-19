@@ -157,14 +157,14 @@ public class Turret extends Subsystem {
                     speed = getSpeedForDistance();
                 else
                     speed = (maxRPM - minRPM) / 2;
-            double delta = ControlBoard.INSTANCE.getTurretThrottle();
-            if (delta > 0 && speed + rpmOffset < maxRPM)
-                if (delta > .95)
+            double delta = -ControlBoard.INSTANCE.getTurretThrottle();
+            if (delta > 0.5 && speed + rpmOffset < maxRPM)
+                if (delta > 0.95)
                     rpmOffset += 100;
                 else
                     rpmOffset += 5;
-            else if (speed + rpmOffset > minRPM)
-                if (delta < -.95)
+            else if (delta < -0.5 && speed + rpmOffset > minRPM)
+                if (delta < -0.95)
                     rpmOffset -= 100;
                 else
                     rpmOffset -= 5;
