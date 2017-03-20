@@ -5,7 +5,7 @@ import org.strongback.hardware.Hardware
 import org.team401.robot.Constants
 import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
-import org.team401.robot.loops.Loop
+import org.team401.lib.Loop
 
 object Hopper : Subsystem() {
 

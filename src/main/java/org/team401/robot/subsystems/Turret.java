@@ -8,7 +8,7 @@ import org.team401.robot.Constants;
 import org.team401.robot.ControlBoard;
 import org.team401.robot.Robot;
 import org.team401.robot.components.TurretRotator;
-import org.team401.robot.loops.Loop;
+import org.team401.lib.Loop;
 import org.team401.lib.DistanceSensor;
 import org.team401.lib.Lidar;
 import org.team401.vision.controller.VisionController;

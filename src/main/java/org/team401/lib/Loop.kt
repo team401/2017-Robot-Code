@@ -1,4 +1,4 @@
-package org.team401.robot.loops
+package org.team401.lib
 
 interface Loop {
     fun onStart()

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Servo
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
-import org.team401.robot.loops.Loop
+import org.team401.lib.Loop
 
 object GearHolder : Subsystem() {
 

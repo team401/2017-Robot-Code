@@ -8,7 +8,7 @@ import org.team401.lib.MathUtils
 import org.team401.lib.SynchronousPID
 import org.team401.robot.Constants
 import org.team401.robot.components.OctocanumGearbox
-import org.team401.robot.loops.Loop
+import org.team401.lib.Loop
 import org.team401.lib.Rotation2d
 
 /**

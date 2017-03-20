@@ -1,13 +1,8 @@
 package org.team401.robot;
 
-import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.team401.robot.loops.LoopManager;
-import org.team401.robot.subsystems.Flywheel;
-import org.team401.vision.VisionDataStream.VisionDataStream;
 
 public class RobotTestPls /*extends IterativeRobot*/ {
 

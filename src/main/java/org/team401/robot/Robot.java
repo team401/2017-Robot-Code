@@ -16,7 +16,7 @@ import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
-import org.team401.robot.loops.LoopManager;
+import org.team401.lib.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 

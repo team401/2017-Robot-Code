@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer
 import org.team401.robot.subsystems.OctocanumDrive
 
 import org.team401.lib.ADXRS450_Gyro
+import org.team401.lib.Loop
 
 
 class GyroCalibrator : Loop {
