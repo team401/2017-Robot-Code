@@ -90,9 +90,9 @@ public class Robot extends IterativeRobot {
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0), .35, 5).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 90,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-45), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-50), .35, 5).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(45), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(50), .35, 5).asSbCommand());
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
@@ -112,9 +112,16 @@ public class Robot extends IterativeRobot {
 			// climbing
 			// scoring
 			switchReactor.onTriggered(controls.getGearIntake(),
-					() -> gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE));
+					() -> {
+						gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE);
+						tower.setWantedState(Tower.TowerState.TOWER_IN);
+						drive.shift(OctocanumDrive.DriveMode.TRACTION);
+					});
 			switchReactor.onUntriggered(controls.getGearIntake(),
-					() -> gearHolder.setWantedState(GearHolder.GearHolderState.CLOSED));
+					() -> {
+						gearHolder.setWantedState(GearHolder.GearHolderState.CLOSED);
+						drive.shift(OctocanumDrive.DriveMode.MECANUM);
+					});
 			switchReactor.onTriggered(controls.getGearOut(),
 					() -> gearHolder.setWantedState(GearHolder.GearHolderState.PUSH_OUT));
 			switchReactor.onUntriggered(controls.getGearOut(),
@@ -171,7 +178,6 @@ public class Robot extends IterativeRobot {
 			visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
 			visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
 			System.out.println("Done!\nRobot is ready for match!");
-
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}

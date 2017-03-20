@@ -15,7 +15,6 @@ class OctocanumGearbox(val motor: CANTalon, private val slave: CANTalon) {
         motor.changeControlMode(CANTalon.TalonControlMode.PercentVbus)
         motor.isSafetyEnabled = false
         motor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
-        motor.enableBrakeMode(false)
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
         slave.isSafetyEnabled = false
         slave.set(motor.deviceID.toDouble())
@@ -26,7 +25,7 @@ class OctocanumGearbox(val motor: CANTalon, private val slave: CANTalon) {
     }
 
     /**
-     * Takes a lambda that can change settings on the motor motor
+     * Takes a lambda that can change settings on the CANTalon
      */
     fun config(func: (CANTalon) -> Unit) {
         func(motor)
