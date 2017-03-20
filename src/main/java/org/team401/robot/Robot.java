@@ -8,7 +8,7 @@ import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
 import org.team401.lib.Rotation2d;
-import org.team401.robot.auto.AutoModeExecuter;
+import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.auto.actions.RotateAction;
@@ -22,7 +22,7 @@ import org.team401.vision.controller.VisionController;
 
 public class Robot extends IterativeRobot {
 
-	private AutoModeExecuter autoExecutor;
+	private AutoModeExecutor autoExecutor;
 	private AutoModeSelector autoSelector;
 	private LoopManager enabledLoop, disabledLoop;
 
@@ -41,7 +41,6 @@ public class Robot extends IterativeRobot {
 	private static PowerDistributionPanel pdp;
 	private static Compressor compressor;
 
-	//@Override
 	public void robotInit() {
 		CrashTracker.INSTANCE.logRobotInit();
 		try {
@@ -183,21 +182,19 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	//@Override
 	public void autonomousInit() {
 		try {
 			CrashTracker.INSTANCE.logAutoInit();
 			enabledLoop.start();
 			disabledLoop.stop();
 			Strongback.restart();
-			autoExecutor = new AutoModeExecuter(autoSelector.getAutoMode());
+			autoExecutor = new AutoModeExecutor(autoSelector.getAutoMode());
 			autoExecutor.start();
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}
 	}
 
-	//@Override
 	public void teleopInit() {
 		try {
 			CrashTracker.INSTANCE.logTeleopInit();
@@ -211,7 +208,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	//@Override
 	public void autonomousPeriodic() {
 		try {
 
@@ -220,7 +216,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	//@Override
 	public void teleopPeriodic() {
 		try {
 			// drive the robot, mode specific drive code is in the OctocanumDrive class
@@ -230,7 +225,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	//@Override
 	public void disabledInit() {
 		try {
 			CrashTracker.INSTANCE.logDisabledInit();
@@ -242,7 +236,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	//@Override
 	public void disabledPeriodic() {}
 
 	//subsystems

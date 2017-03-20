@@ -9,7 +9,6 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	private Servo left, right;
 	private Solenoid gear;
 
-	//@Override
 	public void robotInit() {
 		left = new Servo(Constants.SERVO_LEFT);
 		right = new Servo(Constants.SERVO_RIGHT);
@@ -23,27 +22,22 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 		kicker.enableBrakeMode(true);*/
 	}
 
-	//@Override
 	public void autonomousInit() {
 
 	}
 
-	//@Override
 	public void teleopInit() {
 
 	}
 
-	//@Override
 	public void disabledInit() {
 
 	}
 
-	//@Override
 	public void autonomousPeriodic() {
 
 	}
 
-	//@Override
 	public void teleopPeriodic() {
 		if (ControlBoard.INSTANCE.getShift().isTriggered())
 			gear.set(true);

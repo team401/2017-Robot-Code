@@ -1,13 +1,13 @@
 package org.team401.robot.subsystems
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.strongback.components.Motor
 import org.strongback.hardware.Hardware
 import org.team401.robot.Constants
-import org.team401.robot.Robot
 import org.team401.lib.Loop
+import org.team401.lib.MathUtils
+import org.team401.robot.ControlBoard
 
 object Intake : Subsystem() {
 
@@ -29,7 +29,7 @@ object Intake : Subsystem() {
 		override fun onLoop() {
 			solenoid.set(state == IntakeState.ENABLED)
             if (state == IntakeState.ENABLED)
-                motor.speed = 1.0
+                motor.speed = MathUtils.toRange(ControlBoard.getIntakeThrottle(), 0.25, 1.0, 0.5, 1.0)
             else
                 motor.speed = 0.0
 

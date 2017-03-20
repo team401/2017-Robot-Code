@@ -120,7 +120,6 @@ public class Turret extends Subsystem {
         } else if (state == TurretState.MANUAL) { // manual turret control
             speed = (int) SmartDashboard.getNumber("flywheel_user_setpoint", 0.0);
             double turnSpeed = ControlBoard.INSTANCE.getTurretYaw();
-            int angle = ControlBoard.INSTANCE.getTurretSnapAngle();
             if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.STOPPED) {
                 if (Math.abs(turnSpeed) > .5) {
                     if (turnSpeed > 0) {
@@ -134,13 +133,12 @@ public class Turret extends Subsystem {
                         else
                             turretRotator.rotate(-.12);
                     }
-                } else if (angle != -1) {
-                    if (angle == 270)
-                        turretRotator.setPosition(turretRotator.getMaxAngle());
-                    else if (angle == 0)
-                        turretRotator.setPosition(turretRotator.getMaxAngle()/2+4);
-                    else if (angle == 90)
-                        turretRotator.setPosition(0);
+                } else if (ControlBoard.INSTANCE.getTurretSnapLeft().isTriggered()) {
+                    turretRotator.setPosition(turretRotator.getMaxAngle());
+                } else if (ControlBoard.INSTANCE.getTurretSnapCenter().isTriggered()) {
+                    turretRotator.setPosition(turretRotator.getMaxAngle()/2+4);
+                } else if (ControlBoard.INSTANCE.getTurretSnapRight().isTriggered()) {
+                    turretRotator.setPosition(0);
                 } else {
                     turretRotator.stop();
                 }
