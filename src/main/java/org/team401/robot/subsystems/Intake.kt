@@ -8,6 +8,7 @@ import org.team401.robot.Constants
 import org.team401.lib.Loop
 import org.team401.lib.MathUtils
 import org.team401.robot.ControlBoard
+import org.team401.robot.Robot
 
 object Intake : Subsystem() {
 
@@ -55,6 +56,7 @@ object Intake : Subsystem() {
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED)
 		SmartDashboard.putBoolean("intake_enabled", state == IntakeState.ENABLED)
-		SmartDashboard.putNumber("intake_current_voltage", motor.speed)
+		SmartDashboard.putNumber("intake_voltage", motor.speed*Robot.getPowerDistributionPanel().voltage)
+		SmartDashboard.putNumber("intake_current", motor.speed*Robot.getPowerDistributionPanel().voltage)
 	}
 }

@@ -63,7 +63,7 @@ object OctocanumDrive : Subsystem() {
 
     private val loop = object : Loop {
         override fun onStart() {
-            setBrakeMode(false)
+
         }
 
         override fun onLoop() {
@@ -365,8 +365,9 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
         SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
-        SmartDashboard.putData("gyro_diagram", gyro)
         SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
+        SmartDashboard.putBoolean("open_loop_control", controlState == DriveControlState.OPEN_LOOP)
+        SmartDashboard.putData("gyro_diagram", gyro)
     }
 
     override fun getSubsystemLoop(): Loop = loop
