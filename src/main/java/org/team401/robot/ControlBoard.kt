@@ -27,17 +27,17 @@ object ControlBoard {
     fun getToggleHood() = mash.getButton(6)
     fun getToggleTower() = mash.getButton(1)
     fun getInverseHopper() = mash.getButton(5)
-    fun getCalibrateTurret() = mash.getButton(9)
+    fun getCalibrateTurret() = mash.getButton(8)
     fun getToggleCamera() = mash.getButton(4)
-    fun getTurretSnapLeft() = mash.getButton(13)
-    fun getTurretSnapCenter() = mash.getButton(11)
-    fun getTurretSnapRight() = mash.getButton(14)
-    fun getIntakeThrottle() = mash.getAxis(4).read()
-    fun getToggleIntake() = Switch { mash.getAxis(4).read() > .25 }
-    fun getShootFuel() = Switch { mash.getAxis(5).read() > .25 }
+    fun getTurretSnapLeft() = Switch { mash.getAxis(0).read() == 270.0 }
+    fun getTurretSnapCenter() = Switch { mash.getAxis(0).read() == 0.0 }
+    fun getTurretSnapRight() = Switch { mash.getAxis(0).read() == 90.0 }
+    fun getIntakeThrottle() = mash.getAxis(2).read()
+    fun getToggleIntake() = Switch { mash.getAxis(2).read() > .25 }
+    fun getShootFuel() = Switch { mash.getAxis(3).read() > .25 }
 
     fun getTurretYaw() = mash.getAxis(0).read()
-    fun getTurretThrottle() = mash.getAxis(3).read()
+    fun getTurretThrottle() = mash.getAxis(5).read()
 
     fun getDriveController() = drive
     fun getMasherController() = mash
