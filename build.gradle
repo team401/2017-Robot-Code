@@ -13,6 +13,18 @@ plugins {
     id "eclipse"
     id "idea"
     id "jaci.openrio.gradle.GradleRIO" version "2017.1.5"
+    id "de.undercouch.download" version "3.2.0" //Used to download vision libs
+}
+
+import de.undercouch.gradle.tasks.download.Download
+
+task visionLibs(type: Download) {
+    src([
+            'https://github.com/team401/2017-Vision-Code/raw/master/out/artifacts/VisionDataStream_jar/VisionDataStream.jar',
+            'https://github.com/team401/2017-Vision-Code/raw/master/out/artifacts/VisionController_jar/VisionController.jar'
+    ])
+
+    dest 'libs'
 }
 
 apply plugin: 'kotlin'
