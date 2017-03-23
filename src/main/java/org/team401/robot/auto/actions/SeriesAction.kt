@@ -1,8 +1,9 @@
 package org.team401.robot.auto.actions
 
-class SeriesAction(val actions: MutableList<Action>) : Action() {
+class SeriesAction(vararg actions: Action) : Action() {
 
     var currentAction: Action? = null
+    val actions = actions.toMutableList()
 
     override fun onStart() {}
 

@@ -13,8 +13,7 @@ class RightGear : AutoMode() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
         OctocanumDrive.setBrakeMode(true)
-        val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8))
-        runAction(ParallelAction(actions))
+        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8)))
         runAction(RotateAction(Rotation2d.fromDegrees(-50.0)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))
         //TODO: alignment

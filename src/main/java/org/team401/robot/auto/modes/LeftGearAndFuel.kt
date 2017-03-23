@@ -14,9 +14,8 @@ class LeftGearAndFuel : AutoMode() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
         OctocanumDrive.setBrakeMode(true)
-        val actions = mutableListOf(CalibrateTurretAction(Turret.TurretState.AUTO), DriveDistanceAction(-dStatToAir * 2, .8))
-        runAction(ParallelAction(actions))
-        runAction(RotateAction(Rotation2d.fromDegrees(55.0)))
+        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8)))
+        runAction(RotateAction(Rotation2d.fromDegrees(50.0)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3))
         //TODO: alignment
         runAction(DropGearAction(3.0))
@@ -26,6 +25,7 @@ class LeftGearAndFuel : AutoMode() {
         runAction(RotateAction(Rotation2d.fromDegrees(90.0)))
         runAction(DriveDistanceAction(dBaseLToHop * 2, .7))
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
+        Turret.getInstance().setWantedState(Turret.TurretState.AUTO)
 
         Thread.sleep(2000)
         runAction(RotateAction(Rotation2d.fromDegrees(70.0)))

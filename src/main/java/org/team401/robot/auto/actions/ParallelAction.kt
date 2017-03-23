@@ -2,9 +2,14 @@ package org.team401.robot.auto.actions
 
 import java.util.*
 
-class ParallelAction(val actions: MutableList<Action>) : Action() {
+class ParallelAction(vararg actions: Action) : Action() {
 
     private val toRemove = ArrayList<Action>()
+    private val actions = actions.toMutableList()
+
+    init {
+        actions.forEach { this.actions.add(it) }
+    }
 
     override fun onStart() {
         actions.forEach { it.onStart() }

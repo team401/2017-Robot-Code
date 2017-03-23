@@ -171,9 +171,12 @@ public class Turret extends Subsystem {
             Flywheel.INSTANCE.stop();
         }
 
-        if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.RUNNING) {
-            if (Tower.INSTANCE.getCurrentState() != Tower.TowerState.TOWER_IN)
+        if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.RUNNING &&
+                Tower.INSTANCE.getCurrentState() != Tower.TowerState.TOWER_IN) {
+            if (Flywheel.INSTANCE.isWithinTolerance())
                 feeder.set(1);
+            else
+                feeder.set(0);
         } else {
             rpmOffset = 0;
             feeder.set(0);
