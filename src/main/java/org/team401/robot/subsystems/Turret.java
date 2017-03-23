@@ -90,7 +90,7 @@ public class Turret extends Subsystem {
     }
 
     private int getSpeedForDistance() {
-        return (int) (12.348376791542*Robot.getVisionDataStream().getLatestGoalDistance() + 1959.0828756983);
+        return (int) (12.348376791542 * Robot.getVisionDataStream().getLatestGoalDistance() + 1959.0828756983);
     }
 
     private void sentry() {
@@ -214,7 +214,18 @@ public class Turret extends Subsystem {
     }
 
     public boolean isKickerRunning() {
-        return feeder.get() != 0;
+        return feeder.get() >= 0;
+    }
+
+    public boolean isKickerInverted() {
+        return feeder.get() <= 0;
+    }
+
+    public void setKickerSpeed(double throttle) {
+        if (throttle != 0 && Tower.INSTANCE.getCurrentState() == Tower.TowerState.TOWER_OUT) {
+            feeder.set(throttle);
+        } else
+            feeder.set(0);
     }
 
     private int normalizeRPM(int speed) {

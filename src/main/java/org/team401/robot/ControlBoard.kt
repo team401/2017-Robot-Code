@@ -27,6 +27,7 @@ object ControlBoard {
     fun getToggleHood() = mash.getButton(6)
     fun getToggleTower() = mash.getButton(1)
     fun getInverseHopper() = mash.getButton(5)
+    fun getInverseKicker() = mash.getButton(7)
     fun getCalibrateTurret() = mash.getButton(8)
     fun getToggleCamera() = mash.getButton(4)
     fun getTurretSnapLeft() = Switch { mash.getAxis(0).read() == 270.0 }

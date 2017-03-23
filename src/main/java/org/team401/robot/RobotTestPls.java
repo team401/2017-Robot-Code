@@ -1,25 +1,29 @@
 package org.team401.robot;
 
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Solenoid;
+import com.ctre.CANTalon;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.team401.lib.LoopManager;
+import org.team401.robot.subsystems.Flywheel;
+import org.team401.robot.subsystems.Hopper;
+import org.team401.robot.subsystems.Tower;
 
 public class RobotTestPls /*extends IterativeRobot*/ {
 
-	private Servo left, right;
-	private Solenoid gear;
+	private LoopManager loop = new LoopManager();
+	private CANTalon kicker;
 
 	public void robotInit() {
-		left = new Servo(Constants.SERVO_LEFT);
-		right = new Servo(Constants.SERVO_RIGHT);
-		gear = new Solenoid(Constants.GEAR_HOLDER);
+		SmartDashboard.putNumber("flywheel_user_setpoint", 0.0);
 
-		SmartDashboard.putNumber("servo_left_setpoint", 0.0);
-		SmartDashboard.putNumber("servo_right_setpoint", 0.0);
+		loop.register(Flywheel.INSTANCE.getSubsystemLoop());
+		loop.register(Hopper.INSTANCE.getSubsystemLoop());
+		loop.register(Tower.INSTANCE.getSubsystemLoop());
+		Tower.INSTANCE.setWantedState(Tower.TowerState.TOWER_OUT);
 
-		/*kicker = new CANTalon(Constants.TURRET_FEEDER);
+		kicker = new CANTalon(Constants.TURRET_FEEDER);
 		kicker.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-		kicker.enableBrakeMode(true);*/
+		kicker.enableBrakeMode(true);
 	}
 
 	public void autonomousInit() {
@@ -39,11 +43,16 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	}
 
 	public void teleopPeriodic() {
-		if (ControlBoard.INSTANCE.getShift().isTriggered())
-			gear.set(true);
-		else
-			gear.set(false);
-		left.setAngle(SmartDashboard.getNumber("servo_left_setpoint", 0.0));
-		right.setAngle(SmartDashboard.getNumber("servo_right_setpoint", 0.0));
+		double delta = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0);
+		if (delta > 0) {
+			Flywheel.INSTANCE.setSpeed(delta);
+			kicker.set(1);
+		} else {
+			Flywheel.INSTANCE.stop();
+			kicker.set(0);
+		}
+
+		Flywheel.INSTANCE.printToSmartDashboard();
+		Hopper.INSTANCE.printToSmartDashboard();
 	}
 }

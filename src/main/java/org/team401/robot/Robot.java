@@ -159,6 +159,10 @@ public class Robot extends IterativeRobot {
 						else
 							turret.setWantedState(Turret.TurretState.SENTRY);
 					});
+			switchReactor.onTriggered(controls.getInverseKicker(),
+					() -> turret.setKickerSpeed(-1.0));
+			switchReactor.onUntriggered(controls.getInverseKicker(),
+					() -> turret.setKickerSpeed(0));
 
 			System.out.print("Done!\nCreating SmartDashboard interactions... ");
 			autoSelector = new AutoModeSelector();
