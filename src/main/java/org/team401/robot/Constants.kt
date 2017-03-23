@@ -71,7 +71,7 @@ object Constants {
     const val FLYWHEEL_P            = 0.0//0.2
     const val FLYWHEEL_I            = 0.0//0.0
     const val FLYWHEEL_D            = 0.0//4.0
-    const val FLYWHEEL_F            = 0.0//0.03104109
+    const val FLYWHEEL_F            = 0.03211147//0.03104109
     const val FLYWHEEL_IZONE        = 0
     const val FLYWHEEL_RAMP_RATE    = 0.0
 

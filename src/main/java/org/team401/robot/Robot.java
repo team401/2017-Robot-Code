@@ -189,8 +189,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		try {
 			CrashTracker.INSTANCE.logAutoInit();
-			enabledLoop.start();
 			disabledLoop.stop();
+			enabledLoop.start();
 			Strongback.restart();
 			autoExecutor = new AutoModeExecutor(autoSelector.getAutoMode());
 			autoExecutor.start();
@@ -202,8 +202,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.INSTANCE.logTeleopInit();
-			enabledLoop.start();
 			disabledLoop.stop();
+			enabledLoop.start();
 			Strongback.restart();
 			if (autoExecutor != null)
 				autoExecutor.stop();

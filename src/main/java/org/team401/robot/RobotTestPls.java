@@ -26,8 +26,8 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 		visionDataStream.start();
 
 		loop.register(Flywheel.INSTANCE.getSubsystemLoop());
-		loop.register(Hopper.INSTANCE.getSubsystemLoop());
-		loop.register(Intake.INSTANCE.getSubsystemLoop());
+		//loop.register(Hopper.INSTANCE.getSubsystemLoop());
+		//loop.register(Intake.INSTANCE.getSubsystemLoop());
 		loop.register(Tower.INSTANCE.getSubsystemLoop());
 		loop.start();
 		Tower.INSTANCE.setWantedState(Tower.TowerState.TOWER_OUT);
@@ -60,16 +60,16 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 		double delta = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0);
 		if (delta > 0) {
 			Flywheel.INSTANCE.setSpeed(delta);
-			Hopper.INSTANCE.setWantedState(Hopper.HopperState.ON);
+			//Hopper.INSTANCE.setWantedState(Hopper.HopperState.ON);
 			kicker.set(1);
 		} else {
 			Flywheel.INSTANCE.stop();
-			Hopper.INSTANCE.setWantedState(Hopper.HopperState.OFF);
+			//Hopper.INSTANCE.setWantedState(Hopper.HopperState.OFF);
 			kicker.set(0);
 		}
 
 		SmartDashboard.putNumber("vision_distance", visionDataStream.getLatestGoalDistance());
 		Flywheel.INSTANCE.printToSmartDashboard();
-		Hopper.INSTANCE.printToSmartDashboard();
+		//Hopper.INSTANCE.printToSmartDashboard();
 	}
 }
