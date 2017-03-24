@@ -8,6 +8,7 @@ import org.team401.robot.Constants
 import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
 import org.team401.robot.components.TurretRotator
+import org.team401.vision.controller.VisionController
 
 object Turret : Subsystem() {
 
@@ -185,6 +186,10 @@ object Turret : Subsystem() {
     fun atZeroPoint() = Tower.isTurretLimitSwitchTriggered()
 
     fun setWantedState(state: TurretState) {
+        if (state >= TurretState.SENTRY)
+            Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING)
+        else
+            Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING)
         this.state = state
     }
 

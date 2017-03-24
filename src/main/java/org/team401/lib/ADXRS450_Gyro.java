@@ -106,6 +106,9 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 	}
 
 	public synchronized void endCalibrate() {
+		if (m_spi == null)
+			return;
+
 		if (m_is_calibrating) {
 			m_is_calibrating = false;
 			m_last_center = m_spi.getAccumulatorAverage();
@@ -115,6 +118,9 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 	}
 
 	public synchronized void cancelCalibrate() {
+		if (m_spi == null)
+			return;
+
 		if (m_is_calibrating) {
 			m_is_calibrating = false;
 			m_spi.setAccumulatorCenter((int) Math.round(m_last_center));
@@ -155,7 +161,6 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 	}
 
 
-	//FIXED METHOD
 	@Override
 	public void reset() {
 		if (m_spi != null)

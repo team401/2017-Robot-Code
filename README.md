@@ -1,3 +1,5 @@
+[![GNU GPLv3 License](https://img.shields.io/badge/License-GNU%20GPLv3-green.svg)](https://github.com/team401/2017-Robot-Code/blob/master/LICENSE)
+
 # 2017-Robot-Code
 Robot Code for Team 401's robot, PHIL, for the 2017 season FIRST Steamworks. Code in this repository is written in Kotlin and Java, and is a command based system.
 

@@ -30,9 +30,9 @@ object ControlBoard {
     fun getInverseKicker() = mash.getButton(7)
     fun getCalibrateTurret() = mash.getButton(8)
     fun getToggleCamera() = mash.getButton(4)
-    fun getTurretSnapLeft() = Switch { mash.getAxis(0).read() == 270.0 }
-    fun getTurretSnapCenter() = Switch { mash.getAxis(0).read() == 0.0 }
-    fun getTurretSnapRight() = Switch { mash.getAxis(0).read() == 90.0 }
+    fun getTurretSnapLeft() = Switch { mash.getDPad(0).direction == 270 }
+    fun getTurretSnapCenter() = Switch { mash.getDPad(0).direction == 0 }
+    fun getTurretSnapRight() = Switch { mash.getDPad(0).direction == 90 }
     fun getIntakeThrottle() = mash.getAxis(2).read()
     fun getToggleIntake() = Switch { mash.getAxis(2).read() > .25 }
     fun getShootFuel() = Switch { mash.getAxis(3).read() > .25 }
