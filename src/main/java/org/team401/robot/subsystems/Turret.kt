@@ -166,9 +166,9 @@ object Turret : Subsystem() {
 
         turretHood.set(distanceCutoff)
         if (distanceCutoff)
-            return 0 //TODO: linearize with hood up
+            return (9.3446 * distance + 2167.7).toInt()
         else
-            return (12.348376791542 * Robot.getVisionDataStream().latestGoalDistance + 1959.0828756983).toInt()
+            return (12.3484 * distance + 1959.1).toInt()
     }
 
     fun zeroSensors() {
