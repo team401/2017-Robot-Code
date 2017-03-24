@@ -87,7 +87,7 @@ object Constants {
     const val GYRO_HEADING_VEL_I    = 0.0
     const val GYRO_HEADING_VEL_D    = 50.0
 
-    const val LOOP_PERIOD           = 1.0 / 100
-    const val ACTION_PERIOD         = 1.0 / 100
+    const val LOOP_PERIOD           = 1.0 / 50
+    const val ACTION_PERIOD         = 1.0 / 50
 
 }
