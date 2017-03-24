@@ -198,11 +198,13 @@ object Turret : Subsystem() {
     override fun getSubsystemLoop() = loop
 
     override fun printToSmartDashboard() {
+        val vision = Robot.getVisionDataStream()
+
         SmartDashboard.putNumber("turret_position", turretRotator.getPosition().toInt().toDouble())
-        SmartDashboard.putNumber("turret_error", turretRotator.getError())
-        SmartDashboard.putNumber("vision_distance", Robot.getVisionDataStream().latestGoalDistance.toInt().toDouble())
-        SmartDashboard.putNumber("vision_error", Robot.getVisionDataStream().latestGoalYaw)
-        SmartDashboard.putBoolean("valid_vision_data", Robot.getVisionDataStream().isLatestGoalValid)
+        SmartDashboard.putNumber("turret_error", turretRotator.getError().toInt().toDouble())
+        SmartDashboard.putNumber("vision_distance", vision.latestGoalDistance.toInt().toDouble())
+        SmartDashboard.putNumber("vision_error", vision.latestGoalYaw.toInt().toDouble())
+        SmartDashboard.putBoolean("valid_vision_data", vision.isLatestGoalValid)
         SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget())
         SmartDashboard.putBoolean("turret_hood_extended", turretHood.get())
         SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint())

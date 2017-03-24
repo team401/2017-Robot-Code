@@ -42,7 +42,4 @@ NOTE: Eclipse users will need to install a plugin so that they can compile .kt f
 
     Contains classes that can and should be reused each year, such as code for common interfaces, utility classes, sensors, crash tracking, and math helpers.
     
-### All variables follow the standard java naming convention you would learn in a Computer Science course:
-* UpperCamelCase for classes
-* lowerCamelCase for identifiers
-* CAPS_WITH_UNDERLINES for constants
+All variables follow the standard java naming convention you would learn in a Computer Science course:
