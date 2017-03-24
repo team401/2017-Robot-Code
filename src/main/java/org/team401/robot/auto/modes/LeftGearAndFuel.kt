@@ -25,7 +25,7 @@ class LeftGearAndFuel : AutoMode() {
         runAction(RotateAction(Rotation2d.fromDegrees(90.0)))
         runAction(DriveDistanceAction(dBaseLToHop * 2, .7))
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
-        Turret.getInstance().setWantedState(Turret.TurretState.AUTO)
+        Turret.setWantedState(Turret.TurretState.AUTO)
 
         Thread.sleep(2000)
         runAction(RotateAction(Rotation2d.fromDegrees(70.0)))

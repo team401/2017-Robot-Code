@@ -59,7 +59,7 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	public void teleopPeriodic() {
 		double delta = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0);
 		if (delta > 0) {
-			Flywheel.INSTANCE.setSpeed(delta);
+			Flywheel.INSTANCE.setSpeed((int)delta);
 			//Hopper.INSTANCE.setWantedState(Hopper.HopperState.ON);
 			kicker.set(1);
 		} else {

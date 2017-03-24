@@ -45,12 +45,12 @@ object Flywheel : Subsystem() {
 		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())*/
 	}
 
-	fun setSpeed(speed: Double) {
+	fun setSpeed(speed: Int) {
 		if (state == FlywheelState.STOPPED) {
 			master.changeControlMode(CANTalon.TalonControlMode.Speed)
 			state = FlywheelState.RUNNING
 		}
-		master.set(speed)
+		master.set(speed.toDouble())
 	}
 
 	fun getSpeed() = master.speed

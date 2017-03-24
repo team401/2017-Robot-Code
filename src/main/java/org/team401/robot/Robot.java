@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot {
 	private static VisionDataStream visionDataStream;
 	private static VisionController visionController;
 
-	private static Turret turret = Turret.getInstance();
+	private static Turret turret = Turret.INSTANCE;
 	private static Intake intake = Intake.INSTANCE;
 	private static Tower tower = Tower.INSTANCE;
 	private static GearHolder gearHolder = GearHolder.INSTANCE;

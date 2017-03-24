@@ -17,7 +17,7 @@ class ForwardGear : AutoMode() {
         runAction(DropGearAction(3.0))
         Thread.sleep(1000)
         runAction(DriveDistanceAction(2.5*12*2, .4))
-        Turret.getInstance().setWantedState(Turret.TurretState.AUTO)
+        Turret.setWantedState(Turret.TurretState.AUTO)
     }
 
     override fun done() {

@@ -10,8 +10,8 @@ class TurretCalibrator : Loop {
     }
 
     override fun onLoop() {
-        if (Turret.getInstance()?.atZeroPoint() ?: false)
-            Turret.getInstance().zeroSensors()
+        if (Turret.atZeroPoint())
+            Turret.zeroSensors()
     }
 
     override fun onStop() {

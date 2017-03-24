@@ -28,6 +28,11 @@ object Tower : Subsystem() {
 		}
 
 		override fun onLoop() {
+            if (Flywheel.getCurrentState() == Flywheel.FlywheelState.RUNNING)
+                setWantedState(TowerState.KICKER_ON)
+            if (Flywheel.getCurrentState() == Flywheel.FlywheelState.STOPPED && state == TowerState.KICKER_ON)
+                setWantedState(TowerState.TOWER_OUT)
+
 			when (state) {
 				TowerState.TOWER_IN -> {
 					shift.set(false)

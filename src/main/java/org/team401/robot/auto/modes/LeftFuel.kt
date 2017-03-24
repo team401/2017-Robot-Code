@@ -22,7 +22,7 @@ class LeftFuel : AutoMode() {
         runAction(RotateAction(Rotation2d.fromDegrees(90.0), 0.45))
 
         runAction(DriveDistanceAction(dBaseLToHop * 2, .6))
-        Turret.getInstance().setWantedState(Turret.TurretState.AUTO)
+        Turret.setWantedState(Turret.TurretState.AUTO)
         Thread.sleep(2500)
         runAction(RotateAction(Rotation2d.fromDegrees(10.0)))
         Intake.setWantedState(Intake.IntakeState.ENABLED)
