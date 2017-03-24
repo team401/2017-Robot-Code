@@ -1,5 +1,6 @@
 package org.team401.robot.subsystems
 
+import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
@@ -8,12 +9,18 @@ import org.team401.lib.Loop
 object Tower : Subsystem() {
 
 	enum class TowerState {
-		TOWER_IN, TOWER_OUT
+		TOWER_IN, TOWER_OUT, KICKER_ON, KICKER_INVERTED
 	}
 
 	private var state = TowerState.TOWER_IN
 
 	private val shift = Solenoid(Constants.TOWER_SHIFTER)
+	private val motor = CANTalon(Constants.TURRET_FEEDER)
+
+	init {
+		motor.enableLimitSwitch(true, false)
+		motor.set(0.0)
+	}
 
 	private val loop = object : Loop {
 		override fun onStart() {
@@ -24,9 +31,19 @@ object Tower : Subsystem() {
 			when (state) {
 				TowerState.TOWER_IN -> {
 					shift.set(false)
+					motor.set(0.0)
 				}
 				TowerState.TOWER_OUT -> {
 					shift.set(true)
+					motor.set(0.0)
+				}
+				TowerState.KICKER_ON -> {
+					shift.set(true)
+					motor.set(1.0)
+				}
+				TowerState.KICKER_INVERTED -> {
+					shift.set(true)
+					motor.set(-1.0)
 				}
 			}
 		}
@@ -35,6 +52,8 @@ object Tower : Subsystem() {
 
 		}
 	}
+
+	fun isTurretLimitSwitchTriggered() = motor.isRevLimitSwitchClosed
 
 	fun setWantedState(state: TowerState) {
 		this.state = state
@@ -46,5 +65,6 @@ object Tower : Subsystem() {
 
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("tower_extended", state != TowerState.TOWER_IN)
+		SmartDashboard.putNumber("tower_throttle", motor.get())
 	}
 }

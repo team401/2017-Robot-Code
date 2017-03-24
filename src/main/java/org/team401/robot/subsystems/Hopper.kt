@@ -25,9 +25,9 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isKickerRunning)
+            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Tower.getCurrentState() == Tower.TowerState.KICKER_ON)
                 setWantedState(HopperState.ON)
-            else if (Turret.getInstance().isKickerInverted)
+            else if (Tower.getCurrentState() == Tower.TowerState.KICKER_INVERTED)
                 setWantedState(HopperState.INVERTED)
             else if (state != HopperState.INVERTED || Tower.getCurrentState() == Tower.TowerState.TOWER_IN)
                 setWantedState(HopperState.OFF)

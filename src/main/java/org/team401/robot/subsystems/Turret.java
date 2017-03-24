@@ -20,8 +20,8 @@ public class Turret extends Subsystem {
     }
 
     private static Turret instance = new Turret(new Lidar(I2C.Port.kMXP, Lidar.Hardware.LIDARLITE_V3),
-            new CANTalon(Constants.TURRET_ROTATOR), new CANTalon(Constants.TURRET_FEEDER),
-            new Solenoid(Constants.TURRET_HOOD), new Solenoid(Constants.TURRET_LED_RING));
+            new CANTalon(Constants.TURRET_ROTATOR), new Solenoid(Constants.TURRET_HOOD),
+            new Solenoid(Constants.TURRET_LED_RING));
 
     private TurretState state = TurretState.DISABLED;
 
@@ -31,11 +31,9 @@ public class Turret extends Subsystem {
 
     private DistanceSensor distanceSensor;
 
-    private CANTalon feeder;
-
     private boolean sentryRight = false;
 
-    private int minRPM = 1000, maxRPM = 4600;
+    private int minRPM = 2500, maxRPM = 4600;
     private int rpmOffset = 0;
 
     private Loop loop = new Loop() {
@@ -60,7 +58,7 @@ public class Turret extends Subsystem {
         }
     };
 
-    private Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, CANTalon turretFeeder, Solenoid turretHood, Solenoid ledRing) {
+    private Turret(DistanceSensor distanceSensor, CANTalon turretSpinner, Solenoid turretHood, Solenoid ledRing) {
         turretRotator = new TurretRotator(turretSpinner);
         this.turretHood = turretHood;
         this.ledRing = ledRing;
@@ -70,11 +68,6 @@ public class Turret extends Subsystem {
         ledRing.set(false);
         if (distanceSensor instanceof Lidar)
             ((Lidar) distanceSensor).start();
-
-        feeder = turretFeeder;
-        feeder.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        feeder.enableLimitSwitch(true, false);
-        feeder.set(0.0);
     }
 
     /**
@@ -174,12 +167,11 @@ public class Turret extends Subsystem {
         if (Flywheel.INSTANCE.getCurrentState() == Flywheel.FlywheelState.RUNNING &&
                 Tower.INSTANCE.getCurrentState() != Tower.TowerState.TOWER_IN) {
             if (Flywheel.INSTANCE.isWithinTolerance())
-                feeder.set(1);
+                Tower.INSTANCE.setWantedState(Tower.TowerState.KICKER_ON);
             else
-                feeder.set(0);
+                Tower.INSTANCE.setWantedState(Tower.TowerState.TOWER_OUT);
         } else {
             rpmOffset = 0;
-            feeder.set(0);
         }
     }
 
@@ -213,22 +205,7 @@ public class Turret extends Subsystem {
     }
 
     public boolean atZeroPoint() {
-        return feeder.isRevLimitSwitchClosed();
-    }
-
-    public boolean isKickerRunning() {
-        return feeder.get() >= 0;
-    }
-
-    public boolean isKickerInverted() {
-        return feeder.get() <= 0;
-    }
-
-    public void setKickerSpeed(double throttle) {
-        if (throttle != 0 && Tower.INSTANCE.getCurrentState() == Tower.TowerState.TOWER_OUT) {
-            feeder.set(throttle);
-        } else
-            feeder.set(0);
+        return Tower.INSTANCE.isTurretLimitSwitchTriggered();
     }
 
     private int normalizeRPM(int speed) {

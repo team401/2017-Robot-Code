@@ -55,7 +55,7 @@ object Flywheel : Subsystem() {
 
 	fun getSpeed() = master.speed
 
-	fun isWithinTolerance() = Math.abs(master.speed - master.setpoint) < 50
+	fun isWithinTolerance() = state == FlywheelState.RUNNING && Math.abs(master.speed - master.setpoint) < 50
 
 	fun stop() {
 		if (state == FlywheelState.RUNNING) {

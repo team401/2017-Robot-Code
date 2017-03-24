@@ -21,9 +21,6 @@ object Constants {
     const val COMPRESSOR_FAN        = 5
     const val TURRET_LED_RING       = 7
 
-    // can device ids
-    const val PDP                   = 0
-    const val PCM                   = 0
     // can device ids for the motor controllers
     const val FRONT_LEFT_MASTER     = 1
     const val FRONT_LEFT_SLAVE      = 2
