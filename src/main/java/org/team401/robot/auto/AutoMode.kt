@@ -1,6 +1,7 @@
 package org.team401.robot.auto
 
 import org.team401.lib.CrashTracker
+import org.team401.lib.FMS
 import org.team401.robot.Constants
 import org.team401.robot.auto.actions.Action
 

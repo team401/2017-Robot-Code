@@ -6,7 +6,7 @@ import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
-class ForwardGear : AutoMode() {
+internal class CenterGear : AutoMode() {
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
@@ -14,10 +14,9 @@ class ForwardGear : AutoMode() {
         // drive up slowly
         runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-3.5*12*2, 0.9)))
         runAction(DriveDistanceAction(-2.5*12*2, 0.4))
-        runAction(DropGearAction(3.0))
+        runAction(DropGearAction(2.5))
         Thread.sleep(1000)
         runAction(DriveDistanceAction(2.5*12*2, .4))
-        Turret.setWantedState(Turret.TurretState.AUTO)
     }
 
     override fun done() {

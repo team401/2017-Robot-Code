@@ -6,7 +6,7 @@ import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret
 
-class CalibrateTurret : AutoMode() {
+internal class CalibrateTurret : AutoMode() {
 
     override fun routine() {
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
