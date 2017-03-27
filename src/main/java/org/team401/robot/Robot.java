@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 	private static Hopper hopper = Hopper.INSTANCE;
 	private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
 	private static Flywheel flywheel = Flywheel.INSTANCE;
+
 	private static ControlBoard controls = ControlBoard.INSTANCE;
 
 	private static PowerDistributionPanel pdp;
@@ -210,9 +211,12 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	public void autonomousPeriodic() {
+	public void disabledInit() {
 		try {
-
+			CrashTracker.INSTANCE.logDisabledInit();
+			Strongback.disable();
+			enabledLoop.stop();
+			disabledLoop.start();
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}
@@ -226,19 +230,6 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}
 	}
-
-	public void disabledInit() {
-		try {
-			CrashTracker.INSTANCE.logDisabledInit();
-			Strongback.disable();
-			enabledLoop.stop();
-			disabledLoop.start();
-		} catch (Throwable t) {
-			CrashTracker.INSTANCE.logThrowableCrash(t);
-		}
-	}
-
-	public void disabledPeriodic() {}
 
 	//subsystems
 	public static VisionDataStream getVisionDataStream() {
