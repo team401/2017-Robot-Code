@@ -21,16 +21,16 @@ internal class HopperFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode(
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.setBrakeMode(true)
-        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.AUTO), DriveDistanceAction(dStatToAir*2, .8)))
+        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.AUTO), DriveDistanceAction(-7.0*12*2, Rotation2d.fromDegrees(0.0), .8)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(turnAngle), 0.45))
 
-        runAction(DriveDistanceAction(dBaseLToHop * 2, .6))
+        runAction(DriveDistanceAction(5.75 * 12 * 2, Rotation2d.fromDegrees(turnAngle), .6))
         Turret.setWantedState(Turret.TurretState.AUTO)
         Thread.sleep(2500)
         runAction(RotateAction(Rotation2d.fromDegrees(intakeAngle)))
         Intake.setWantedState(Intake.IntakeState.ENABLED)
-        runAction(DriveDistanceAction(3.5*2, .35))
+        runAction(DriveDistanceAction(3.5*2, Rotation2d.fromDegrees(intakeAngle), .35))
     }
 
     override fun done() {

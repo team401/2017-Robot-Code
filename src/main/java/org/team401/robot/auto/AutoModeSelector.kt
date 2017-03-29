@@ -26,8 +26,8 @@ class AutoModeSelector {
 		SmartDashboard.putData("Starting Position", positionChooser)
 
 		strategyChooser.addObject("Gear Only", Auto.GEAR)
-		strategyChooser.addObject("CenterGearAndFuel Only", Auto.FUEL)
-		strategyChooser.addObject("Gear then CenterGearAndFuel", Auto.GEAR_FUEL)
+		strategyChooser.addObject("Fuel Only", Auto.FUEL)
+		strategyChooser.addObject("Gear then Fuel", Auto.GEAR_FUEL)
 		SmartDashboard.putData("Strategy", strategyChooser)
 	}
 
