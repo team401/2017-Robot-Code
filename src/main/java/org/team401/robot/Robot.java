@@ -13,6 +13,7 @@ import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
 import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
+import org.team401.robot.loops.LedManager;
 import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
@@ -69,6 +70,10 @@ public class Robot extends IterativeRobot {
 			disabledLoop = new LoopManager();
 			disabledLoop.register(new GyroCalibrator());
 			disabledLoop.register(new TurretCalibrator());
+
+			LedManager leds = new LedManager();
+			enabledLoop.register(leds);
+			disabledLoop.register(leds);
 
 			pdp = new PowerDistributionPanel();
 			compressor = new Compressor();
