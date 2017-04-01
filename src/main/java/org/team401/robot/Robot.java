@@ -11,6 +11,7 @@ import org.team401.lib.Rotation2d;
 import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
+import org.team401.robot.auto.actions.DriveDistanceAction;
 import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.LedManager;
@@ -93,11 +94,11 @@ public class Robot extends IterativeRobot {
 					() -> drive.getGyro().reset());
 
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0)).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 90,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-50), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-50)).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
-					() -> new RotateAction(Rotation2d.Companion.fromDegrees(50), .35, 5).asSbCommand());
+					() -> new RotateAction(Rotation2d.Companion.fromDegrees(50)).asSbCommand());
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> visionController.toggleActiveCamera());
@@ -121,6 +122,7 @@ public class Robot extends IterativeRobot {
 						gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE);
 						tower.setWantedState(Tower.TowerState.TOWER_IN);
 						drive.shift(OctocanumDrive.DriveMode.TRACTION);
+						Strongback.submit(new DriveDistanceAction(12.0*(1/6)*2, .3).asSbCommand());
 					});
 			switchReactor.onUntriggered(controls.getGearIntake(),
 					() -> {
@@ -178,6 +180,7 @@ public class Robot extends IterativeRobot {
 			data.register(hopper);
 			data.register(drive);
 			data.register(flywheel);
+			data.register(tower);
 			enabledLoop.register(data);
 			disabledLoop.register(data);
 

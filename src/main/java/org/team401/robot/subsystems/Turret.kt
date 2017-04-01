@@ -25,8 +25,8 @@ object Turret : Subsystem() {
 
 	private var sentryRight = false
 
-	private val minRpm = 2500
-	private val maxRpm = 4600
+	private val minRpm = 3000
+	private val maxRpm = 4800
 	private val distanceHoodSwitch = 0
 	private var rpmOffset = 0
 
@@ -39,11 +39,6 @@ object Turret : Subsystem() {
 		}
 
 		override fun onLoop() {
-			if (state > TurretState.MANUAL)
-				ledRing.set(true)
-			else
-				ledRing.set(false)
-
 			if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
 				return
 			val vision = Robot.getVisionDataStream()
@@ -89,14 +84,14 @@ object Turret : Subsystem() {
 			// shooting code
 			if (state == TurretState.AUTO) {
 				if (speed != 0)
-					Flywheel.setSpeed(speed)
+					Flywheel.setSpeed(normalizeRPM(speed))
 				else
 					Flywheel.stop()
 			} else if (ControlBoard.getShootFuel().isTriggered) {
 				if (speed == 0) {
 					// if our speed isnt set, grab it
 					val userSetpoint = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0).toInt()
-					if (userSetpoint != 0)
+					if (state == TurretState.MANUAL && userSetpoint != 0)
 						speed = userSetpoint
 					else if (vision.isLatestGoalValid)
 						speed = getRpmForDistance()
@@ -178,15 +173,28 @@ object Turret : Subsystem() {
 			turretHood.set(extended)
 	}
 
+	fun setLedRing(on: Boolean) {
+		if (state == TurretState.MANUAL) {
+			ledRing.set(on)
+			if (on)
+				Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING)
+			else
+				Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING)
+		}
+	}
+
 	fun isHoodExtended() = turretHood.get()
 
 	fun atZeroPoint() = Tower.isTurretLimitSwitchTriggered()
 
 	fun setWantedState(state: TurretState) {
-		if (state >= TurretState.SENTRY)
+		if (state >= TurretState.SENTRY) {
+			ledRing.set(true)
 			Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING)
-		else
+		} else {
+			ledRing.set(false)
 			Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING)
+		}
 		this.state = state
 	}
 

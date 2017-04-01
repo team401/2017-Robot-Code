@@ -3,7 +3,7 @@ package org.team401.robot.auto.actions
 import org.team401.lib.Rotation2d
 import org.team401.robot.subsystems.OctocanumDrive
 
-class RotateAction(val heading: Rotation2d, val power: Double = 0.35, timeout: Double = 5.0) : Action(timeout) {
+class RotateAction @JvmOverloads constructor(val heading: Rotation2d, val power: Double = 0.35, timeout: Double = 5.0) : Action(timeout) {
 
 	val start = OctocanumDrive.getGyroAngle()
 	val tmpDriveMode = OctocanumDrive.driveMode

@@ -3,7 +3,7 @@ package org.team401.robot.auto.actions
 import org.team401.lib.Rotation2d
 import org.team401.robot.subsystems.OctocanumDrive
 
-class DriveDistanceAction(val distance: Double, val heading: Rotation2d, val power: Double = 0.5, timeout: Double = 5.0) : Action(timeout) {
+class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val power: Double = 0.5, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), timeout: Double = 5.0) : Action(5.0) {
 
 	var startPosLeft = 0.0
 	var startPosRight = 0.0

@@ -72,6 +72,6 @@ object Flywheel : Subsystem() {
 	override fun printToSmartDashboard() {
 		SmartDashboard.putNumber("flywheel_rpm", Math.round(master.speed).toDouble())
 		SmartDashboard.putNumber("flywheel_talon_setpoint", Math.round(master.setpoint).toDouble())
-		SmartDashboard.putNumber("flywheel_error", master.closedLoopError.toDouble())
+		SmartDashboard.putNumber("flywheel_error", master.error)
 	}
 }

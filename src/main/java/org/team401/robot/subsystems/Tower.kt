@@ -28,7 +28,7 @@ object Tower : Subsystem() {
 		}
 
 		override fun onLoop() {
-            if (Flywheel.getCurrentState() == Flywheel.FlywheelState.RUNNING)
+            if (Flywheel.isWithinTolerance())
                 setWantedState(TowerState.KICKER_ON)
             if (Flywheel.getCurrentState() == Flywheel.FlywheelState.STOPPED && state == TowerState.KICKER_ON)
                 setWantedState(TowerState.TOWER_OUT)
@@ -70,6 +70,6 @@ object Tower : Subsystem() {
 
 	override fun printToSmartDashboard() {
 		SmartDashboard.putBoolean("tower_extended", state != TowerState.TOWER_IN)
-		SmartDashboard.putNumber("tower_throttle", motor.get())
+		SmartDashboard.putNumber("kicker_throttle", motor.get())
 	}
 }
