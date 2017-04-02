@@ -6,9 +6,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
-import org.team401.lib.CrashTracker;
-import org.team401.lib.FMS;
-import org.team401.lib.Rotation2d;
+import org.team401.lib.*;
 import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
@@ -19,7 +17,6 @@ import org.team401.robot.loops.LedManager;
 import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
-import org.team401.lib.LoopManager;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
@@ -27,7 +24,7 @@ public class Robot extends IterativeRobot {
 
 	private AutoModeExecutor autoExecutor;
 	private AutoModeSelector autoSelector;
-	private LoopManager enabledLoop, disabledLoop;
+	private LoopManager enabledLoop, disabledLoop, dataLoop;
 
 	private static VisionDataStream visionDataStream;
 	private static VisionController visionController;
@@ -41,6 +38,8 @@ public class Robot extends IterativeRobot {
 	private static Flywheel flywheel = Flywheel.INSTANCE;
 
 	private static ControlBoard controls = ControlBoard.INSTANCE;
+
+	private static FMS fms = FMS.INSTANCE;
 
 	private static PowerDistributionPanel pdp;
 	private static Compressor compressor;
@@ -70,7 +69,7 @@ public class Robot extends IterativeRobot {
 			drive.init();
 
 			disabledLoop = new LoopManager();
-			disabledLoop.register(new GyroCalibrator());
+			disabledLoop.register(new GyroCalibrator(drive.getGyro()));
 			disabledLoop.register(new TurretCalibrator());
 
 			LedManager leds = new LedManager();
@@ -171,7 +170,21 @@ public class Robot extends IterativeRobot {
 			switchReactor.onUntriggered(controls.getInverseKicker(),
 					() -> tower.setWantedState(Tower.TowerState.TOWER_OUT));
 
-			System.out.print("Done!\nCreating SmartDashboard interactions... ");
+			System.out.print("Done!\nIntitializing data logging... ");
+            dataLoop = new LoopManager();
+            DataLogger dl = new DataLogger();
+            dl.register(() -> fms.getAlliance());
+            dl.register(() -> fms.getAllianceStation());
+            dl.register(() -> fms.getMatchTime());
+            dl.register(() -> fms.isAutonomous());
+            dl.register(() -> pdp.getVoltage());
+            dl.register(() -> pdp.getTotalCurrent());
+            for (int i = 0; i < 16; i++) {
+                final int c = i;
+                dl.register(() -> pdp.getCurrent(c));
+            }
+            dataLoop.register(dl);
+
 			autoSelector = new AutoModeSelector();
 
 			SmartDashboardData data = new SmartDashboardData();
@@ -182,7 +195,7 @@ public class Robot extends IterativeRobot {
 			data.register(drive);
 			data.register(flywheel);
 			data.register(tower);
-			enabledLoop.register(data);
+			dataLoop.register(data);
 			disabledLoop.register(data);
 
 			System.out.print("Done!\nSetting cameras to stream mode... ");
@@ -199,6 +212,7 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logAutoInit();
 			disabledLoop.stop();
 			enabledLoop.start();
+			dataLoop.start();
 			Strongback.restart();
 			autoExecutor = new AutoModeExecutor(autoSelector.getAutoMode());
 			autoExecutor.start();
@@ -212,6 +226,7 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logTeleopInit();
 			disabledLoop.stop();
 			enabledLoop.start();
+			dataLoop.start();
 			Strongback.restart();
 			if (autoExecutor != null)
 				autoExecutor.stop();
@@ -225,6 +240,7 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logDisabledInit();
 			Strongback.disable();
 			enabledLoop.stop();
+			dataLoop.stop();
 			disabledLoop.start();
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
