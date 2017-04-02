@@ -27,7 +27,8 @@ object Turret : Subsystem() {
 
 	private val minRpm = 3000
 	private val maxRpm = 4800
-	private val distanceHoodSwitch = 0
+	private val hoodSwitchOn = 150
+	private val hoodSwitchOff = 130
 	private var rpmOffset = 0
 
 	private val maxRotateSpeed = .2
@@ -46,9 +47,17 @@ object Turret : Subsystem() {
 
 			// rotation code
 			if (state >= TurretState.SENTRY) { // auto control
-				if (vision.isLatestGoalValid && track()) {
-					turretHood.set(vision.latestGoalDistance > distanceHoodSwitch)
-					speed = getRpmForDistance()
+				if (turretHood.get())
+					turretHood.set(vision.latestGoalDistance > hoodSwitchOff)
+				else
+					turretHood.set(vision.latestGoalDistance > hoodSwitchOn)
+				if (vision.isLatestGoalValid) {
+					if (turretHood.get())
+						turretHood.set(vision.latestGoalDistance > hoodSwitchOff)
+					else
+						turretHood.set(vision.latestGoalDistance > hoodSwitchOn)
+					if (track())
+						speed = getRpmForDistance()
 				} else
 					sentry()
 			} else { // manual control

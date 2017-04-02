@@ -13,7 +13,7 @@ class AutoModeSelector {
 	}
 
 	private enum class Auto {
-		GEAR, FUEL, GEAR_FUEL
+		GEAR, FUEL, GEAR_FUEL, NONE
 	}
 
 	private val positionChooser = SendableChooser<StartingPos>()
@@ -28,6 +28,7 @@ class AutoModeSelector {
 		strategyChooser.addObject("Gear Only", Auto.GEAR)
 		strategyChooser.addObject("Fuel Only", Auto.FUEL)
 		strategyChooser.addObject("Gear then Fuel", Auto.GEAR_FUEL)
+		strategyChooser.addObject("None", Auto.NONE)
 		SmartDashboard.putData("Strategy", strategyChooser)
 	}
 
@@ -50,8 +51,8 @@ class AutoModeSelector {
                 return HopperFuel(positionChooser.selected)
 			}
 			Auto.GEAR_FUEL -> {
-				if ((positionChooser.selected != StartingPos.RIGHT && HAL.getAllianceStation().ordinal < 3) ||
-						(positionChooser.selected != StartingPos.LEFT && HAL.getAllianceStation().ordinal >= 3)) {
+				if ((positionChooser.selected == StartingPos.RIGHT && FMS.getAlliance() == FMS.Alliance.BLUE) ||
+						(positionChooser.selected == StartingPos.LEFT && FMS.getAlliance() == FMS.Alliance.RED)) {
 					println("Bad fuel auto configuration!!!")
 					return CalibrateTurret()
 				}

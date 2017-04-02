@@ -11,7 +11,7 @@ import org.team401.robot.subsystems.Intake;
 import org.team401.robot.subsystems.Tower;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
-public class RobotTestPls /*extends IterativeRobot*/ {
+public class RobotTestPls extends IterativeRobot {
 
 	private LoopManager loop = new LoopManager();
 	private CANTalon kicker;

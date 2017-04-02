@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.team401.lib.CrashTracker;
+import org.team401.lib.FMS;
 import org.team401.lib.Rotation2d;
 import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
@@ -122,7 +123,7 @@ public class Robot extends IterativeRobot {
 						gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE);
 						tower.setWantedState(Tower.TowerState.TOWER_IN);
 						drive.shift(OctocanumDrive.DriveMode.TRACTION);
-						Strongback.submit(new DriveDistanceAction(12.0*(1/6)*2, .3).asSbCommand());
+						Strongback.submit(new DriveDistanceAction(12.0*(1/3)*2, .3).asSbCommand());
 					});
 			switchReactor.onUntriggered(controls.getGearIntake(),
 					() -> {

@@ -27,6 +27,10 @@ object FMS {
         return Alliance.BLUE
     }
 
+    fun isBlueAlliance() = getAlliance() == Alliance.BLUE
+
+    fun isRedAlliance() = getAlliance() == Alliance.RED
+
     fun getAllianceStation(): AllianceStation {
         val hal = HAL.getAllianceStation()
         if (hal.ordinal == 0 || hal.ordinal == 3)
@@ -39,4 +43,6 @@ object FMS {
     fun getMatchTime(): Int {
         return DriverStation.getInstance().matchTime.toInt()
     }
+
+    fun isAutonomous() = DriverStation.getInstance().isAutonomous
 }

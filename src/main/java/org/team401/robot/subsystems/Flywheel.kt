@@ -38,11 +38,12 @@ object Flywheel : Subsystem() {
 		master.reverseSensor(true)
 		master.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
+		//master.setNominalClosedLoopVoltage(12.4)
 
-		/*slave.isSafetyEnabled = false
+		slave.isSafetyEnabled = false
 		slave.inverted = true
 		slave.changeControlMode(CANTalon.TalonControlMode.Follower)
-		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())*/
+		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())
 	}
 
 	fun setSpeed(speed: Int) {
@@ -72,6 +73,6 @@ object Flywheel : Subsystem() {
 	override fun printToSmartDashboard() {
 		SmartDashboard.putNumber("flywheel_rpm", Math.round(master.speed).toDouble())
 		SmartDashboard.putNumber("flywheel_talon_setpoint", Math.round(master.setpoint).toDouble())
-		SmartDashboard.putNumber("flywheel_error", master.error)
+		SmartDashboard.putNumber("flywheel_error", Math.abs(master.setpoint - master.speed).toInt().toDouble())
 	}
 }
