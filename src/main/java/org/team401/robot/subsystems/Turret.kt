@@ -16,7 +16,7 @@ object Turret : Subsystem() {
 		DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
 	}
 
-	var state = TurretState.DISABLED
+	private var state = TurretState.DISABLED
 
 	val turretRotator = TurretRotator(CANTalon(Constants.TURRET_ROTATOR))
 

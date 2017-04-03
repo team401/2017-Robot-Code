@@ -6,7 +6,7 @@ import java.util.*
 
 class DataLogger(val name: String) : Loop {
 
-    val data = ArrayList<() -> Any>()
+    private val data = ArrayList<() -> Any>()
 
     override fun onLoop() {
         PrintWriter(FileWriter("/home/lvuser/$name.txt", true)).use { writer ->

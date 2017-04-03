@@ -190,6 +190,7 @@ public class Robot extends IterativeRobot {
             dl.register(() -> drive.getBrakeModeOn());
             dl.register(() -> flywheel.getSpeed());
             dl.register(() -> flywheel.getError());
+            dl.register(() -> turret.getCurrentState());
             dl.register(() -> turret.getTurretRotator().getError());
             dataLoop.register(dl);
 
