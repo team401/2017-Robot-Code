@@ -367,6 +367,7 @@ object OctocanumDrive : Subsystem() {
         SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
         SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
         SmartDashboard.putBoolean("open_loop_control", controlState == DriveControlState.OPEN_LOOP)
+        SmartDashboard.putBoolean("brake_enabled", brakeModeOn)
         SmartDashboard.putData("gyro_diagram", gyro)
     }
 

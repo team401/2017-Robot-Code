@@ -19,6 +19,7 @@ object ControlBoard {
     fun getGearOut() = drive.getButton(8)
     fun getGearIntake() = drive.getButton(7)
     fun getResetGyro() = drive.getButton(9)
+    fun getToggleBrake() = drive.getButton(10)
     fun getGyroPadAngle() = drive.getDPad(0)
 
     // controls turret

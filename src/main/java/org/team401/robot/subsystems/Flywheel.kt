@@ -54,7 +54,14 @@ object Flywheel : Subsystem() {
 		master.set(speed.toDouble())
 	}
 
-	fun getSpeed() = master.speed
+	fun getSpeed() = master.speed.toInt()
+
+    fun getError(): Int {
+        if (state == FlywheelState.STOPPED)
+            return 0
+        else
+            return Math.abs(master.setpoint - master.speed).toInt()
+    }
 
 	fun isWithinTolerance() = state == FlywheelState.RUNNING && Math.abs(master.speed - master.setpoint) < 50
 
@@ -71,8 +78,8 @@ object Flywheel : Subsystem() {
 	override fun getSubsystemLoop() = loop
 
 	override fun printToSmartDashboard() {
-		SmartDashboard.putNumber("flywheel_rpm", Math.round(master.speed).toDouble())
+		SmartDashboard.putNumber("flywheel_rpm", getSpeed().toDouble())
 		SmartDashboard.putNumber("flywheel_talon_setpoint", Math.round(master.setpoint).toDouble())
-		SmartDashboard.putNumber("flywheel_error", Math.abs(master.setpoint - master.speed).toInt().toDouble())
+		SmartDashboard.putNumber("flywheel_error", getError().toDouble())
 	}
 }

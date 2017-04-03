@@ -156,7 +156,7 @@ object Turret : Subsystem() {
 
 	private fun track(): Boolean {
 		val error = Robot.getVisionDataStream().latestGoalYaw
-		if (Math.abs(error) < 2) {
+		if (Math.abs(error) < 3) {
 			turretRotator.stop()
 			return true
 		} else {

@@ -31,6 +31,5 @@ class CenterGearAndFuel : AutoMode() {
 
     override fun done() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        OctocanumDrive.setBrakeMode(false)
     }
 }

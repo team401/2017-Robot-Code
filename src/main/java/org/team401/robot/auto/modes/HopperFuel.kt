@@ -36,6 +36,5 @@ internal class HopperFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode(
     override fun done() {
         Intake.setWantedState(Intake.IntakeState.DISABLED)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        OctocanumDrive.setBrakeMode(false)
     }
 }

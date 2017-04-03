@@ -31,6 +31,5 @@ internal class SideGear(startingPos: AutoModeSelector.StartingPos) : AutoMode() 
     override fun done() {
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
-        OctocanumDrive.setBrakeMode(false)
     }
 }

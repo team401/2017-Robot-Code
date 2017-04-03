@@ -92,6 +92,8 @@ public class Robot extends IterativeRobot {
 					() -> drive.resetHeadingSetpoint());
 			switchReactor.onTriggered(controls.getResetGyro(),
 					() -> drive.getGyro().reset());
+			switchReactor.onTriggered(controls.getToggleBrake(),
+                    () -> drive.setBrakeMode(!drive.getBrakeModeOn()));
 
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0)).asSbCommand());
@@ -172,7 +174,7 @@ public class Robot extends IterativeRobot {
 
 			System.out.print("Done!\nIntitializing data logging... ");
             dataLoop = new LoopManager();
-            DataLogger dl = new DataLogger();
+            DataLogger dl = new DataLogger("robot_data");
             dl.register(() -> fms.getAlliance());
             dl.register(() -> fms.getAllianceStation());
             dl.register(() -> fms.getMatchTime());
@@ -183,6 +185,12 @@ public class Robot extends IterativeRobot {
                 final int c = i;
                 dl.register(() -> pdp.getCurrent(c));
             }
+            dl.register(() -> drive.getDriveMode());
+            dl.register(() -> drive.getControlState());
+            dl.register(() -> drive.getBrakeModeOn());
+            dl.register(() -> flywheel.getSpeed());
+            dl.register(() -> flywheel.getError());
+            dl.register(() -> turret.getTurretRotator().getError());
             dataLoop.register(dl);
 
 			autoSelector = new AutoModeSelector();

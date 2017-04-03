@@ -41,6 +41,5 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
 
     override fun done() {
         Intake.setWantedState(Intake.IntakeState.DISABLED)
-        OctocanumDrive.setBrakeMode(false)
     }
 }

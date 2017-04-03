@@ -11,6 +11,7 @@ internal class CenterGear : AutoMode() {
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
+        OctocanumDrive.setBrakeMode(false)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
         // drive up slowly
         runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-3.5*12*2, 0.9, Rotation2d.fromDegrees(0.0))))
@@ -23,5 +24,6 @@ internal class CenterGear : AutoMode() {
     override fun done() {
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
+        OctocanumDrive.setBrakeMode(true)
     }
 }
