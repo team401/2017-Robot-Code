@@ -14,7 +14,6 @@ import org.team401.robot.auto.actions.DriveDistanceAction;
 import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.LedManager;
-import org.team401.robot.loops.SmartDashboardData;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
 import org.team401.vision.VisionDataStream.VisionDataStream;
@@ -24,7 +23,7 @@ public class Robot extends IterativeRobot {
 
 	private AutoModeExecutor autoExecutor;
 	private AutoModeSelector autoSelector;
-	private LoopManager enabledLoop, disabledLoop, dataLoop;
+	private LoopManager enabledLoop, disabledLoop;
 
 	private static VisionDataStream visionDataStream;
 	private static VisionController visionController;
@@ -66,7 +65,6 @@ public class Robot extends IterativeRobot {
 			enabledLoop.register(drive.getSubsystemLoop());
 			enabledLoop.register(flywheel.getSubsystemLoop());
 			enabledLoop.register(new TurretCalibrator());
-			drive.init();
 
 			disabledLoop = new LoopManager();
 			disabledLoop.register(new GyroCalibrator(drive.getGyro()));
@@ -173,39 +171,9 @@ public class Robot extends IterativeRobot {
 					() -> tower.setWantedState(Tower.TowerState.TOWER_OUT));
 
 			System.out.print("Done!\nIntitializing data logging... ");
-            dataLoop = new LoopManager();
-            DataLogger dl = new DataLogger("robot_data");
-            dl.register(() -> fms.getAlliance());
-            dl.register(() -> fms.getAllianceStation());
-            dl.register(() -> fms.getMatchTime());
-            dl.register(() -> fms.isAutonomous());
-            dl.register(() -> pdp.getVoltage());
-            dl.register(() -> pdp.getTotalCurrent());
-            for (int i = 0; i < 16; i++) {
-                final int c = i;
-                dl.register(() -> pdp.getCurrent(c));
-            }
-            dl.register(() -> drive.getDriveMode());
-            dl.register(() -> drive.getControlState());
-            dl.register(() -> drive.getBrakeModeOn());
-            dl.register(() -> flywheel.getSpeed());
-            dl.register(() -> flywheel.getError());
-            dl.register(() -> turret.getCurrentState());
-            dl.register(() -> turret.getTurretRotator().getError());
-            dataLoop.register(dl);
 
+            Subsystem.Companion.getDataLoop().start();
 			autoSelector = new AutoModeSelector();
-
-			SmartDashboardData data = new SmartDashboardData();
-			data.register(intake);
-			data.register(gearHolder);
-			data.register(turret);
-			data.register(hopper);
-			data.register(drive);
-			data.register(flywheel);
-			data.register(tower);
-			dataLoop.register(data);
-			disabledLoop.register(data);
 
 			System.out.print("Done!\nSetting cameras to stream mode... ");
 			visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
@@ -221,7 +189,6 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logAutoInit();
 			disabledLoop.stop();
 			enabledLoop.start();
-			dataLoop.start();
 			Strongback.restart();
 			autoExecutor = new AutoModeExecutor(autoSelector.getAutoMode());
 			autoExecutor.start();
@@ -235,7 +202,6 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logTeleopInit();
 			disabledLoop.stop();
 			enabledLoop.start();
-			dataLoop.start();
 			Strongback.restart();
 			if (autoExecutor != null)
 				autoExecutor.stop();
@@ -249,7 +215,6 @@ public class Robot extends IterativeRobot {
 			CrashTracker.INSTANCE.logDisabledInit();
 			Strongback.disable();
 			enabledLoop.stop();
-			dataLoop.stop();
 			disabledLoop.start();
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);

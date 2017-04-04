@@ -10,7 +10,7 @@ import org.team401.lib.MathUtils
 import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
 
-object Intake : Subsystem() {
+object Intake : Subsystem("intake") {
 
     enum class IntakeState {
         DISABLED, ENABLED
@@ -40,6 +40,13 @@ object Intake : Subsystem() {
 		}
 	}
 
+    init {
+        dataLogger.register("arm_down", { state == IntakeState.ENABLED })
+        dataLogger.register("intake_enabled", { state == IntakeState.ENABLED })
+        dataLogger.register("intake_voltage", { motor.speed*Robot.getPowerDistributionPanel().voltage })
+        dataLogger.register("intake_current", { motor.speed*Robot.getPowerDistributionPanel().voltage })
+    }
+
     fun setWantedState(state: IntakeState) {
         this.state = state
     }
@@ -47,11 +54,4 @@ object Intake : Subsystem() {
     fun getCurrentState() = state
 
 	override fun getSubsystemLoop(): Loop = loop
-
-	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("arm_down", state == IntakeState.ENABLED)
-		SmartDashboard.putBoolean("intake_enabled", state == IntakeState.ENABLED)
-		SmartDashboard.putNumber("intake_voltage", motor.speed*Robot.getPowerDistributionPanel().voltage)
-		SmartDashboard.putNumber("intake_current", motor.speed*Robot.getPowerDistributionPanel().voltage)
-	}
 }

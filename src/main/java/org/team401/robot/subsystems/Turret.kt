@@ -10,7 +10,7 @@ import org.team401.robot.Robot
 import org.team401.robot.components.TurretRotator
 import org.team401.vision.controller.VisionController
 
-object Turret : Subsystem() {
+object Turret : Subsystem("turret") {
 
 	enum class TurretState {
 		DISABLED, CALIBRATING, MANUAL, SENTRY, AUTO
@@ -134,6 +134,20 @@ object Turret : Subsystem() {
 		}
 	}
 
+    init {
+        dataLogger.register("turret_position", { turretRotator.getPosition().toInt().toDouble() })
+        dataLogger.register("turret_error", { turretRotator.getError().toInt().toDouble() })
+        dataLogger.register("vision_distance", { Robot.getVisionDataStream().latestGoalDistance.toInt().toDouble() })
+        dataLogger.register("vision_error", { Robot.getVisionDataStream().latestGoalYaw.toInt().toDouble() })
+        dataLogger.register("valid_vision_data", { Robot.getVisionDataStream().isLatestGoalValid })
+        dataLogger.register("turret_on_target", { turretRotator.onTarget() })
+        dataLogger.register("turret_hood_extended", { turretHood.get() })
+        dataLogger.register("limit_switch_triggered", { atZeroPoint() })
+        dataLogger.register("sentry_enabled", { state >= TurretState.SENTRY })
+        dataLogger.register("auto_shooting_enabled", { state == TurretState.AUTO })
+        dataLogger.register("turret_enabled", { state != TurretState.DISABLED })
+    }
+
 	private fun normalizeRPM(speed: Int): Int {
 		if (speed > maxRpm)
 			return maxRpm
@@ -210,20 +224,4 @@ object Turret : Subsystem() {
 	fun getCurrentState() = state
 
 	override fun getSubsystemLoop() = loop
-
-	override fun printToSmartDashboard() {
-		val vision = Robot.getVisionDataStream()
-
-		SmartDashboard.putNumber("turret_position", turretRotator.getPosition().toInt().toDouble())
-		SmartDashboard.putNumber("turret_error", turretRotator.getError().toInt().toDouble())
-		SmartDashboard.putNumber("vision_distance", vision.latestGoalDistance.toInt().toDouble())
-		SmartDashboard.putNumber("vision_error", vision.latestGoalYaw.toInt().toDouble())
-		SmartDashboard.putBoolean("valid_vision_data", vision.isLatestGoalValid)
-		SmartDashboard.putBoolean("turret_on_target", turretRotator.onTarget())
-		SmartDashboard.putBoolean("turret_hood_extended", turretHood.get())
-		SmartDashboard.putBoolean("limit_switch_triggered", atZeroPoint())
-		SmartDashboard.putBoolean("sentry_enabled", state >= TurretState.SENTRY)
-		SmartDashboard.putBoolean("auto_shooting_enabled", state == TurretState.AUTO)
-		SmartDashboard.putBoolean("turret_enabled", state != TurretState.DISABLED)
-	}
 }

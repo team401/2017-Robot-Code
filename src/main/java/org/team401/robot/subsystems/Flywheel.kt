@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.lib.Loop
 
-object Flywheel : Subsystem() {
+object Flywheel : Subsystem("flywheel") {
 
 	enum class FlywheelState {
 		STOPPED, RUNNING
@@ -44,6 +44,10 @@ object Flywheel : Subsystem() {
 		slave.inverted = true
 		slave.changeControlMode(CANTalon.TalonControlMode.Follower)
 		slave.set(Constants.TURRET_FLYWHEEL_MASTER.toDouble())
+
+        dataLogger.register("flywheel_rpm", { getSpeed().toDouble() })
+        dataLogger.register("flywheel_talon_setpoint", { Math.round(master.setpoint).toDouble() })
+        dataLogger.register("flywheel_error", { getError().toDouble() })
 	}
 
 	fun setSpeed(speed: Int) {
@@ -76,10 +80,4 @@ object Flywheel : Subsystem() {
 	fun getCurrentState() = state
 
 	override fun getSubsystemLoop() = loop
-
-	override fun printToSmartDashboard() {
-		SmartDashboard.putNumber("flywheel_rpm", getSpeed().toDouble())
-		SmartDashboard.putNumber("flywheel_talon_setpoint", Math.round(master.setpoint).toDouble())
-		SmartDashboard.putNumber("flywheel_error", getError().toDouble())
-	}
 }

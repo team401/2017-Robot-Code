@@ -44,5 +44,7 @@ object FMS {
         return DriverStation.getInstance().matchTime.toInt()
     }
 
+    fun isRobotEnabled() = DriverStation.getInstance().isEnabled
+
     fun isAutonomous() = DriverStation.getInstance().isAutonomous
 }

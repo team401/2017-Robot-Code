@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.lib.Loop
 
-object Tower : Subsystem() {
+object Tower : Subsystem("tower") {
 
 	enum class TowerState {
 		TOWER_IN, TOWER_OUT, KICKER_ON, KICKER_INVERTED
@@ -58,6 +58,11 @@ object Tower : Subsystem() {
 		}
 	}
 
+    init {
+        dataLogger.register("tower_extended", { state != TowerState.TOWER_IN })
+        dataLogger.register("kicker_throttle", { motor.get() })
+    }
+
 	fun isTurretLimitSwitchTriggered() = motor.isRevLimitSwitchClosed
 
 	fun setWantedState(state: TowerState) {
@@ -67,9 +72,4 @@ object Tower : Subsystem() {
 	fun getCurrentState() = state
 
 	override fun getSubsystemLoop(): Loop = loop
-
-	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("tower_extended", state != TowerState.TOWER_IN)
-		SmartDashboard.putNumber("kicker_throttle", motor.get())
-	}
 }

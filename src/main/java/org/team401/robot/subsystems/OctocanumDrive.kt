@@ -18,7 +18,7 @@ import org.team401.lib.Rotation2d
  * @author Zach Kozar
  * @version 1/15/17
  */
-object OctocanumDrive : Subsystem() {
+object OctocanumDrive : Subsystem("drive") {
 
     enum class DriveControlState {
         OPEN_LOOP, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL, IGNORE_INPUT
@@ -90,10 +90,7 @@ object OctocanumDrive : Subsystem() {
         }
     }
 
-    /**
-     * Basically the constructor
-     */
-    fun init() {
+    init {
         gearboxes[Constants.GEARBOX_FRONT_LEFT].config {
             it.reverseSensor(true)
             it.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
@@ -111,6 +108,18 @@ object OctocanumDrive : Subsystem() {
         pidVelocityHeading.setOutputRange(-30.0, 30.0)
 
         zeroSensors()
+
+        dataLogger.register("left_distance", { getLeftDistanceInches() })
+        dataLogger.register("right_distance", { getRightDistanceInches() })
+        dataLogger.register("left_velocity", { getLeftVelocityInchesPerSec() })
+        dataLogger.register("right_velocity", { getRightVelocityInchesPerSec() })
+        dataLogger.register("left_error", { gearboxes[0].motor.closedLoopError.toDouble() })
+        dataLogger.register("right_error", { gearboxes[1].motor.closedLoopError.toDouble() })
+        dataLogger.register("gyro_angle", { getGyroAngle().degrees })
+        dataLogger.register("heading_error", { lastHeadingErrorDegrees })
+        dataLogger.register("strafing_enabled", { driveMode == DriveMode.MECANUM })
+        dataLogger.register("open_loop_control", { controlState == DriveControlState.OPEN_LOOP })
+        dataLogger.register("brake_enabled", { brakeModeOn })
     }
 
     /**
@@ -354,21 +363,6 @@ object OctocanumDrive : Subsystem() {
 
     @Synchronized fun getGyroAngle(): Rotation2d {
         return Rotation2d.fromDegrees(gyro.angle)
-    }
-
-    override fun printToSmartDashboard() {
-        SmartDashboard.putNumber("left_distance", getLeftDistanceInches())
-        SmartDashboard.putNumber("right_distance", getRightDistanceInches())
-        SmartDashboard.putNumber("left_velocity", getLeftVelocityInchesPerSec())
-        SmartDashboard.putNumber("right_velocity", getRightVelocityInchesPerSec())
-        SmartDashboard.putNumber("left_error", gearboxes[0].motor.closedLoopError.toDouble())
-        SmartDashboard.putNumber("right_error", gearboxes[1].motor.closedLoopError.toDouble())
-        SmartDashboard.putNumber("gyro_angle", getGyroAngle().degrees)
-        SmartDashboard.putNumber("heading_error", lastHeadingErrorDegrees)
-        SmartDashboard.putBoolean("strafing_enabled", driveMode == DriveMode.MECANUM)
-        SmartDashboard.putBoolean("open_loop_control", controlState == DriveControlState.OPEN_LOOP)
-        SmartDashboard.putBoolean("brake_enabled", brakeModeOn)
-        SmartDashboard.putData("gyro_diagram", gyro)
     }
 
     override fun getSubsystemLoop(): Loop = loop

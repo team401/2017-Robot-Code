@@ -16,7 +16,7 @@ class LedManager : Loop {
 	}
 
 	override fun onLoop() {
-		controller.setOutput(0, FMS.getMatchTime() in 0..29)
+		controller.setOutput(3, FMS.getMatchTime() in 0..29)
 		controller.setOutput(1, GearHolder.hasGear())
 		controller.setOutput(2, OctocanumDrive.driveMode == OctocanumDrive.DriveMode.TRACTION)
 	}
