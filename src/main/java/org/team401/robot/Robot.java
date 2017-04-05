@@ -178,6 +178,9 @@ public class Robot extends IterativeRobot {
 			switchReactor.onUntriggered(controls.getInverseKicker(),
 					() -> tower.setWantedState(Tower.TowerState.TOWER_OUT));
 
+			switchReactor.onTriggered(() -> !fms.isAutonomous() && fms.getMatchTime() <= 30 && fms.getMatchTime() >= 0,
+                    () -> compressor.stop());
+
 			System.out.print("Done!\nIntitializing data logging... ");
 
             Subsystem.Companion.getDataLoop().start();
