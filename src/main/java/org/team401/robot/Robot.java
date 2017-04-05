@@ -28,13 +28,13 @@ public class Robot extends IterativeRobot {
 	private static VisionDataStream visionDataStream;
 	private static VisionController visionController;
 
-	private static Turret turret = Turret.INSTANCE;
-	private static Intake intake = Intake.INSTANCE;
-	private static Tower tower = Tower.INSTANCE;
-	private static GearHolder gearHolder = GearHolder.INSTANCE;
-	private static Hopper hopper = Hopper.INSTANCE;
-	private static OctocanumDrive drive = OctocanumDrive.INSTANCE;
-	private static Flywheel flywheel = Flywheel.INSTANCE;
+	private static Turret turret;
+	private static Intake intake;
+	private static Tower tower;
+	private static GearHolder gearHolder;
+	private static Hopper hopper;
+	private static OctocanumDrive drive;
+	private static Flywheel flywheel;
 
 	private static ControlBoard controls = ControlBoard.INSTANCE;
 
@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
 	private static Compressor compressor;
 
 	public void robotInit() {
-		CrashTracker.INSTANCE.logRobotInit();
+		CrashTracker.INSTANCE.logRobotStartup();
 		try {
 			System.out.print("Vision network starting... ");
 			visionDataStream = new VisionDataStream("10.4.1.17", 5801);
@@ -55,6 +55,14 @@ public class Robot extends IterativeRobot {
 			System.out.print("Done!\nInitializing subsystems... ");
 			Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
 			compressorFan.set(true);
+
+			intake = Intake.INSTANCE;
+			gearHolder = GearHolder.INSTANCE;
+			tower = Tower.INSTANCE;
+			turret = Turret.INSTANCE;
+			hopper = Hopper.INSTANCE;
+			drive = OctocanumDrive.INSTANCE;
+			flywheel = Flywheel.INSTANCE;
 
 			enabledLoop = new LoopManager();
 			enabledLoop.register(intake.getSubsystemLoop());
@@ -181,7 +189,10 @@ public class Robot extends IterativeRobot {
 			System.out.println("Done!\nRobot is ready for match!");
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
-		}
+            System.out.println("Robot could not be started!");
+            System.exit(1);
+        }
+        CrashTracker.INSTANCE.logRobotInit();
 	}
 
 	public void autonomousInit() {

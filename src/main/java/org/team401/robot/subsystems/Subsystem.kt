@@ -8,28 +8,22 @@ import org.team401.robot.Robot
 
 abstract class Subsystem(name: String) {
 
-    internal val dataLogger = DataLogger(name, true)
-
 	abstract fun getSubsystemLoop(): Loop
-
-    init {
-        dataLoop.register(dataLogger)
-    }
 
     companion object {
         val dataLoop = LoopManager()
-        private val dl = DataLogger("robot", false)
+        internal val dataLogger = DataLogger("robot-data", true)
 
         init {
-            dl.register("Alliance", { FMS.getAlliance() })
-            dl.register("Alliance Station", { FMS.getAllianceStation() })
-            dl.register("Total Voltage", { Robot.getPowerDistributionPanel().voltage })
-            dl.register("Total Current", { Robot.getPowerDistributionPanel().totalCurrent })
+            dataLogger.register("Alliance", { FMS.getAlliance() })
+            dataLogger.register("Alliance Station", { FMS.getAllianceStation() })
+            dataLogger.register("Total Voltage", { Robot.getPowerDistributionPanel().voltage })
+            dataLogger.register("Total Current", { Robot.getPowerDistributionPanel().totalCurrent })
             for (i in 0..15) {
                 val c = i
-                dl.register("Current $i", { Robot.getPowerDistributionPanel().getCurrent(c) })
+                dataLogger.register("Current $i", { Robot.getPowerDistributionPanel().getCurrent(c) })
             }
-            dataLoop.register(dl)
+            dataLoop.register(dataLogger)
         }
     }
 }

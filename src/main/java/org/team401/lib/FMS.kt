@@ -13,15 +13,15 @@ import edu.wpi.first.wpilibj.hal.HAL
 object FMS {
 
     enum class Alliance {
-        RED, BLUE
+        RED, BLUE, UNKNOWN
     }
 
     enum class AllianceStation {
-        STATION1, STATION2, STATION3
+        STATION1, STATION2, STATION3, UNKNOWN
     }
 
     fun getAlliance(): Alliance {
-        val hal = HAL.getAllianceStation()
+        val hal = HAL.getAllianceStation() ?: return Alliance.UNKNOWN
         if (hal.ordinal < 3)
             return Alliance.RED
         return Alliance.BLUE
@@ -32,7 +32,7 @@ object FMS {
     fun isRedAlliance() = getAlliance() == Alliance.RED
 
     fun getAllianceStation(): AllianceStation {
-        val hal = HAL.getAllianceStation()
+        val hal = HAL.getAllianceStation() ?: return AllianceStation.UNKNOWN
         if (hal.ordinal == 0 || hal.ordinal == 3)
             return AllianceStation.STATION1
         else if (hal.ordinal == 1 || hal.ordinal == 4)

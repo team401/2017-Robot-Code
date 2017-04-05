@@ -41,8 +41,8 @@ class AutoModeSelector {
                     return SideGear(positionChooser.selected)
 			}
 			Auto.FUEL -> {
-				if ((positionChooser.selected == StartingPos.RIGHT && FMS.getAlliance() == FMS.Alliance.BLUE) ||
-						(positionChooser.selected == StartingPos.LEFT && FMS.getAlliance() == FMS.Alliance.RED)) {
+				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
 					println("Bad fuel auto configuration!!!")
 					return CalibrateTurret()
 				}
@@ -51,8 +51,8 @@ class AutoModeSelector {
                 return HopperFuel(positionChooser.selected)
 			}
 			Auto.GEAR_FUEL -> {
-				if ((positionChooser.selected == StartingPos.RIGHT && FMS.getAlliance() == FMS.Alliance.BLUE) ||
-						(positionChooser.selected == StartingPos.LEFT && FMS.getAlliance() == FMS.Alliance.RED)) {
+				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
 					println("Bad fuel auto configuration!!!")
 					return CalibrateTurret()
 				}

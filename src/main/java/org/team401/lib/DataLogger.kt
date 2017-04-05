@@ -18,7 +18,7 @@ class DataLogger(val name: String, val push: Boolean) : Loop {
     }
 
     override fun onStart() {
-        val logFolder = File("/home/lvuser/logs/$name")
+        val logFolder = File("/home/lvuser/logs/")
         if (!logFolder.exists())
             logFolder.mkdirs()
 
