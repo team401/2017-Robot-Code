@@ -1,3 +1,5 @@
+[![GNU GPLv3 License](https://img.shields.io/badge/License-GNU%20GPLv3-green.svg)](https://github.com/team401/2017-Robot-Code/blob/master/LICENSE)
+
 # 2017-Robot-Code
 Robot Code for Team 401's robot, PHIL, for the 2017 season FIRST Steamworks. Code in this repository is written in Kotlin and Java, and is a command based system.
 
@@ -40,7 +42,4 @@ NOTE: Eclipse users will need to install a plugin so that they can compile .kt f
 
     Contains classes that can and should be reused each year, such as code for common interfaces, utility classes, sensors, crash tracking, and math helpers.
     
-### All variables follow the standard java naming convention you would learn in a Computer Science course:
-* UpperCamelCase for classes
-* lowerCamelCase for identifiers
-* CAPS_WITH_UNDERLINES for constants
+All variables follow the standard java naming convention you would learn in a Computer Science course:

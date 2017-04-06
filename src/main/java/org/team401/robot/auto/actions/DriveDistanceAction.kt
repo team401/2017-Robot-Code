@@ -1,12 +1,12 @@
 package org.team401.robot.auto.actions
 
+import org.team401.lib.Rotation2d
 import org.team401.robot.subsystems.OctocanumDrive
 
-class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout: Double = 5.0) : Action(timeout) {
+class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val power: Double = 0.5, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), timeout: Double = 5.0) : Action(5.0) {
 
 	var startPosLeft = 0.0
 	var startPosRight = 0.0
-	val heading = OctocanumDrive.getGyroAngle()
 
 	override fun onStart() {
 		startPosLeft = OctocanumDrive.getLeftDistanceInches()
@@ -21,9 +21,9 @@ class DriveDistanceAction(val distance: Double, val power: Double = 0.5, timeout
 	override fun onUpdate() {
 		val angle = heading.inverse().rotateBy(OctocanumDrive.getGyroAngle()).degrees
 		if (distance > 0)
-			OctocanumDrive.drive(power - angle*.01, power + angle*.01)
+			OctocanumDrive.drive(power - angle*.015, power + angle*.015)
 		else
-			OctocanumDrive.drive(-(power + angle*.01), -(power - angle*.01))
+			OctocanumDrive.drive(-(power + angle*.015), -(power - angle*.015))
 	}
 
 	override fun isFinished(): Boolean {

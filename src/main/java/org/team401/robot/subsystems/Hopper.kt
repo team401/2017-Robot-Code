@@ -7,7 +7,7 @@ import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
 import org.team401.lib.Loop
 
-object Hopper : Subsystem() {
+object Hopper : Subsystem("hopper") {
 
     enum class HopperState {
         OFF, ON, INVERTED
@@ -25,9 +25,9 @@ object Hopper : Subsystem() {
         }
 
         override fun onLoop() {
-            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Turret.getInstance().isKickerRunning)
+            if (Intake.getCurrentState() == Intake.IntakeState.ENABLED || Tower.getCurrentState() == Tower.TowerState.KICKER_ON)
                 setWantedState(HopperState.ON)
-            else if (Turret.getInstance().isKickerInverted)
+            else if (Tower.getCurrentState() == Tower.TowerState.KICKER_INVERTED)
                 setWantedState(HopperState.INVERTED)
             else if (state != HopperState.INVERTED || Tower.getCurrentState() == Tower.TowerState.TOWER_IN)
                 setWantedState(HopperState.OFF)
@@ -56,6 +56,12 @@ object Hopper : Subsystem() {
         }
     }
 
+    init {
+        dataLogger.register("hopper_on", { state == HopperState.ON })
+        dataLogger.register("hopper_current_voltage", { motor.speed })
+        dataLogger.register("hopper_target_voltage", { targetVoltage })
+    }
+
     fun setWantedState(state: HopperState) {
         this.state = state
     }
@@ -72,11 +78,4 @@ object Hopper : Subsystem() {
     fun getCurrentState() = state
 
     override fun getSubsystemLoop(): Loop = loop
-
-    override fun printToSmartDashboard() {
-        SmartDashboard.putBoolean("hopper_on", state == HopperState.ON)
-        SmartDashboard.putNumber("hopper_current_voltage", motor.speed)
-        SmartDashboard.putNumber("hopper_target_voltage", targetVoltage)
-    }
-
 }

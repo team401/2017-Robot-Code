@@ -7,9 +7,8 @@ import org.team401.lib.ADXRS450_Gyro
 import org.team401.lib.Loop
 
 
-class GyroCalibrator : Loop {
+class GyroCalibrator(val gyro: ADXRS450_Gyro) : Loop {
 
-    val gyro = OctocanumDrive.gyro
     var calibrationStartTime = 0.0
     
     override fun onStart() {

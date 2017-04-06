@@ -5,13 +5,10 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.team401.lib.LoopManager;
-import org.team401.robot.subsystems.Flywheel;
-import org.team401.robot.subsystems.Hopper;
-import org.team401.robot.subsystems.Intake;
-import org.team401.robot.subsystems.Tower;
+import org.team401.robot.subsystems.*;
 import org.team401.vision.VisionDataStream.VisionDataStream;
 
-public class RobotTestPls /*extends IterativeRobot*/ {
+public class RobotTestPls extends IterativeRobot {
 
 	private LoopManager loop = new LoopManager();
 	private CANTalon kicker;
@@ -45,11 +42,11 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	}
 
 	public void teleopInit() {
-
+        Subsystem.Companion.getDataLoop().start();
 	}
 
 	public void disabledInit() {
-
+        Subsystem.Companion.getDataLoop().stop();
 	}
 
 	public void autonomousPeriodic() {
@@ -59,7 +56,7 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 	public void teleopPeriodic() {
 		double delta = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0);
 		if (delta > 0) {
-			Flywheel.INSTANCE.setSpeed(delta);
+			Flywheel.INSTANCE.setSpeed((int)delta);
 			//Hopper.INSTANCE.setWantedState(Hopper.HopperState.ON);
 			kicker.set(1);
 		} else {
@@ -69,7 +66,5 @@ public class RobotTestPls /*extends IterativeRobot*/ {
 		}
 
 		SmartDashboard.putNumber("vision_distance", visionDataStream.getLatestGoalDistance());
-		Flywheel.INSTANCE.printToSmartDashboard();
-		//Hopper.INSTANCE.printToSmartDashboard();
 	}
 }

@@ -1,12 +1,13 @@
 package org.team401.robot.subsystems
 
+import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.Servo
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.robot.Constants
 import org.team401.lib.Loop
 
-object GearHolder : Subsystem() {
+object GearHolder : Subsystem("gear_holder") {
 
 	enum class GearHolderState {
 		CLOSED, PUSH_OUT, INTAKE
@@ -17,6 +18,8 @@ object GearHolder : Subsystem() {
 	private val leftServo = Servo(Constants.SERVO_LEFT)
 	private val rightServo = Servo(Constants.SERVO_RIGHT)
 	private val solenoid = Solenoid(Constants.GEAR_HOLDER)
+
+	private val gearSensor =  DigitalInput(0)
 
 	private val leftServoHome = 160.0
 	private val leftServoOut = 48.0
@@ -54,8 +57,15 @@ object GearHolder : Subsystem() {
 		override fun onStop() {
 
 		}
-
 	}
+
+    init {
+        dataLogger.register("has_gear", { gearSensor.get() })
+        dataLogger.register("gear_holder_out", { state == GearHolderState.PUSH_OUT })
+        dataLogger.register("gear_intake", { state == GearHolderState.INTAKE })
+    }
+
+	fun hasGear() = gearSensor.get()
 
 	fun setWantedState(state: GearHolderState) {
 		this.state = state
@@ -64,9 +74,4 @@ object GearHolder : Subsystem() {
 	fun getCurrentState() = state
 
 	override fun getSubsystemLoop() = loop
-
-	override fun printToSmartDashboard() {
-		SmartDashboard.putBoolean("gear_holder_out", state == GearHolderState.PUSH_OUT)
-		SmartDashboard.putBoolean("gear_intake", state == GearHolderState.INTAKE)
-	}
 }
