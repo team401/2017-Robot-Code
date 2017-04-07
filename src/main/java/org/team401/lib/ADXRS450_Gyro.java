@@ -27,7 +27,7 @@ import java.nio.ByteOrder;
  * <p>This class is for the digital ADXRS450 gyro sensor that connects via SPI.
  */
 @SuppressWarnings({"TypeName", "AbbreviationAsWordInName", "PMD.UnusedPrivateField"})
-public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWindowSendable {
+public class ADXRS450_Gyro extends GyroBase implements Gyro, InterruptableGyro, PIDSource, LiveWindowSendable {
 	private static final double kSamplePeriod = 0.001;
 	public static final double kCalibrationSampleTime = 5.0;
 	private static final double kDegreePerSecondPerLSB = 0.0125;
@@ -94,6 +94,7 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 		endCalibrate();
 	}
 
+	@Override
 	public synchronized void startCalibrate() {
 		if (m_spi == null)
 			return;
@@ -105,6 +106,7 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 		}
 	}
 
+	@Override
 	public synchronized void endCalibrate() {
 		if (m_spi == null)
 			return;
@@ -117,6 +119,7 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 		}
 	}
 
+	@Override
 	public synchronized void cancelCalibrate() {
 		if (m_spi == null)
 			return;
@@ -128,6 +131,7 @@ public class ADXRS450_Gyro extends GyroBase implements Gyro, PIDSource, LiveWind
 		}
 	}
 
+	@Override
 	public double getCenter() {
 		return m_last_center;
 	}

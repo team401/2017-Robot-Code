@@ -27,14 +27,15 @@ object Turret : Subsystem("turret") {
 
 	private val minRpm = 2700
 	private val maxRpm = 5300
+    private var rpmOffset = 0
+    private var speed = 0
+
 	private val hoodSwitchOn = 150
 	private val hoodSwitchOff = 130
-	private var rpmOffset = 0
-	private var rotateBuffer = 0.0
+
+    private var rotateBuffer = 0.0
 	private val rotateBufferMax = 0.5
-
 	private val maxRotateSpeed = .14
-
 	private val minRotateSpeed = .06
 
 	private val loop = object : Loop {
@@ -46,7 +47,6 @@ object Turret : Subsystem("turret") {
 			if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
 				return
 			val vision = Robot.getVisionDataStream()
-			var speed = 0
 
 			// rotation code
 			if (state >= TurretState.SENTRY) { // auto control
@@ -61,6 +61,7 @@ object Turret : Subsystem("turret") {
 				} else if (rotateBuffer < rotateBufferMax) {
 					rotateBuffer += Constants.LOOP_PERIOD
 				} else {
+                    speed = 0
 					sentry()
 				}
 
@@ -130,6 +131,7 @@ object Turret : Subsystem("turret") {
 			} else { // dont shoot
 				Flywheel.stop()
 				rpmOffset = 0
+                speed = 0
 			}
 		}
 

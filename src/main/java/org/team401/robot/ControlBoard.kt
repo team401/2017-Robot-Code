@@ -22,7 +22,7 @@ object ControlBoard {
     fun getToggleBrake() = drive.getButton(10)
     fun getGyroPadAngle() = drive.getDPad(0)
 
-    // controls turret
+    // controls masher
     fun getToggleSentry() = mash.getButton(2)
     fun getToggleAuto() = mash.getButton(3)
     fun getToggleHood() = mash.getButton(6)
@@ -30,6 +30,7 @@ object ControlBoard {
     fun getInverseHopper() = mash.getButton(5)
     fun getInverseKicker() = mash.getButton(7)
     fun getCalibrateTurret() = mash.getButton(8)
+    fun getDisableTurret() = mash.getButton(9)
     fun getToggleCamera() = mash.getButton(4)
     fun getTurretSnapLeft() = Switch { mash.getDPad(0).direction == 270 }
     fun getTurretSnapCenter() = Switch { mash.getDPad(0).direction == 0 }

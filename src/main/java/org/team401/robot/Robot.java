@@ -153,6 +153,8 @@ public class Robot extends IterativeRobot {
 			// turret
 			switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),
 					() -> new CalibrateTurretAction(Turret.TurretState.MANUAL).asSbCommand());
+			switchReactor.onTriggered(controls.getDisableTurret(),
+                    () -> turret.setWantedState(Turret.TurretState.DISABLED));
             switchReactor.onTriggered(controls.getToggleHood(),
                     () -> turret.extendHood(!turret.isHoodExtended()));
             switchReactor.onTriggered(controls.getToggleAuto(),
@@ -181,7 +183,7 @@ public class Robot extends IterativeRobot {
 			switchReactor.onTriggered(() -> !fms.isAutonomous() && fms.getMatchTime() <= 30 && fms.getMatchTime() >= 0,
                     () -> compressor.stop());
 
-			System.out.print("Done!\nIntitializing data logging... ");
+			System.out.print("Done!\nInitializing data logging... ");
 
             Subsystem.Companion.getDataLoop().start();
 			autoSelector = new AutoModeSelector();
@@ -230,15 +232,6 @@ public class Robot extends IterativeRobot {
 			Strongback.disable();
 			enabledLoop.stop();
 			disabledLoop.start();
-		} catch (Throwable t) {
-			CrashTracker.INSTANCE.logThrowableCrash(t);
-		}
-	}
-
-	public void teleopPeriodic() {
-		try {
-			// drive the robot, mode specific drive code is in the OctocanumDrive class
-			drive.drive(-controls.getDrivePitch(), -controls.getDriveStrafe(), controls.getDriveRotate());
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
 		}

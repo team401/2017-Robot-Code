@@ -2,7 +2,6 @@ package org.team401.robot.subsystems
 
 import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.Solenoid
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.lib.ADXRS450_Gyro
 import org.team401.lib.MathUtils
 import org.team401.lib.SynchronousPID
@@ -10,6 +9,7 @@ import org.team401.robot.Constants
 import org.team401.robot.components.OctocanumGearbox
 import org.team401.lib.Loop
 import org.team401.lib.Rotation2d
+import org.team401.robot.ControlBoard
 
 /**
  * Drivetrain wrapper class for the octocanum chassis, supports shifting
@@ -68,8 +68,9 @@ object OctocanumDrive : Subsystem("drive") {
 
         override fun onLoop() {
             when (controlState) {
-                DriveControlState.OPEN_LOOP -> {}
-                    // we dont really care
+                DriveControlState.OPEN_LOOP -> {
+                    drive(ControlBoard.getDrivePitch(), ControlBoard.getDriveStrafe(), ControlBoard.getDriveRotate())
+                }
                 DriveControlState.VELOCITY_SETPOINT -> {}
                     // talons are updating the control loop state
                 DriveControlState.VELOCITY_HEADING_CONTROL ->
