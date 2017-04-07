@@ -12,7 +12,7 @@ import org.team401.robot.subsystems.Turret
 internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode() {
 
     val airshipAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 50.0 else -50.0
-    val sideAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 90.0 else -90.0
+    val sideAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 65.0 else -65.0
     val intakeAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 10.0 else -10.0
 
     override fun routine() {
@@ -23,8 +23,9 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3, Rotation2d.fromDegrees(airshipAngle)))
         //TODO: alignment
-        runAction(DropGearAction(2.5))
-        Thread.sleep(1500)
+        //
+        runAction(DropGearAction(2.0))
+        Thread.sleep(1000)
         runAction(DriveDistanceAction(dGearToBaseL * 2, .7, Rotation2d.fromDegrees(airshipAngle)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(sideAngle)))
@@ -35,11 +36,10 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
         Thread.sleep(2000)
         runAction(RotateAction(Rotation2d.fromDegrees(intakeAngle)))
 
-        Intake.setWantedState(Intake.IntakeState.ENABLED)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
     }
 
     override fun done() {
-        Intake.setWantedState(Intake.IntakeState.DISABLED)
+
     }
 }

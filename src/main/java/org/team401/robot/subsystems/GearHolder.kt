@@ -60,12 +60,12 @@ object GearHolder : Subsystem("gear_holder") {
 	}
 
     init {
-        dataLogger.register("has_gear", { gearSensor.get() })
+        dataLogger.register("has_gear", { hasGear() })
         dataLogger.register("gear_holder_out", { state == GearHolderState.PUSH_OUT })
         dataLogger.register("gear_intake", { state == GearHolderState.INTAKE })
     }
 
-	fun hasGear() = gearSensor.get()
+	fun hasGear() = !gearSensor.get()
 
 	fun setWantedState(state: GearHolderState) {
 		this.state = state

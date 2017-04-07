@@ -17,12 +17,12 @@ abstract class Subsystem(name: String) {
         init {
             dataLogger.register("Alliance", { FMS.getAlliance() })
             dataLogger.register("Alliance Station", { FMS.getAllianceStation() })
-            dataLogger.register("Total Voltage", { Robot.getPowerDistributionPanel().voltage })
-            dataLogger.register("Total Current", { Robot.getPowerDistributionPanel().totalCurrent })
-            for (i in 0..15) {
+            //dataLogger.register("Total Voltage", { Robot.getPowerDistributionPanel().voltage })
+            //dataLogger.register("Total Current", { Robot.getPowerDistributionPanel().totalCurrent })
+            /*for (i in 0..15) {
                 val c = i
                 dataLogger.register("Current $i", { Robot.getPowerDistributionPanel().getCurrent(c) })
-            }
+            }*/
             dataLoop.register(dataLogger)
         }
     }

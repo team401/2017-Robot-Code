@@ -152,7 +152,7 @@ public class Robot extends IterativeRobot {
 					});
 			// turret
 			switchReactor.onTriggeredSubmit(controls.getCalibrateTurret(),
-					() -> new CalibrateTurretAction(Turret.TurretState.SENTRY).asSbCommand());
+					() -> new CalibrateTurretAction(Turret.TurretState.MANUAL).asSbCommand());
             switchReactor.onTriggered(controls.getToggleHood(),
                     () -> turret.extendHood(!turret.isHoodExtended()));
             switchReactor.onTriggered(controls.getToggleAuto(),

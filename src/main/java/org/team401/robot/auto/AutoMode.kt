@@ -8,10 +8,10 @@ import org.team401.robot.auto.actions.Action
 abstract class AutoMode {
 
     companion object {
-        const val dStatToAir = 5.25*12 // driver station to turning angle to airship
-        const val dAirToGear = 2.5*12 // ^^ to gear peg
+        const val dStatToAir = 5.3*12 // driver station to turning angle to airship
+        const val dAirToGear = 3.5 *12 // ^^ to gear peg
         const val dGearToBaseL = 3.5*12 // ^^ back to base line
-        const val dBaseLToHop = 2.50*12 // ^^ to hopper
+        const val dBaseLToHop = 5.0*12 // ^^ to hopper
         const val dBaseToReload = 8.0*12 // baseline off to reloading station
     }
 

@@ -30,7 +30,7 @@ object Intake : Subsystem("intake") {
 		override fun onLoop() {
 			solenoid.set(state == IntakeState.ENABLED)
             if (state == IntakeState.ENABLED)
-                motor.speed = MathUtils.toRange(ControlBoard.getIntakeThrottle(), 0.25, 1.0, 0.5, 1.0)
+                motor.speed = MathUtils.toRange(ControlBoard.getIntakeThrottle(), 0.25, 1.0, 0.25, 1.0)
             else
                 motor.speed = 0.0
 		}

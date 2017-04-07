@@ -35,6 +35,7 @@ object Flywheel : Subsystem("flywheel") {
 		master.isSafetyEnabled = false
 		master.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
 		master.configPeakOutputVoltage(12.0, 0.0)
+		master.setNominalClosedLoopVoltage(12.0)
 		master.reverseSensor(true)
 		master.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
@@ -64,7 +65,7 @@ object Flywheel : Subsystem("flywheel") {
         if (state == FlywheelState.STOPPED)
             return 0
         else
-            return Math.abs(master.setpoint - master.speed).toInt()
+            return (master.setpoint - master.speed).toInt()
     }
 
 	fun isWithinTolerance() = state == FlywheelState.RUNNING && Math.abs(master.speed - master.setpoint) < 50

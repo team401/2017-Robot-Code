@@ -35,8 +35,8 @@ object ControlBoard {
     fun getTurretSnapCenter() = Switch { mash.getDPad(0).direction == 0 }
     fun getTurretSnapRight() = Switch { mash.getDPad(0).direction == 90 }
     fun getIntakeThrottle() = mash.getAxis(2).read()
-    fun getToggleIntake() = Switch { mash.getAxis(2).read() > .25 }
-    fun getShootFuel() = Switch { mash.getAxis(3).read() > .25 }
+    fun getToggleIntake() = Switch { mash.getAxis(2).read() > .1 }
+    fun getShootFuel() = Switch { mash.getAxis(3).read() > .1 }
 
     fun getTurretYaw() = mash.getAxis(0).read()
     fun getTurretThrottle() = mash.getAxis(5).read()
