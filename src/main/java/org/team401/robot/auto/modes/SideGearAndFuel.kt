@@ -12,7 +12,7 @@ import org.team401.robot.subsystems.Turret
 internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode() {
 
     val airshipAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 50.0 else -50.0
-    val sideAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 65.0 else -65.0
+    val sideAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 105.0 else -105.0
     val intakeAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 10.0 else -10.0
 
     override fun routine() {
@@ -26,10 +26,10 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
         //
         runAction(DropGearAction(2.0))
         Thread.sleep(1000)
-        runAction(DriveDistanceAction(dGearToBaseL * 2, .7, Rotation2d.fromDegrees(airshipAngle)))
+        runAction(DriveDistanceAction(dGearToBaseL, .7, Rotation2d.fromDegrees(airshipAngle)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(sideAngle)))
-        runAction(DriveDistanceAction(dBaseLToHop * 2, .7, Rotation2d.fromDegrees(sideAngle)))
+        runAction(DriveDistanceAction(dBaseLToHop * 2, .9, Rotation2d.fromDegrees(sideAngle)))
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         Turret.setWantedState(Turret.TurretState.AUTO)
 

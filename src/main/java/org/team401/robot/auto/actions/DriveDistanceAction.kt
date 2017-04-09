@@ -7,10 +7,12 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val po
 
 	var startPosLeft = 0.0
 	var startPosRight = 0.0
+	val brakeMode = OctocanumDrive.brakeModeOn
 
 	override fun onStart() {
 		startPosLeft = OctocanumDrive.getLeftDistanceInches()
 		startPosRight = OctocanumDrive.getRightDistanceInches()
+		OctocanumDrive.setBrakeMode(false)
 
 		if (distance > 0)
 			OctocanumDrive.drive(power, power)
@@ -37,6 +39,7 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val po
 	}
 
 	override fun onStop() {
+		OctocanumDrive.setBrakeMode(brakeMode)
 		OctocanumDrive.drive(0.0, 0.0)
 	}
 }

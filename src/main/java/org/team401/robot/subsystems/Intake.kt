@@ -13,7 +13,7 @@ import org.team401.robot.Robot
 object Intake : Subsystem("intake") {
 
     enum class IntakeState {
-        DISABLED, ENABLED
+        DISABLED, ARM_DOWN, ENABLED
     }
 
 	private val motor = Motor.compose(Hardware.Motors.victorSP(Constants.INTAKE_1),
@@ -28,7 +28,18 @@ object Intake : Subsystem("intake") {
 		}
 
 		override fun onLoop() {
-			solenoid.set(state == IntakeState.ENABLED)
+			solenoid.set(state != IntakeState.DISABLED)
+            when (state) {
+                IntakeState.DISABLED -> {
+                    motor.speed = 0.0
+                }
+                IntakeState.ARM_DOWN -> {
+                    motor.speed = 0.0
+                }
+                IntakeState.ENABLED -> {
+                    motor.speed = MathUtils.toRange(ControlBoard.getIntakeThrottle(), 0.25, 1.0, 0.25, 1.0)
+                }
+            }
             if (state == IntakeState.ENABLED)
                 motor.speed = MathUtils.toRange(ControlBoard.getIntakeThrottle(), 0.25, 1.0, 0.25, 1.0)
             else

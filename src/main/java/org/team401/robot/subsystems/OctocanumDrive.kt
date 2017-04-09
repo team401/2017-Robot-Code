@@ -69,7 +69,7 @@ object OctocanumDrive : Subsystem("drive") {
         override fun onLoop() {
             when (controlState) {
                 DriveControlState.OPEN_LOOP -> {
-                    drive(ControlBoard.getDrivePitch(), ControlBoard.getDriveStrafe(), ControlBoard.getDriveRotate())
+                    drive(-ControlBoard.getDrivePitch(), -ControlBoard.getDriveStrafe(), ControlBoard.getDriveRotate())
                 }
                 DriveControlState.VELOCITY_SETPOINT -> {}
                     // talons are updating the control loop state

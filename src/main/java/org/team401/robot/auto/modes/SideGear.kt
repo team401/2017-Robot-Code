@@ -21,7 +21,7 @@ internal class SideGear(startingPos: AutoModeSelector.StartingPos) : AutoMode() 
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))
         runAction(DriveDistanceAction(-dAirToGear * 2, 0.3, Rotation2d.fromDegrees(airshipAngle)))
         //TODO: alignment
-        runAction(DropGearAction(2.5))
+        runAction(DropGearAction(2.0))
         Thread.sleep(1000)
         runAction(DriveDistanceAction(dAirToGear* 2, .7, Rotation2d.fromDegrees(airshipAngle)))
 
