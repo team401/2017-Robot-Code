@@ -42,4 +42,7 @@ NOTE: Eclipse users will need to install a plugin so that they can compile .kt f
 
     Contains classes that can and should be reused each year, such as code for common interfaces, utility classes, sensors, crash tracking, and math helpers.
     
+### Dashboard
+The dashboard is written in html/javascript and is built off of NodeJS, Electron, and FRCDashboard. Feel free to copy and modify the dashboard for your robot.
+
 All variables follow the standard java naming convention you would learn in a Computer Science course:
