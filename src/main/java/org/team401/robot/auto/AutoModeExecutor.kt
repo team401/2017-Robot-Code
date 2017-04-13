@@ -24,6 +24,6 @@ class AutoModeExecutor(val autoMode: AutoMode) {
         if (thread.isAlive)
             thread.interrupt()
         autoMode.done()
-        OctocanumDrive.controlState = OctocanumDrive.DriveControlState.OPEN_LOOP
+        OctocanumDrive.controlState = OctocanumDrive.DriveControlState.DRIVER_INPUT
     }
 }
