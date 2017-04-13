@@ -1,7 +1,9 @@
 package org.team401.robot.subsystems
 
 import com.ctre.CANTalon
+import edu.wpi.first.wpilibj.BuiltInAccelerometer
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.lib.ADXRS450_Gyro
 import org.team401.lib.MathUtils
 import org.team401.lib.SynchronousPID
@@ -39,13 +41,14 @@ object OctocanumDrive : Subsystem("drive") {
      * Immutable list of gearboxes, will always have a size of 4
      */
     val gearboxes: Array<OctocanumGearbox> = arrayOf(
-            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE)),
-            OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_RIGHT_SLAVE)),
-            OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE)),
-            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE))
+            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE), false),
+            OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_RIGHT_SLAVE), false),
+            OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE), true),
+            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE), true)
     )
 
     val gyro = ADXRS450_Gyro()
+    val accel = BuiltInAccelerometer()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
     val pidVelocityHeading = SynchronousPID()
@@ -60,6 +63,10 @@ object OctocanumDrive : Subsystem("drive") {
      * The current drive mode of the chassis
      */
     var driveMode = DriveMode.TRACTION
+
+    var x = 0.0
+    var y = 0.0
+    var z = 0.0
 
     private val loop = object : Loop {
         override fun onStart() {
@@ -84,6 +91,12 @@ object OctocanumDrive : Subsystem("drive") {
                 }
                 else -> System.out.println("Unexpected drive control state: " + controlState)
             }
+            SmartDashboard.putNumber("jerk_x", (accel.x - x) / Constants.LOOP_PERIOD)
+            SmartDashboard.putNumber("jerk_y", (accel.y - y) / Constants.LOOP_PERIOD)
+            SmartDashboard.putNumber("jerk_z", (accel.z - z) / Constants.LOOP_PERIOD)
+            x = accel.x
+            y = accel.y
+            z = accel.z
         }
 
         override fun onStop() {
@@ -249,12 +262,12 @@ object OctocanumDrive : Subsystem("drive") {
     }
 
     private fun configureTalonsForOpenLoopControl() {
-        changeControlMode(CANTalon.TalonControlMode.PercentVbus,
+        /*changeControlMode(CANTalon.TalonControlMode.PercentVbus,
                 { it.set(0.0) },
                 { it.set(0.0) },
                 { it.set(0.0) },
                 { it.set(0.0) })
-        setBrakeMode(false)
+        setBrakeMode(false)*/
     }
 
     fun setVelocitySetpoint(leftInchesPerSec: Double, rightInchesPerSec: Double) {

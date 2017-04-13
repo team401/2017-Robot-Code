@@ -58,12 +58,13 @@ object Constants {
 
     // pid
     const val SPEED_CONTROL_PROFILE = 0
-    const val SPEED_P               = 0.0
+    const val SPEED_P               = 0.4
     const val SPEED_I               = 0.0
     const val SPEED_D               = 0.0
-    const val SPEED_F               = 0.238
+    const val SPEED_F               = 0.0
     const val SPEED_IZONE           = 0
     const val SPEED_RAMP_RATE       = 0.0
+    const val MAX_SPEED             = 14.0
 
     const val FLYWHEEL_P            = 0.09
     const val FLYWHEEL_I            = 0.00005
