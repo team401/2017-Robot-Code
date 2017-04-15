@@ -19,17 +19,18 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
         OctocanumDrive.setBrakeMode(true)
-        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY), DriveDistanceAction(-dStatToAir * 2, .8, Rotation2d.fromDegrees(0.0))))
+        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY),
+                DriveDistanceAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0))))
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))
-        runAction(DriveDistanceAction(-dAirToGear * 2, 0.3, Rotation2d.fromDegrees(airshipAngle)))
+        runAction(DriveDistanceAction(dAirToGear * 2, 5.0, Rotation2d.fromDegrees(airshipAngle)))
         //TODO: alignment
         //
         runAction(DropGearAction(2.0))
         Thread.sleep(1000)
-        runAction(DriveDistanceAction(dGearToBaseL, .7, Rotation2d.fromDegrees(airshipAngle)))
+        runAction(DriveDistanceAction(dGearToBaseL*2, -10.0, Rotation2d.fromDegrees(airshipAngle)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(sideAngle)))
-        runAction(DriveDistanceAction(dBaseLToHop * 2, .9, Rotation2d.fromDegrees(sideAngle)))
+        runAction(DriveDistanceAction(dBaseLToHop * 2, -14.0, Rotation2d.fromDegrees(sideAngle)))
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         Turret.setWantedState(Turret.TurretState.AUTO)
 

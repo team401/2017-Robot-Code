@@ -10,7 +10,10 @@ object MathUtils {
         var maxMagnitude = Math.abs(wheelSpeeds[0])
         for (i in wheelSpeeds.indices) {
             val temp = Math.abs(wheelSpeeds[i])
-            if (maxMagnitude < temp) maxMagnitude = temp
+            if (maxMagnitude < temp)
+                maxMagnitude = temp
+            if (temp < .05)
+                wheelSpeeds[i] = 0.0
         }
         if (maxMagnitude > 1.0) {
             for (i in wheelSpeeds.indices) {

@@ -4,15 +4,12 @@ import org.team401.lib.Rotation2d
 import org.team401.robot.Constants
 import org.team401.robot.subsystems.OctocanumDrive
 
-class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val power: Double = 0.5, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), timeout: Double = 5.0) : Action(5.0) {
+class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val speed: Double, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), val continuous: Boolean = false, timeout: Double = 5.0) : Action(timeout) {
 
 	var startPosLeft = 0.0
 	var startPosRight = 0.0
 
     var collision = false
-
-	val brakeMode = OctocanumDrive.brakeModeOn
-    val gyroCorrection = .015
 
     var x = 0.0
     var y = 0.0
@@ -20,23 +17,13 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val po
     val accel = OctocanumDrive.accel
 
 	override fun onStart() {
-		startPosLeft = OctocanumDrive.getLeftDistanceInches()
-		startPosRight = OctocanumDrive.getRightDistanceInches()
-		OctocanumDrive.setBrakeMode(false)
+		startPosLeft = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_LEFT].getDistanceInches()
+		startPosRight = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_RIGHT].getDistanceInches()
 
-		if (distance > 0)
-			OctocanumDrive.drive(power, power)
-		else
-			OctocanumDrive.drive(-power, -power)
+		OctocanumDrive.setVelocityHeadingSetpoint(speed*12, heading)
 	}
 
 	override fun onUpdate() {
-		val angle = heading.inverse().rotateBy(OctocanumDrive.getGyroAngle()).degrees
-		if (distance > 0)
-			OctocanumDrive.drive(power - angle*gyroCorrection, power + angle*gyroCorrection)
-		else
-			OctocanumDrive.drive(-(power + angle*gyroCorrection), -(power - angle*gyroCorrection))
-
         val delta = Constants.ACTION_PERIOD
         collision = Math.abs(accel.x-x)/delta > 150 || Math.abs(accel.y-y)/delta > 150
         x = accel.x
@@ -46,8 +33,8 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val po
 	}
 
 	override fun isFinished(): Boolean {
-		return collision || (Math.abs(OctocanumDrive.getLeftDistanceInches() - startPosLeft) > Math.abs(distance) &&
-				Math.abs(OctocanumDrive.getRightDistanceInches() - startPosRight) > Math.abs(distance))
+        return (Math.abs(OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_LEFT].getDistanceInches() - startPosLeft) > Math.abs(distance*12) &&
+				Math.abs(OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_RIGHT].getDistanceInches() - startPosRight) > Math.abs(distance*12))
 	}
 
 	override fun onInterrupt() {
@@ -56,7 +43,7 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val po
 	}
 
 	override fun onStop() {
-		OctocanumDrive.setBrakeMode(brakeMode)
-		OctocanumDrive.drive(0.0, 0.0)
+		if (!continuous)
+            OctocanumDrive.stop()
 	}
 }

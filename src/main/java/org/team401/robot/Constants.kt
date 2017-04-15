@@ -58,13 +58,13 @@ object Constants {
 
     // pid
     const val SPEED_CONTROL_PROFILE = 0
-    const val SPEED_P               = 0.4
+    const val SPEED_P               = 0.5
     const val SPEED_I               = 0.0
-    const val SPEED_D               = 0.0
+    const val SPEED_D               = 5.0
     const val SPEED_F               = 0.0
     const val SPEED_IZONE           = 0
     const val SPEED_RAMP_RATE       = 0.0
-    const val MAX_SPEED             = 14.0
+    const val MAX_SPEED             = 16.0
 
     const val FLYWHEEL_P            = 0.09
     const val FLYWHEEL_I            = 0.00005
@@ -82,11 +82,7 @@ object Constants {
 
     const val DRIVE_HEADING_VEL_P   = 4.0 // 6.0;
     const val DRIVE_HEADING_VEL_I   = 0.0
-    const val DRIVE_HEADING_VEL_D   = 50.0
-
-    const val GYRO_HEADING_VEL_P    = 4.0 // 6.0;
-    const val GYRO_HEADING_VEL_I    = 0.0
-    const val GYRO_HEADING_VEL_D    = 50.0
+    const val DRIVE_HEADING_VEL_D   = 40.0
 
     const val LOOP_PERIOD           = 1.0 / 100
     const val ACTION_PERIOD         = 1.0 / 100

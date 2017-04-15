@@ -92,10 +92,13 @@ public class Robot extends IterativeRobot {
 			switchReactor.onTriggered(controls.getShift(),
 					() -> drive.shift());
 
-			switchReactor.onTriggered(controls.getToggleHeading(),
-					() -> drive.setNewHeadingSetpoint());
-			switchReactor.onUntriggered(controls.getToggleHeading(),
-					() -> drive.resetHeadingSetpoint());
+			switchReactor.onTriggered(controls.getToggleOpenLoop(),
+					() -> {
+			            if (drive.getControlState() == OctocanumDrive.DriveControlState.CLOSED_LOOP)
+			                drive.setControlState(OctocanumDrive.DriveControlState.OPEN_LOOP);
+			            else
+			                drive.setControlState(OctocanumDrive.DriveControlState.CLOSED_LOOP);
+                    });
 			switchReactor.onTriggered(controls.getResetGyro(),
 					() -> drive.getGyro().reset());
 			switchReactor.onTriggered(controls.getToggleBrake(),

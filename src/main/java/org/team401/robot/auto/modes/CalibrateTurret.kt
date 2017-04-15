@@ -13,8 +13,5 @@ internal class CalibrateTurret : AutoMode() {
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
         OctocanumDrive.shift(OctocanumDrive.DriveMode.MECANUM)
         runAction(CalibrateTurretAction(Turret.TurretState.MANUAL))
-
-        OctocanumDrive.shift()
-        runAction(DriveDistanceAction(8.0*12, .5))
     }
 }

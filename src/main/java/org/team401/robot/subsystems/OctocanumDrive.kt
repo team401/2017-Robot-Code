@@ -23,7 +23,7 @@ import org.team401.robot.ControlBoard
 object OctocanumDrive : Subsystem("drive") {
 
     enum class DriveControlState {
-        DRIVER_INPUT, VELOCITY_SETPOINT, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL, IGNORE_INPUT
+        OPEN_LOOP, CLOSED_LOOP, VELOCITY_HEADING_CONTROL, HEADING_CONTROL, PATH_FOLLOWING_CONTROL
     }
 
     /**
@@ -34,7 +34,7 @@ object OctocanumDrive : Subsystem("drive") {
         MECANUM
     }
 
-    var controlState = DriveControlState.DRIVER_INPUT
+    private var controlState = DriveControlState.CLOSED_LOOP
 
 
     /**
@@ -75,13 +75,58 @@ object OctocanumDrive : Subsystem("drive") {
 
         override fun onLoop() {
             when (controlState) {
-                DriveControlState.DRIVER_INPUT -> {
-                    drive(-ControlBoard.getDrivePitch(), -ControlBoard.getDriveStrafe(), ControlBoard.getDriveRotate())
+                DriveControlState.OPEN_LOOP -> {
+                    val x: Double
+                    if (driveMode == DriveMode.MECANUM)
+                        x = ControlBoard.getDriveStrafe()
+                    else
+                        x = 0.0
+                    val y = ControlBoard.getDrivePitch()
+                    val rot = ControlBoard.getDriveRotate()
+
+                    val wheelSpeeds = DoubleArray(4)
+                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y + rot
+                    MathUtils.scale(wheelSpeeds, 0.9)
+
+                    MathUtils.normalize(wheelSpeeds)
+
+                    gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+                    gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
                 }
-                DriveControlState.VELOCITY_SETPOINT -> {}
+                DriveControlState.CLOSED_LOOP -> {
+                    val x: Double
+                    if (driveMode == DriveMode.MECANUM)
+                        x = ControlBoard.getDriveStrafe()
+                    else
+                        x = 0.0
+                    val y = ControlBoard.getDrivePitch()
+                    val rot = ControlBoard.getDriveRotate()
+
+                    val wheelSpeeds = DoubleArray(4)
+                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y + rot
+                    MathUtils.scale(wheelSpeeds, 1.0)
+
+                    MathUtils.normalize(wheelSpeeds)
+                    MathUtils.scale(wheelSpeeds, Constants.MAX_SPEED*12*4*Math.PI)
+
+                    gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+                    gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+                }
                     // talons are updating the control loop state
                 DriveControlState.VELOCITY_HEADING_CONTROL ->
                     updateVelocityHeadingSetpoint()
+                DriveControlState.HEADING_CONTROL ->
+                    updateHeadingSetpoint()
                 DriveControlState.PATH_FOLLOWING_CONTROL -> {
                     println("we shouldn't be in path following mode!!!")
                     /*updatePathFollower()
@@ -105,99 +150,35 @@ object OctocanumDrive : Subsystem("drive") {
     }
 
     init {
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].config {
-            it.reverseSensor(true)
-            it.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
-                    Constants.SPEED_IZONE, Constants.SPEED_RAMP_RATE, Constants.SPEED_CONTROL_PROFILE)
-        }
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].config {
-            it.reverseSensor(true)
-            it.reverseOutput(false)
-            it.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
-                    Constants.SPEED_IZONE, Constants.SPEED_RAMP_RATE, Constants.SPEED_CONTROL_PROFILE)
-        }
-
         pidVelocityHeading.setPID(Constants.DRIVE_HEADING_VEL_P, Constants.DRIVE_HEADING_VEL_I,
                 Constants.DRIVE_HEADING_VEL_D)
-        pidVelocityHeading.setOutputRange(-30.0, 30.0)
 
         zeroSensors()
 
-        dataLogger.register("left_distance", { getLeftDistanceInches() })
-        dataLogger.register("right_distance", { getRightDistanceInches() })
-        dataLogger.register("left_velocity", { getLeftVelocityInchesPerSec() })
-        dataLogger.register("right_velocity", { getRightVelocityInchesPerSec() })
-        dataLogger.register("left_error", { gearboxes[0].getClosedLoopError() })
-        dataLogger.register("right_error", { gearboxes[1].getClosedLoopError() })
+        dataLogger.register("left_front_distance", { gearboxes[Constants.GEARBOX_FRONT_LEFT].getDistanceInches() })
+        dataLogger.register("left_rear_distance", { gearboxes[Constants.GEARBOX_REAR_LEFT].getDistanceInches() })
+        dataLogger.register("right_front_distance", { gearboxes[Constants.GEARBOX_FRONT_RIGHT].getDistanceInches() })
+        dataLogger.register("right_rear_distance", { gearboxes[Constants.GEARBOX_REAR_RIGHT].getDistanceInches() })
+
+        dataLogger.register("left_front_velocity", { gearboxes[Constants.GEARBOX_FRONT_LEFT].getVelocityInchesPerSecond() })
+        dataLogger.register("left_rear_velocity", { gearboxes[Constants.GEARBOX_REAR_LEFT].getVelocityInchesPerSecond() })
+        dataLogger.register("right_front_velocity", { gearboxes[Constants.GEARBOX_FRONT_RIGHT].getVelocityInchesPerSecond() })
+        dataLogger.register("right_rear_velocity", { gearboxes[Constants.GEARBOX_REAR_RIGHT].getVelocityInchesPerSecond() })
+
+        dataLogger.register("left_front_error", { gearboxes[Constants.GEARBOX_FRONT_LEFT].getErrorVelocityInchesPerSecond() })
+        dataLogger.register("left_rear_error", { gearboxes[Constants.GEARBOX_REAR_LEFT].getErrorVelocityInchesPerSecond() })
+        dataLogger.register("right_front_error", { gearboxes[Constants.GEARBOX_FRONT_RIGHT].getErrorVelocityInchesPerSecond() })
+        dataLogger.register("right_rear_error", { gearboxes[Constants.GEARBOX_REAR_RIGHT].getErrorVelocityInchesPerSecond() })
         dataLogger.register("gyro_angle", { getGyroAngle().degrees })
+        dataLogger.register("gyro_rate", { gyro.rate })
         dataLogger.register("heading_error", { lastHeadingErrorDegrees })
         dataLogger.register("strafing_enabled", { driveMode == DriveMode.MECANUM })
-        dataLogger.register("open_loop_control", { controlState == DriveControlState.DRIVER_INPUT })
+        dataLogger.register("open_loop_control", { controlState == DriveControlState.OPEN_LOOP })
         dataLogger.register("brake_enabled", { brakeModeOn })
     }
 
-    /**
-     * Takes in joystick inputs from two joysticks and sets the speed of the talon controllers
-     *
-     * This method automatically switches it's driving logic based on the current drive mode.
-     *
-     * @param leftYThrottle Left joystick's getPitch() value
-     * @param leftXThrottle Left joystick's getRoll() value
-     * @param rightXThrottle Right joystick's getPitch() value
-     * @param rightYThrottle Right joysticks getRoll() value
-     */
-    fun drive(leftYThrottle: Double, leftXThrottle: Double, rightXThrottle: Double) {
-        if (controlState == DriveControlState.IGNORE_INPUT) {
-            return
-        } else if (controlState != DriveControlState.DRIVER_INPUT) {
-            controlState = DriveControlState.DRIVER_INPUT
-            configureTalonsForOpenLoopControl()
-        }
-        // map the input speeds to match the driver's orientation to the field
-        val speed = MathUtils.rotateVector(leftXThrottle, -leftYThrottle, 0.0)
-
-        val x: Double
-        if (driveMode == DriveMode.MECANUM)
-            x = speed[0]
-        else
-            x = 0.0
-        val y = speed[1]
-        val rot = rightXThrottle
-
-        val wheelSpeeds = DoubleArray(4)
-        wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y + rot
-        wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y + rot
-        wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y - rot
-        wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y - rot
-        MathUtils.scale(wheelSpeeds, 0.9)
-
-        // try to fix rotation when we dont want it
-        if (lastSetGyroHeading != null) {
-            lastHeadingErrorDegrees = lastSetGyroHeading!!.rotateBy(getGyroAngle().inverse()).degrees
-            if (Math.abs(rot) < .1) {
-                val delta = lastHeadingErrorDegrees * 0.01
-                wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] -= delta
-                wheelSpeeds[Constants.GEARBOX_REAR_LEFT] -= delta
-                wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] += delta
-                wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] += delta
-            } else
-                resetHeadingSetpoint()
-        }
-
-        MathUtils.normalize(wheelSpeeds)
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
-    }
-
-    fun drive(left: Double, right: Double) {
-        if (controlState != DriveControlState.DRIVER_INPUT)
-            configureTalonsForOpenLoopControl()
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-left)
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-left)
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(right)
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(right)
+    fun stop() {
+        setControlState(DriveControlState.OPEN_LOOP)
     }
 
     /**
@@ -245,7 +226,7 @@ object OctocanumDrive : Subsystem("drive") {
     }
 
     fun configureTalonsForSpeedControl() {
-        if (controlState == DriveControlState.VELOCITY_SETPOINT || controlState == DriveControlState.VELOCITY_HEADING_CONTROL)
+        if (controlState == DriveControlState.CLOSED_LOOP || controlState == DriveControlState.VELOCITY_HEADING_CONTROL)
             return
         changeControlMode(CANTalon.TalonControlMode.Speed,
                 { it.setProfile(Constants.SPEED_CONTROL_PROFILE) },
@@ -256,7 +237,7 @@ object OctocanumDrive : Subsystem("drive") {
     }
 
     fun configureTalonsForOpenLoopControl() {
-        if (controlState == DriveControlState.DRIVER_INPUT)
+        if (controlState == DriveControlState.OPEN_LOOP)
             return
         changeControlMode(CANTalon.TalonControlMode.PercentVbus,
                 { it.set(0.0) },
@@ -266,10 +247,29 @@ object OctocanumDrive : Subsystem("drive") {
         setBrakeMode(true)
     }
 
-    fun setVelocitySetpoint(leftInchesPerSec: Double, rightInchesPerSec: Double) {
-        configureTalonsForSpeedControl()
-        controlState = DriveControlState.VELOCITY_SETPOINT
-        updateVelocitySetpoint(leftInchesPerSec, rightInchesPerSec)
+    fun setHeadingSetpoint(headingSetpoint: Rotation2d) {
+        if (controlState != DriveControlState.HEADING_CONTROL) {
+            configureTalonsForOpenLoopControl()
+            controlState = DriveControlState.HEADING_CONTROL
+            pidVelocityHeading.reset()
+            pidVelocityHeading.setOutputRange(-0.4, 0.4)
+        }
+        velocityHeadingSetpoint = VelocityHeadingSetpoint(0.0, 0.0, headingSetpoint)
+        updateHeadingSetpoint()
+    }
+
+    private fun updateHeadingSetpoint() {
+        val actualGyroAngle = getGyroAngle()
+        val setpoint = velocityHeadingSetpoint!!
+
+        lastHeadingErrorDegrees = setpoint.heading.rotateBy(actualGyroAngle.inverse()).degrees
+
+        val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
+
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-deltaSpeed)
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-deltaSpeed)
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(deltaSpeed)
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(deltaSpeed)
     }
 
     fun setVelocityHeadingSetpoint(inchesPerSec: Double, headingSetpoint: Rotation2d) {
@@ -277,14 +277,17 @@ object OctocanumDrive : Subsystem("drive") {
             configureTalonsForSpeedControl()
             controlState = DriveControlState.VELOCITY_HEADING_CONTROL
             pidVelocityHeading.reset()
+            pidVelocityHeading.setOutputRange(-30.0, 30.0)
         }
         velocityHeadingSetpoint = VelocityHeadingSetpoint(inchesPerSec, inchesPerSec, headingSetpoint)
         updateVelocityHeadingSetpoint()
     }
 
     private fun updateVelocitySetpoint(leftInchesPerSec: Double, rightInchesPerSec: Double) {
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-inchesPerSecondToRpm(leftInchesPerSec))
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(inchesPerSecondToRpm(rightInchesPerSec))
+        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(inchesPerSecondToRpm(leftInchesPerSec))
+        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(inchesPerSecondToRpm(leftInchesPerSec))
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-inchesPerSecondToRpm(rightInchesPerSec))
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-inchesPerSecondToRpm(rightInchesPerSec))
     }
 
     private fun updateVelocityHeadingSetpoint() {
@@ -295,25 +298,6 @@ object OctocanumDrive : Subsystem("drive") {
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
         updateVelocitySetpoint((setpoint.leftSpeed + deltaSpeed) / 2, (setpoint.rightSpeed - deltaSpeed) / 2)
-    }
-
-    fun setNewHeadingSetpoint() {
-        if (controlState != DriveControlState.DRIVER_INPUT) {
-            configureTalonsForOpenLoopControl()
-            controlState = DriveControlState.DRIVER_INPUT
-        }
-        lastSetGyroHeading = getGyroAngle()
-    }
-
-    fun resetHeadingSetpoint() {
-        lastSetGyroHeading = null
-    }
-
-    fun setIgnoreInput(on: Boolean) {
-        if (on)
-            controlState = DriveControlState.IGNORE_INPUT
-        else
-            controlState = DriveControlState.DRIVER_INPUT
     }
 
     private fun rotationsToInches(rotations: Double): Double {
@@ -332,30 +316,6 @@ object OctocanumDrive : Subsystem("drive") {
         return inchesToRotations(inchesPerSecond) * 60
     }
 
-    fun getLeftDistanceInches(): Double {
-        return -rotationsToInches(gearboxes[Constants.GEARBOX_FRONT_LEFT].getPosition())
-    }
-
-    fun getRightDistanceInches(): Double {
-        return rotationsToInches(gearboxes[Constants.GEARBOX_FRONT_RIGHT].getPosition())
-    }
-
-    fun getLeftVelocityInchesPerSec(): Double {
-        return -rpmToInchesPerSecond(gearboxes[Constants.GEARBOX_FRONT_LEFT].getSpeed())
-    }
-
-    fun getRightVelocityInchesPerSec(): Double {
-        return rpmToInchesPerSecond(gearboxes[Constants.GEARBOX_FRONT_RIGHT].getSpeed())
-    }
-
-    fun getLeftEncPosition(): Int {
-        return gearboxes[Constants.GEARBOX_FRONT_LEFT].getEncPosition()
-    }
-
-    fun getRightEncPosition(): Int {
-        return gearboxes[Constants.GEARBOX_FRONT_RIGHT].getEncPosition()
-    }
-
     fun setBrakeMode(on: Boolean) {
         if (brakeModeOn != on)
             gearboxes.forEach { it.setBrakeMode(on) }
@@ -370,6 +330,16 @@ object OctocanumDrive : Subsystem("drive") {
             }
         }
     }
+
+    fun setControlState(controlState: DriveControlState) {
+        if (controlState == DriveControlState.OPEN_LOOP)
+            configureTalonsForOpenLoopControl()
+        else
+            configureTalonsForSpeedControl()
+        this.controlState = controlState
+    }
+
+    fun getControlState() = controlState
 
     @Synchronized fun getGyroAngle(): Rotation2d {
         return Rotation2d.fromDegrees(gyro.angle)

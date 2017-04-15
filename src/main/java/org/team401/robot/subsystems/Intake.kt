@@ -54,8 +54,6 @@ object Intake : Subsystem("intake") {
     init {
         dataLogger.register("arm_down", { state == IntakeState.ENABLED })
         dataLogger.register("intake_enabled", { state == IntakeState.ENABLED })
-        dataLogger.register("intake_voltage", { motor.speed*Robot.getPowerDistributionPanel().voltage })
-        dataLogger.register("intake_current", { motor.speed*Robot.getPowerDistributionPanel().voltage })
     }
 
     fun setWantedState(state: IntakeState) {

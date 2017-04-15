@@ -18,6 +18,7 @@ class OctocanumGearbox(private val motor: CANTalon, private val slave: CANTalon,
         motor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
         motor.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
                 Constants.SPEED_IZONE, Constants.SPEED_RAMP_RATE, Constants.SPEED_CONTROL_PROFILE)
+        motor.setAllowableClosedLoopErr(inchesPerSecondToRpm(4.0).toInt())
         motor.setVoltageRampRate(45.0)
         motor.reverseSensor(invertedSensor)
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
@@ -43,13 +44,7 @@ class OctocanumGearbox(private val motor: CANTalon, private val slave: CANTalon,
      * @param output for the motor controller
      */
     fun setOutput(output: Double) {
-        val out: Double
-        if (motor.controlMode == CANTalon.TalonControlMode.Speed)
-            out = output*Constants.MAX_SPEED*12*4*Math.PI
-        else
-            out = output
-
-        motor.set(out)
+        motor.set(output)
     }
 
     fun setBrakeMode(on: Boolean) {
@@ -57,11 +52,35 @@ class OctocanumGearbox(private val motor: CANTalon, private val slave: CANTalon,
         slave.enableBrakeMode(on)
     }
 
-    fun getClosedLoopError() = motor.closedLoopError
+    fun getDistanceInches(): Double {
+        return rotationsToInches(motor.position)
+    }
 
-    fun getSpeed() = motor.speed
+    fun getVelocityInchesPerSecond(): Double {
+        return rpmToInchesPerSecond(motor.speed)
+    }
 
-    fun getPosition() = motor.position
+    fun getErrorVelocityInchesPerSecond(): Double {
+        return getVelocityInchesPerSecond() - rpmToInchesPerSecond(motor.setpoint)
+    }
 
-    fun getEncPosition() = motor.encPosition
+    fun getDistanceRotations() = motor.position
+
+    fun getVelocityRpm() = motor.speed
+
+    private fun rotationsToInches(rotations: Double): Double {
+        return rotations * (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
+    }
+
+    private fun rpmToInchesPerSecond(rpm: Double): Double {
+        return rotationsToInches(rpm) / 60
+    }
+
+    private fun inchesToRotations(inches: Double): Double {
+        return inches / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
+    }
+
+    private fun inchesPerSecondToRpm(inchesPerSecond: Double): Double {
+        return inchesToRotations(inchesPerSecond) * 60
+    }
 }
