@@ -10,6 +10,7 @@ import org.team401.lib.SynchronousPID
 import org.team401.robot.Constants
 import org.team401.robot.components.OctocanumGearbox
 import org.team401.lib.Loop
+import org.team401.lib.MathUtils.Drive.inchesPerSecondToRpm
 import org.team401.lib.Rotation2d
 import org.team401.robot.ControlBoard
 
@@ -115,7 +116,7 @@ object OctocanumDrive : Subsystem("drive") {
                     MathUtils.scale(wheelSpeeds, 1.0)
 
                     MathUtils.normalize(wheelSpeeds)
-                    MathUtils.scale(wheelSpeeds, Constants.MAX_SPEED*12*4*Math.PI)
+                    MathUtils.scale(wheelSpeeds, inchesPerSecondToRpm(Constants.MAX_SPEED*12))
 
                     gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
                     gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
@@ -298,22 +299,6 @@ object OctocanumDrive : Subsystem("drive") {
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
         updateVelocitySetpoint((setpoint.leftSpeed + deltaSpeed) / 2, (setpoint.rightSpeed - deltaSpeed) / 2)
-    }
-
-    private fun rotationsToInches(rotations: Double): Double {
-        return rotations * (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
-    }
-
-    private fun rpmToInchesPerSecond(rpm: Double): Double {
-        return rotationsToInches(rpm) / 60
-    }
-
-    private fun inchesToRotations(inches: Double): Double {
-        return inches / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
-    }
-
-    private fun inchesPerSecondToRpm(inchesPerSecond: Double): Double {
-        return inchesToRotations(inchesPerSecond) * 60
     }
 
     fun setBrakeMode(on: Boolean) {

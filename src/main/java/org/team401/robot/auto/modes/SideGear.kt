@@ -16,7 +16,6 @@ internal class SideGear(startingPos: AutoModeSelector.StartingPos) : AutoMode() 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
-        OctocanumDrive.setBrakeMode(true)
         runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.MANUAL),
                 DriveDistanceAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0))))
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))

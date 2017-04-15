@@ -1,86 +1,73 @@
 package org.team401.robot.components
 
 import com.ctre.CANTalon
+import org.team401.lib.MathUtils.Drive.inchesPerSecondToRpm
+import org.team401.lib.MathUtils.Drive.rotationsToInches
+import org.team401.lib.MathUtils.Drive.rpmToInchesPerSecond
 import org.team401.robot.Constants
 
 /**
  * Wrapper class for the octocanum gearbox
  * Motor default mode is PercentVbus
  *
- * @param motor CANTalon reference
+ * @param master CANTalon reference
  * @param slave CANTalon reference
  */
-class OctocanumGearbox(private val motor: CANTalon, private val slave: CANTalon, invertedSensor: Boolean) {
+class OctocanumGearbox(private val master: CANTalon, private val slave: CANTalon, invertedSensor: Boolean) {
 
     init {
-        motor.changeControlMode(CANTalon.TalonControlMode.Speed)
-        motor.isSafetyEnabled = false
-        motor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
-        motor.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
+        master.changeControlMode(CANTalon.TalonControlMode.Speed)
+        master.isSafetyEnabled = false
+        master.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative)
+        master.setPID(Constants.SPEED_P, Constants.SPEED_I, Constants.SPEED_D, Constants.SPEED_F,
                 Constants.SPEED_IZONE, Constants.SPEED_RAMP_RATE, Constants.SPEED_CONTROL_PROFILE)
-        motor.setAllowableClosedLoopErr(inchesPerSecondToRpm(4.0).toInt())
-        motor.setVoltageRampRate(45.0)
-        motor.reverseSensor(invertedSensor)
+        master.setAllowableClosedLoopErr(inchesPerSecondToRpm(4.0).toInt())
+        master.setVoltageRampRate(45.0)
+        master.reverseSensor(invertedSensor)
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
         slave.isSafetyEnabled = false
         slave.setVoltageRampRate(45.0)
-        slave.set(motor.deviceID.toDouble())
+        slave.set(master.deviceID.toDouble())
     }
 
     fun changeControlMode(mode: CANTalon.TalonControlMode) {
-        motor.changeControlMode(mode)
+        master.changeControlMode(mode)
     }
 
     /**
      * Takes a lambda that can change settings on the CANTalon
      */
     fun config(func: (CANTalon) -> Unit) {
-        func(motor)
+        func(master)
     }
 
     /**
-     * Calls set() on the motor CANTalon object
+     * Calls set() on the master CANTalon object
      *
-     * @param output for the motor controller
+     * @param output for the master controller
      */
     fun setOutput(output: Double) {
-        motor.set(output)
+        master.set(output)
     }
 
     fun setBrakeMode(on: Boolean) {
-        motor.enableBrakeMode(on)
+        master.enableBrakeMode(on)
         slave.enableBrakeMode(on)
     }
 
     fun getDistanceInches(): Double {
-        return rotationsToInches(motor.position)
+        return rotationsToInches(getDistanceRotations())
     }
 
     fun getVelocityInchesPerSecond(): Double {
-        return rpmToInchesPerSecond(motor.speed)
+        return rpmToInchesPerSecond(getVelocityRpm())
     }
 
     fun getErrorVelocityInchesPerSecond(): Double {
-        return getVelocityInchesPerSecond() - rpmToInchesPerSecond(motor.setpoint)
+        return getVelocityInchesPerSecond() - rpmToInchesPerSecond(master.setpoint)
     }
 
-    fun getDistanceRotations() = motor.position
+    fun getDistanceRotations() = master.position
 
-    fun getVelocityRpm() = motor.speed
-
-    private fun rotationsToInches(rotations: Double): Double {
-        return rotations * (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
-    }
-
-    private fun rpmToInchesPerSecond(rpm: Double): Double {
-        return rotationsToInches(rpm) / 60
-    }
-
-    private fun inchesToRotations(inches: Double): Double {
-        return inches / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
-    }
-
-    private fun inchesPerSecondToRpm(inchesPerSecond: Double): Double {
-        return inchesToRotations(inchesPerSecond) * 60
-    }
+    fun getVelocityRpm() = master.speed
 }

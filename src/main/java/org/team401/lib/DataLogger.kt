@@ -12,6 +12,8 @@ class DataLogger(val name: String, val push: Boolean) : Loop {
     private val date = Date()
     private val timestamp = "${date.month}-${date.date}-${date.hours}-${date.minutes}"
 
+    private val writer = PrintWriter(FileWriter("/home/lvuser/logs/$name-$timestamp.csv", true))
+
     init {
         register("Match Time", { FMS.getMatchTime() })
         register("Is Autonomous", { FMS.isAutonomous() })
@@ -22,36 +24,30 @@ class DataLogger(val name: String, val push: Boolean) : Loop {
         if (!logFolder.exists())
             logFolder.mkdirs()
 
-        PrintWriter(FileWriter("/home/lvuser/logs/$name-$timestamp.csv", true)).use { writer ->
-            data.forEach { key, data -> writer.print("$key,") }
-            writer.println()
-        }
+        data.forEach { key, data -> writer.print("$key,") }
+        writer.println()
     }
 
     override fun onLoop() {
         if (FMS.isRobotEnabled()) {
-            PrintWriter(FileWriter("/home/lvuser/logs/$name-$timestamp.csv", true)).use { writer ->
-                data.forEach { key, data ->
-                    try {
-                        writer.print("${data()},")
-                    } catch (t: Throwable) {
-                        CrashTracker.logThrowableCrash(t)
+            data.forEach { key, data ->
+                try {
+                    val result = data()
+                    writer.print("$result,")
+
+                    if (push && isLowercase(key)) {
+                        if (result is Number)
+                            SmartDashboard.putNumber(key, result.toDouble())
+                        else if (result is Boolean)
+                            SmartDashboard.putBoolean(key, result)
+                        else
+                            SmartDashboard.putString(key, result.toString())
                     }
+                } catch (t: Throwable) {
+                    CrashTracker.logThrowableCrash(t)
                 }
-                if (data.isNotEmpty())
-                    writer.println()
             }
-        }
-        data.forEach { key, data ->
-            val d = data()
-            if (push && isLowercase(key)) {
-                if (d is Number)
-                    SmartDashboard.putNumber(key, d.toDouble())
-                else if (d is Boolean)
-                    SmartDashboard.putBoolean(key, d)
-                else
-                    SmartDashboard.putString(key, d.toString())
-            }
+            writer.println()
         }
     }
 

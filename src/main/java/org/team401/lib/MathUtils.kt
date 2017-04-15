@@ -1,36 +1,38 @@
 package org.team401.lib
 
+import org.team401.robot.Constants
+
 object MathUtils {
 
     /**
      * Normalize all wheel speeds if the magnitude of any wheel is greater than 1.0.
-     * @param wheelSpeeds the speed of each motor
+     * @param array the speed of each motor
      */
-    fun normalize(wheelSpeeds: DoubleArray) {
-        var maxMagnitude = Math.abs(wheelSpeeds[0])
-        for (i in wheelSpeeds.indices) {
-            val temp = Math.abs(wheelSpeeds[i])
+    fun normalize(array: DoubleArray) {
+        var maxMagnitude = Math.abs(array[0])
+        for (i in array.indices) {
+            val temp = Math.abs(array[i])
             if (maxMagnitude < temp)
                 maxMagnitude = temp
             if (temp < .05)
-                wheelSpeeds[i] = 0.0
+                array[i] = 0.0
         }
         if (maxMagnitude > 1.0) {
-            for (i in wheelSpeeds.indices) {
-                wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude
+            for (i in array.indices) {
+                array[i] = array[i] / maxMagnitude
             }
         }
     }
 
     /**
      * Scale all speeds.
-     * @param wheelSpeeds the speed of each motor
+     * @param array the speed of each motor
      * *
      * @param scaleFactor the scale factor to apply to the motor speeds
      */
-    fun scale(wheelSpeeds: DoubleArray, scaleFactor: Double) {
-        for (i in wheelSpeeds.indices) {
-            wheelSpeeds[i] = wheelSpeeds[i] * scaleFactor
+    fun scale(array: DoubleArray, scaleFactor: Double) {
+        for (i in array.indices) {
+            array[i] = array[i] * scaleFactor
         }
     }
 
@@ -65,5 +67,23 @@ object MathUtils {
      */
     fun toRange(x: Double, min: Double, max: Double, newMin: Double, newMax: Double): Double {
         return (newMax - newMin) * (x - min) / (max - min) + newMin
+    }
+    
+    object Drive {
+        fun rotationsToInches(rotations: Double): Double {
+            return rotations * (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
+        }
+
+        fun rpmToInchesPerSecond(rpm: Double): Double {
+            return rotationsToInches(rpm) / 60
+        }
+
+        fun inchesToRotations(inches: Double): Double {
+            return inches / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI)
+        }
+
+        fun inchesPerSecondToRpm(inchesPerSecond: Double): Double {
+            return inchesToRotations(inchesPerSecond) * 60
+        }
     }
 }

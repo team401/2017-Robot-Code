@@ -2,7 +2,7 @@ package org.team401.lib
 
 import com.ctre.CANTalon
 
-class MotionProfile(val name: String, private val positions: DoubleArray,
+class MotionProfile internal constructor(val name: String, private val positions: DoubleArray,
                              private val speeds: DoubleArray, private val durations: IntArray) {
 
     var currentIndex = 0

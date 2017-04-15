@@ -11,10 +11,6 @@ object CrashTracker {
         logMarker("robot startup")
     }
 
-    fun logRobotConstruction() {
-        logMarker("robot startup")
-    }
-
     fun logRobotInit() {
         logMarker("robot init")
     }
@@ -40,7 +36,6 @@ object CrashTracker {
     }
 
     private fun logMarker(mark: String, nullableException: Throwable?) {
-
         try {
             PrintWriter(FileWriter("/home/lvuser/crash_tracking.txt", true)).use { writer ->
                 writer.print(RUN_INSTANCE_UUID.toString())
@@ -60,6 +55,5 @@ object CrashTracker {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 }

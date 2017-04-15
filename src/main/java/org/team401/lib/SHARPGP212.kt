@@ -14,6 +14,6 @@ class SHARPGP212(port: Int, val unit: Unit = Unit.CENTIMETERS) : DistanceSensor 
 	val input = AnalogInput(port)
 
 	override fun getDistance(): Double {
-		return 29.318080199969 * Math.pow(input.averageVoltage, -1.146809657983) * unit.multiplier
+		return 29.3181 * Math.pow(input.averageVoltage, -1.1468) * unit.multiplier
 	}
 }
