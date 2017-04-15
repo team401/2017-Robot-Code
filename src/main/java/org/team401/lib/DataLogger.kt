@@ -6,7 +6,7 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.util.*
 
-class DataLogger(val name: String, val push: Boolean) : Loop {
+class DataLogger(name: String, val push: Boolean) : Loop {
 
     private val data = HashMap<String, () -> Any>()
     private val date = Date()

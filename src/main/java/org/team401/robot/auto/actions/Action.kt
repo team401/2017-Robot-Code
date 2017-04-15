@@ -35,9 +35,7 @@ abstract class Action(val timeout: Double = 0.0) {
     /**
      * Called when the action is interrupted
      */
-    open fun onInterrupt() {
-        println("Action took too long to finish!")
-    }
+    open fun onInterrupt() {}
 
     fun isTimedOut(): Boolean {
         if (timeout <= 0.0)
