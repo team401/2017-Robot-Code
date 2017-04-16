@@ -42,10 +42,10 @@ object OctocanumDrive : Subsystem("drive") {
      * Immutable list of gearboxes, will always have a size of 4
      */
     val gearboxes: Array<OctocanumGearbox> = arrayOf(
-            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE), true),
-            OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_RIGHT_SLAVE), true),
-            OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE), true),
-            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE), true)
+            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE), false, true),
+            OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_RIGHT_SLAVE), false,  true),
+            OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE), true, true),
+            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE), true, true)
     )
 
     val gyro = ADXRS450_Gyro()
@@ -96,13 +96,14 @@ object OctocanumDrive : Subsystem("drive") {
 
                     gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
                     gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
                 }
                 DriveControlState.CLOSED_LOOP -> {
                     val x: Double
                     if (driveMode == DriveMode.MECANUM)
                         x = ControlBoard.getDriveStrafe()
+                        //lol git rekt sun
                     else
                         x = 0.0
                     val y = ControlBoard.getDrivePitch()
@@ -120,8 +121,8 @@ object OctocanumDrive : Subsystem("drive") {
 
                     gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
                     gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
                 }
                     // talons are updating the control loop state
                 DriveControlState.VELOCITY_HEADING_CONTROL ->
@@ -287,8 +288,8 @@ object OctocanumDrive : Subsystem("drive") {
     private fun updateVelocitySetpoint(leftInchesPerSec: Double, rightInchesPerSec: Double) {
         gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(inchesPerSecondToRpm(leftInchesPerSec))
         gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(inchesPerSecondToRpm(leftInchesPerSec))
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(-inchesPerSecondToRpm(rightInchesPerSec))
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(-inchesPerSecondToRpm(rightInchesPerSec))
+        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(inchesPerSecondToRpm(rightInchesPerSec))
+        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(inchesPerSecondToRpm(rightInchesPerSec))
     }
 
     private fun updateVelocityHeadingSetpoint() {

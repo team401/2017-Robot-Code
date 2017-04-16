@@ -4,6 +4,7 @@ import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.team401.lib.Loop
+import org.team401.lib.VisionBuffer
 import org.team401.robot.Constants
 import org.team401.robot.ControlBoard
 import org.team401.robot.Robot
@@ -46,16 +47,16 @@ object Turret : Subsystem("turret") {
 		override fun onLoop() {
 			if (state == TurretState.DISABLED || state == TurretState.CALIBRATING)
 				return
-			val vision = Robot.getVisionDataStream()
+
 
 			// rotation code
 			if (state >= TurretState.SENTRY) { // auto control
-				if (vision.isLatestGoalValid) {
+				if (VisionBuffer.isLatestGoalValid()) {
 					rotateBuffer = 0.0
 					if (!turretHood.get())
-						turretHood.set(!(vision.latestGoalDistance > hoodSwitchOff))
+						turretHood.set(!(VisionBuffer.goalDistance() > hoodSwitchOff))
 					else
-						turretHood.set(!(vision.latestGoalDistance > hoodSwitchOn))
+						turretHood.set(!(VisionBuffer.goalDistance() > hoodSwitchOn))
 					if (track())
 						speed = getRpmForDistance()
 				} else if (rotateBuffer < rotateBufferMax) {
@@ -107,7 +108,7 @@ object Turret : Subsystem("turret") {
 					val userSetpoint = SmartDashboard.getNumber("flywheel_user_setpoint", 0.0).toInt()
 					if (state == TurretState.MANUAL && userSetpoint != 0)
 						speed = userSetpoint
-					else if (vision.isLatestGoalValid)
+					else if (VisionBuffer.isLatestGoalValid())
 						speed = getRpmForDistance()
 					else
 						speed = (maxRpm - minRpm) / 2
@@ -144,9 +145,9 @@ object Turret : Subsystem("turret") {
     init {
         dataLogger.register("turret_position", { turretRotator.getPosition().toInt().toDouble() })
         dataLogger.register("turret_error", { turretRotator.getError().toInt().toDouble() })
-        dataLogger.register("vision_distance", { Robot.getVisionDataStream().latestGoalDistance.toInt().toDouble() })
-        dataLogger.register("vision_error", { Robot.getVisionDataStream().latestGoalYaw.toInt().toDouble() })
-        dataLogger.register("valid_vision_data", { Robot.getVisionDataStream().isLatestGoalValid })
+        dataLogger.register("vision_distance", { VisionBuffer.goalDistance().toInt().toDouble() })
+        dataLogger.register("vision_error", { VisionBuffer.goalYaw().toInt().toDouble() })
+        dataLogger.register("valid_vision_data", { VisionBuffer.isLatestGoalValid() })
         dataLogger.register("turret_on_target", { turretRotator.onTarget() })
         dataLogger.register("turret_hood_extended", { isHoodExtended()})
         dataLogger.register("limit_switch_triggered", { atZeroPoint() })
@@ -176,7 +177,7 @@ object Turret : Subsystem("turret") {
 	}
 
 	private fun track(): Boolean {
-		val error = Robot.getVisionDataStream().latestGoalYaw
+		val error = VisionBuffer.goalYaw()
 		if (Math.abs(error) < 3) {
 			turretRotator.stop()
 			return true
@@ -187,7 +188,7 @@ object Turret : Subsystem("turret") {
 	}
 
 	private fun getRpmForDistance(): Int {
-		val distance = Robot.getVisionDataStream().latestGoalDistance
+		val distance = VisionBuffer.goalDistance()
 		if (!turretHood.get())
 			return (9.3446 * distance + 2167.7).toInt()
 		else
@@ -207,9 +208,9 @@ object Turret : Subsystem("turret") {
 		if (state == TurretState.MANUAL) {
 			ledRing.set(on)
 			if (on)
-				Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING)
+				VisionBuffer.setGoalCameraMode(VisionController.CameraMode.PROCESSING)
 			else
-				Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING)
+                VisionBuffer.setGoalCameraMode(VisionController.CameraMode.STREAMING)
 		}
 	}
 
@@ -218,13 +219,7 @@ object Turret : Subsystem("turret") {
 	fun atZeroPoint() = Tower.isTurretLimitSwitchTriggered()
 
 	fun setWantedState(state: TurretState) {
-		if (state >= TurretState.SENTRY) {
-			ledRing.set(true)
-			Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.PROCESSING)
-		} else {
-			ledRing.set(false)
-			Robot.getVisionController().setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING)
-		}
+		setLedRing(state >= TurretState.SENTRY)
 		this.state = state
 	}
 

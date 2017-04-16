@@ -29,26 +29,25 @@ class DataLogger(name: String, val push: Boolean) : Loop {
     }
 
     override fun onLoop() {
-        if (FMS.isRobotEnabled()) {
-            data.forEach { key, data ->
-                try {
-                    val result = data()
+        data.forEach { key, data ->
+            try {
+                val result = data()
+                if (FMS.isRobotEnabled())
                     writer.print("$result,")
 
-                    if (push && isLowercase(key)) {
-                        if (result is Number)
-                            SmartDashboard.putNumber(key, result.toDouble())
-                        else if (result is Boolean)
-                            SmartDashboard.putBoolean(key, result)
-                        else
-                            SmartDashboard.putString(key, result.toString())
-                    }
-                } catch (t: Throwable) {
-                    CrashTracker.logThrowableCrash(t)
+                if (push && isLowercase(key)) {
+                    if (result is Number)
+                        SmartDashboard.putNumber(key, result.toDouble())
+                    else if (result is Boolean)
+                        SmartDashboard.putBoolean(key, result)
+                    else
+                        SmartDashboard.putString(key, result.toString())
                 }
+            } catch (t: Throwable) {
+                CrashTracker.logThrowableCrash(t)
             }
-            writer.println()
         }
+        writer.println()
     }
 
     fun register(name: String, obj: () -> Any) {

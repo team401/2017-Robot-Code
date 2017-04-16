@@ -13,7 +13,7 @@ import org.team401.robot.Constants
  * @param master CANTalon reference
  * @param slave CANTalon reference
  */
-class OctocanumGearbox(private val master: CANTalon, private val slave: CANTalon, invertedSensor: Boolean) {
+class OctocanumGearbox(private val master: CANTalon, private val slave: CANTalon, invertedOutput: Boolean, invertedSensor: Boolean) {
 
     init {
         master.changeControlMode(CANTalon.TalonControlMode.Speed)
@@ -23,8 +23,10 @@ class OctocanumGearbox(private val master: CANTalon, private val slave: CANTalon
                 Constants.SPEED_IZONE, Constants.SPEED_RAMP_RATE, Constants.SPEED_CONTROL_PROFILE)
         master.setAllowableClosedLoopErr(inchesPerSecondToRpm(4.0).toInt())
         master.setVoltageRampRate(45.0)
+        master.inverted = invertedOutput
         master.reverseSensor(invertedSensor)
         slave.changeControlMode(CANTalon.TalonControlMode.Follower)
+        slave.inverted = invertedOutput
         slave.isSafetyEnabled = false
         slave.setVoltageRampRate(45.0)
         slave.set(master.deviceID.toDouble())

@@ -25,8 +25,7 @@ public class Robot extends IterativeRobot {
 	private AutoModeSelector autoSelector;
 	private LoopManager enabledLoop, disabledLoop;
 
-	private static VisionDataStream visionDataStream;
-	private static VisionController visionController;
+	private static VisionBuffer vision;
 
 	private static Turret turret;
 	private static Intake intake;
@@ -47,10 +46,10 @@ public class Robot extends IterativeRobot {
 		CrashTracker.INSTANCE.logRobotStartup();
 		try {
 			System.out.print("Vision network starting... ");
-			visionDataStream = new VisionDataStream("10.4.1.17", 5801);
-			visionDataStream.start();
-			visionController = new VisionController("10.4.1.17", 5803);
-			visionController.start();
+
+            enabledLoop = new LoopManager();
+			vision = VisionBuffer.INSTANCE;
+			enabledLoop.register(vision.getBufferLoop());
 
 			System.out.print("Done!\nInitializing subsystems... ");
 			Solenoid compressorFan = new Solenoid(Constants.COMPRESSOR_FAN);
@@ -64,7 +63,6 @@ public class Robot extends IterativeRobot {
 			drive = OctocanumDrive.INSTANCE;
 			flywheel = Flywheel.INSTANCE;
 
-			enabledLoop = new LoopManager();
 			enabledLoop.register(intake.getSubsystemLoop());
 			enabledLoop.register(gearHolder.getSubsystemLoop());
 			enabledLoop.register(tower.getSubsystemLoop());
@@ -112,7 +110,7 @@ public class Robot extends IterativeRobot {
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(50)).asSbCommand());
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
-					() -> visionController.toggleActiveCamera());
+					() -> vision.toggleActiveCamera());
 			// collection
 			switchReactor.onTriggered(controls.getToggleIntake(),
 					() -> intake.setWantedState(Intake.IntakeState.ENABLED));
@@ -192,8 +190,8 @@ public class Robot extends IterativeRobot {
 			autoSelector = new AutoModeSelector();
 
 			System.out.print("Done!\nSetting cameras to stream mode... ");
-			visionController.setCameraMode(VisionController.Camera.GEAR, VisionController.CameraMode.STREAMING);
-			visionController.setCameraMode(VisionController.Camera.GOAL, VisionController.CameraMode.STREAMING);
+			vision.setGoalCameraMode(VisionController.CameraMode.STREAMING);
+			vision.setGearCameraMode(VisionController.CameraMode.STREAMING);
 			System.out.println("Done!\nRobot is ready for match!");
 		} catch (Throwable t) {
 			CrashTracker.INSTANCE.logThrowableCrash(t);
@@ -241,13 +239,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	//subsystems
-	public static VisionDataStream getVisionDataStream() {
-		return visionDataStream;
-	}
-
-	public static VisionController getVisionController() {
-		return visionController;
-	}
+	public static VisionBuffer getVisionSystem() {
+	    return vision;
+    }
 
 	public static PowerDistributionPanel getPowerDistributionPanel() {
 		return pdp;
