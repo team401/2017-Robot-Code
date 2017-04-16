@@ -31,7 +31,7 @@ object VisionBuffer {
         controller.start()
 
         buffers.add(Buffer("goal_distance") { data.latestGoalDistance })
-        buffers.add(Buffer("goal_yaw") { data.latestGoalYaw })
+        //buffers.add(Buffer("goal_yaw") { data.latestGoalYaw })
     }
 
     fun isLatestGoalValid() = data.isLatestGoalValid
@@ -58,7 +58,7 @@ object VisionBuffer {
 
     private class Buffer(val name: String, val func: () -> Double) {
 
-        val data = DoubleArray(20)
+        val data = DoubleArray(10)
 
         fun update() {
             shift(func())
@@ -70,15 +70,21 @@ object VisionBuffer {
             for (i in data) {
                 if (i != 0.0) {
                     total += i
-                    delta += 1
+                    delta++
                 }
             }
-
-            return total / delta
+            if (delta > 0)
+                return total / delta
+            else
+                return 0.0
         }
 
         fun getMedian(): Double {
-            return data.sortedArray()[data.size/2]
+            for (i in data.indices)
+                if (i > data.size/2)
+                    if (data[i] > 0.0)
+                        return data[i]
+            return 0.0
         }
 
         private fun shift(new: Double) {
@@ -93,5 +99,5 @@ object VisionBuffer {
         }
     }
 
-    private fun findBuffer(name: String) = buffers.filter { it.name == "goal_distance" }.first()
+    private fun findBuffer(name: String) = buffers.filter { it.name == name }.first()
 }
