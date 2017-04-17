@@ -35,7 +35,7 @@ Code is divided into several sub-packages, each with a specific purpose, like to
 
     Contains classes that can and should be reused each year, such as code for common interfaces, utility classes, sensors, crash tracking, and math helpers.
     
-### Dashboard
+### [Dashboard](/dash)
 The dashboard is written in html/javascript and is built off of NodeJS, Electron, and FRCDashboard. Feel free to copy and modify the dashboard for your robot.
 
 
