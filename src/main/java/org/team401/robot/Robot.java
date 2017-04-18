@@ -204,8 +204,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		try {
 			CrashTracker.INSTANCE.logAutoInit();
-			disabledLoop.stop();
-			enabledLoop.start();
+            disabledLoop.stop();
+            enabledLoop.start();
             autoExecutor = new AutoModeExecutor(autoSelector.getAutoMode());
             autoExecutor.start();
 			Strongback.restart();

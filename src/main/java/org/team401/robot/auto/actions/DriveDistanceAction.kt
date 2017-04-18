@@ -6,8 +6,7 @@ import org.team401.robot.subsystems.OctocanumDrive
 
 class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val speed: Double, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), val continuous: Boolean = false, timeout: Double = 5.0) : Action(timeout) {
 
-	var startPosLeft = 0.0
-	var startPosRight = 0.0
+	val startingPos = DoubleArray(4)
 
     var collision = false
 
@@ -17,8 +16,8 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val sp
     val accel = OctocanumDrive.accel
 
 	override fun onStart() {
-		startPosLeft = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_LEFT].getDistanceInches()
-		startPosRight = OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_RIGHT].getDistanceInches()
+		for (i in 0..3)
+            startingPos[i] = OctocanumDrive.gearboxes[i].getDistanceInches()
 
 		OctocanumDrive.setVelocityHeadingSetpoint(speed*12, heading)
 	}
@@ -33,8 +32,9 @@ class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val sp
 	}
 
 	override fun isFinished(): Boolean {
-        return (Math.abs(OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_LEFT].getDistanceInches() - startPosLeft) > Math.abs(distance*12) &&
-				Math.abs(OctocanumDrive.gearboxes[Constants.GEARBOX_FRONT_RIGHT].getDistanceInches() - startPosRight) > Math.abs(distance*12))
+        return startingPos.indices
+                .filter { Math.abs(OctocanumDrive.gearboxes[it].getDistanceInches() - startingPos[it]) < Math.abs(distance*12) }
+                .isEmpty()
 	}
 
 	override fun onInterrupt() {
