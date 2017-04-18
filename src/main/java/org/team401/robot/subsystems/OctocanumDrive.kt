@@ -42,10 +42,10 @@ object OctocanumDrive : Subsystem("drive") {
      * Immutable list of gearboxes, will always have a size of 4
      */
     val gearboxes: Array<OctocanumGearbox> = arrayOf(
-            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE), false, true),
+            OctocanumGearbox(CANTalon(Constants.FRONT_LEFT_MASTER), CANTalon(Constants.FRONT_LEFT_SLAVE), true, true),
             OctocanumGearbox(CANTalon(Constants.FRONT_RIGHT_MASTER), CANTalon(Constants.FRONT_RIGHT_SLAVE), false,  true),
             OctocanumGearbox(CANTalon(Constants.REAR_LEFT_MASTER), CANTalon(Constants.REAR_LEFT_SLAVE), true, true),
-            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE), true, true)
+            OctocanumGearbox(CANTalon(Constants.REAR_RIGHT_MASTER), CANTalon(Constants.REAR_RIGHT_SLAVE), false, true)
     )
 
     val gyro = ADXRS450_Gyro()
@@ -86,10 +86,10 @@ object OctocanumDrive : Subsystem("drive") {
                     val rot = ControlBoard.getDriveRotate()
 
                     val wheelSpeeds = DoubleArray(4)
-                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y - rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y - rot
-                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y + rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = -x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = -x + y - rot
                     MathUtils.scale(wheelSpeeds, 0.9)
 
                     MathUtils.normalize(wheelSpeeds)
@@ -110,10 +110,10 @@ object OctocanumDrive : Subsystem("drive") {
                     val rot = ControlBoard.getDriveRotate()
 
                     val wheelSpeeds = DoubleArray(4)
-                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = x + y - rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = -x + y - rot
-                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = -x + y + rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = -x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = x + y + rot
+                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = x + y - rot
+                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = -x + y - rot
                     MathUtils.scale(wheelSpeeds, 1.0)
 
                     MathUtils.normalize(wheelSpeeds)
@@ -171,6 +171,12 @@ object OctocanumDrive : Subsystem("drive") {
         dataLogger.register("left_rear_error", { gearboxes[Constants.GEARBOX_REAR_LEFT].getErrorVelocityInchesPerSecond() })
         dataLogger.register("right_front_error", { gearboxes[Constants.GEARBOX_FRONT_RIGHT].getErrorVelocityInchesPerSecond() })
         dataLogger.register("right_rear_error", { gearboxes[Constants.GEARBOX_REAR_RIGHT].getErrorVelocityInchesPerSecond() })
+
+        dataLogger.register("left_front_setpoint", { gearboxes[Constants.GEARBOX_FRONT_LEFT].getSetpoint() })
+        dataLogger.register("left_rear_setpoint", { gearboxes[Constants.GEARBOX_REAR_LEFT].getSetpoint() })
+        dataLogger.register("right_front_setpoint", { gearboxes[Constants.GEARBOX_FRONT_RIGHT].getSetpoint() })
+        dataLogger.register("right_rear_setpoint", { gearboxes[Constants.GEARBOX_REAR_RIGHT].getSetpoint() })
+
         dataLogger.register("gyro_angle", { getGyroAngle().degrees })
         dataLogger.register("gyro_rate", { gyro.rate })
         dataLogger.register("heading_error", { lastHeadingErrorDegrees })
@@ -281,7 +287,7 @@ object OctocanumDrive : Subsystem("drive") {
             pidVelocityHeading.reset()
             pidVelocityHeading.setOutputRange(-30.0, 30.0)
         }
-        velocityHeadingSetpoint = VelocityHeadingSetpoint(inchesPerSec, inchesPerSec, headingSetpoint)
+        velocityHeadingSetpoint = VelocityHeadingSetpoint(-inchesPerSec, -inchesPerSec, headingSetpoint)
         updateVelocityHeadingSetpoint()
     }
 
@@ -299,7 +305,7 @@ object OctocanumDrive : Subsystem("drive") {
         lastHeadingErrorDegrees = setpoint.heading.rotateBy(actualGyroAngle.inverse()).degrees
 
         val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
-        updateVelocitySetpoint((setpoint.leftSpeed + deltaSpeed) / 2, (setpoint.rightSpeed - deltaSpeed) / 2)
+        updateVelocitySetpoint(setpoint.leftSpeed - deltaSpeed, setpoint.rightSpeed + deltaSpeed)
     }
 
     fun setBrakeMode(on: Boolean) {

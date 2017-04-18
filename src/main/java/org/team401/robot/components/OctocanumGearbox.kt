@@ -72,4 +72,6 @@ class OctocanumGearbox(private val master: CANTalon, private val slave: CANTalon
     fun getDistanceRotations() = master.position
 
     fun getVelocityRpm() = master.speed
+
+    fun getSetpoint() = rpmToInchesPerSecond(master.setpoint)
 }
