@@ -47,7 +47,8 @@ class DataLogger(name: String, val push: Boolean) : Loop {
                 CrashTracker.logThrowableCrash(t)
             }
         }
-        writer.println()
+        if (FMS.isRobotEnabled())
+            writer.println()
     }
 
     fun register(name: String, obj: () -> Any) {
