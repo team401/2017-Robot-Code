@@ -16,17 +16,18 @@ internal class SideGear(startingPos: AutoModeSelector.StartingPos) : AutoMode() 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
-        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.MANUAL),
-                DriveDistanceAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0))))
+        DriveStraightAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0))
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))
-        runAction(DriveDistanceAction(dAirToGear * 2, 5.0, Rotation2d.fromDegrees(airshipAngle)))
+        runAction(DriveStraightAction(dAirToGear * 2, 5.0, Rotation2d.fromDegrees(airshipAngle)))
         //TODO: alignment
         runAction(DropGearAction(2.0))
         Thread.sleep(1000)
-        runAction(DriveDistanceAction(dAirToGear* 2, -6.0, Rotation2d.fromDegrees(airshipAngle)))
+        runAction(DriveStraightAction(dAirToGear* 2, -6.0, Rotation2d.fromDegrees(airshipAngle)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(0.0)))
-        runAction(DriveDistanceAction(dBaseToReload * 2, 12.0, Rotation2d.fromDegrees(0.0)))
+        runAction(DriveStraightAction(dBaseToReload * 2, 12.0, Rotation2d.fromDegrees(0.0)))
+
+        runAction(CalibrateTurretAction(Turret.TurretState.MANUAL))
     }
 
     override fun done() {

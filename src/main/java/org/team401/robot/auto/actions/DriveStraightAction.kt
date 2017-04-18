@@ -4,7 +4,7 @@ import org.team401.lib.Rotation2d
 import org.team401.robot.Constants
 import org.team401.robot.subsystems.OctocanumDrive
 
-class DriveDistanceAction @JvmOverloads constructor(val distance: Double, val speed: Double, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), val continuous: Boolean = false, timeout: Double = 5.0) : Action(timeout) {
+class DriveStraightAction @JvmOverloads constructor(val distance: Double, val speed: Double, val heading: Rotation2d = OctocanumDrive.getGyroAngle(), val continuous: Boolean = false, timeout: Double = 5.0) : Action(timeout) {
 
 	val startingPos = DoubleArray(4)
 

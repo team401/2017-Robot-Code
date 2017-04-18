@@ -6,6 +6,12 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.util.*
 
+/**
+ * Data Logger for literally anything you want logged
+ *
+ * @param name Name of the file
+ * @param push Push data to Network Tables
+ */
 class DataLogger(name: String, val push: Boolean) : Loop {
 
     private val data = HashMap<String, () -> Any>()
@@ -35,7 +41,7 @@ class DataLogger(name: String, val push: Boolean) : Loop {
                 if (FMS.isRobotEnabled())
                     writer.print("$result,")
 
-                if (push && isLowercase(key)) {
+                if (push) {
                     if (result is Number)
                         SmartDashboard.putNumber(key, result.toDouble())
                     else if (result is Boolean)
@@ -51,13 +57,12 @@ class DataLogger(name: String, val push: Boolean) : Loop {
             writer.println()
     }
 
+    /**
+     * Register a value to be logged with a name
+     */
     fun register(name: String, obj: () -> Any) {
         data.put(name, obj)
     }
 
-    override fun onStop() {
-
-    }
-
-    fun isLowercase(str: String) = str.toLowerCase() == str
+    override fun onStop() {}
 }

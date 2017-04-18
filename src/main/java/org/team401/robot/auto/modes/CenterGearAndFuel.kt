@@ -15,18 +15,17 @@ class CenterGearAndFuel : AutoMode() {
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
-        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY),
-                DriveDistanceAction(3.5*2, 14.0, Rotation2d.fromDegrees(0.0), true)))
-        runAction(DriveDistanceAction(1.75*2, 7.0, Rotation2d.fromDegrees(0.0)))
+        DriveStraightAction(3.5*2, 14.0, Rotation2d.fromDegrees(0.0), true)
+        runAction(DriveStraightAction(1.75*2, 7.0, Rotation2d.fromDegrees(0.0)))
         runAction(DropGearAction(2.0))
         Thread.sleep(1000)
-        runAction(DriveDistanceAction(4.5*2, -8.0, Rotation2d.fromDegrees(0.0)))
+        runAction(DriveStraightAction(4.5*2, -8.0, Rotation2d.fromDegrees(0.0)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(turnAngle)))
-        runAction(DriveDistanceAction(3.0*2, -8.0, Rotation2d.fromDegrees(turnAngle)))
+        runAction(DriveStraightAction(3.0*2, -8.0, Rotation2d.fromDegrees(turnAngle)))
 
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
-        Turret.setWantedState(Turret.TurretState.AUTO)
+        runAction(CalibrateTurretAction(Turret.TurretState.AUTO))
     }
 
     override fun done() {

@@ -4,7 +4,7 @@ import org.team401.lib.Rotation2d
 import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.AutoModeSelector
 import org.team401.robot.auto.actions.CalibrateTurretAction
-import org.team401.robot.auto.actions.DriveDistanceAction
+import org.team401.robot.auto.actions.DriveStraightAction
 import org.team401.robot.auto.actions.ParallelAction
 import org.team401.robot.auto.actions.RotateAction
 import org.team401.robot.subsystems.Tower
@@ -20,14 +20,13 @@ internal class HopperFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode(
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
-        runAction(ParallelAction(CalibrateTurretAction(Turret.TurretState.SENTRY),
-                DriveDistanceAction((dStatToAir+6) * 2, -12.0, Rotation2d.fromDegrees(0.0))))
+        DriveStraightAction((dStatToAir+6) * 2, -12.0, Rotation2d.fromDegrees(0.0))
 
         runAction(RotateAction(Rotation2d.fromDegrees(turnAngle), 0.45))
 
-        runAction(DriveDistanceAction(dBaseLToHop * 2, -14.0, Rotation2d.fromDegrees(turnAngle)))
+        runAction(DriveStraightAction(dBaseLToHop * 2, -14.0, Rotation2d.fromDegrees(turnAngle)))
         Intake.setWantedState(Intake.IntakeState.ARM_DOWN)
-        Turret.setWantedState(Turret.TurretState.AUTO)
+        runAction(CalibrateTurretAction(Turret.TurretState.AUTO))
         Thread.sleep(2500)
         Intake.setWantedState(Intake.IntakeState.DISABLED)
         runAction(RotateAction(Rotation2d.fromDegrees(intakeAngle)))

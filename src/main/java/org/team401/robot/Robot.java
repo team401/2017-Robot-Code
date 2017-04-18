@@ -10,13 +10,12 @@ import org.team401.lib.*;
 import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
-import org.team401.robot.auto.actions.DriveDistanceAction;
+import org.team401.robot.auto.actions.DriveStraightAction;
 import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.LedManager;
 import org.team401.robot.loops.TurretCalibrator;
 import org.team401.robot.subsystems.*;
-import org.team401.vision.VisionDataStream.VisionDataStream;
 import org.team401.vision.controller.VisionController;
 
 public class Robot extends IterativeRobot {
@@ -131,7 +130,7 @@ public class Robot extends IterativeRobot {
 						gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE);
 						tower.setWantedState(Tower.TowerState.TOWER_IN);
 						drive.shift(OctocanumDrive.DriveMode.TRACTION);
-						Strongback.submit(new DriveDistanceAction(12.0*(1/3)*2, .3).asSbCommand());
+						Strongback.submit(new DriveStraightAction(12.0*(1/3)*2, .3).asSbCommand());
 					});
 			switchReactor.onUntriggered(controls.getGearIntake(),
 					() -> {
