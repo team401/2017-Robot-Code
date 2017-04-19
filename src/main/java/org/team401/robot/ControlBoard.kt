@@ -15,7 +15,8 @@ object ControlBoard {
 
     // controls drive
     fun getShift() = drive.getButton(6)
-    fun getToggleOpenLoop() = drive.getButton(5)
+    fun getToggleOpenLoop() = drive.getButton(1)
+    fun getToggleHeading() = drive.getButton(5)
     fun getGearOut() = drive.getButton(8)
     fun getGearIntake() = drive.getButton(7)
     fun getResetGyro() = drive.getButton(9)

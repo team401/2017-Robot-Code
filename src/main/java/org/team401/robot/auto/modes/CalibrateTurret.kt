@@ -2,7 +2,6 @@ package org.team401.robot.auto.modes
 
 import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.actions.CalibrateTurretAction
-import org.team401.robot.auto.actions.DriveStraightAction
 import org.team401.robot.subsystems.Tower
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Turret

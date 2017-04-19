@@ -18,7 +18,7 @@ internal class SideGearAndFuel(startingPos: AutoModeSelector.StartingPos) : Auto
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
-        DriveStraightAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0))
+        runAction(DriveStraightAction(dStatToAir * 2, 12.0, Rotation2d.fromDegrees(0.0)))
         runAction(RotateAction(Rotation2d.fromDegrees(airshipAngle)))
         runAction(DriveStraightAction(dAirToGear * 2, 5.0, Rotation2d.fromDegrees(airshipAngle)))
         //TODO: alignment

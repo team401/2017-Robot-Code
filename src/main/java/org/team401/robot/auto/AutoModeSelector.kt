@@ -42,10 +42,8 @@ class AutoModeSelector {
 			}
 			Auto.FUEL -> {
 				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
-						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
-					println("Bad fuel auto configuration!!!")
-					return CalibrateTurret()
-				}
+						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance()))
+                    return FarHopperFuel(positionChooser.selected)
                 if (positionChooser.selected == StartingPos.CENTER)
                     return CenterGearAndFuel()
                 return HopperFuel(positionChooser.selected)

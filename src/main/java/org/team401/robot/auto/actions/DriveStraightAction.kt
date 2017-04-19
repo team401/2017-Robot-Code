@@ -33,8 +33,8 @@ class DriveStraightAction @JvmOverloads constructor(val distance: Double, val sp
 
 	override fun isFinished(): Boolean {
         return startingPos.indices
-                .filter { Math.abs(OctocanumDrive.gearboxes[it].getDistanceInches() - startingPos[it]) < Math.abs(distance*12) }
-                .isEmpty()
+                .filter { Math.abs(OctocanumDrive.gearboxes[it].getDistanceInches() - startingPos[it]) >= Math.abs(distance*12) }
+                .isNotEmpty()
 	}
 
 	override fun onInterrupt() {
@@ -44,6 +44,6 @@ class DriveStraightAction @JvmOverloads constructor(val distance: Double, val sp
 
 	override fun onStop() {
 		if (!continuous)
-            OctocanumDrive.stop()
+            OctocanumDrive.setVelocityHeadingSetpoint(0.0, heading)
 	}
 }

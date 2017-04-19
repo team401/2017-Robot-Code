@@ -24,7 +24,7 @@ import org.team401.robot.ControlBoard
 object OctocanumDrive : Subsystem("drive") {
 
     enum class DriveControlState {
-        OPEN_LOOP, CLOSED_LOOP, VELOCITY_HEADING_CONTROL, HEADING_CONTROL, PATH_FOLLOWING_CONTROL
+        OPEN_LOOP, CLOSED_LOOP, VELOCITY_HEADING_CONTROL, PATH_FOLLOWING_CONTROL
     }
 
     /**
@@ -52,11 +52,11 @@ object OctocanumDrive : Subsystem("drive") {
     val accel = BuiltInAccelerometer()
     val shifter = Solenoid(Constants.GEARBOX_SHIFTER)
 
+    private var driveSignal = DriveSignal.NEUTRAL
+
     val pidVelocityHeading = SynchronousPID()
     private var velocityHeadingSetpoint: VelocityHeadingSetpoint? = null
     private var lastHeadingErrorDegrees = 0.0
-
-    private var lastSetGyroHeading: Rotation2d? = null
 
     var brakeModeOn: Boolean = false
 
@@ -65,9 +65,9 @@ object OctocanumDrive : Subsystem("drive") {
      */
     var driveMode = DriveMode.TRACTION
 
-    var x = 0.0
-    var y = 0.0
-    var z = 0.0
+    private var x = 0.0
+    private var y = 0.0
+    private var z = 0.0
 
     private val loop = object : Loop {
         override fun onStart() {
@@ -77,33 +77,39 @@ object OctocanumDrive : Subsystem("drive") {
         override fun onLoop() {
             when (controlState) {
                 DriveControlState.OPEN_LOOP -> {
-                    val x: Double
-                    if (driveMode == DriveMode.MECANUM)
-                        x = ControlBoard.getDriveStrafe()
-                    else
-                        x = 0.0
-                    val y = ControlBoard.getDrivePitch()
-                    val rot = ControlBoard.getDriveRotate()
+                    if (driveSignal != DriveSignal.NEUTRAL) {
+                        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(driveSignal.left)
+                        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(driveSignal.left)
+                        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(driveSignal.right)
+                        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(driveSignal.right)
+                    } else {
+                        val x: Double
+                        if (driveMode == DriveMode.MECANUM)
+                            x = ControlBoard.getDriveStrafe()
+                        else
+                            x = 0.0
+                        val y = ControlBoard.getDrivePitch()
+                        val rot = ControlBoard.getDriveRotate()
 
-                    val wheelSpeeds = DoubleArray(4)
-                    wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = -x + y + rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = x + y + rot
-                    wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = x + y - rot
-                    wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = -x + y - rot
-                    MathUtils.scale(wheelSpeeds, 0.9)
+                        val wheelSpeeds = DoubleArray(4)
+                        wheelSpeeds[Constants.GEARBOX_FRONT_LEFT] = -x + y + rot
+                        wheelSpeeds[Constants.GEARBOX_REAR_LEFT] = x + y + rot
+                        wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT] = x + y - rot
+                        wheelSpeeds[Constants.GEARBOX_REAR_RIGHT] = -x + y - rot
+                        MathUtils.scale(wheelSpeeds, 0.9)
 
-                    MathUtils.normalize(wheelSpeeds)
+                        MathUtils.normalize(wheelSpeeds)
 
-                    gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
-                    gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
-                    gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
-                    gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+                        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_LEFT])
+                        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_LEFT])
+                        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_FRONT_RIGHT])
+                        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(wheelSpeeds[Constants.GEARBOX_REAR_RIGHT])
+                    }
                 }
                 DriveControlState.CLOSED_LOOP -> {
                     val x: Double
                     if (driveMode == DriveMode.MECANUM)
                         x = ControlBoard.getDriveStrafe()
-                        //lol git rekt sun
                     else
                         x = 0.0
                     val y = ControlBoard.getDrivePitch()
@@ -127,8 +133,6 @@ object OctocanumDrive : Subsystem("drive") {
                     // talons are updating the control loop state
                 DriveControlState.VELOCITY_HEADING_CONTROL ->
                     updateVelocityHeadingSetpoint()
-                DriveControlState.HEADING_CONTROL ->
-                    updateHeadingSetpoint()
                 DriveControlState.PATH_FOLLOWING_CONTROL -> {
                     println("we shouldn't be in path following mode!!!")
                     /*updatePathFollower()
@@ -255,29 +259,12 @@ object OctocanumDrive : Subsystem("drive") {
         setBrakeMode(true)
     }
 
-    fun setHeadingSetpoint(headingSetpoint: Rotation2d) {
-        if (controlState != DriveControlState.HEADING_CONTROL) {
+    fun setDriveSignal(driveSignal: DriveSignal) {
+        if (controlState != DriveControlState.OPEN_LOOP) {
             configureTalonsForOpenLoopControl()
-            controlState = DriveControlState.HEADING_CONTROL
-            pidVelocityHeading.reset()
-            pidVelocityHeading.setOutputRange(-0.4, 0.4)
+            controlState = DriveControlState.OPEN_LOOP
         }
-        velocityHeadingSetpoint = VelocityHeadingSetpoint(0.0, 0.0, headingSetpoint)
-        updateHeadingSetpoint()
-    }
-
-    private fun updateHeadingSetpoint() {
-        val actualGyroAngle = getGyroAngle()
-        val setpoint = velocityHeadingSetpoint!!
-
-        lastHeadingErrorDegrees = setpoint.heading.rotateBy(actualGyroAngle.inverse()).degrees
-
-        val deltaSpeed = pidVelocityHeading.calculate(lastHeadingErrorDegrees)
-
-        gearboxes[Constants.GEARBOX_FRONT_LEFT].setOutput(-deltaSpeed)
-        gearboxes[Constants.GEARBOX_REAR_LEFT].setOutput(-deltaSpeed)
-        gearboxes[Constants.GEARBOX_FRONT_RIGHT].setOutput(deltaSpeed)
-        gearboxes[Constants.GEARBOX_REAR_RIGHT].setOutput(deltaSpeed)
+        this.driveSignal = driveSignal
     }
 
     fun setVelocityHeadingSetpoint(inchesPerSec: Double, headingSetpoint: Rotation2d) {
@@ -346,4 +333,10 @@ object OctocanumDrive : Subsystem("drive") {
      * location.
      */
     data class VelocityHeadingSetpoint(val leftSpeed: Double, val rightSpeed: Double, val heading: Rotation2d)
+
+    data class DriveSignal(val left: Double, val right: Double) {
+        companion object {
+            val NEUTRAL = DriveSignal(0.0, 0.0)
+        }
+    }
 }

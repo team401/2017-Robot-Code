@@ -14,13 +14,13 @@ import org.team401.robot.subsystems.Turret
 
 internal class HopperFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode() {
 
-    val turnAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) -80.0 else 80.0
+    val turnAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 80.0 else -80.0
     val intakeAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) -115.0 else 115.0
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
-        DriveStraightAction((dStatToAir+6) * 2, -12.0, Rotation2d.fromDegrees(0.0))
+        runAction(DriveStraightAction((dStatToAir+6) * 2, 12.0, Rotation2d.fromDegrees(0.0)))
 
         runAction(RotateAction(Rotation2d.fromDegrees(turnAngle), 0.45))
 

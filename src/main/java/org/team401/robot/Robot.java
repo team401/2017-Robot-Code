@@ -100,6 +100,10 @@ public class Robot extends IterativeRobot {
 					() -> drive.getGyro().reset());
 			switchReactor.onTriggered(controls.getToggleBrake(),
                     () -> drive.setBrakeMode(!drive.getBrakeModeOn()));
+			switchReactor.onTriggered(controls.getToggleHeading(),
+                    () -> drive.setVelocityHeadingSetpoint(-controls.getDrivePitch()*Constants.MAX_SPEED*12, drive.getGyroAngle()));
+			switchReactor.onUntriggered(controls.getToggleHeading(),
+                    () -> drive.setControlState(OctocanumDrive.DriveControlState.CLOSED_LOOP));
 
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 0,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(0)).asSbCommand());

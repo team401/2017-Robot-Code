@@ -13,8 +13,8 @@ internal class CenterGear : AutoMode() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_IN)
         // drive up slowly
-        DriveStraightAction(3.5*2, 14.0, Rotation2d.fromDegrees(0.0), true)
-        runAction(DriveStraightAction(1.75*2, 6.0, Rotation2d.fromDegrees(0.0)))
+        runAction(DriveStraightAction(3.5*2, 14.0, Rotation2d.fromDegrees(0.0), true))
+        runAction(DriveStraightAction(1.75*2, 5.0, Rotation2d.fromDegrees(0.0)))
         runAction(DropGearAction(2.0))
         Thread.sleep(1000)
         runAction(DriveStraightAction(3.5*2, -8.0, Rotation2d.fromDegrees(0.0)))
