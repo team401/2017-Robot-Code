@@ -2,6 +2,11 @@
 var ui = {
     timer: document.getElementById('timer'),
     robotState: document.getElementById('robot-state').firstChild,
+    robot: {
+      tractionFront: document.getElementById('traction-front'),
+      tractionRear: document.getElementById('traction-rear'),
+      intakeArm: document.getElementById('intake-arm')
+    },
     gyro: {
         container: document.getElementById('gyro'),
         val: 0,
@@ -19,7 +24,7 @@ var ui = {
         get: document.getElementById('get')
     },
     autoStartPos: document.getElementById('auto-start'),
-    autoStrat: document.getElementById('auto-strat'),
+    autoStrat: document.getElementById('auto-strat')
 };
 let address = document.getElementById('connect-address'),
     connect = document.getElementById('connect');
@@ -101,31 +106,6 @@ let updateGyro = (key, value) => {
 };
 NetworkTables.addKeyListener('/SmartDashboard/gyro_angle', updateGyro);
 
-// The following case is an example, for a robot with an arm at the front.
-// Info on the actual robot that this works with can be seen at thebluealliance.com/team/1418/2016.
-NetworkTables.addKeyListener('/SmartDashboard/arm/encoder', (key, value) => {
-    // 0 is all the way back, 1200 is 45 degrees forward. We don't want it going past that.
-    if (value > 1140) {
-        value = 1140;
-    }
-    else if (value < 0) {
-        value = 0;
-    }
-    // Calculate visual rotation of arm
-    var armAngle = value * 3 / 20 - 45;
-    // Rotate the arm in diagram to match real arm
-    ui.robotDiagram.arm.style.transform = `rotate(${armAngle}deg)`;
-});
-
-// This button is just an example of triggering an event on the robot by clicking a button.
-NetworkTables.addKeyListener('/SmartDashboard/flywheel_rpm', (key, value) => {
-    // Sometimes, NetworkTables will pass booleans as strings. This corrects for that.
-    if (typeof value === 'string')
-        value = value === "true";
-    // Set class active if value is true and unset it if it is false
-    ui.example.readout.data = value;
-});
-
 NetworkTables.addKeyListener('/SmartDashboard/time_running', (key, value) => {
     // Sometimes, NetworkTables will pass booleans as strings. This corrects for that.
     if (typeof value === 'string')
@@ -167,25 +147,80 @@ NetworkTables.addKeyListener('/SmartDashboard/time_running', (key, value) => {
     NetworkTables.putValue(key, false);
 });
 
+NetworkTables.addKeyListener('/SmartDashboard/Match Time', (key, value) => {
+    // Make sure timer is reset to orange when it starts
+    ui.timer.style.color = 'orange';
+    // Minutes (m) is equal to the total seconds divided by sixty with the decimal removed.
+    var m = Math.floor(s / 60);
+    // Create seconds number that will actually be displayed after minutes are subtracted
+    var visualS = (s % 60);
+    // Add leading zero if seconds is one digit long, for proper time formatting.
+    visualS = visualS < 10 ? '0' + visualS : visualS;
+    if (value <= 15) {
+        // Flash timer if less than 15 seconds left
+        ui.timer.style.color = (s % 2 === 0) ? '#FF3030' : 'transparent';
+    }
+    else if (value <= 30) {
+        // Solid red timer when less than 30 seconds left.
+        ui.timer.style.color = '#FF3030';
+    }
+    ui.timer.firstChild.data = m + ':' + visualS;
+});
+
+// update robot state
+NetworkTables.addKeyListener('/SmartDashboard/strafing_enabled', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+
+    if (value) {
+        ui.robot.tractionFront.style.cy = 400;
+        ui.robot.tractionRear.style.cy = 400;
+        //ui.robot.tractionFront.style.color = 'blue';
+        //ui.robot.tractionRear.style.color = 'blue';
+    } else {
+        ui.robot.tractionFront.style.cy = 410;
+        ui.robot.tractionRear.style.cy = 410;
+        //ui.robot.tractionFront.style.color = 'orange';
+        //ui.robot.tractionRear.style.color = 'orange';
+    }
+});
+
 // Load list of prewritten autonomous modes
-NetworkTables.addKeyListener('/SmartDashboard/time_running', (key, value) => {
+NetworkTables.addKeyListener('/SmartDashboard/Starting Position/options', (key, value) => {
     // Clear previous list
-    while (ui.autoSelect.firstChild) {
-        ui.autoSelect.removeChild(ui.autoSelect.firstChild);
+    while (ui.autoStartPos.firstChild) {
+        ui.autoStartPos.removeChild(ui.autoStartPos.firstChild);
     }
     // Make an option for each autonomous mode and put it in the selector
     for (let i = 0; i < value.length; i++) {
         var option = document.createElement('option');
         option.appendChild(document.createTextNode(value[i]));
-        ui.autoSelect.appendChild(option);
+        ui.autoStartPos.appendChild(option);
     }
     // Set value to the already-selected mode. If there is none, nothing will happen.
-    ui.autoSelect.value = NetworkTables.getValue('/SmartDashboard/currentlySelectedMode');
+    ui.autoStartPos.value = NetworkTables.getValue('/SmartDashboard/Starting Position/selected');
+});
+NetworkTables.addKeyListener('/SmartDashboard/Strategy/options', (key, value) => {
+    // Clear previous list
+    while (ui.autoStrat.firstChild) {
+        ui.autoStrat.removeChild(ui.autoStrat.firstChild);
+    }
+    // Make an option for each autonomous mode and put it in the selector
+    for (let i = 0; i < value.length; i++) {
+        var option = document.createElement('option');
+        option.appendChild(document.createTextNode(value[i]));
+        ui.autoStrat.appendChild(option);
+    }
+    // Set value to the already-selected mode. If there is none, nothing will happen.
+    ui.autoStrat.value = NetworkTables.getValue('/SmartDashboard/Strategy/selected');
 });
 
 // Load list of prewritten autonomous modes
-NetworkTables.addKeyListener('/SmartDashboard/autonomous/selected', (key, value) => {
-    ui.autoSelect.value = value;
+NetworkTables.addKeyListener('/SmartDashboard/Starting Position/selected', (key, value) => {
+    ui.autoStartPos.value = value;
+});
+NetworkTables.addKeyListener('/SmartDashboard/Strategy/selected', (key, value) => {
+    ui.autoStrat.value = value;
 });
 
 // Global Listener
@@ -248,8 +283,7 @@ function onValueChanged(key, value, isNew) {
         if (oldInput) {
             if (oldInput.type === 'checkbox') {
                 oldInput.checked = value;
-            }
-            else {
+            } else {
                 oldInput.value = value;
             }
         }
@@ -286,5 +320,9 @@ ui.tuning.get.onclick = function () {
 };
 // Update NetworkTables when autonomous selector is changed
 ui.autoStartPos.onchange = function () {
-    NetworkTables.putValue('/SmartDashboard/autonomous/selected', this.value);
+    NetworkTables.putValue('/SmartDashboard/Starting Position/selected', this.value);
+    console.log('help');
+};
+ui.autoStrat.onchange = function () {
+    NetworkTables.putValue('/SmartDashboard/Strategy/selected', this.value);
 };

@@ -31,7 +31,7 @@ class RotateAction @JvmOverloads constructor(val heading: Rotation2d, timeout: D
     }
 
 	override fun onStop() {
-		OctocanumDrive.stop()
+		OctocanumDrive.setVelocityHeadingSetpoint(0.0, heading)
 		OctocanumDrive.shift(tmpDriveMode)
 	}
 }

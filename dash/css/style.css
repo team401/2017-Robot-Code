@@ -110,6 +110,14 @@ text {
     stroke: none;
     fill: orange;
 }
+
+#drive {
+  width: 200px;
+  height: 175px;
+  font-size: 14px;
+  background-color: red
+}
+
 #gyro {
     width: 175px;
     height: 175px;

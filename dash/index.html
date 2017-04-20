@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>FRC Dashboard</title>
+    <title>CopperheadDash</title>
     <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
     <!-- Clock that shows up in top left -->
-    <div id="timer">0:00</div>
+    <div id="timer">2:15</div>
     <header>
         <!-- Tells whether robot is connected to dashboard. -->
         <div id="robot-state">Unknown state</div>
@@ -33,6 +33,9 @@
             <rect id="gyro-arm" x="80" y="5" width="10" height="80"></rect>
             <text id="gyro-number" x="90" y="115">0º</text>
         </svg>
+        <!--<svg id="drive">
+          <text x="10", y="15">Drive Stats</text>
+        </svg>-->
         <!-- Example robot diagram, arm moves when encoder value changes -->
         <svg id="robot-diagram" width="332" height="450">
             <text x="130" y="270">PHIL</text>
@@ -41,10 +44,10 @@
             <rect x="35" y="300" width="10" height="80"></rect>
             <rect x="265" y="300" width="10" height="80"></rect>
             <!--<rect id="robot-arm" x="5" y="375" width="80" height="10"></rect>-->
-            <circle cx="55" cy="400" r="15"></circle>
-            <circle cx="85" cy="405" r="15"></circle>
-            <circle cx="220" cy="405" r="15"></circle>
-            <circle cx="250" cy="400" r="15"></circle>
+            <circle id="traction-front" cx="55" cy="400" r="15"></circle>
+            <circle cx="90" cy="405" r="15"></circle>
+            <circle cx="215" cy="405" r="15"></circle>
+            <circle id="traction-rear" cx="250" cy="400" r="15"></circle>
             <rect x="20" y="380" width="270" height="30"></rect>
             <text id="team" x="155" y="405" text-anchor="middle">401</text>
         </svg>

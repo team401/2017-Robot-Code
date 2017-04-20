@@ -1,7 +1,7 @@
 {
-  "name": "FRCDashboard",
-  "version": "v2.0.0",
-  "description": "Dashboard for extra robot controls in FRC. Experimental Electron environment.",
+  "name": "CopperheadDash",
+  "version": "v1.0.0",
+  "description": "Dashboard for \"PHIL\"",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FRCDashboard/FRCDashboard"
+    "url": "git+https://github.com/team401/2017-Robot-Code"
   },
   "author": "Erik Boesen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FRCDashboard/FRCDashboard/issues"
+    "url": "https://github.com/team401/2017-Robot-Code/issues"
   },
-  "homepage": "http://frcdashboard.github.io",
+  "homepage": "https://github.com/team401/2017-Robot-Code",
   "devDependencies": {
     "electron": "^1.2.0",
     "electron-builder": "~15.2.0"
@@ -26,7 +26,7 @@
     "wpilib-nt-client": "^1.1.3"
   },
   "build": {
-    "appId": "FRCDashboard",
-    "productName": "FRCDashboard"
+    "appId": "CopperheadDash",
+    "productName": "CopperheadDash"
   }
 }
