@@ -133,8 +133,6 @@ public class Robot extends IterativeRobot {
 					() -> {
 						gearHolder.setWantedState(GearHolder.GearHolderState.INTAKE);
 						tower.setWantedState(Tower.TowerState.TOWER_IN);
-						drive.shift(OctocanumDrive.DriveMode.TRACTION);
-						Strongback.submit(new DriveStraightAction(12.0*(1/3)*2, .3).asSbCommand());
 					});
 			switchReactor.onUntriggered(controls.getGearIntake(),
 					() -> {

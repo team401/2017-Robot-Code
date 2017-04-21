@@ -45,5 +45,7 @@ class DriveStraightAction @JvmOverloads constructor(val distance: Double, val sp
 	override fun onStop() {
 		if (!continuous)
             OctocanumDrive.setVelocityHeadingSetpoint(0.0, heading)
+        else
+            OctocanumDrive.setControlState(OctocanumDrive.DriveControlState.CLOSED_LOOP)
 	}
 }

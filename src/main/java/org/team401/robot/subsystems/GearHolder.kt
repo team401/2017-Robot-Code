@@ -21,9 +21,9 @@ object GearHolder : Subsystem("gear_holder") {
 
 	private val gearSensor =  DigitalInput(0)
 
-	private val leftServoHome = 160.0
+	private val leftServoHome = 150.0
 	private val leftServoOut = 48.0
-	private val rightServoHome = 35.0
+	private val rightServoHome = 40.0
 	private val rightServoOut = 140.0
 
 	private val loop = object : Loop {
