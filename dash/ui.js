@@ -284,8 +284,8 @@ ui.tuning.get.onclick = function () {
 };
 // Update NetworkTables when autonomous selector is changed
 ui.autoStartPos.onchange = function () {
-    NetworkTables.putValue('/SmartDashboard/Starting Position/selected', this.value);
     console.log('help');
+    NetworkTables.putValue('/SmartDashboard/Starting Position/selected', this.value);
 };
 ui.autoStrat.onchange = function () {
     NetworkTables.putValue('/SmartDashboard/Strategy/selected', this.value);
