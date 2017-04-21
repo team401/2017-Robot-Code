@@ -255,15 +255,8 @@ function onValueChanged(key, value, isNew) {
             console.log('Error: Non-new variable ' + key + ' not present in tuning list!');
         }
     }
-
 }
-// Reset gyro value to 0 on click
-ui.gyro.container.onclick = function () {
-    // Store previous gyro val, will now be subtracted from val for callibration
-    ui.gyro.offset = ui.gyro.val;
-    // Trigger the gyro to recalculate value.
-    updateGyro('/SmartDashboard/gyro_angle', ui.gyro.val);
-};
+
 // Open tuning section when button is clicked
 ui.tuning.button.onclick = function () {
     if (ui.tuning.list.style.display === 'none') {

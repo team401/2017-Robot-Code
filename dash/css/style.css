@@ -33,7 +33,7 @@ select {
     border: none;
     background: none;
     color: orange;
-    height: 25px;
+    height: 30px;
 }
 input[type="text"], input[type="number"] {
     cursor: text;
@@ -111,11 +111,10 @@ text {
     fill: orange;
 }
 
-#drive {
-  width: 200px;
+#tower {
+  width: 230px;
   height: 175px;
   font-size: 14px;
-  background-color: red
 }
 
 #gyro {
