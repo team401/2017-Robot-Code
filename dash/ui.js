@@ -15,6 +15,11 @@ var ui = {
         arm: document.getElementById('gyro-arm'),
         number: document.getElementById('gyro-number')
     },
+    turret: {
+      object: document.getElementById('turret-diagram'),
+      flywheel: document.getElementById('flywheel'),
+      hood: document.getElementById('hood')
+    },
     tuning: {
         list: document.getElementById('tuning'),
         button: document.getElementById('tuning-button'),
@@ -28,6 +33,13 @@ var ui = {
 };
 let address = document.getElementById('connect-address'),
     connect = document.getElementById('connect');
+
+let red = '#ff3300',
+    green = '#00ff00',
+    blue = '#3366ff',
+    orange = 'orange',
+    yellow = '#ffff00',
+    bg = '#222';
 
 // Sets function to be called on NetworkTables connect. Commented out because it's usually not necessary.
 // NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
@@ -139,13 +151,53 @@ NetworkTables.addKeyListener('/SmartDashboard/strafing_enabled', (key, value) =>
     if (value) {
         ui.robot.tractionFront.style.cy = 400;
         ui.robot.tractionRear.style.cy = 400;
-        //ui.robot.tractionFront.style.color = 'blue';
-        //ui.robot.tractionRear.style.color = 'blue';
+        ui.robot.tractionFront.style.color = blue;
+        ui.robot.tractionRear.style.color = blue;
     } else {
         ui.robot.tractionFront.style.cy = 410;
         ui.robot.tractionRear.style.cy = 410;
-        //ui.robot.tractionFront.style.color = 'orange';
-        //ui.robot.tractionRear.style.color = 'orange';
+        ui.robot.tractionFront.style.color = orange;
+        ui.robot.tractionRear.style.color = orange;
+    }
+});
+
+// update turret state
+NetworkTables.addKeyListener('/SmartDashboard/sentry_enabled', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+    if (value) {
+        ui.turret.base.style.color = yellow;
+    } else {
+        ui.turret.base.style.color = orange;
+    }
+});
+NetworkTables.addKeyListener('/SmartDashboard/auto_shooting_enabled', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+    if (value) {
+        ui.turret.flywheel.style.fill = blue;
+    } else {
+        ui.turret.flywheel.style.fill = bg;
+    }
+});
+NetworkTables.addKeyListener('/SmartDashboard/flywheel_within_tolerance', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+    if (value) {
+        ui.turret.flywheel.style.color = green;
+    } else {
+        ui.turret.flywheel.sytle.color = red;
+    }
+});
+NetworkTables.addKeyListener('/SmartDashboard/turret_hood_extended', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+    if (value) {
+        ui.turret.hood.style.x = 100;
+        ui.turret.hood.style.height = 40;
+    } else {
+        ui.turret.hood.style.x = 130;
+        ui.turret.hood.style.height = 10;
     }
 });
 
@@ -192,8 +244,7 @@ function onValueChanged(key, value, isNew) {
     // Sometimes, NetworkTables will pass booleans as strings. This corrects for that.
     if (value == 'true') {
         value = true;
-    }
-    else if (value == 'false') {
+    } else if (value == 'false') {
         value = false;
     }
     // The following code manages tuning section of the interface.

@@ -49,6 +49,7 @@ object Flywheel : Subsystem("flywheel") {
         dataLogger.register("flywheel_rpm", { getSpeed().toDouble() })
         dataLogger.register("flywheel_talon_setpoint", { Math.round(master.setpoint).toDouble() })
         dataLogger.register("flywheel_error", { getError().toDouble() })
+        dataLogger.register("flywheel_within_tolerance", { isWithinTolerance() })
 	}
 
 	fun setSpeed(speed: Int) {
@@ -68,7 +69,7 @@ object Flywheel : Subsystem("flywheel") {
             return (master.setpoint - master.speed).toInt()
     }
 
-	fun isWithinTolerance() = state == FlywheelState.RUNNING && Math.abs(master.speed - master.setpoint) < 50
+	fun isWithinTolerance() = state == FlywheelState.RUNNING && Math.abs(getError()) < 50
 
 	fun stop() {
 		if (state == FlywheelState.RUNNING) {
