@@ -106,65 +106,29 @@ let updateGyro = (key, value) => {
 };
 NetworkTables.addKeyListener('/SmartDashboard/gyro_angle', updateGyro);
 
-NetworkTables.addKeyListener('/SmartDashboard/time_running', (key, value) => {
-    // Sometimes, NetworkTables will pass booleans as strings. This corrects for that.
-    if (typeof value === 'string')
-        value = value === "true";
-    // When this NetworkTables variable is true, the timer will start.
-    // You shouldn't need to touch this code, but it's documented anyway in case you do.
-    var s = 135;
-    if (value) {
-        // Make sure timer is reset to black when it starts
-        ui.timer.style.color = 'black';
-        // Function below adjusts time left every second
-        var countdown = setInterval(function () {
-            s--; // Subtract one second
-            // Minutes (m) is equal to the total seconds divided by sixty with the decimal removed.
-            var m = Math.floor(s / 60);
-            // Create seconds number that will actually be displayed after minutes are subtracted
-            var visualS = (s % 60);
-            // Add leading zero if seconds is one digit long, for proper time formatting.
-            visualS = visualS < 10 ? '0' + visualS : visualS;
-            if (s < 0) {
-                // Stop countdown when timer reaches zero
-                clearTimeout(countdown);
-                return;
-            }
-            else if (s <= 15) {
-                // Flash timer if less than 15 seconds left
-                ui.timer.style.color = (s % 2 === 0) ? '#FF3030' : 'transparent';
-            }
-            else if (s <= 30) {
-                // Solid red timer when less than 30 seconds left.
-                ui.timer.style.color = '#FF3030';
-            }
-            ui.timer.firstChild.data = m + ':' + visualS;
-        }, 1000);
-    }
-    else {
-        s = 135;
-    }
-    NetworkTables.putValue(key, false);
-});
-
 NetworkTables.addKeyListener('/SmartDashboard/Match Time', (key, value) => {
     // Make sure timer is reset to orange when it starts
     ui.timer.style.color = 'orange';
+
     // Minutes (m) is equal to the total seconds divided by sixty with the decimal removed.
-    var m = Math.floor(s / 60);
+    var m = Math.floor(value / 60);
     // Create seconds number that will actually be displayed after minutes are subtracted
-    var visualS = (s % 60);
+    var visualS = (value % 60);
     // Add leading zero if seconds is one digit long, for proper time formatting.
     visualS = visualS < 10 ? '0' + visualS : visualS;
-    if (value <= 15) {
+    if (value <= 30) {
         // Flash timer if less than 15 seconds left
-        ui.timer.style.color = (s % 2 === 0) ? '#FF3030' : 'transparent';
+        ui.timer.style.color = (value % 2 === 0) ? '#FF3030' : 'orange';
     }
-    else if (value <= 30) {
+    /*else if (value <= 30) {
         // Solid red timer when less than 30 seconds left.
         ui.timer.style.color = '#FF3030';
-    }
+    }*/
     ui.timer.firstChild.data = m + ':' + visualS;
+
+    if (value == -1) {
+        ui.timer.firstChild.data = '0:00';
+    }
 });
 
 // update robot state
