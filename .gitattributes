@@ -1,5 +1,0 @@
-*.java linguist-language=Arduino
-*.kt linguist-language=Perl
-*.js linguist-language=Haskell
-*.css linguist-language=Lua
-*.html linguist-language=Python
