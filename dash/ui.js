@@ -28,6 +28,7 @@ var ui = {
         set: document.getElementById('set'),
         get: document.getElementById('get')
     },
+    gear: document.getElementById('gear'),
     autoStartPos: document.getElementById('auto-start'),
     autoStrat: document.getElementById('auto-strat')
 };
@@ -37,7 +38,7 @@ let address = document.getElementById('connect-address'),
 let red = '#ff3300',
     green = '#00ff00',
     blue = '#3366ff',
-    orange = 'orange',
+    orange = '#FFA500',
     yellow = '#ffff00',
     bg = '#222';
 
@@ -140,6 +141,16 @@ NetworkTables.addKeyListener('/SmartDashboard/Match Time', (key, value) => {
 
     if (value == -1) {
         ui.timer.firstChild.data = '0:00';
+    }
+});
+
+NetworkTables.addKeyListener('/SmartDashboard/has_gear', (key, value) => {
+    if (typeof value === 'string')
+        value = value === "true";
+    if (value) {
+        ui.gear.style.visibility  = 'visible';
+    } else {
+        ui.gear.style.visibility = 'hidden';
     }
 });
 
