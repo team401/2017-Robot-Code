@@ -177,27 +177,27 @@ NetworkTables.addKeyListener('/SmartDashboard/sentry_enabled', (key, value) => {
     if (typeof value === 'string')
         value = value === "true";
     if (value) {
-        ui.turret.base.style.color = yellow;
+        ui.turret.base.style.stroke = yellow;
     } else {
-        ui.turret.base.style.color = orange;
+        ui.turret.base.style.stroke = orange;
     }
 });
 NetworkTables.addKeyListener('/SmartDashboard/auto_shooting_enabled', (key, value) => {
     if (typeof value === 'string')
         value = value === "true";
     if (value) {
-        ui.turret.flywheel.style.fill = blue;
+        ui.turret.flywheel.style.stroke = blue;
     } else {
-        ui.turret.flywheel.style.fill = bg;
+        ui.turret.flywheel.style.stroke = bg;
     }
 });
 NetworkTables.addKeyListener('/SmartDashboard/flywheel_within_tolerance', (key, value) => {
     if (typeof value === 'string')
         value = value === "true";
     if (value) {
-        ui.turret.flywheel.style.color = green;
+        ui.turret.flywheel.style.fill = green;
     } else {
-        ui.turret.flywheel.sytle.color = red;
+        ui.turret.flywheel.sytle.fill = red;
     }
 });
 NetworkTables.addKeyListener('/SmartDashboard/turret_hood_extended', (key, value) => {
@@ -339,7 +339,6 @@ ui.tuning.get.onclick = function () {
 };
 // Update NetworkTables when autonomous selector is changed
 ui.autoStartPos.onchange = function () {
-    console.log('help');
     NetworkTables.putValue('/SmartDashboard/Starting Position/selected', this.value);
 };
 ui.autoStrat.onchange = function () {
