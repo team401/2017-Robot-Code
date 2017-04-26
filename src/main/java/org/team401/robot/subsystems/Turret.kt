@@ -53,10 +53,10 @@ object Turret : Subsystem("turret") {
 			if (state >= TurretState.SENTRY) { // auto control
 				if (VisionBuffer.isLatestGoalValid()) {
 					rotateBuffer = 0.0
-					if (!turretHood.get())
+					/*if (!turretHood.get())
 						turretHood.set(!(VisionBuffer.goalDistance() > hoodSwitchOff))
 					else
-						turretHood.set(!(VisionBuffer.goalDistance() > hoodSwitchOn))
+						turretHood.set(!(VisionBuffer.goalDistance() > hoodSwitchOn))*/
 					if (track())
 						speed = getRpmForDistance()
 				} else if (rotateBuffer < rotateBufferMax) {

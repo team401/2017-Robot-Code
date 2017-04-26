@@ -19,6 +19,7 @@ object Constants {
     const val GEAR_HOLDER           = 4
     const val TOWER_SHIFTER         = 3
     const val COMPRESSOR_FAN        = 5
+    const val GEAR_LED_RING         = 6
     const val TURRET_LED_RING       = 7
 
     // can device ids for the motor controllers
@@ -46,7 +47,6 @@ object Constants {
     const val SERVO_RIGHT           = 1
 
     const val HOPPER_RAMP_RATE      = 6
-    const val INTAKE_RAMP_RATE      = 18
 
     // joystick ids
     const val DRIVER_GAMEPAD        = 0

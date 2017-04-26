@@ -110,6 +110,12 @@ public class Robot extends IterativeRobot {
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(-50)).asSbCommand());
 			switchReactor.onTriggeredSubmit(() -> controls.getGyroPadAngle().getDirection() == 270,
 					() -> new RotateAction(Rotation2d.Companion.fromDegrees(50)).asSbCommand());
+
+			switchReactor.onTriggered(controls.getToggleGearProc(),
+                    () -> gearHolder.setWantedState(GearHolder.GearHolderState.GEAR_VISION));
+			switchReactor.onUntriggered(controls.getToggleGearProc(),
+                    () -> gearHolder.setWantedState(GearHolder.GearHolderState.CLOSED));
+
 			// camera switching
 			switchReactor.onTriggered(controls.getToggleCamera(),
 					() -> vision.toggleActiveCamera());

@@ -7,13 +7,14 @@ import org.team401.robot.auto.actions.DriveStraightAction
 import org.team401.robot.subsystems.OctocanumDrive
 import org.team401.robot.subsystems.Tower
 
-internal class FarHopperFuel(startingPos: AutoModeSelector.StartingPos) : AutoMode() {
+internal class FarHopperFuel(startingPos: AutoModeSelector.StartingPos, val far: Boolean) : AutoMode() {
 
-    val turnAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 50.0 else -50.0
+    val turnAngle = if (startingPos == AutoModeSelector.StartingPos.LEFT) 90.0 else -90.0
 
     override fun routine() {
         OctocanumDrive.shift(OctocanumDrive.DriveMode.TRACTION)
         Tower.setWantedState(Tower.TowerState.TOWER_OUT)
-        runAction(DriveStraightAction((dStatToAir+6) * 2, 12.0, Rotation2d.fromDegrees(0.0)))
+        val distance = if (!far) 131.0 else 151.0
+        runAction(DriveStraightAction(distance * 2, 12.0, Rotation2d.fromDegrees(0.0)))
     }
 }

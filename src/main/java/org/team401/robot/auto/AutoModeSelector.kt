@@ -18,6 +18,7 @@ class AutoModeSelector {
 
 	private val positionChooser = SendableChooser<StartingPos>()
 	private val strategyChooser = SendableChooser<Auto>()
+    private val hopperChooser = SendableChooser<Int>()
 
 	init {
 		positionChooser.addObject("Station 1", StartingPos.LEFT)
@@ -30,6 +31,10 @@ class AutoModeSelector {
 		strategyChooser.addObject("Gear then Fuel", Auto.GEAR_FUEL)
 		strategyChooser.addObject("None", Auto.NONE)
 		SmartDashboard.putData("Strategy", strategyChooser)
+
+        hopperChooser.addObject("Near", 0)
+        hopperChooser.addObject("Far", 1)
+        SmartDashboard.putData("Hopper Chooser", hopperChooser)
 	}
 
 	fun getAutoMode(): AutoMode {
@@ -43,10 +48,10 @@ class AutoModeSelector {
 			Auto.FUEL -> {
 				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
 						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance()))
-                    return FarHopperFuel(positionChooser.selected)
+                    return FarHopperFuel(positionChooser.selected, hopperChooser.selected == 1)
                 if (positionChooser.selected == StartingPos.CENTER)
                     return CenterGearAndFuel()
-                return HopperFuel(positionChooser.selected)
+                return HopperFuel(positionChooser.selected, hopperChooser.selected == 1)
 			}
 			Auto.GEAR_FUEL -> {
 				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||

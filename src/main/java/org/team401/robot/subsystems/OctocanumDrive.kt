@@ -257,6 +257,7 @@ object OctocanumDrive : Subsystem("drive") {
                 { it.set(0.0) },
                 { it.set(0.0) })
         setBrakeMode(true)
+        driveSignal = DriveSignal.NEUTRAL
     }
 
     fun setDriveSignal(driveSignal: DriveSignal) {
