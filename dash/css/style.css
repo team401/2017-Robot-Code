@@ -112,9 +112,9 @@ text {
 }
 
 #turret-diagram {
-  width: 230px;
-  height: 175px;
-  font-size: 14px;
+    width: 230px;
+    height: 175px;
+    font-size: 14px;
 }
 
 #gyro {

@@ -188,7 +188,7 @@ NetworkTables.addKeyListener('/SmartDashboard/auto_shooting_enabled', (key, valu
     if (value) {
         ui.turret.flywheel.style.stroke = blue;
     } else {
-        ui.turret.flywheel.style.stroke = bg;
+        ui.turret.flywheel.style.stroke = orange;
     }
 });
 NetworkTables.addKeyListener('/SmartDashboard/flywheel_within_tolerance', (key, value) => {
@@ -204,10 +204,10 @@ NetworkTables.addKeyListener('/SmartDashboard/turret_hood_extended', (key, value
     if (typeof value === 'string')
         value = value === "true";
     if (value) {
-        ui.turret.hood.style.x = 100;
+        ui.turret.hood.style.y = 100;
         ui.turret.hood.style.height = 40;
     } else {
-        ui.turret.hood.style.x = 130;
+        ui.turret.hood.style.y = 130;
         ui.turret.hood.style.height = 10;
     }
 });

@@ -50,9 +50,11 @@ object VisionBuffer {
         controller.toggleActiveCamera()
     }
 
-    fun goalDistance() = findBuffer("goal_distance").getMedian()
+    fun goalDistance() = data.latestGoalDistance
 
     fun goalYaw() = data.latestGoalYaw //findBuffer("goal_yaw").getAverage()
+
+    fun gearYaw() = data.latestGearYaw
 
     fun getBufferLoop() = loop
 

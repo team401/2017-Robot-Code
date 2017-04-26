@@ -10,7 +10,6 @@ import org.team401.lib.*;
 import org.team401.robot.auto.AutoModeExecutor;
 import org.team401.robot.auto.AutoModeSelector;
 import org.team401.robot.auto.actions.CalibrateTurretAction;
-import org.team401.robot.auto.actions.DriveStraightAction;
 import org.team401.robot.auto.actions.RotateAction;
 import org.team401.robot.loops.GyroCalibrator;
 import org.team401.robot.loops.LedManager;

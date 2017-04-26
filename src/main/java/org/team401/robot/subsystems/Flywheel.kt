@@ -39,7 +39,6 @@ object Flywheel : Subsystem("flywheel") {
 		master.reverseSensor(true)
 		master.setPID(Constants.FLYWHEEL_P, Constants.FLYWHEEL_I, Constants.FLYWHEEL_D, Constants.FLYWHEEL_F,
 				Constants.FLYWHEEL_IZONE, Constants.FLYWHEEL_RAMP_RATE, 0)
-		//master.setNominalClosedLoopVoltage(12.4)
 
 		slave.isSafetyEnabled = false
 		slave.inverted = true
