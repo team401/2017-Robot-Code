@@ -225,6 +225,9 @@ public class AutoPaths {
 			{22, 9.7916, 0},
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 1),
 			perpendicular(new double[]{27, 10.7916, 27, 8.7916}, 2)
+		}), TEST = new NamedPath("TEST", 15, new double[][]{
+			{0,0,0},
+			{0,10,0}
 	});
 
 	//factor defaults to 1.0

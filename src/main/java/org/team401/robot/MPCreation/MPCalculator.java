@@ -52,7 +52,8 @@ public class MPCalculator {
 			AutoPaths.STARTING_MID_TO_LEFT_HOPPER_B,
 			AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_R,
 			AutoPaths.STARTING_MID_TO_RIGHT_HOPPER_B,
-			AutoPaths.LEFT_HOPPER_COLLECTION_R
+			AutoPaths.LEFT_HOPPER_COLLECTION_R,
+			AutoPaths.TEST
 		};
 
 		//add the direction value for mecanum drive
