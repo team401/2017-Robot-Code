@@ -1,5 +1,6 @@
 package org.team401.robot.auto
 
+import edu.wpi.first.wpilibj.Sendable
 import edu.wpi.first.wpilibj.hal.HAL
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -20,6 +21,8 @@ class AutoModeSelector {
 	private val strategyChooser = SendableChooser<Auto>()
     private val hopperChooser = SendableChooser<Int>()
 
+	private val motionProfile = SendableChooser<Boolean>()
+
 	init {
 		positionChooser.addObject("Station 1", StartingPos.LEFT)
 		positionChooser.addObject("Station 2", StartingPos.CENTER)
@@ -35,35 +38,46 @@ class AutoModeSelector {
         hopperChooser.addObject("Near", 0)
         hopperChooser.addObject("Far", 1)
         SmartDashboard.putData("Hopper Chooser", hopperChooser)
+
+		//code to run auto off motion profiles
+		//WARNING: EXPERIMENTAL
+		motionProfile.addDefault("Off", false)
+		motionProfile.addObject("On", true)
+		SmartDashboard.putData("Motion Profile Auto", motionProfile)
 	}
 
 	fun getAutoMode(): AutoMode {
-		when (strategyChooser.selected) {
-			Auto.GEAR -> {
-				if (positionChooser.selected == StartingPos.CENTER)
-                    return CenterGear()
-                else
-                    return SideGear(positionChooser.selected)
-			}
-			Auto.FUEL -> {
-				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
-						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance()))
-                    return FarHopperFuel(positionChooser.selected, hopperChooser.selected == 1)
-                if (positionChooser.selected == StartingPos.CENTER)
-                    return CenterGearAndFuel()
-                return HopperFuel(positionChooser.selected, hopperChooser.selected == 1)
-			}
-			Auto.GEAR_FUEL -> {
-				if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
-						(positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
-					println("Bad fuel auto configuration!!!")
-					return CalibrateTurret()
-				}
-                if (positionChooser.selected == StartingPos.CENTER)
-                    return CenterGearAndFuel()
-                return SideGearAndFuel(positionChooser.selected)
-			}
-			else -> return CalibrateTurret()
-		}
+		//if motionProfiles are off
+		if (motionProfile.selected == false) {
+
+            when (strategyChooser.selected) {
+                Auto.GEAR -> {
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGear()
+                    else
+                        return SideGear(positionChooser.selected)
+                }
+                Auto.FUEL -> {
+                    if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+                            (positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance()))
+                        return FarHopperFuel(positionChooser.selected, hopperChooser.selected == 1)
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGearAndFuel()
+                    return HopperFuel(positionChooser.selected, hopperChooser.selected == 1)
+                }
+                Auto.GEAR_FUEL -> {
+                    if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+                            (positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
+                        println("Bad fuel auto configuration!!!")
+                        return CalibrateTurret()
+                    }
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGearAndFuel()
+                    return SideGearAndFuel(positionChooser.selected)
+                }
+                else -> return CalibrateTurret()
+            }
+        }
+		return CalibrateTurret()
 	}
 }
