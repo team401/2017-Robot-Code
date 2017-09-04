@@ -2,13 +2,15 @@ package org.team401.robot.auto.modes
 
 import com.ctre.CANTalon
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import org.team401.lib.MotionProfile
+import org.team401.robot.auto.AutoMode
 import org.team401.robot.auto.AutoModeSelector
 import java.io.*
 import java.util.*
 
 
 
-internal class MotionProfiles(profile: String){
+internal class MotionProfiles(profile: String): AutoMode(){
 //come back to this
 private var setValue: CANTalon.SetValueMotionProfile = CANTalon.SetValueMotionProfile.Disable
 private val status = CANTalon.MotionProfileStatus(); // tracks the status of our MP Update with every iteration of the loop
@@ -17,7 +19,8 @@ private var state: Int = 0 // state for the state machine
 private var loopTimeOut: Int = 0
 private val kLoopTimeOut = 10
 private val minPoints: Int = 10
-private val path = scanCSV(profile)
+
+private val path = scanCSV(profile) // gets the profile from the selector
 
     /*
     Plan:
@@ -27,7 +30,19 @@ private val path = scanCSV(profile)
 
     runs every iteration of a auto periodic loop
 
+    Need to do:
+    Set up so all motors are controlled
+    change back to whatever control mode was previous
+    Fix the selector
      */
+
+    override fun routine(){
+        talon.changeControlMode(CANTalon.TalonControlMode.MotionProfile) // actually puts the talon in MP mode
+        control()
+    }
+    override fun done(){
+        talon.changeControlMode(CANTalon.TalonControlMode.Voltage) // resets the talons
+    }
 
     /*
     Possible bugs:
