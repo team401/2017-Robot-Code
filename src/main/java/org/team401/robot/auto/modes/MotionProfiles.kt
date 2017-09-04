@@ -27,38 +27,16 @@ private val path = scanCSV(profile)
 
     runs every iteration of a auto periodic loop
 
-    if motionprofiles on?
-        No
-            state = 0
-            looptimeout = -1 //disable
-        Yes
-            //run a MP
-            when(state){
-                0 ->
-                    startFilling() //buffer the points into the talons
-                    setvalue = disabled
-                    looptimeout = kloopstimeout //tracks progress
-                    state = 1
-                1 ->
-                    //check if enough points have been buffered'
-                    if (statud.btmbuffercount > minpoints){
-                        setValue = enabled //starts profile once
-                        state = 2;
-                    }
-                2 ->
-                    //check how the profile is going
-                    if(status.isunderrun == false){
-                        looptimeout = klooptimeout
-                    }
-                    if(status.activepointValid && status.activepointislast)//if it is on the last point/ done
-                        setvalue = hold
-                        state = 0//reset state machine
-                        looptimeout = -1 //disable
-            }
      */
 
+    /*
+    Possible bugs:
+    Never gets into motion profile mode
+    Repeating state machine
+    This stuff never runs
+     */
     private fun control(){
-        if (talon.controlMode != CANTalon.TalonControlMode.MotionProfile) {
+        if (talon.controlMode != CANTalon.TalonControlMode.MotionProfile) { // checks to see if we are in motion profile mode
             state = 0
             loopTimeOut = -1
         }else {
@@ -66,21 +44,21 @@ private val path = scanCSV(profile)
                 0 -> {//preps for running a motion profile
                     startFilling(path)// buffers points into the talon
                     setValue = CANTalon.SetValueMotionProfile.Disable
-                    state = 1
+                    state = 1 // advances the state machine
                     loopTimeOut = kLoopTimeOut
                 }
-                1->{
+                1->{//check if enough points are buffered. If so, begin MP
                     if(status.btmBufferCnt >= minPoints)
-                        setValue = CANTalon.SetValueMotionProfile.Enable
-                        state = 2
+                        setValue = CANTalon.SetValueMotionProfile.Enable // starts the MP
+                        state = 2 // advances the state machine
                 }
-                2->{
-                    if(status.hasUnderrun == false)
+                2->{//Checks if you have reached the end, and stops
+                    if(!status.hasUnderrun)
                         loopTimeOut = kLoopTimeOut
                     if(status.activePointValid && status.activePoint.isLastPoint)
-                        setValue = CANTalon.SetValueMotionProfile.Hold
+                        setValue = CANTalon.SetValueMotionProfile.Hold // holds the MP in the last point, which should be zero
                         state = 0 // possibility of infinite loop
-                        loopTimeOut = -1
+                        loopTimeOut = -1 // disable?
                 }
             }
         }
