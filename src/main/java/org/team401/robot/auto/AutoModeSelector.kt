@@ -77,6 +77,34 @@ class AutoModeSelector {
                 }
                 else -> return CalibrateTurret()
             }
+        }else{
+            when (strategyChooser.selected) {
+                Auto.GEAR -> {
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGear()
+                    else
+                        return SideGear(positionChooser.selected)
+                }
+                Auto.FUEL -> {
+                    if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+                            (positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance()))
+                        return FarHopperFuel(positionChooser.selected, hopperChooser.selected == 1)
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGearAndFuel()
+                    return HopperFuel(positionChooser.selected, hopperChooser.selected == 1)
+                }
+                Auto.GEAR_FUEL -> {
+                    if ((positionChooser.selected == StartingPos.RIGHT && FMS.isBlueAlliance()) ||
+                            (positionChooser.selected == StartingPos.LEFT && FMS.isRedAlliance())) {
+                        println("Bad fuel auto configuration!!!")
+                        return CalibrateTurret()
+                    }
+                    if (positionChooser.selected == StartingPos.CENTER)
+                        return CenterGearAndFuel()
+                    return SideGearAndFuel(positionChooser.selected)
+                }
+                else -> return CalibrateTurret()
+
         }
 		return CalibrateTurret()
 	}
